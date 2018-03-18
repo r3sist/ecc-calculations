@@ -5,15 +5,9 @@
   "license": "CDDL-1.0",
   "require": {
     "php": ">=5.6.0"
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://bitbucket.org/resist/ecc-calculations.git"
-    }
-  ],
+  }
   "autoload": {
-    "files": ["/"]
+    "files": ["Calculations/"]
   },
   "minimum-stability": "dev",
   "prefer-stable": true
