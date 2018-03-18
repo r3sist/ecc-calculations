@@ -6,7 +6,10 @@
 https://resist.hu | https://structure.hu
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c7eb0b4d706e4dafbd3cbe44564c2718)](https://www.codacy.com/app/resist/ecc-calculations?utm_source=resist@bitbucket.org&amp;utm_medium=referral&amp;utm_content=resist/ecc-calculations&amp;utm_campaign=Badge_Grade)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/523e2b61-9062-44be-81ca-85b6759eca56/small.png)](https://insight.sensiolabs.com/projects/523e2b61-9062-44be-81ca-85b6759eca56)
+[![CodeFactor](https://www.codefactor.io/repository/bitbucket/resist/ecc-calculations/badge)](https://www.codefactor.io/repository/bitbucket/resist/ecc-calculations)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/b/resist/ecc-calculations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/b/resist/ecc-calculations/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/b/resist/ecc-calculations/badges/build.png?b=master)](https://scrutinizer-ci.com/b/resist/ecc-calculations/build-status/master)
+
 
 + **Documentation:** -
 + **Repository:** Open Source https://bitbucket.org/resist/ecc-calculations
