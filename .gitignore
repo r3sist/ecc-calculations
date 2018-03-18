@@ -1,0 +1,8 @@
+.git/
+.idea/
+_dev/
+vendor/
+tmp/
+_ignore.php
+composer.phar
+composer.lock

@@ -1,0 +1,20 @@
+{
+  "name": "resist/ecc-calculations",
+  "description": "Native Calc classes for Ecc on https://structure.hu",
+  "homepage": "https://resist.hu",
+  "license": "CDDL-1.0",
+  "require": {
+    "php": ">=5.6.0"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://bitbucket.org/resist/ecc-calculations.git"
+    }
+  ],
+  "autoload": {
+    "files": ["/"]
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
