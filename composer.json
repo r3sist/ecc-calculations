@@ -3,12 +3,10 @@
   "description": "Native Calc classes for Ecc on https://structure.hu",
   "homepage": "https://resist.hu",
   "license": "CDDL-1.0",
-  "require": {
-    "php": ">=5.6.0"
-  },
   "autoload": {
     "files": ["Calculations/"]
   },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  "require": {
+    "php": ">=5.6.0"
+  }
 }
