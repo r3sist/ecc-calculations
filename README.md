@@ -6,7 +6,7 @@
 https://resist.hu | https://structure.hu
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c7eb0b4d706e4dafbd3cbe44564c2718)](https://www.codacy.com/app/resist/ecc-calculations?utm_source=resist@bitbucket.org&amp;utm_medium=referral&amp;utm_content=resist/ecc-calculations&amp;utm_campaign=Badge_Grade)
-[![CodeFactor](https://www.codefactor.io/repository/bitbucket/resist/ecc-calculations/badge)](https://www.codefactor.io/repository/bitbucket/resist/ecc-calculations)
+[![CodeFactor](https://www.codefactor.io/repository/bitbucket/resist/ecc%20calculations/badge)](https://www.codefactor.io/repository/bitbucket/resist/ecc%20calculations)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/b/resist/ecc-calculations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/b/resist/ecc-calculations/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/b/resist/ecc-calculations/badges/build.png?b=master)](https://scrutinizer-ci.com/b/resist/ecc-calculations/build-status/master)
 
