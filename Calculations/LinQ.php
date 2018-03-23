@@ -87,6 +87,6 @@ Class LinQ extends \Ecc
                 'text' => $table[$x[1]]['p [kN/m]'].'kN/m   ...'
             )
         );
-        \Blc::write('data/canvas/linQ0.jpg', $write, 'Gerenda kiosztás geometriája');
+        \Blc::write('vendor/resist/ecc-calculations/canvas/linQ0.jpg', $write, 'Gerenda kiosztás geometriája');
     }
 }

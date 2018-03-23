@@ -334,7 +334,7 @@ Class Wind extends \Ecc
             array('size' => 14, 'x' => 150, 'y' => 445, 'text' => $f3->_b0-2*($e/4) .'m'),
             array('size' => 14, 'x' => 150, 'y' => 510, 'text' => $e/4 .'m'),
         );
-        \Blc::write('data/canvas/wind0.jpg', $write, 'Lapostető zóna elrendezés');
+        \Blc::write('vendor/resist/ecc-calculations/canvas/wind0.jpg', $write, 'Lapostető zóna elrendezés');
         \Blc::region1('flat0');
 
         \Blc::h1('Falak');
@@ -437,7 +437,7 @@ Class Wind extends \Ecc
             array('size' => 14, 'x' => 240, 'y' => 100, 'text' => ''.$e - $e/5 .'m'),
             array('size' => 14, 'x' => 315, 'y' => 100, 'text' => ''.($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0).'m'),
         );
-        \Blc::write('data/canvas/wind2.jpg', $write, 'Fal zóna elrendezés');
+        \Blc::write('vendor/resist/ecc-calculations/canvas/wind2.jpg', $write, 'Fal zóna elrendezés');
         \Blc::region1('wall0');
 
         \Blc::h1('Oldalain nyitott ferdesíkú pilletető');
@@ -519,7 +519,7 @@ Class Wind extends \Ecc
                 array('size' => 12, 'x' => 340, 'y' => 25, 'text' => $f3->_b0/10 .'m'),
                 array('size' => 12, 'x' => 185, 'y' => 225, 'text' => $f3->_d0/10 .'m'),
             );
-            \Blc::write('data/canvas/wind1.jpg', $write, 'Pilletető elrendezés '.$case);
+            \Blc::write('vendor/resist/ecc-calculations/canvas/wind1.jpg', $write, 'Pilletető elrendezés '.$case);
             \Blc::region1('canopy0'.$class);
         }
         \Blc::txt('', '(+) szélnyomás&nbsp;&nbsp;&nbsp; (-) szélszívás');
