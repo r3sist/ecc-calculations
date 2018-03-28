@@ -526,7 +526,76 @@ Class Wind extends \Ecc
 
 
         \Blc::h1('Szabadon álló falak és mellvédek');
+        \Blc::input('h_a', 'Fal magasság', 1.2, 'm');
+        \Blc::input('l_a', 'Fal szélesség', 40, 'm');
+        \Blc::input('x_a', 'Visszaforduló falszakasz hossza', 10, 'm');
+        \Blc::lst('fi_a', array('Tömör' => 1.0, '20%-os áttörtség' => 0.8), 'Áttörtség', '1.0', '');
+        \Blc::math('l_a/h_a = '.number_format($f3->_l_a/$f3->_h_a, 1));
+        $atticTypeSource = array(
+            "b/h≤3" => "a",
+            "b/h=5" => "b",
+            "b/h≥10" => "c",
+        );
+        \Blc::lst('type_a', $atticTypeSource, 'Tábla arány', 'c', '');
+        $atticFind = $f3->_type_a;
+        if ($f3->_x_a >= $f3->_h_a && $f3->_fi_a == 1) {
+            $atticFind = 'd';
+        }
+        if ($f3->_fi_a == 0.8) {
+            $atticFind = 'e';
+        }
+        $atticDb = array(
+            'a' => array ('A' => 2.3, 'B' => 1.4, 'C' => 1.2, 'D' => 1.2),
+            'b' => array ('A' => 2.9, 'B' => 1.8, 'C' => 1.4, 'D' => 1.2),
+            'c' => array ('A' => 3.4, 'B' => 2.1, 'C' => 1.7, 'D' => 1.2),
+            'd' => array ('A' => 2.1, 'B' => 1.8, 'C' => 1.4, 'D' => 1.2),
+            'e' => array ('A' => 1.2, 'B' => 1.2, 'C' => 1.2, 'D' => 1.2),
+        );
+
+        $caA = $atticDb[$atticFind]['A'];
+        $caB = $atticDb[$atticFind]['B'];
+        $caC = $atticDb[$atticFind]['C'];
+        $caD = $atticDb[$atticFind]['D'];
+        $waA = number_format($caA*$f3->_qpz, 2);
+        $waB = number_format($caB*$f3->_qpz, 2);
+        $waC = number_format($caC*$f3->_qpz, 2);
+        $waD = number_format($caD*$f3->_qpz, 2);
+        $paA = number_format($waA*$f3->_h_a, 2);
+        $paB = number_format($waB*$f3->_h_a, 2);
+        $paC = number_format($waC*$f3->_h_a, 2);
+        $paD = number_format($waD*$f3->_h_a, 2);
+
+        $atticTable = array(
+            '`c`' => array(
+                'A' => $caA,
+                'B' => $caB,
+                'C' => $caC,
+                'D' => $caC,
+            ),
+            '`w [(kN)/m^2]`<!--success-->' => array(
+                'A' => $waA,
+                'B' => $waB,
+                'C' => $waC,
+                'D' => $waD,
+            ),
+            '`p [(kN)/m]` vízszintes teher' => array(
+                'A' => $paA,
+                'B' => $paB,
+                'C' => $paC,
+                'D' => $paD,
+            ),
+            'Zóna szélesség `[m]`' => array(
+                'A' => 0.3*$f3->_h_a,
+                'B' => 2*$f3->_h_a - 0.3*$f3->_h_a,
+                'C' => 2*$f3->_h_a,
+                'D' => $f3->_l_a - 4*$f3->_h_a,
+            )
+        );
+        \Blc::table($atticTable,'Szabadon álló fal', '');
+        \Blc::write('vendor/resist/ecc-calculations/canvas/wind3.jpg', array(), 'Szabadon álló fal');
+
         \Blc::h1('Egyedi szélteher');
         \Blc::h1('Nyeregtetők');
+        \Blc::txt('', '[*[Terhek és hatások]*](https://structure.hu/silent/book/DeakGyorgyErdelyiTamasFernezelyiSandorKollarLaszloVisnovitzGyorgy-TerhekeshatasokTervezesazEurocodealapjan-2006.pdf)');
     }
 }
