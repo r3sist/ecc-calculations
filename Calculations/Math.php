@@ -17,6 +17,9 @@ Class Math extends \Ecc
         \Blc::def('slope_deg', number_format($slope_per, 2), $f3->_slope.'° = %% %', '');
 
         \Blc::h1('Hőmérséklet rudakon');
-        \Blc::def('alpha_T_st', 0.000012, 'alpha_(T,steel) = %% °', '');
+        \Blc::def('alpha_T_st', 0.000012, 'alpha_(T,steel) = %% 1/K', '');
+        \Blc::input('L', 'Rúdhossz', '10', 'm', '');
+        \Blc::input('DeltaT', 'Hőmérséklet változás', '40', '°', '');
+        \Blc::def('DeltaL', $f3->_alpha_T_st*$f3->_L*$f3->_deltaT*1000, 'DeltaL = %% mm', '');
     }
 }
