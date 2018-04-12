@@ -21,10 +21,6 @@ Class Wind extends \Ecc
         );
         \Blc::lst('terrainCat', $terrainCats, 'Terep kategória', '2');
 
-        \Blc::success0('success0');
-        \Blc::def('qpz', \Ec::qpz($f3->_h, $f3->_terrainCat), 'q_(p)(z) = %% [(kN)/m^2]', 'Torlónyomás');
-        \Blc::success1('success0');
-
         \Blc::boo('internal', 'Belső szél figyelembevétele', '1');
 
         \Blc::region0('more0', 'További paraméterek');
@@ -35,14 +31,30 @@ Class Wind extends \Ecc
             $f3->set('_cp', 0);
             $f3->set('_cm', 0);
         }
-
         \Blc::boo('flatRef', '`10 m^2` referencia felület', '1', 'Egyébként `1 m^2`');
         if ($f3->_flatRef == 1) {
             $f3->set('_flatRef', '10');
         } else {
             $f3->set('_flatRef', '1');
         }
+        \Blc::math('v_(b,0) = 23.6 [m/s]');
+        \Blc::math('c_(dir) = 1.0');
+        \Blc::math('c_(season) = 1.0');
+        \Blc::math('c_(prob) = 1.0');
+        \Blc::input('c0z', '`c_0(z)` Domborzati tényező', 1.0, '');
+
+        \Blc::boo('NSEN', 'NS-EN 1991-1-4:2005/NA:2009 Norvég Nemzeti Melléklet alkalmazása', '0');
+        \Blc::input('NSEN_vb0', '`v_(b,0,NS-EN)`', '30', 'm/s');
+
         \Blc::region1('more0', '', 1);
+
+
+        \Blc::success0('success0');
+        \Blc::def('qpz', \Ec::qpz($f3->_h, $f3->_terrainCat), 'q_(p)(z) = %% [(kN)/m^2]', 'Torlónyomás');
+        if ($f3->_NSEN) {
+            \Blc::def('qpz', \EcNSEN::qpzNSEN($f3->_h, $f3->_terrainCat), 'q_(p)(z) = %% [(kN)/m^2]', 'Torlónyomás');
+        }
+        \Blc::success1('success0');
 
         \Blc::info0('info0');
         \Blc::h1('Eredmény számítás');
