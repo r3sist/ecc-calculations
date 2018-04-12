@@ -20,3 +20,7 @@ https://resist.hu | https://structure.hu
 ## Installation
 
 Via composer: `"resist/ecc-calculations": "dev-master"`
+
+## Copyright
+
+Copyright (c) 2018 Bence VÁNKOS | resist.hu, structure.hu
