@@ -41,18 +41,18 @@ Class Wind extends \Ecc
         \Blc::math('c_(dir) = 1.0');
         \Blc::math('c_(season) = 1.0');
         \Blc::math('c_(prob) = 1.0');
-        \Blc::input('c0z', '`c_0(z)` Domborzati tényező', 1.0, '');
 
         \Blc::boo('NSEN', 'NS-EN 1991-1-4:2005/NA:2009 Norvég Nemzeti Melléklet alkalmazása', '0');
-        \Blc::input('NSEN_vb0', '`v_(b,0,NS-EN)`', '30', 'm/s');
-
+        \Blc::input('NSEN_vb0', '`v_(b, 0, NSEN)` (!!)', '30', 'm/s');
+        \Blc::input('NSEN_calt', '`c_( a\l\t , NSEN)` Altitude factor (1)', '1', '');
+        \Blc::input('NSEN_c0z', '`c_(0, NSEN)(z)` Domborzati tényező (!)', '1.1', '');
         \Blc::region1('more0', '', 1);
-
 
         \Blc::success0('success0');
         \Blc::def('qpz', \Ec::qpz($f3->_h, $f3->_terrainCat), 'q_(p)(z) = %% [(kN)/m^2]', 'Torlónyomás');
         if ($f3->_NSEN) {
-            \Blc::def('qpz', \EcNSEN::qpzNSEN($f3->_h, $f3->_terrainCat), 'q_(p)(z) = %% [(kN)/m^2]', 'Torlónyomás');
+            \Blc::math('v_(b, NSEN) = c_(a\l\t, NSEN)*c_(dir)*c_(season)*c_(prob)*v_(b, 0, NSEN) = '.$f3->_NSEN_calt.'*1.0*1.0*'.$f3->_NSEN_vb0);
+            \Blc::def('qpz', \EcNSEN::qpzNSEN($f3->_h, $f3->_terrainCat, $f3->_NSEN_calt, $f3->_NSEN_c0z, $f3->_NSEN_vb0), 'q_(p, NSEN)(z) = %% [(kN)/m^2]', 'Torlónyomás');
         }
         \Blc::success1('success0');
 
