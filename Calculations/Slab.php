@@ -2,7 +2,7 @@
 
 namespace Calculation;
 
-Class Plate extends \Ecc
+Class Slab extends \Ecc
 {
 
     public function calc($f3)
