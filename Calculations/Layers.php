@@ -7,25 +7,26 @@ Class Layers extends \Ecc
 
     public function calc($f3)
     {
-        \Ec::load();
+        $ec = \Ec::instance();
+        $blc = \Blc::instance();
 
-        \Blc::region0('r0', 'Rétegek megadása');
+        $blc->region0('r0', 'Rétegek megadása');
 
-        \Blc::info0('i0');
-        \Blc::input('cnt','Beviteli mezők száma','2','','');
-        \Blc::info1('i0');
+        $blc->info0('i0');
+        $blc->input('cnt','Beviteli mezők száma','2','','');
+        $blc->info1('i0');
 
         $i = 1;
         while($i <= $f3->_cnt){
-            \Blc::txt($i.'. réteg');
-            \Blc::input('n'.$i,'`n_'.$i.'`: Réteg neve','','','');
-            \Blc::input('v'.$i,'`v_'.$i.'`: Vastagság','','cm','');
-            \Blc::input('q'.$i,'`q_'.$i.'`: Térfogatsúly','','kN/m³','');
-            \Blc::input('p'.$i,'`p_'.$i.'`: Felület súly','','kN/m²','');
-            \Blc::hr();
+            $blc->txt($i.'. réteg');
+            $blc->input('n'.$i,'`n_'.$i.'`: Réteg neve','','','');
+            $blc->input('v'.$i,'`v_'.$i.'`: Vastagság','','cm','');
+            $blc->input('q'.$i,'`q_'.$i.'`: Térfogatsúly','','kN/m³','');
+            $blc->input('p'.$i,'`p_'.$i.'`: Felület súly','','kN/m²','');
+            $blc->hr();
             $i++;
         }
-        \Blc::region1('r0');
+        $blc->region1('r0');
 
         $table = array();
         $i = 1;
@@ -51,9 +52,9 @@ Class Layers extends \Ecc
         $table['Összesen<!--success-->']['Térfogatsúly `[(kN)/m^3]`'] = '';
         $table['Összesen<!--success-->']['Felület súly `[(kN)/m^2]`'] = '`'.$p.'`';
 
-       \Blc::table($table,'Réteg');
+       $blc->table($table,'Réteg');
 
-        \Blc::region0('t0', 'Lindab trapézlemez önsúlyok');
+        $blc->region0('t0', 'Lindab trapézlemez önsúlyok');
         $table0 = array(
             "LTP20×0.4" => array("Önsúly [kN/m&sup2;]" => 0.032),
             "LTP20×0.5" => array("Önsúly [kN/m&sup2;]" =>0.041),
@@ -91,8 +92,8 @@ Class Layers extends \Ecc
             "LTP150×1.25" => array("Önsúly [kN/m&sup2;]" =>0.165),
             "LTP150×1.50<!--info-->" => array("Önsúly [kN/m&sup2;]" =>0.199),
         );
-        \Blc::table($table0, 'Lindab trapézlemez');
-        \Blc::region1('t0');
+        $blc->table($table0, 'Lindab trapézlemez');
+        $blc->region1('t0');
 
     }
 }

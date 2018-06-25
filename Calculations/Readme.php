@@ -4,13 +4,17 @@ namespace Calculation;
 
 Class Snow extends \Ecc
 {
+
     public function calc($f3)
     {
-        $ec = \Ec::instance();
+        $f3->cver = "1.0\ninit";
+
+        \Ec::load();
+
         $blc = \Blc::instance();
 
         $blc->input('A', 'Tengerszint feletti magasság', 400, 'm');
-        $blc->input('C', '`C_e*C_t` Szél- és hőmérséklet összevont tényező', 1, '', 'Védett terep esetén megfontolandó: (környező terepnél alacsonyabb fekvés): `C.e = 1.2`');
+        $blc->input('C', '`C_e*C_t` Szél- és hőmérséklet összevont tényező', 1, '', 'Védett terep (környező terepnél alacsonyabb fekvés): `C.e = 1.2`');
 
         $blc->hr();
 

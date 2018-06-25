@@ -7,18 +7,20 @@ Class LinQ extends \Ecc
 
     public function calc($f3)
     {
-        \Ec::load();
-        \Blc::input('x', 'Gerenda koordináták', '2,6,10,14', 'm', 'Gerenda `x.i` pozíciói, vesszővel elválasztva, 0-tól számítva.');
-        \Blc::input('xMAX', 'Teher felület hossza', '16', 'm', '');
-        \Blc::input('qMAX', 'Megoszló teher (növekvő) maximális értéke', '10', 'kN/m²', '');
-        \Blc::input('qMIN', 'Megoszló teher minimális értéke', '2', 'kN/m²', '');
+        $ec = \Ec::instance();
+        $blc = \Blc::instance();
+
+        $blc->input('x', 'Gerenda koordináták', '2,6,10,14', 'm', 'Gerenda `x.i` pozíciói, vesszővel elválasztva, 0-tól számítva.');
+        $blc->input('xMAX', 'Teher felület hossza', '16', 'm', '');
+        $blc->input('qMAX', 'Megoszló teher (növekvő) maximális értéke', '10', 'kN/m²', '');
+        $blc->input('qMIN', 'Megoszló teher minimális értéke', '2', 'kN/m²', '');
 
         $f3->set('_qd',$f3->_qMAX - $f3->_qMIN);
         $f3->set('_q1',$f3->_qd / $f3->_xMAX);
 
         $x = explode(',', $f3->_x);
         if (count($x) < 2) {
-            \Blc::danger('Minimum 2 gerendára kell szétosztani a terhet!', 'Hiba!');
+            $blc->danger('Minimum 2 gerendára kell szétosztani a terhet!', 'Hiba!');
         }
         $table = array();
         $i = 0;
@@ -35,7 +37,7 @@ Class LinQ extends \Ecc
             }
             $i++;
         }
-        \Blc::table($table, 'Gerenda pozíció: x [m]');
+        $blc->table($table, 'Gerenda pozíció: x [m]');
 
         $write = array(
             array(
@@ -87,6 +89,6 @@ Class LinQ extends \Ecc
                 'text' => $table[$x[1]]['p [kN/m]'].'kN/m   ...'
             )
         );
-        \Blc::write('vendor/resist/ecc-calculations/canvas/linQ0.jpg', $write, 'Gerenda kiosztás geometriája');
+        $blc->write('vendor/resist/ecc-calculations/canvas/linQ0.jpg', $write, 'Gerenda kiosztás geometriája');
     }
 }

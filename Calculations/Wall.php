@@ -2,7 +2,7 @@
 
 namespace Calculation;
 
-Class SteelSection extends \Ecc
+Class Wall extends \Ecc
 {
 
     public function calc($f3)
@@ -10,5 +10,6 @@ Class SteelSection extends \Ecc
         $ec = \Ec::instance();
         $blc = \Blc::instance();
 
+        $blc->txt('works');
     }
 }

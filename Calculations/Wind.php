@@ -7,11 +7,12 @@ Class Wind extends \Ecc
 
     public function calc($f3)
     {
-        \Ec::load();
+        $ec = \Ec::instance();
+        $blc = \Blc::instance();
 
-        \Blc::input('h', 'Épület magasság', 10, 'm');
-        \Blc::input('b', 'Épület hossz', 20, 'm');
-        \Blc::input('d', 'Épület szélesség', 12, 'm');
+        $blc->input('h', 'Épület magasság', 10, 'm');
+        $blc->input('b', 'Épület hossz', 20, 'm');
+        $blc->input('d', 'Épület szélesség', 12, 'm');
 
         $terrainCats = array(
             'I. Nyílt terep' => 1,
@@ -19,52 +20,52 @@ Class Wind extends \Ecc
             'III. Alacsony beépítés' => 3,
             'IV. Intenzív beépítés' => 4,
         );
-        \Blc::lst('terrainCat', $terrainCats, 'Terep kategória', '2');
+        $blc->lst('terrainCat', $terrainCats, 'Terep kategória', '2');
 
-        \Blc::boo('internal', 'Belső szél figyelembevétele', '1');
+        $blc->boo('internal', 'Belső szél figyelembevétele', '1');
 
-        \Blc::region0('more0', 'További paraméterek');
+        $blc->region0('more0', 'További paraméterek');
         if ($f3->_internal) {
-            \Blc::input('cp', '`c_(p,i+)` Belső szél alaki tényező belső nyomáshoz', 0.2, '');
-            \Blc::input('cm', '`c_(p,i-)` Belső szél alaki tényező belső szíváshoz', -0.3, '');
+            $blc->input('cp', '`c_(p,i+)` Belső szél alaki tényező belső nyomáshoz', 0.2, '');
+            $blc->input('cm', '`c_(p,i-)` Belső szél alaki tényező belső szíváshoz', -0.3, '');
         } else {
             $f3->set('_cp', 0);
             $f3->set('_cm', 0);
         }
-        \Blc::boo('flatRef', '`10 m^2` referencia felület', '1', 'Egyébként `1 m^2`');
+        $blc->boo('flatRef', '`10 m^2` referencia felület', '1', 'Egyébként `1 m^2`');
         if ($f3->_flatRef == 1) {
             $f3->set('_flatRef', '10');
         } else {
             $f3->set('_flatRef', '1');
         }
-        \Blc::math('v_(b,0) = 23.6 [m/s]');
-        \Blc::math('c_(dir) = 1.0');
-        \Blc::math('c_(season) = 1.0');
-        \Blc::math('c_(prob) = 1.0');
+        $blc->math('v_(b,0) = 23.6 [m/s]');
+        $blc->math('c_(dir) = 1.0');
+        $blc->math('c_(season) = 1.0');
+        $blc->math('c_(prob) = 1.0');
 
-        \Blc::boo('NSEN', 'NS-EN 1991-1-4:2005/NA:2009 Norvég Nemzeti Melléklet alkalmazása', '0');
-        \Blc::input('NSEN_vb0', '`v_(b, 0, NSEN)` (!!)', '30', 'm/s');
-        \Blc::input('NSEN_calt', '`c_( a\l\t , NSEN)` Altitude factor (1)', '1', '');
-        \Blc::input('NSEN_c0z', '`c_(0, NSEN)(z)` Domborzati tényező (!)', '1.1', '');
-        \Blc::region1('more0', '', 1);
+        $blc->boo('NSEN', 'NS-EN 1991-1-4:2005/NA:2009 Norvég Nemzeti Melléklet alkalmazása', '0');
+        $blc->input('NSEN_vb0', '`v_(b, 0, NSEN)` (!!)', '30', 'm/s');
+        $blc->input('NSEN_calt', '`c_( a\l\t , NSEN)` Altitude factor (1)', '1', '');
+        $blc->input('NSEN_c0z', '`c_(0, NSEN)(z)` Domborzati tényező (!)', '1.1', '');
+        $blc->region1('more0', '', 1);
 
-        \Blc::success0('success0');
-        \Blc::def('qpz', \Ec::qpz($f3->_h, $f3->_terrainCat), 'q_(p)(z) = %% [(kN)/m^2]', 'Torlónyomás');
+        $blc->success0('success0');
+        $blc->def('qpz', $ec->qpz($f3->_h, $f3->_terrainCat), 'q_(p)(z) = %% [(kN)/m^2]', 'Torlónyomás');
         if ($f3->_NSEN) {
-            \Blc::math('v_(b, NSEN) = c_(a\l\t, NSEN)*c_(dir)*c_(season)*c_(prob)*v_(b, 0, NSEN) = '.$f3->_NSEN_calt.'*1.0*1.0*'.$f3->_NSEN_vb0);
-            \Blc::def('qpz', \EcNSEN::qpzNSEN($f3->_h, $f3->_terrainCat, $f3->_NSEN_calt, $f3->_NSEN_c0z, $f3->_NSEN_vb0), 'q_(p, NSEN)(z) = %% [(kN)/m^2]', 'Torlónyomás');
+            $blc->math('v_(b, NSEN) = c_(a\l\t, NSEN)*c_(dir)*c_(season)*c_(prob)*v_(b, 0, NSEN) = '.$f3->_NSEN_calt.'*1.0*1.0*'.$f3->_NSEN_vb0);
+            $blc->def('qpz', \EcNSEN::qpzNSEN($f3->_h, $f3->_terrainCat, $f3->_NSEN_calt, $f3->_NSEN_c0z, $f3->_NSEN_vb0), 'q_(p, NSEN)(z) = %% [(kN)/m^2]', 'Torlónyomás');
         }
-        \Blc::success1('success0');
+        $blc->success1('success0');
 
-        \Blc::info0('info0');
-        \Blc::h1('Eredmény számítás');
-        \Blc::lst('wind', array('Szívás' => '-', 'Nyomás' => '+'), 'Szél eset');
+        $blc->info0('info0');
+        $blc->h1('Eredmény számítás');
+        $blc->lst('wind', array('Szívás' => '-', 'Nyomás' => '+'), 'Szél eset');
         if ($f3->_wind == '-') {
             $ci = $f3->_cm;
         } else {
             $ci = $f3->_cp;
         }
-        \Blc::lst('dir', array('Hosszra (b) merőleges' => '0', 'Szélességre (d) merőleges' => '1'), 'Szél irány');
+        $blc->lst('dir', array('Hosszra (b) merőleges' => '0', 'Szélességre (d) merőleges' => '1'), 'Szél irány');
         if ($f3->_dir == 0) {
             $f3->set('_b0', $f3->get('_b'));
             $f3->set('_d0', $f3->get('_d'));
@@ -72,9 +73,9 @@ Class Wind extends \Ecc
             $f3->set('_b0', $f3->get('_d'));
             $f3->set('_d0', $f3->get('_b'));
         }
-        \Blc::info1('info0');
+        $blc->info1('info0');
 
-        \Blc::h1('Lapostetők');
+        $blc->h1('Lapostetők');
         $flatTypes = array(
             'Szögletes perem' => 'a',
             'Attika hp/h=0.025' => 'b1',
@@ -87,7 +88,7 @@ Class Wind extends \Ecc
             'Levágott α=45°' => 'd2',
             'Levágott α=60°' => 'd3'
         );
-        \Blc::lst('flatType', $flatTypes, 'Tető kialakítás');
+        $blc->lst('flatType', $flatTypes, 'Tető kialakítás');
         $flatDb = array(
             'a-' => array(
                 'F10' => -1.8,
@@ -326,11 +327,11 @@ Class Wind extends \Ecc
             )
         );
 
-        \Blc::math('c_(p,i) = '.$ci, '');
-        \Blc::math('`e = '.$e.'`', '');
+        $blc->math('c_(p,i) = '.$ci, '');
+        $blc->math('`e = '.$e.'`', '');
 
-        \Blc::table($flat);
-        \Blc::region0('flat0', 'Lapostető zóna elrendezés');
+        $blc->table($flat);
+        $blc->region0('flat0', 'Lapostető zóna elrendezés');
         $write = array(
             array('size' => 14, 'x' => 180, 'y' => 385, 'text' => 'F:'.$wF.'kN/m²'),
             array('size' => 14, 'x' => 180, 'y' => 550, 'text' => 'F:'.$wF.'kN/m²'),
@@ -346,11 +347,11 @@ Class Wind extends \Ecc
             array('size' => 14, 'x' => 150, 'y' => 445, 'text' => $f3->_b0-2*($e/4) .'m'),
             array('size' => 14, 'x' => 150, 'y' => 510, 'text' => $e/4 .'m'),
         );
-        \Blc::write('vendor/resist/ecc-calculations/canvas/wind0.jpg', $write, 'Lapostető zóna elrendezés');
-        \Blc::region1('flat0');
+        $blc->write('vendor/resist/ecc-calculations/canvas/wind0.jpg', $write, 'Lapostető zóna elrendezés');
+        $blc->region1('flat0');
 
-        \Blc::h1('Falak');
-        \Blc::def('wallRow', number_format($f3->_h/$f3->_d0, 2), 'h/d = %%', '');
+        $blc->h1('Falak');
+        $blc->def('wallRow', number_format($f3->_h/$f3->_d0, 2), 'h/d = %%', '');
         if ($f3->_wallRow >= 5) {
             $find = 'a';
         } elseif ($f3->_wallRow <= 0.25) {
@@ -358,7 +359,7 @@ Class Wind extends \Ecc
         } else {
             $find = 'b';
         }
-        \Blc::txt('Sor: `'.$find.'`');
+        $blc->txt('Sor: `'.$find.'`');
         $wallDb = array(
             'a' => array(
                 'A10' => -1.2,
@@ -431,12 +432,12 @@ Class Wind extends \Ecc
                 'E' => $f3->_b0
             )
         );
-        \Blc::math('c_(p,i,+) = '.$f3->_cp.'', '');
-        \Blc::math('c_(p,i,-) = '.$f3->_cm.'', '');
-        \Blc::math('e = '.$e.'', '');
+        $blc->math('c_(p,i,+) = '.$f3->_cp.'', '');
+        $blc->math('c_(p,i,-) = '.$f3->_cm.'', '');
+        $blc->math('e = '.$e.'', '');
 
-        \Blc::table($wall);
-        \Blc::region0('wall0', 'Fal zóna elrendezés');
+        $blc->table($wall);
+        $blc->region0('wall0', 'Fal zóna elrendezés');
         $write = array(
             array('size' => 14, 'x' => 30, 'y' => 400, 'text' => 'D:'.$wD.'kN/m²'),
             array('size' => 14, 'x' => 380, 'y' => 400, 'text' => 'E:'.$wE.'kN/m²'),
@@ -449,12 +450,12 @@ Class Wind extends \Ecc
             array('size' => 14, 'x' => 240, 'y' => 100, 'text' => ''.$e - $e/5 .'m'),
             array('size' => 14, 'x' => 315, 'y' => 100, 'text' => ''.($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0).'m'),
         );
-        \Blc::write('vendor/resist/ecc-calculations/canvas/wind2.jpg', $write, 'Fal zóna elrendezés');
-        \Blc::region1('wall0');
+        $blc->write('vendor/resist/ecc-calculations/canvas/wind2.jpg', $write, 'Fal zóna elrendezés');
+        $blc->region1('wall0');
 
-        \Blc::h1('Oldalain nyitott ferdesíkú pilletető');
-        \Blc::boo('phi', 'Torlasz', '1', '');
-        \Blc::math('phi = '.$f3->_phi, '');
+        $blc->h1('Oldalain nyitott ferdesíkú pilletető');
+        $blc->boo('phi', 'Torlasz', '1', '');
+        $blc->math('phi = '.$f3->_phi, '');
 
         $canopyTypes = array(
             '0°' => '0',
@@ -465,7 +466,7 @@ Class Wind extends \Ecc
             '25°' => '25',
             '30°' => '30'
         );
-        \Blc::lst('canopyType', $canopyTypes, 'Tető hajlás','0');
+        $blc->lst('canopyType', $canopyTypes, 'Tető hajlás','0');
         $canopyDb = array (
             '0+' => array ('A' => 0.5, 'B' => 1.8, 'C' => 1.1,),
             '0-0' => array ('A' => -0.6, 'B' => -1.3, 'C' => -1.4,),
@@ -515,12 +516,12 @@ Class Wind extends \Ecc
                     'C' => $f3->_d0/10,
                 )
             );
-            \Blc::table($canopy,'Pilletető '.$case, '');
+            $blc->table($canopy,'Pilletető '.$case, '');
             $class = '1';
             if ($case == '+') {
                 $class = '2';
             }
-            \Blc::region0('canopy0'.$class, 'Pilletető zóna elrendezés '.$case);
+            $blc->region0('canopy0'.$class, 'Pilletető zóna elrendezés '.$case);
             $write = array(
                 array('size' => 20, 'x' => 25, 'y' => 25, 'text' => '('.$case.')'),
                 array('size' => 12, 'x' => 180, 'y' => 150, 'text' => 'A:'.$wA.'kN/m²'),
@@ -531,24 +532,24 @@ Class Wind extends \Ecc
                 array('size' => 12, 'x' => 340, 'y' => 25, 'text' => $f3->_b0/10 .'m'),
                 array('size' => 12, 'x' => 185, 'y' => 225, 'text' => $f3->_d0/10 .'m'),
             );
-            \Blc::write('vendor/resist/ecc-calculations/canvas/wind1.jpg', $write, 'Pilletető elrendezés '.$case);
-            \Blc::region1('canopy0'.$class);
+            $blc->write('vendor/resist/ecc-calculations/canvas/wind1.jpg', $write, 'Pilletető elrendezés '.$case);
+            $blc->region1('canopy0'.$class);
         }
-        \Blc::txt('', '(+) szélnyomás&nbsp;&nbsp;&nbsp; (-) szélszívás');
+        $blc->txt('', '(+) szélnyomás&nbsp;&nbsp;&nbsp; (-) szélszívás');
 
 
-        \Blc::h1('Szabadon álló falak és mellvédek');
-        \Blc::input('h_a', 'Fal magasság', 1.2, 'm');
-        \Blc::input('l_a', 'Fal szélesség', 40, 'm');
-        \Blc::input('x_a', 'Visszaforduló falszakasz hossza', 10, 'm');
-        \Blc::lst('fi_a', array('Tömör' => 1.0, '20%-os áttörtség' => 0.8), 'Áttörtség', '1.0', '');
-        \Blc::math('l_a/h_a = '.number_format($f3->_l_a/$f3->_h_a, 1));
+        $blc->h1('Szabadon álló falak és mellvédek');
+        $blc->input('h_a', 'Fal magasság', 1.2, 'm');
+        $blc->input('l_a', 'Fal szélesség', 40, 'm');
+        $blc->input('x_a', 'Visszaforduló falszakasz hossza', 10, 'm');
+        $blc->lst('fi_a', array('Tömör' => 1.0, '20%-os áttörtség' => 0.8), 'Áttörtség', '1.0', '');
+        $blc->math('l_a/h_a = '.number_format($f3->_l_a/$f3->_h_a, 1));
         $atticTypeSource = array(
             "b/h≤3" => "a",
             "b/h=5" => "b",
             "b/h≥10" => "c",
         );
-        \Blc::lst('type_a', $atticTypeSource, 'Tábla arány', 'c', '');
+        $blc->lst('type_a', $atticTypeSource, 'Tábla arány', 'c', '');
         $atticFind = $f3->_type_a;
         if ($f3->_x_a >= $f3->_h_a && $f3->_fi_a == 1) {
             $atticFind = 'd';
@@ -603,11 +604,11 @@ Class Wind extends \Ecc
                 'D' => $f3->_l_a - 4*$f3->_h_a,
             )
         );
-        \Blc::table($atticTable,'Szabadon álló fal', '');
-        \Blc::write('vendor/resist/ecc-calculations/canvas/wind3.jpg', array(), 'Szabadon álló fal');
+        $blc->table($atticTable,'Szabadon álló fal', '');
+        $blc->write('vendor/resist/ecc-calculations/canvas/wind3.jpg', array(), 'Szabadon álló fal');
 
-        \Blc::h1('Egyedi szélteher');
-        \Blc::h1('Nyeregtetők');
-        \Blc::txt('', '[*[Terhek és hatások]*](https://structure.hu/silent/book/DeakGyorgyErdelyiTamasFernezelyiSandorKollarLaszloVisnovitzGyorgy-TerhekeshatasokTervezesazEurocodealapjan-2006.pdf)');
+        $blc->h1('Egyedi szélteher');
+        $blc->h1('Nyeregtetők');
+        $blc->txt('', '[*[Terhek és hatások]*](https://structure.hu/silent/book/DeakGyorgyErdelyiTamasFernezelyiSandorKollarLaszloVisnovitzGyorgy-TerhekeshatasokTervezesazEurocodealapjan-2006.pdf)');
     }
 }
