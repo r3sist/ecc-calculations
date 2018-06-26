@@ -37,6 +37,9 @@ Class Slab extends \Ecc
         );
         $f3->_eta = 0.1;
         $blc->lst('eta', $eta, 'Töréskép');
+        if(!$f3->_eta) {
+            $f3->_eta = $etaOpt;
+        }
         $blc->math('eta = '. $f3->_eta);
 
         $blc->region0('r0');
