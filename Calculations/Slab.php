@@ -53,9 +53,10 @@ Class Slab extends \Ecc
         $blc->def('m_xyA', $f3->_m_y, 'm_(xyA) := %% [(kNm)/m]', 'Sarkok gátolt felemelkedéséből származó csvarónyomaték');
 
         if ($f3->_m_y >= $f3->_m_x) {
-            $blc->label('yes', 'm_y >= m_x');
+            $blc->label('yes', '\`m_y >= m_x\`');
         } else {
-            $blc->label('no', 'm_y < m_x');
+            $blc->label('no', '\`m_y < m_x\`');
         }
+        $blc->note('Test note');
     }
 }
