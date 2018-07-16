@@ -17,6 +17,7 @@
 ## Boilerplate calculation class
 
 ```php
+
 namespace Calculation;
 
 // This class will extend Ecc framework
@@ -59,7 +60,7 @@ General input field that defines variable in f3 Hive.
 
 Notes:
 
-+ `variableName` creates variable in f3 Hive with underscore accessible globally: eg. `$f3->_variableName` or `$f3->get('_variableName')`
++ `variableName` creates global variable in f3 Hive with underscore: e.g. `$f3->_variableName` or `$f3->get('_variableName')`
 + `variableName` is added to title by default, if `title` does not conatin additional *math expression*
 
 ### math block
@@ -71,7 +72,7 @@ Simple math text for mathematical expressions, compiled by MathJax.
 Notes: 
 
 + In `math` define expression without code mark `  
-+ `%%%` adds vertical spacing
++ *%%%* adds vertical spacing
 + This block does not defines variable
 
 ### h1, h2, h3 blocks
