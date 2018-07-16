@@ -47,14 +47,14 @@ Class Boilerplate extends \Ecc
 
 ### General notes
 
-+ `f3` is reference of [Fatfree Framework](https://fatfreeframework.com)'s singleton object. *Hive* is f3's global storage. *f3* are methods avaliable everywhere, generated variables are stored is *Hive*.
++ `f3` is reference of [Fatfree Framework](https://fatfreeframework.com)'s singleton object. *Hive* is f3's global storage. *f3* methods are avaliable everywhere, generated variables are stored in *Hive*.
 + *Ecc* is the framework that runs calculation classes. `Ec()` class for Eurocode specific methods and `Blc()` class for GUI extend the `Ec()` general class.
 + [AsciiMath](http://asciimath.org/) *math expressions* are compiled by [MathJax](https://www.mathjax.org), use with code tags anywhere (needs to be escaped in Markdown regions). e.g. \\`x=1\\`.
 + HTML tags are cleaned generally.
 + [Markdown](https://en.wikipedia.org/wiki/Markdown) is enabled generally.
 + `$help` parameter creates small muted text block generally. Markdown is enabled, renders only: `br, em, i, strong, b, a, code` tags.
 + Toggled GUI elements are not printed.
-+ Regions always need two line of code using the same identifier name: starter and finsher blocks (marked by 0 and 1)
++ Regions always need two lines of code using the same identifier name: starter and end blocks (marked in method name by 0 and 1)
 
 ### *input* block
 
@@ -174,6 +174,12 @@ Hidden by default notes and foot-notes for users.
 Notes:
 
 + `$note` may contain math expression.
+
+### *pre* block
+
+Preformatted text block.
+
+`$blc->pre($text)`
 
 ### *img* block
 
@@ -309,6 +315,54 @@ Generates identical regions with title.
 Notes:
 
 + `$md` is Markdown text
+
+## Eurocode methods
+
+For Eurocode methods call `Ec()` class first.
+
+### Globals
+
+Call predefined global from *Hive*: e.g. `$f3->__GG`
+
+Available globals:
+
++ `__GG` \`gamma_(G) = 1.35\`
++ `__GQ` \`gamma_(Q) = 1.5\`
++ `__GM0` \`gamma_(M0) = 1.0\`
++ `__GM1` \`gamma_(M1) = 1.0\`
++ `__GM2` \`gamma_(M2) = 1.25\`
++ `__GM3` \`gamma_(M3) = 1.25\`
++ `__GM3ser` \`gamma_(M3,ser) = 1.1\`
++ `__GM6ser` \`gamma_(M6,ser) = 1.0\`
++ `__Gc` \`gamma_(c) = 1.5\`
++ `__Gs` \`gamma_(s) = 1.15\`
++ `__GS` \`gamma_(S) = 1.15\`
++ `__GcA` \`gamma_(c,A) = 1.2\`
++ `__GSA` \`gamma_(S,A) = 1.0\`
+
+### *data()*, *boltDb()* and *matDb()* methods and databases
+
+Use `$ec->data($dbName)` method. Returns associative array.
+
+Available database names:
+
++ `$dbName = 'bolt'` for bolts or use `$ec->boltDb()` method directly
++ `$dbName = 'mat'` for materials or use `$ec->matDb()` method directly
+
+For datas see Annex of this documentation. Note that `data()` method returns array not JSON formatted data as in Annex.
+
+### *matProp()* and *boltProp()* methods
+
+Returns material or bolt property.
+
+`$ec->matProp($name, $property)`
+
+`$ec->boltProp($name, $property)`
+
+Notes:
+
++ `$name` is material/bolt ID in material DB e.g. `'S235'` `'8.8'`, `'M12'`
++ `$property` is column name in DB e.g. `'fy'` `'fctk005'`, `'d0'`
 
 ## Installation
 
