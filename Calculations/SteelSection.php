@@ -18,6 +18,12 @@ Class SteelSection extends \Ecc
         $blc->input('A', 'Húzási keresztmetszet', 1206, '`mm^2`');
         $blc->input('A_net', '`A_(n\et):` Lyukkal gyengített keresztmetszet', 1206, '`mm^2`');
 
+        $blc->region0('r0', 'Nettó keresztmetszet számítás');
+            $blc->input('n', 'Csavarok száma', 1, '');
+            $ec->boltList('btName');
+            $blc->def('A_net_calculated', $f3->_A - $f3->_n*$ec->boltProp($f3->_btName, 'd0')*$f3->_t, 'A_(n\et, calcu\lated) = A - n*d_0*t = %% [mm^2]', 'Számított nettó keresztmetszet');
+        $blc->region1('r0');
+
         $blc->h1('Nyírt keresztmetszet');
         $blc->note('[Szürke 2007: 5.1.5 41.o]');
         $blc->success0('v');
