@@ -91,7 +91,7 @@ Class Anchor extends \Ecc
 
         $blc->def('FVRd', $f3->_alpha_s*$f3->_f/1000, 'F_(V,Rd) = alpha_s*f = %% [kN]', 'Nyírási csap ellenállása');
         $blc->success0('s0');
-            $blc->def('FVRdS', $f3->_FVRd*$f3->_n, 'F_(V,Rd,Summa) = F_(V,Rd)*n = %% [kN]', 'Nyírási csapok ellenállása');
+            $blc->def('FVRdS', $f3->_FVRd*$f3->_n, 'F_(V,Rd,sum) = F_(V,Rd)*n = %% [kN]', 'Nyírási csapok ellenállása');
             $blc->label($f3->_FVEd/$f3->_FVRdS, 'Kihasználtság');
         $blc->success1('s0');
     }
