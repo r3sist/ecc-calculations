@@ -2,19 +2,33 @@
 
 **Native classes of Eurocode based calculations for structural design on [structure.hu](https://structure.hu)**
 
-(c) 2018 Bence VÁNKOS
+(c) 2018 Bence VÁNKOS &nbsp;&nbsp;&nbsp;&nbsp; ![email](https://structure.hu/img/emailB.png)
 
-![email](https://structure.hu/img/emailB.png) | [structure.hu](https://structure.hu)
-
-+ **Repository:** Open Source [bitbucket/resist/ecc-calculations](https://bitbucket.org/resist/ecc-calculations)
++ **Repository:** [bitbucket/resist/ecc-calculations](https://bitbucket.org/resist/ecc-calculations)
 + **Issue tracker:** [bitbucket/resist/ecc-calculations/issues](https://bitbucket.org/resist/ecc-calculations/issues)
 + **Changelog:** - [bitbucket/resist/ecc-calculations/commits](https://bitbucket.org/resist/ecc-calculations/commits)
 + **License:** CDDL-1.0 Copyright 2018 Bence VÁNKOS
-+ Code quality: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c7eb0b4d706e4dafbd3cbe44564c2718)](https://www.codacy.com/app/resist/ecc-calculations?utm_source=resist@bitbucket.org&amp;utm_medium=referral&amp;utm_content=resist/ecc-calculations&amp;utm_campaign=Badge_Grade) [![CodeFactor](https://www.codefactor.io/repository/bitbucket/resist/ecc-calculations/badge)](https://www.codefactor.io/repository/bitbucket/resist/ecc-calculations) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/b/resist/ecc-calculations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/b/resist/ecc-calculations/?branch=master)
 
 --- 
 
+## General notes for development
+
++ ***Ecc*** (actually *Ecc()* class) is the framework that runs, renders, updates etc. calculations (in fact the calculation classes' *calc()* method).
++ *Ecc* (and whole website) uses [Fatfree Framework](https://fatfreeframework.com) as engine, it's autoloaded and Fatfree singleton object is available everywhere globally as **`$f3`**. *Hive* is *f3*'s global storage.
++ ***Blc()*** class is part of the *Ecc* framework and it's supposed to render GUI elements like inputs, definitions and other blocks. Calculation methods are built up from these blocks.
++ ***Ec()*** class contains Eurocode specific methods, datas or predefined GUI elements. Using this class is optional. ***EcNSEN()*** is similar to *Ec()* but contains Eurocode Norwegian National Annex specific methods. The two classes can be used parallelly.
++ [AsciiMath](http://asciimath.org/) **math expressions** are compiled by [MathJax](https://www.mathjax.org), write them between with code marks anywhere (needs to be escaped in Markdown regions). e.g. \\`x=1\\`.
++ HTML tags are cleaned generally.
++ [Markdown](https://en.wikipedia.org/wiki/Markdown) is enabled generally.
++ Toggled GUI elements are not printed.
++ Regions always need two lines of code using the same identifier name: starter and end blocks (marked in method name by 0 and 1)
++ `$help` parameter creates small muted text block generally. Markdown is enabled, renders only: `br, em, i, strong, b, a, code` tags.
+
+---
+
 ## Initialization / Boilerplate calculation class
+
+Example of a calculation class
 
 ```php
 
@@ -23,38 +37,33 @@ namespace Calculation;
 // This class will extend Ecc framework
 Class Boilerplate extends \Ecc
 {
-    // This function will be called by Ecc, uses Fatfree Framework's singleton
+    // This function will be called by Ecc, parameter is Fatfree Framework's singleton
     public function calc($f3)
     {
         // Load Eurocode
         $ec = \Ec::instance();
         
-        // Load Ecc framework
+        // Load Blc
         $blc = \Blc::instance();
 
-        // Business logic via Ecc
+        // Business logic via Blc
         $blc->txt('Hello World!');
         
         // Custom PHP code
         if (1 == 1) {
             $f3->var = 1;
         }
+        
+        // Business logic with mixed Blc and custom code
+        $blc->def('x', $f3->var + 1, 'x = %%', 'Súgó');
+        $blc->txt($f3->_x, 'Autosaved x variable in Hive');
     }
 }
 ```
 
+---
+
 ## Ecc framework blocks and regions
-
-### General notes
-
-+ `f3` is reference of [Fatfree Framework](https://fatfreeframework.com)'s singleton object. *Hive* is f3's global storage. *f3* methods are avaliable everywhere, generated variables are stored in *Hive*.
-+ *Ecc* is the framework that runs calculation classes. `Ec()` class for Eurocode specific methods and `Blc()` class for GUI extend the `Ec()` general class.
-+ [AsciiMath](http://asciimath.org/) *math expressions* are compiled by [MathJax](https://www.mathjax.org), use with code tags anywhere (needs to be escaped in Markdown regions). e.g. \\`x=1\\`.
-+ HTML tags are cleaned generally.
-+ [Markdown](https://en.wikipedia.org/wiki/Markdown) is enabled generally.
-+ `$help` parameter creates small muted text block generally. Markdown is enabled, renders only: `br, em, i, strong, b, a, code` tags.
-+ Toggled GUI elements are not printed.
-+ Regions always need two lines of code using the same identifier name: starter and end blocks (marked in method name by 0 and 1)
 
 ### *input* block
 
@@ -316,7 +325,9 @@ Notes:
 
 + `$md` is Markdown text
 
-## Eurocode methods
+---
+
+## *Ec()* Eurocode class
 
 For Eurocode methods call `Ec()` class first.
 
@@ -342,14 +353,17 @@ Available globals:
 
 ### *data()*, *boltDb()* and *matDb()* methods and databases
 
-Use `$ec->data($dbName)` method. Returns associative array.
+`$ec->data($dbName)` method returns associative array as DB.
 
 Available database names:
 
 + `$dbName = 'bolt'` for bolts or use `$ec->boltDb()` method directly
 + `$dbName = 'mat'` for materials or use `$ec->matDb()` method directly
 
-For datas see Annex of this documentation. Note that `data()` method returns array not JSON formatted data as in Annex.
+Notes:
+
++ For datas see Annex of this documentation. Note that `data()` method returns array not JSON formatted data as in Annex.
++ Returned measure-of-units are represented in databases (last record)
 
 ### *matProp()* and *boltProp()* methods
 
@@ -361,9 +375,76 @@ Returns material or bolt property.
 
 Notes:
 
-+ `$name` is material/bolt ID in material DB e.g. `'S235'` `'8.8'`, `'M12'`
++ `$name` is material/bolt ID name in DB 
++ For materials use name schemas like `'S235'` `'8.8'` `'C60/75'` `'B500'`
++ For bolts use name schema like `'M12'`
 + `$property` is column name in DB e.g. `'fy'` `'fctk005'`, `'d0'`
++ Returned measure-of-units are represented in databases (last record)
++ For exact IDs and properties see Annex of this documentation.
 
-## Installation
+### *fy()* and *fu()* methods
 
-Via composer: `"resist/ecc-calculations": "dev-master"`
+`$ec->fy($matName, $t)` returns yield strength of steel.
+
+`$ec->fu($matName, $t)` returns ultimate strength of steel.
+
+Notes:
+
++ `$matName` is material ID in material DB like `'S235'` `'8.8'` `'C60/75'` `'B500'`
++ `$t` is plate thickness
++ Reduced strengths of thick plates are considered if \`t >= 40 mm\`
++ For rebars `fu` returns \`0\`
+
+### *matList()* and *boltList()* methods
+
+Renders *lst* block with available materials/bolts.
+
+`$ec->matList([$matName = 'mat', $default = 'S235', $title = 'Anyagminőség'])`
+
+`$ec->boltList($name = 'btName', $default = 'M16', $title = 'Csavar átmérő')`
+
+### *FtRd()* method
+
+`$ec->FtRd($btName, $btMat)`
+
+### *BpRd()* method
+
+`$ec->BpRd($btName, $stMat, $t)`
+
+### *FvRd()* method
+
+`$ec->FvRd($btName, $btMat, $n, [$As = 0])`
+
+### *FbRd()* method
+
+`$ec->FbRd($btName, $btMat, $stMat, $ep1, $ep2, $t, $inner)`
+
+### *VplRd()* method
+
+`$ec->VplRd($Av, $matName, $t)`
+
+### *NtRd()* method
+
+`$ec->NtRd($A, $Anet, $matName, $t)`
+
+### *NuRd()* method
+
+`$ec->NuRd($Anet, $matName, $t)`
+
+### *NplRd()* method
+
+`$ec->NplRd($A, $matName, $t)`
+
+### *qpz()* method
+
+`$ec->qpz($z, $terrainCat)`
+
+---
+
+## EcNSEN() class - Norwegian National Annnex
+
+For NS-EN Eurocode methods call `EcNSEN()` class first.
+
+### *qpzNSEN()* method
+
+`$ecNSEN->qpzNSEN($z, $terrainCat, $cAlt, $c0z, $vb0)`
