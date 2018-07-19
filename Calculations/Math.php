@@ -9,6 +9,7 @@ Class Math extends \Ecc
     {
         $ec = \Ec::instance();
         $blc = \Blc::instance();
+        $lava = new \Khill\Lavacharts\Lavacharts;
 
         $blc->h1('Lejtés');
         $blc->input('slope', '``Lejtés', '3', '% vagy °', '');
@@ -32,5 +33,18 @@ Class Math extends \Ecc
             $blc->input('x', '', '3', '', '');
             $blc->def('y', (($f3->_x - $f3->_x1)*($f3->_y2 - $f3->_y1)/($f3->_x2 - $f3->_x1)) + $f3->_y1, 'y = %%');
         $blc->info1('i0');
+
+        $dataTable1 = $lava->DataTable();
+        $dataTable1->addNumberColumn('x');
+        $dataTable1->addNumberColumn('y');
+        $dataTable1->addRow([$f3->_x1, $f3->_y1]);
+        $dataTable1->addRow([$f3->_x2, $f3->_y2]);
+        $dataTable2 = $lava->DataTable();
+        $dataTable2->addNumberColumn('x');
+        $dataTable2->addNumberColumn('y');
+        $dataTable2->addRow([$f3->_x, $f3->_y]);
+        $tables = new \Khill\Lavacharts\DataTables\JoinedDataTable($dataTable1,$dataTable2);
+        $lava->ScatterChart('3', $tables, ['legend' => ['position' => 'none'],'title' => 'Lineáris interpoláció',]);
+        $blc->chart('ScatterChart', '3', $lava);
     }
 }
