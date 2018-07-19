@@ -13,7 +13,7 @@
 
 ## General notes for development
 
-+ ***Ecc*** (actually *Ecc()* class) is the framework that runs, renders, updates etc. calculations (in fact the calculation classes' *calc()* method).
++ ***Ecc*** (actually *Ecc()* class) is the PHP framework that runs, renders, updates etc. calculations (in fact the calculation classes' *calc()* method).
 + *Ecc* (and whole website) uses [Fatfree Framework](https://fatfreeframework.com) as engine, it's autoloaded and Fatfree singleton object is available everywhere globally as **`$f3`**. *Hive* is *f3*'s global storage.
 + ***Blc()*** class is part of the *Ecc* framework and it's supposed to render GUI elements like inputs, definitions and other blocks. Calculation methods are built up from these blocks.
 + ***Ec()*** class contains Eurocode specific methods, datas or predefined GUI elements. Using this class is optional. ***EcNSEN()*** is similar to *Ec()* but contains Eurocode Norwegian National Annex specific methods. The two classes can be used parallelly.
@@ -45,6 +45,9 @@ Class Boilerplate extends \Ecc
         
         // Load Blc
         $blc = \Blc::instance();
+        
+        // Load LavaChart if needed
+        $lava = new \Khill\Lavacharts\Lavacharts;
 
         // Business logic via Blc
         $blc->txt('Hello World!');
@@ -148,7 +151,7 @@ Simple math text for mathematical expressions, compiled by MathJax.
 
 Notes: 
 
-+ In `math` define expression without code marks \` \`
++ In `$math` define expression without code marks \` \`
 + *%%%* adds vertical spacing.
 + This block does not defines variable.
 
