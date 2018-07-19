@@ -235,6 +235,16 @@ $textArray = array(
 
 + Coordinates: x/y 0/0: canvas's top left corner, x is horizontal distance; text is placed by it's bottom left corner
 
+### Charts
+
+#### JSXGraph
+
+`TODOC` see Annex/Snippets
+
+#### Google Charts / LavaCharts
+
+`TODOC` see Annex/Snippets
+
 ### *label* block
 
 Creates label.
