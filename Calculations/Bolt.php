@@ -121,5 +121,6 @@ Class Bolt extends \Ecc
         $blc->label($f3->_U_s_tv, 'Interakciós kihasználtság');
 
         $blc->h2('Csoportos kiszakadás');
+        $blc->md('`TODO`');
     }
 }

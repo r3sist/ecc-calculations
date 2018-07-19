@@ -608,7 +608,11 @@ Class Wind extends \Ecc
         $blc->write('vendor/resist/ecc-calculations/canvas/wind3.jpg', array(), 'Szabadon álló fal');
 
         $blc->h1('Egyedi szélteher');
+        $blc->md('`TODO`');
+
         $blc->h1('Nyeregtetők');
+        $blc->md('`TODO`');
+
         $blc->txt('', '[*[Terhek és hatások]*](https://structure.hu/silent/book/DeakGyorgyErdelyiTamasFernezelyiSandorKollarLaszloVisnovitzGyorgy-TerhekeshatasokTervezesazEurocodealapjan-2006.pdf)');
     }
 }
