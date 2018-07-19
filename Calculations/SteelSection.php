@@ -10,19 +10,35 @@ Class SteelSection extends \Ecc
         $ec = \Ec::instance();
         $blc = \Blc::instance();
 
+        $ec->sectionFamilyList();
+        $ec->sectionList($f3->_sectionFamily);
+        $ec->sectionData($f3->_sectionName, true);
+
         $ec->matList();
         $blc->input('t', 'Lemezvastagság', 10, '`mm`');
+        $blc->txt($f3->_sectionName.' legnagyobb lemezvastagsága: `t_(max) = '. 10*max($f3->_sectionData['tf'], $f3->_sectionData['tw']).' [mm]`');
         $blc->def('fy',$ec->fy($f3->_mat, $f3->_t),'f_y=%%[MPa]', 'Folyáshatár');
         $blc->def('fu',$ec->fu($f3->_mat, $f3->_t),'f_u=%%[MPa]', 'Szakítószilárdság');
-        $blc->input('A_v', 'Nyírási keresztmetszet', 1206, '`mm^2`');
-        $blc->input('A', 'Húzási keresztmetszet', 1206, '`mm^2`');
-        $blc->input('A_net', '`A_(n\et):` Lyukkal gyengített keresztmetszet', 1206, '`mm^2`');
+
+        $blc->region0('rEgyedi', 'Egyedi keresztmetszeti területek megadása');
+            $blc->input('A_v', 'Egyedi nyírási keresztmetszet', 0, '`mm^2`', 'Az itt megadott nemnulla érték felülírja a betöltött szelvény adatokat!');
+            $blc->input('A', 'Egyedi húzási keresztmetszet', 0, '`mm^2`', 'Az itt megadott nemnulla érték felülírja a betöltött szelvény adatokat!');
+        $blc->region1('rEgyedi');
+
+        if ($f3->_A_v == 0) {
+            $blc->def('A_v', $f3->_sectionData['Az']*100, 'A_v = A_(z,'.$f3->_sectionName.') = %% [mm^2]', 'Nyírási keresztmetszet');
+        }
+
+        if ($f3->_A == 0) {
+            $blc->def('A', $f3->_sectionData['Ax']*100, 'A = A_(x,'.$f3->_sectionName.') = %% [mm^2]', 'Húzási keresztmetszet');
+        }
 
         $blc->region0('r0', 'Nettó keresztmetszet számítás');
             $blc->input('n', 'Csavarok száma', 1, '');
             $ec->boltList('btName');
             $blc->def('A_net_calculated', $f3->_A - $f3->_n*$ec->boltProp($f3->_btName, 'd0')*$f3->_t, 'A_(n\et, calcu\lated) = A - n*d_0*t = %% [mm^2]', 'Számított nettó keresztmetszet');
         $blc->region1('r0');
+        $blc->input('A_net', '`A_(n\et):` Lyukkal gyengített keresztmetszet', 1206, '`mm^2`');
 
         $blc->h1('Nyírt keresztmetszet');
         $blc->note('[Szürke 2007: 5.1.5 41.o]');
