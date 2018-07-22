@@ -1,3 +1,44 @@
+# Használati útmutató
+
+Az ***Ecc*** egy webes számítási dokumentumokat kezelő szerveroldali keretrendszer. 
+
+Egy dokumentum beviteli mező, kép, szöveg, matematikai kifejezés stb. blokkokból épül fel. A rendszer része egy Eurocode alapú függvény- és adatgyűjtemény is.
+
+A dokumentumok forráskódja megtekinthető: [bitbucket/resist/ecc-calculations](https://bitbucket.org/resist/ecc-calculations/src) 
+
+## Számítások futtatása
+
+Dokumentumvezérlő *Futtatás* parancsára vagy *Enter* billentyűparancsra a számítás lefut. Automatikusan lefut továbbá bizonyos beviteli mezők változatásakor.
+
+## Számítások mentése szerverre
+
+A módosított beviteli mezők elmenthetők a szerverre a Dokumentumvezérlő *Mentés szerverre* parancsára vagy az *s* billentyűparancsra.
+
+A rendszer a legfelső sorba (vízszintes vonal a cím alatt) írt *Projekt néven* fogja elmenteni a paramétereket.
+
+A mentés a bejelentkezett felhasználónak lesz csak elérhető. Mentés betölthető vagy törölhető a [kezdőlapi](https://structure.hu/calc) listázásnál.
+
+## Nyomtatás, PDF mentés
+
+Nyomtatás és PDF mentés elérhető a dokumentumvezérlőből. 
+
+Az értesítési- és összecsukott blokkok (összecsukott fejezetek, régiók, megjegyzések) nem kerülnek nyomtatásra.
+
+A PDF mentés szerver oldalon történik, így a beviteli mezők helyettesítésre kerülnek. 
+`Ismert hiba:` nem veszi figyelembe a nyitható blokkok állapotát.
+
+## Jegyzetek
+
+Megjegyzések a számításhoz - előhívható a dokumentumvezérlőből vagy a *n* billetyűparancsra.
+
+## Pecsét
+
+Dokumentumvezérlőből vagy *p* billentyűparancsra előhívható tervpecsét mentett dokumentumokhoz. 
+
+---
+
+---
+
 # Ecc Calculations
 
 **Native classes of Eurocode based calculations for structural design on [structure.hu](https://structure.hu)**
@@ -15,7 +56,7 @@
 
 + ***Ecc*** (actually *Ecc()* class) is the PHP framework that runs, renders, updates etc. calculations (in fact the calculation classes' *calc()* method).
 + *Ecc* (and whole website) uses [Fatfree Framework](https://fatfreeframework.com) as engine, it's autoloaded and Fatfree singleton object is available everywhere globally as **`$f3`**. *Hive* is *f3*'s global storage.
-+ ***Blc()*** class is part of the *Ecc* framework and it's supposed to render GUI elements like inputs, definitions and other blocks. Calculation methods are built up from these blocks.
++ ***Blc()*** class is part of the *Ecc* framework and it's supposed to render GUI elements like inputs, definitions and other blocks. Calculation methods are built up from these blocks, but may contain vanilla PHP code too.
 + ***Ec()*** class contains Eurocode specific methods, datas or predefined GUI elements. Using this class is optional. ***EcNSEN()*** is similar to *Ec()* but contains Eurocode Norwegian National Annex specific methods. The two classes can be used parallelly.
 + [AsciiMath](http://asciimath.org/) **math expressions** are compiled by [MathJax](https://www.mathjax.org), write them between with code marks anywhere (needs to be escaped in Markdown regions). e.g. \\`x=1\\`.
 + HTML tags are cleaned generally.
@@ -153,7 +194,7 @@ Notes:
 
 + In `$math` define expression without code marks \` \`
 + *%%%* adds vertical spacing.
-+ This block does not defines variable.
++ This block does not define variable.
 
 ### *txt* block
 
@@ -264,16 +305,15 @@ General region that can be toggled.
 
 
 ```php
-$blc->region0($name, [$help]) // for start
+$blc->region0($name, [$help = 'Számítások']) // for start
     // some blocks
-$blc->region1($name, [$help]) // for end
+$blc->region1($name) // for end
 ```
 
 Notes:
 
-+ `$name` for start and end blocks has to be the same
++ `$name` for start and end blocks have to be the same
 + Hidden regions are not printed
-+ By default `$title = 'Számítások'`
 
 ### *success*, *danger*, *info* regions
 
@@ -296,7 +336,7 @@ $blc->info1($name) // for end
 
 Notes:
 
-+ `$name` for start and end blocks has to be the same
++ `$name` for start and end blocks have to be the same
 + *success* region is green, *danger* is red, *info* is blue
 
 ### *table* block
@@ -309,7 +349,7 @@ Notes:
 
 + `$mainKey` is 1/1 (top left corner) cell's text
 + `$help` is table caption
-+ `$array` is associative array. Outer array contains rows, inner arrays contain columns. Outer array keys are row titles (first column), inner arrays' keys are column titles (means these are repeated in every sub-array!). e.g.: 
++ `$array` is a multidimensional associative array. Outer array contains rows, inner arrays contain columns. Outer array keys are row titles (first column), inner arrays' keys are column titles (means these are repeated in every sub-array!). e.g.: 
 
 ```php
 $table0 = array(
@@ -415,6 +455,42 @@ Renders *lst* block with available materials/bolts.
 `$ec->matList([$matName = 'mat', $default = 'S235', $title = 'Anyagminőség'])`
 
 `$ec->boltList($name = 'btName', $default = 'M16', $title = 'Csavar átmérő')`
+
+### sectionFamilyList() method
+
+Renders *lst* block for steel section families and creates variable for selected one.
+
+`sectionFamilyList([$variableName = 'sectionFamily', $title = 'Szelvény család', $default = 'HEA'])`
+
+Notes: 
+
++ Selected (or default) section family is stored in *Hive*, variable name is defined by `$variableName`, e.g. `$f3->_variableName`
++ List is hardcoded
+
+### sectionList() method
+
+Renders *lst* block with list of section is actual family and creates variable for selected one.
+
+`sectionList([$familyName = 'HEA', $variableName = 'sectionName', $title = 'Szelvény név', $default = 'HEA200'])`
+
+Notes: 
+
++ Selected (or default) section is stored in *Hive*, variable name is defined by `$variableName`, e.g. `$f3->_variableName`
++ `$familyName` is the name of section family/group, e.g. `'HEA'`
++ Sections for family are queried from database realtime
+
+### sectionData() method
+
+Save section data associative array in *Hive*.
+
+`sectionData($sectionName, [$renderTable = false, $arrayName = 'sectionData'])`
+
+Notes:
+
++ `$sectionName` is the name of queried section, e.g. `'HEA120'`
++ If `$renderTable` is *true*, data table is rendered for output
++ `$arrayName` is created variable in *Hive*, e.g. `$f3->_arrayName`, `$f3->_arrayName['Iy']`
++ Array keys of values: *G	h	b	tw	tf	r1	r2	r3	Ax	Ay	Az	Ix	Iy	Iz	Iyz	I1	I2	Iw	W1elt	W1elb	W2elt	W2elb	W1pl	W2pl	i_y	i_z	yG	zG	ys	zs	fp*. For more information and units check [https://structure.hu/profil](https://structure.hu/profil)
 
 ### *FtRd()* method
 
