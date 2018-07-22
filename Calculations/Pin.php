@@ -10,6 +10,8 @@ Class Pin extends \Ecc
         $ec = \Ec::instance();
         $blc = \Blc::instance();
 
+        $blc->img('https://structure.hu/ecc/pin0.jpg');
+
         $blc->h1('Saru erők', '');
         $blc->input('REdz', '`R_(Ed,z)` Függőleges reakcióerő', 950, 'kN', '');
         $blc->input('REdx', '`R_(Ed,x)` Hídtengely irányú vízszintes reakcióerő', 10, 'kN', '');
