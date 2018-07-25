@@ -10,6 +10,8 @@ Class Readme extends \Ecc
         $blc = \Blc::instance();
         $ec = \Ec::instance();
 
+        $blc->toc();
+
         $text1 = file_get_contents($f3->BASE.'vendor/resist/ecc-calculations/README.md');
         $blc->md($text1);
 

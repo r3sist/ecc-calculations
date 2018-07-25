@@ -22,10 +22,9 @@ A mentés a bejelentkezett felhasználónak lesz csak elérhető. Mentés betöl
 
 Nyomtatás és PDF mentés elérhető a dokumentumvezérlőből. 
 
-Az értesítési- és összecsukott blokkok (összecsukott fejezetek, régiók, megjegyzések) nem kerülnek nyomtatásra.
+Az értesítési-, tartalomjegyzék- és összecsukott blokkok (összecsukott fejezetek, régiók, megjegyzések) nem kerülnek nyomtatásra.
 
-A PDF mentés szerver oldalon történik, így a beviteli mezők helyettesítésre kerülnek. 
-`Ismert hiba:` nem veszi figyelembe a nyitható blokkok állapotát.
+A PDF mentés szerver oldalon történik, így egyes blokkok (pl. beviteli mezők) helyettesítésre kerülnek. 
 
 ## Jegyzetek
 
@@ -34,6 +33,14 @@ Megjegyzések a számításhoz - előhívható a dokumentumvezérlőből vagy a 
 ## Pecsét
 
 Dokumentumvezérlőből vagy *p* billentyűparancsra előhívható tervpecsét mentett dokumentumokhoz. 
+
+## Billentyűparancsok
+
++ *Enter*: futtatás
++ *n*: jegyzetek mutatása/rejtése
++ *s*: dokuemntum mentése szerverre
++ *p*: pecsét mutatása
++ *t* lap teteje
 
 ---
 
@@ -377,6 +384,12 @@ Generates identical regions with title.
 Notes:
 
 + `$md` is Markdown text
+
+### toc() block
+
+Generates Table of Contents  - numbered list by javascript from heading blocks.
+
+`$blc->toc()`
 
 ---
 
