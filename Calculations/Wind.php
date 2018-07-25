@@ -10,6 +10,8 @@ Class Wind extends \Ecc
         $ec = \Ec::instance();
         $blc = \Blc::instance();
 
+        $blc->toc();
+
         $blc->input('h', 'Épület magasság', 10, 'm');
         $blc->input('b', 'Épület hossz', 20, 'm');
         $blc->input('d', 'Épület szélesség', 12, 'm');
@@ -57,8 +59,8 @@ Class Wind extends \Ecc
         }
         $blc->success1('success0');
 
-        $blc->info0('info0');
         $blc->h1('Eredmény számítás');
+        $blc->info0('info0');
         $blc->lst('wind', array('Szívás' => '-', 'Nyomás' => '+'), 'Szél eset');
         if ($f3->_wind == '-') {
             $ci = $f3->_cm;
