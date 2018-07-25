@@ -10,6 +10,8 @@ Class Pin extends \Ecc
         $ec = \Ec::instance();
         $blc = \Blc::instance();
 
+        $blc->toc();
+
         $blc->img('https://structure.hu/ecc/pin0.jpg');
 
         $blc->h1('Saru erők', '');
