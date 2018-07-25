@@ -10,6 +10,8 @@ Class Bolt extends \Ecc
         $ec = \Ec::instance();
         $blc = \Blc::instance();
 
+        $blc->toc();
+
         $ec->boltList('btName');
         $ec->matList('btMat', '8.8', 'Csavar anyag');
         $ec->matList('stMat', 'S235', 'Lemez anyag');
@@ -94,7 +96,7 @@ Class Bolt extends \Ecc
             $blc->def('p2_opt', number_format(3*$f3->_d_0, 0),'p_(2,opt) = 3*d_0 = %% [mm]', 'Belső csvavar távolság (csavarképre merőleges)');
         $blc->info1('r3');
 
-        $blc->h2('Feszített csavarok nyírásra');
+        $blc->h1('Feszített csavarok nyírásra');
         if ($f3->_btMat != '10.9') {
             $blc->label('no', 'Nem 10.9 csavar');
         }
@@ -120,7 +122,7 @@ Class Bolt extends \Ecc
         $f3->_U_s_tv = $f3->_V/$f3->_F_s_tv_Rd;
         $blc->label($f3->_U_s_tv, 'Interakciós kihasználtság');
 
-        $blc->h2('Csoportos kiszakadás');
+        $blc->h1('Csoportos kiszakadás');
         $blc->md('`TODO`');
     }
 }
