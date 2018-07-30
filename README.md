@@ -537,9 +537,21 @@ Notes:
 
 `$ec->NplRd($A, $matName, $t)`
 
+### *NcRd()* method
+
+`$ec->NcRd($A, $fy)`
+
+### *McRd() method
+
+`$ec->McRd($W, $fy)`
+
 ### *qpz()* method
 
 `$ec->qpz($z, $terrainCat)`
+
+### *linterp* method
+
+`$ec->linterp($x1, $y1, $x2, $y2, $x)`
 
 ---
 
