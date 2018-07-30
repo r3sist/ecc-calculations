@@ -93,11 +93,15 @@ Class Pin extends \Ecc
 
         $blc->h1('Nyírás és hajlítás interakciója');
         $blc->def('U70', pow($f3->_MbEd/$f3->_MbRdel, 2) + pow($f3->_REd/$f3->_FVRdel, 2), '%%');
+        $blc->md('`TODO`');
 
         $blc->h1('Egyszerűsített varratellenőrzések');
+        $blc->md('`TODO`');
 
         $blc->h1('Szerkesztési szabályok');
+        $blc->md('`TODO`');
 
         $blc->h1('Bebetonozott tőcsavarok ellenőrzése');
+        $blc->md('`TODO`');
     }
 }
