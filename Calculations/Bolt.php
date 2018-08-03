@@ -17,18 +17,20 @@ Class Bolt extends \Ecc
         $ec->matList('stMat', 'S235', 'Lemez anyag');
         $blc->input('t', 'Kisebbik lemez vastagság', 10, 'mm', '');
         $blc->input('n', 'Nyírási síkok száma', 1, '', '');
-        $blc->input('N', '`F_(t.Ed)` Húzóerő', 20, 'kN', '');
-        $blc->input('V', '`F_(v.Ed)` Nyíróerő', 30, 'kN', '');
+        $blc->input('N', '`F_(t.Ed)` Húzóerő egy csavarra', 20, 'kN', '');
+        $blc->input('V', '`F_(v.Ed)` Nyíróerő egy csavarra', 30, 'kN', '');
 
         $blc->region0('r0', 'Jellemzők');
             $blc->math('btMat = '.$f3->_btMat);
             $blc->def('f_yb', $ec->matProp($f3->_btMat, 'fy'),'f_(y,b) = %% [MPa]', 'Csavar folyáshatár');
             $blc->def('f_ub', $ec->matProp($f3->_btMat, 'fu'),'f_(u,b) = %% [MPa]', 'Csavar szakítószilárdság');
             $blc->def('d_0', $ec->boltProp($f3->_btName, 'd0'),'d_0 = %% [mm]', 'Lyuk átmérő');
+            $f3->_d = $ec->boltProp($f3->_btName, 'd');
             $blc->def('A', $ec->boltProp($f3->_btName, 'A'),'A = %% [mm^2]', 'Csavar keresztmetszeti terület');
             $blc->def('A_s', $ec->boltProp($f3->_btName, 'As'),'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
             $blc->math('stMat = '.$f3->_stMat);
             $blc->def('f_u', $ec->fu($f3->_stMat, $f3->_t),'f_u = %% [MPa]', 'Lemez szakítószilárdság');
+            $f3->_f_y = $ec->fy($f3->_stMat, $f3->_t);
         $blc->region1('r0');
 
         $blc->region0('r1', 'Csavar adatbázis');
@@ -42,12 +44,20 @@ Class Bolt extends \Ecc
         $blc->label($f3->_N/$f3->_B_pRd, 'Kigombolódási kihasználtság');
 
         $blc->h1('Egy csavar nyírási- és palástnyomási ellenállása', '***A*** osztály: nem feszített, nyírt csavar');
-        $blc->boo('inner', 'Belső csavar', 1, '');
+        $blc->boo('inner', 'Belső csavar', 1, '\`p_1, p_2\` figyelembe vétele');
         $blc->input('e1', 'Peremtávolság (csavarképpel párhuzamos)', 50, 'mm', '');
         $blc->input('e2', 'Peremtávolság (csavarképre merőleges)', 50, 'mm', '');
+        $blc->input('p1', 'Csavartávolság (csavarképpel párhuzamos)', 50, 'mm', '');
+        $blc->input('p2', 'Csavartávolság (csavarképre merőleges)', 50, 'mm', '');
+        $ep1 = $f3->_e1;
+        $ep2 = $f3->_e2;
+        if ($f3->_inner) {
+            $ep1 = $f3->_p1;
+            $ep2 = $f3->_p2;
+        }
         $blc->def('F_vRd', $ec->FvRd($f3->_btName, $f3->_btMat, $f3->_n),'F_(v,Rd) = %% [kN]', 'Csavar nyírási ellenállása');
         $blc->label($f3->_V/$f3->_F_vRd, 'Nyírási kihasználtság');
-        $blc->def('F_bRd', $ec->FbRd($f3->_btName, $f3->_btMat, $f3->_stMat, $f3->_e1, $f3->_e2, $f3->_t, $f3->_inner),'F_(b,Rd) = %% [kN]', 'Csavar palástnyomási ellenállása');
+        $blc->def('F_bRd', $ec->FbRd($f3->_btName, $f3->_btMat, $f3->_stMat, $ep1, $ep2, $f3->_t, $f3->_inner),'F_(b,Rd) = %% [kN]', 'Csavar palástnyomási ellenállása');
         $blc->label($f3->_V/$f3->_F_bRd, 'Palástnyomási kihasználtság');
 
         $blc->region0('r2', '*k.1* és *&alpha;.b* tényezők');
@@ -99,30 +109,102 @@ Class Bolt extends \Ecc
         $blc->h1('Feszített csavarok nyírásra');
         if ($f3->_btMat != '10.9') {
             $blc->label('no', 'Nem 10.9 csavar');
+        } else {
+            $blc->input('n_s', 'Súrlódó felületek száma', 1, '', '');
+            $blc->input('mu', 'Súrlódási tényező', 0.2, '', '**Súrlódási tényezők:** **0.5** *Sörétezett vagy szemcsefújt festetlen felület*, **0.4** *Sörétezett vagy szemcsefújt festett felület*, **0.3** *Drótkefézett vagy lángszórással tisztított felület*, **0.2** *Kezeletlen felület*');
+            $blc->input('F_Ed_ser', '`F_(Ed,ser):` Nyíróerő használhatósági határállapotban', 10, 'kN', '');
+
+            $blc->md('***B*** osztályú nyírt csavarok használhatósági határállapotig működnek feszített csavarként.');
+            $blc->md('Teherbírási határállapotban ***A*** csavarként. Használhatósági határállapotban:');
+
+            $blc->def('F_pC', 0.7*$f3->_f_ub*$f3->_A_s/1000,'F_(p,C) = 0.7*f_(u,b)*A_s = %% [kN]', 'Előírt feszítőerő');
+            $blc->def('F_s_Rd', (($f3->_n_s*$f3->_mu)/$f3->__GM3)*$f3->_F_pC,'F_(s,Rd) = (n_s*mu)/gamma_(M3)*F_(p,C) = %% [kN]', 'Megcsúszással szembeni ellenállás');
+            $f3->_U_s_ser = $f3->_F_Ed_ser/$f3->_F_s_Rd;
+            $blc->label($f3->_U_s_ser, 'Kihasználtság használhatósági határállapotban');
+
+            $blc->md('***C*** osztályú nyírt csavar:');
+            $f3->_U_s = $f3->_V/$f3->_F_s_Rd;
+            $blc->label($f3->_U_s, 'Kihasználtság teherbírási határállpotban');
+            $blc->label($f3->_V/$f3->_F_bRd, 'Palástnyomási kihasználtság');
+
+            $blc->md('***CE*** osztályú húzott-nyírt csavar:');
+            $blc->def('F_s_tv_Rd', (($f3->_n_s*$f3->_mu)/$f3->__GM3)*($f3->_F_pC-0.8*$f3->_N),'F_(s,tv,Rd) = (n_s*mu)/gamma_(M3)*(F_(p,C)-0.8*F_(t,Ed)) = %% [kN]', 'Interakciós ellenállás');
+            $f3->_U_s_tv = $f3->_V/$f3->_F_s_tv_Rd;
+            $blc->label($f3->_U_s_tv, 'Interakciós kihasználtság');
         }
-        $blc->input('n_s', 'Súrlódó felületek száma', 1, '', '');
-        $blc->input('mu', 'Súrlódási tényező', 0.2, '', '**Súrlódási tényezők:** **0.5** *Sörétezett vagy szemcsefújt festetlen felület*, **0.4** *Sörétezett vagy szemcsefújt festett felület*, **0.3** *Drótkefézett vagy lángszórással tisztított felület*, **0.2** *Kezeletlen felület*');
-        $blc->input('F_Ed_ser', '`F_(Ed,ser):` Nyíróerő használhatósági határállapotban', 10, 'kN', '');
 
-        $blc->md('***B*** osztályú nyírt csavarok használhatósági határállapotig működnek feszített csavarként.');
-        $blc->md('Teherbírási határállapotban ***A*** csavarként. Használhatósági határállapotban:');
+        $blc->h1('Csavarkép');
+        $blc->input('n_c', 'Csavar oszlopok száma', 1, '', '');
+        $blc->input('n_r', 'Csavar sorok száma', 1, '', '');
+        $nb = $f3->_n_c*$f3->_n_r;
+        $blc->txt('Csavarok száma: '.$nb);
 
-        $blc->def('F_pC', 0.7*$f3->_f_ub*$f3->_A_s/1000,'F_(p,C) = 0.7*f_(u,b)*A_s = %% [kN]', 'Előírt feszítőerő');
-        $blc->def('F_s_Rd', (($f3->_n_s*$f3->_mu)/$f3->__GM3)*$f3->_F_pC,'F_(s,Rd) = (n_s*mu)/gamma_(M3)*F_(p,C) = %% [kN]', 'Megcsúszással szembeni ellenállás');
-        $f3->_U_s_ser = $f3->_F_Ed_ser/$f3->_F_s_Rd;
-        $blc->label($f3->_U_s_ser, 'Kihasználtság használhatósági határállapotban');
+        $x = 2*$f3->_e2 + ($f3->_n_c - 1)*$f3->_p2;
+        $x1 = 200/$x;
+        $y = 2*$f3->_e1 + ($f3->_n_r - 1)*$f3->_p1;
+        $y1 = 200/$y;
+        $boltPic = [
+            ['size' => 10, 'x' => 140, 'y' => 290, 'text' => $x],
+            ['size' => 10, 'x' => 50, 'y' => 275, 'text' => $f3->_e2],
+            ['size' => 10, 'x' => 140, 'y' => 275, 'text' => ($f3->_n_c - 1).'×'.$f3->_p2],
+            ['size' => 10, 'x' => 240, 'y' => 275, 'text' => $f3->_e2],
+            ['size' => 10, 'x' => 10, 'y' => 140, 'text' => $y],
+            ['size' => 10, 'x' => 255, 'y' => 65, 'text' => $f3->_e1],
+            ['size' => 10, 'x' => 255, 'y' => 140, 'text' => ($f3->_n_r - 1).'×'.$f3->_e2],
+            ['size' => 10, 'x' => 255, 'y' => 235, 'text' => $f3->_e1],
+        ];
+        $i = 0;
+        $j = 0;
+        for ($j = 0; $j < $f3->_n_r; $j++) {
+            for ($i = 0; $i < $f3->_n_c; $i++) {
+                array_push($boltPic, ['size' => 24, 'x' => 50 + $f3->_e2*$x1 + $i*$f3->_p2*$x1 - 12, 'y' => 50 + $f3->_e1*$y1 + $j*$f3->_p1*$y1 + 12, 'text' => '+']);
+            }
+        }
+        $blc->write('vendor/resist/ecc-calculations/canvas/bolt0.jpg', $boltPic, '');
+        $blc->h2('Csavarkép nyírási teherbírása');
+        $blc->input('FvEd','`F_(sum,v,Ed)` Csavarképre ható erő', $nb*$f3->_V, 'kN');
+        $FRd = min(
+        $ec->FbRd($f3->_btName, $f3->_btMat, $f3->_stMat, $f3->_e1, $f3->_e2, $f3->_t, 0),
+        $ec->FbRd($f3->_btName, $f3->_btMat, $f3->_stMat, $f3->_p1, $f3->_p2, $f3->_t, 1),
+        $ec->FvRd($f3->_btName, $f3->_btMat, $f3->_n)
+        )*$nb;
+        if ($ec->FvRd($f3->_btName, $f3->_btMat, $f3->_n) >= min(
+                $ec->FbRd($f3->_btName, $f3->_btMat, $f3->_stMat, $f3->_e1, $f3->_e2, $f3->_t, 0),
+                $ec->FbRd($f3->_btName, $f3->_btMat, $f3->_stMat, $f3->_p1, $f3->_p2, $f3->_t, 1)
+            )) {
+            $blc->txt('Minden csavar nyírási ellenállása nagyobb bármely másik csavar palástnyomási ellenállásnál, ezért a csavarkép ellenállása lehetne a csavarok palástnyomási ellenállásának összege.');
+        }
+        $blc->def('FboltEd', $f3->_FvEd/$nb, 'F_(Ed, bol\t) = %% [kN]', 'Egy csvarra jutó nyíróerő centrikus kapcsolat esetén');
+        $blc->success0('FRd');
+        $blc->txt('Csavarkép teherbírása:');
+        if (($f3->_n_r - 1)*$f3->_p1 > 15*$f3->_d) {
+            $blc->def('Lj', max(0.75, 1-(($f3->_n_r - 1)*$f3->_p1 - 15*$f3->_d)/(200*$f3->_d)), 'L_j = %%', 'Hosszú kapcsolat csavaronként értelmezett csökkentő tényezője');
+            $blc->def('FRd', $FRd, 'F_(Rd) = = %% [kN]', 'Szélső és belső csavarok nyírási vagy palástnyomási ellenállásának minimuma csavarszámmal felszorozva');
+            $blc->def('FRd', $FRd*$f3->_Lj, 'F_(Rd, red) = F_(Rd)*L_j = %% [kN]', 'Szélső és belső csavarok nyírási vagy palástnyomási ellenállásának minimuma csavarszámmal felszorozva');
+        } else {
+            $blc->def('FRd', $FRd, 'F_(Rd) = %% [kN]', 'Szélső és belső csavarok nyírási vagy palástnyomási ellenállásának minimuma csavarszámmal felszorozva');
+        }
+        $blc->success1('FRd');
+        $blc->label($f3->_FboltEd/$f3->_FRd, 'leggyengébb csavar nyírási kihasználtsága');
 
-        $blc->md('***C*** osztályú nyírt csavar:');
-        $f3->_U_s = $f3->_V/$f3->_F_s_Rd;
-        $blc->label($f3->_U_s, 'Kihasználtság teherbírási határállpotban');
-        $blc->label($f3->_V/$f3->_F_bRd, 'Palástnyomási kihasználtság');
+        $blc->h2('Lemez nettó keresztmetszet vizsgálata');
+        $blc->def('l_net', $f3->_e2*2 + ($f3->_n_c - 1)*$f3->_p2 - $f3->_n_c*$f3->_d_0, 'l_(n\et) = 2*e_2 + (n_c-1)*p_2 - n_c*d_0 = %% [mm]', 'Lemez hossz lyukgyengítéssel');
+        $blc->def('A', ($f3->_e2*2 + ($f3->_n_c - 1)*$f3->_p2)*$f3->_t, 'A = (2*e_2 + (n_c-1)*p_2)*t = %% [mm^2]', 'Vizsgált keresztmetszeti terület');
+        $blc->def('A_net', $f3->_l_net*$f3->_t, 'A = l_(n\et)*t = %% [mm^2]', 'Vizsgált nettó keresztmetszeti terület');
+        $blc->def('NplRd', $ec->NplRd($f3->_A, $f3->_stMat, $f3->_t), 'N_(pl,Rd) = (A*f_y)/gamma_(M,0) = %% [kN]', 'Teljes km. folyási ellenállása');
+        $blc->def('NuRd', $ec->NuRd($f3->_A_net, $f3->_stMat, $f3->_t), 'N_(u,Rd) = (0.9*A_(n\et)*f_u)/gamma_(M,2) = %% [kN]', 'Nettó km. képlékeny töréssel szembeni ellenállása');
+        $blc->def('NtRd', $ec->NtRd($f3->_A, $f3->_A_net, $f3->_stMat, $f3->_t), 'N_(t,Rd) = min(N_(pl,Rd), N_(u,Rd)) = %% [kN]', 'Húzási ellenállás');
+        $blc->label($f3->_FvEd/$f3->_NtRd, 'Keresztmetszet kihasználtsága húzásra');
 
-        $blc->md('***CE*** osztályú húzott-nyírt csavar:');
-        $blc->def('F_s_tv_Rd', (($f3->_n_s*$f3->_mu)/$f3->__GM3)*($f3->_F_pC-0.8*$f3->_N),'F_(s,tv,Rd) = (n_s*mu)/gamma_(M3)*(F_(p,C)-0.8*F_(t,Ed)) = %% [kN]', 'Interakciós ellenállás');
-        $f3->_U_s_tv = $f3->_V/$f3->_F_s_tv_Rd;
-        $blc->label($f3->_U_s_tv, 'Interakciós kihasználtság');
-
-        $blc->h1('Csoportos kiszakadás');
-        $blc->md('`TODO`');
+        $blc->h2('Csoportos kiszakadás');
+        $blc->boo('exc', 'Excentirkus csavarkép', 0, '');
+        $exc = 1;
+        if ($f3->_exc) {
+            $exc = 0.5;
+        }
+        $blc->def('A_nt', ($f3->_n_c - 1)*$f3->_p2*$f3->_t, 'A_(nt) = (n_c - 1)*p_2*t = %% [mm^2]');
+        $blc->def('A_nv', ($f3->_e1 + ($f3->_n_r - 1)*$f3->_p1)*$f3->_t, 'A_(nv) = (e_1 + (n_r - 1)*p_1)*t = %% [mm^2]');
+        $blc->def('Veff1Rd', $exc*(($f3->_f_u*$f3->_A_nt)/($f3->__GM2*1000)) + ($f3->_f_y*$f3->_A_nv)/(sqrt(3)*$f3->__GM0*1000), 'V_(eff,1,Rd) = exc*(f_u*A_(nt))/gamma_(M2) + (f_y*A_(nv))/(gamma_(M0)*sqrt(3)) = %% [kN]');
+        $blc->label($f3->_FvEd/$f3->_Veff1Rd, 'csoportos kiszakadás kihasználtsága');
     }
 }
