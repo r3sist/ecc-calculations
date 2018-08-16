@@ -562,3 +562,12 @@ For NS-EN Eurocode methods call `EcNSEN()` class first.
 ### *qpzNSEN()* method
 
 `$ecNSEN->qpzNSEN($z, $terrainCat, $cAlt, $c0z, $vb0)`
+
+--- 
+# Notes 
+
+```
+<input name="_noFooter" id="_noFooter" type="hidden" value="1">
+``` 
+
+print without footer

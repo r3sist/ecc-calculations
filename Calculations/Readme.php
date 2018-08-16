@@ -111,5 +111,28 @@ $blc->chart(\'ScatterChart\', \'3\', $lava);
 
         $blc->h2('Material database');
         $blc->pre(json_encode($ec->data('mat'), JSON_PRETTY_PRINT));
+
+        $blc->h1('Tests');
+
+        $blc->input('x0', 'no validation: abc', 'abc', '', '', false);
+        $blc->txt('in Hive: '.$f3->_x0);
+
+        $blc->input('x1', 'numeric: abc', 'abc', '', '', ['numeric', 0]);
+        $blc->txt('in Hive: '.$f3->_x1);
+
+        $blc->input('x2', 'numeric: -10', -10, '', '', ['numeric', 0]);
+        $blc->txt('in Hive: '.$f3->_x2);
+
+        $blc->input('x3', 'numeric: 113.25', 113.25, '', '', ['numeric', 0]);
+        $blc->txt('in Hive: '.$f3->_x3);
+
+        $blc->input('4', 'alphanumeric: abc', 'abc', '', '', ['alphanumeric', 0]);
+        $blc->txt('in Hive: '.$f3->_x4);
+
+        $blc->input('x5', 'alphanumeric: abc d', 'abc d', '', '', ['alphanumeric', 0]);
+        $blc->txt('in Hive: '.$f3->_x5);
+
+        $blc->input('x6', 'alphanumeric: $', '$', '', '', ['alphanumeric', 0]);
+        $blc->txt('in Hive: '.$f3->_x6);
     }
 }
