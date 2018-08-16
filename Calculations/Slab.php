@@ -77,6 +77,10 @@ Class Slab extends \Ecc
 
         $blc->def('vEd', ($f3->_beta*$f3->_VEd)/($f3->_u*$f3->_d)*10000, 'v_(Ed) = (beta*V_(Ed))/(u*d) = %% [(kN)/m^2]');
 
+        $blc->h2('Beton teherbírásának ellenőrzése ');
+
+        $blc->hr();
+
         $blc->h1('Kétirányban teherhordó lemez képlékeny igénybevétele');
         $blc->input('p_Ed', '`p_(Ed)`: Felületen megoszló teher', '5', 'kN/m²', '');
         $blc->input('l_x', 'Lemez szélesség x irányban', '10', 'm', '');
