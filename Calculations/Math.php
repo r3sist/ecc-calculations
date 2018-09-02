@@ -46,5 +46,9 @@ Class Math extends \Ecc
         $tables = new \Khill\Lavacharts\DataTables\JoinedDataTable($dataTable1,$dataTable2);
         $lava->ScatterChart('3', $tables, ['legend' => ['position' => 'none'],'title' => 'Lineáris interpoláció',]);
         $blc->chart('ScatterChart', '3', $lava);
+
+        $blc->h1('Címke');
+        $write = [];
+        $blc->write('vendor/resist/ecc-calculations/canvas/7x10_border.jpg', $write, '');
     }
 }
