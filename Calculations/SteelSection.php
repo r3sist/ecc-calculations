@@ -109,12 +109,14 @@ Class SteelSection extends \Ecc
         $blc->note('Külpontosság elhanyagolható.');
         $blc->math('n = '.$f3->_n.' %%% d_0 = '.$d0.'[mm] %%% t = '.$f3->_t.'[mm] %%% f_u = '.$f3->_fu.'[MPa] %%% A_(n\et) = '.$f3->_A_net.' [mm^2]');
 //      $blc->input('e1', 'Peremtávolság erő irányban', 30, 'mm');
+
         if ($f3->_n == 0) {
             $blc->danger('Csavarszámot meg kell adni a nettó keresztmetszet számításnál.');
         } else if ($f3->_n == 1) {
             $blc->txt('Erőátadás irányában egy csavar esete:');
             $blc->input('e2', 'Peremtávolság erő irányra merőleges irányban', 25, 'mm');
             $NuRd = (2*($f3->_e2 - 0.5*$d0)*$f3->_t*$f3->_fu)/($f3->__GM2*1000);
+            $blc->success0('NuRd');
             $blc->def('NuRd', $NuRd, 'N_(u,Rd) = (2*(e_2-0.5*d_0)*t*f_u)/gamma_(M2) = %% [kN]');
         } else if ($f3->_n == 2) {
             $blc->txt('Erőátadás irányában két csavar esete:');
@@ -127,6 +129,7 @@ Class SteelSection extends \Ecc
                 $blc->def('beta_2', $ec->linterp(2.5*$d0, 0.4, 5*$d0, 0.7, $f3->_p1), 'beta_2 = %%', 'Lineárisan interpolált érték!');
             }
             $NuRd = ($f3->_beta_2*$f3->_A_net*$f3->_fu)/($f3->__GM2*1000);
+            $blc->success0('NuRd');
             $blc->def('NuRd', $NuRd, 'N_(u,Rd) = (beta_2*A_(n\et)*f_u)/gamma_(M2) = %% [kN]');
         } else {
             $blc->txt('Erőátadás irányában három vagy több csavar esete:');
@@ -139,8 +142,11 @@ Class SteelSection extends \Ecc
                 $blc->def('beta_3', $ec->linterp(2.5*$d0, 0.5, 5*$d0, 0.7, $f3->_p1), 'beta_3 = %%', 'Lineárisan interpolált érték!');
             }
             $NuRd = ($f3->_beta_3*$f3->_A_net*$f3->_fu)/($f3->__GM2*1000);
+            $blc->success0('NuRd');
             $blc->def('NuRd', $NuRd, 'N_(u,Rd) = (beta_3*A_(n\et)*f_u)/gamma_(M2) = %% [kN]');
         }
+        $blc->success1('NuRd');
+        $blc->label($f3->_NEd/$f3->_NuRd, 'Húzási kihasználtság');
         $blc->note('`beta_1` és `beta_2` külpontosság miatti tényezők. Táblázatos érték [Szürke 5.1/5.2 táblázat 40.o.]');
 
         $blc->h1('Központosan nyomott rudak ellenállása');
