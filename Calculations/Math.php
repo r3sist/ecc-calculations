@@ -48,7 +48,13 @@ Class Math extends \Ecc
         $blc->chart('ScatterChart', '3', $lava);
 
         $blc->h1('Címke');
-        $write = [];
+        $write = [
+            ['size' => 14, 'x' => 10, 'y' => 40, 'text' => $f3->get('POST._stamp_projectname')],
+            ['size' => 10, 'x' => 10, 'y' => 60, 'text' => $f3->get('POST._stamp_projectid')],
+            ['size' => 12, 'x' => 10, 'y' => 120, 'text' => $f3->get('POST._stamp_object')],
+            ['size' => 12, 'x' => 10, 'y' => 135, 'text' => $f3->get('POST._project')],
+            ['size' => 10, 'x' => 10, 'y' => 150, 'text' => $f3->get('POST._stamp_date').'   '.$f3->get('POST._stamp_designer')],
+        ];
         $blc->write('vendor/resist/ecc-calculations/canvas/7x10_border.jpg', $write, '');
     }
 }
