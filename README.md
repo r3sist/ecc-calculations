@@ -71,6 +71,7 @@ Dokumentumvezérlőből vagy *p* billentyűparancsra előhívható tervpecsét m
 + Toggled GUI elements are not printed.
 + Regions always need two lines of code using the same identifier name: starter and end blocks (marked in method name by 0 and 1)
 + `$help` parameter creates small muted text block generally. Markdown is enabled, renders only: `br, em, i, strong, b, a, code` tags.
++ Reserved variable final names: `_project*`, `_stamp*`, `print` - e.g. `$blc->def('project', 1, '%%')` creates `f3->_project` variable in Hive, which is reserved for saved data name
 
 ---
 
