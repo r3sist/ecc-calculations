@@ -10,6 +10,8 @@ Class Wind extends \Ecc
         $ec = \Ec::instance();
         $blc = \Blc::instance();
 
+        $blc->note('Szélterhek egyszerűsített számítása. [Changelog](https://bitbucket.org/resist/ecc-calculations/history-node/f1da14f0c5f3d7e38cfa344e336fbab7fd276136/Calculations/Wind.php?at=master)');
+
         $blc->toc();
 
         $blc->input('h', 'Épület magasság', 10, 'm');
