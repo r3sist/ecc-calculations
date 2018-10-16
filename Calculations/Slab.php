@@ -10,11 +10,69 @@ Class Slab extends \Ecc
         $ec = \Ec::instance();
         $blc = \Blc::instance();
 
-        $ec->matList('mat', 'C25/30', 'Beton anyagminőség');
-        $blc->input('d', 'Lemez hatékony vastagsága', '20', 'cm');
+        $blc->toc();
 
+        $ec->matList('cMat', 'C25/30', 'Beton anyagminőség');
+        $ec->saveMaterialData($f3->_cMat, 'c');
+        $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
+        $ec->saveMaterialData($f3->_rMat, 'r');
+        $blc->lst('dir', ['Egy irányban teherhordó' => 1, 'Két irányban teherhordó' => 2], 'Teherhordás módja', 2);
+        $blc->input('h', 'Lemez vastagsága', '250', 'mm');
+        $blc->input('d', 'Lemez hatékony vastagsága', '200', 'mm');
+
+        $blc->h1('Lemezekre vonatkozó szerkesztési szabályok');
+
+        $blc->h2('Monolit lemezek legkisebb vastagsága');
+        $blc->txt('Nyírási vasalás nélkül: `h_(min) = 70 [mm]`');
+        $blc->txt('Nyírási vasalással: `h_(min) = 200 [mm]`');
+
+        $blc->h2('Minimális húzott vasmennyiség');
+        $blc->note('A húzott hajlítási fővasalásra előírt minimális és maximális vashányad a gerendákéval megegyező. [Vasbeton szerkezetek 8.5.1]');
+        if ($f3->_dir == 1) {
+            $blc->txt('Egyirányban teherhordó lemezek keresztirányú elosztó vasalásának keresztmetszete legalább a fővasalásénak 20%-a legyen.');
+            $blc->note('Azonos acél szilárdsági osztály esetén. Egyébként aránnyal felszorozva.');
+        }
+        $blc->def('rhoMin', max(0.26*($f3->_cfctm/$f3->_rfy), 0.0015), 'rho_(min) = max{(0.26*f_(ctm)/f_(yk)),(0.0015):} = max{(0.26*'.$f3->_cfctm.'/'.$f3->_rfy.'),(0.0015):} = %%', 'Minimális húzott vashányad');
+        $blc->def('AsMin', $f3->_rhoMin*1000*$f3->_d, 'A_(s,min) = rho_(min)*1000[mm]*d = %% [(mm^2)/m]', 'Előírt minimális húzott vasmennyiség négyszög keresztmetszet esetén');
+
+        $blc->h2('Maximális összes vasmennyiség');
+        $blc->def('AsMax', 0.04*1000*$f3->_h, 'A_(s,max) = 0.04*1000[mm]*h = %% [(mm^2)/m]', 'Összes hosszvasalás megengedett legnagyobb mennyisége négyszög keresztmetszetben');
+
+        $blc->h2('Legnagyobb vastávolság');
+        if ($f3->_h > 100) {
+            $blc->def('sMax', min(2*$f3->_h, 300), 's_(max) = min{(2h),(300):} = %% [mm]', 'Fő vasalás max vastávolsága');
+            if ($f3->_dir == 1) {
+                $blc->def('sMax2', min(3 * $f3->_h, 400), 's_(max,2) = min{(3h),(400):} = %% [mm]', 'Mellék vasalás max vastávolsága');
+            }
+        } else {
+            $blc->txt('`h le 100 [mm]`');
+            $blc->def('sMax', 200, 's_(max) = %% [mm]', 'Fő vasalás max vastávolsága');
+            if ($f3->_dir == 1) {
+                $blc->def('sMax2', 300, 's_(max,2) = %% [mm]', 'Mellék vasalás max vastávolsága');
+            }
+        }
+        $blc->note('Kétirányban teherhordó lemez esetén mindkét irányban a fő vasalásra jellemző értéket kell figyelembe venni.');
+
+        $blc->h2('Legnagyobb vasátmérő');
+        $blc->def('phiMax', $f3->_h/10, 'phi_(max) = h/10 = %% [mm]');
+
+        $blc->region0('more0', 'További megjegyzések');
+        $blc->h2('Vasalás támaszok környezetében');
+        $blc->md('
+A méretezett alsó mezővasalás legalább 50%-át a támaszig kell vezetni és ott megfe|elóen le kell horgonyozni.
+
+A felső vasalást:
+
++ szélső, nem befogott támasz esetén a szélsó mezőnyomaték 15%-ára kell méretezni,és a mező 0,l-szeres hosszáig be kell vezetni,
++ belső támasz esetén a szomszédos mezőnyomatékok nagyobbikának legalább 25%-ára kell méretezni, és mindkét mező minimum O,2-szeres hosszán végig kell vezetni.
+        
+Sarkainál felemelkedésben gátolt, kétirányban teherhordó lemezek sarkainál a csavarónyomatékok felvételére kétirányú felső vasalást kell tervezni, amelynek intenzitása pontosabb számítás hiányában megegyezik a rövidebb irányban futó alsó vasaláséval, és mindkét irányban a megfelelő támaszköz 0,2-szereséig be kell vezetni.');
+
+        $blc->h3('Konzollemez, szabad lemezszél');
+        $blc->img('https://structure.hu/ecc/slab0.jpg', 'Konzollemez, szabad lemezszél');
+        $blc->region1('more0');
         $blc->h1('Pontokon megtámasztott síklemez födémek átlyukadása', 'Átszúródási vizsgálatok');
-        $blc->note('[Világos kék 6.8 49.o]');
+        $blc->note('[Vasbeton szerkezetek 6.8 (49.o)]');
         $blc->input('c_a', 'Pillér méret egyik dimenziója', '40', 'cm');
         $blc->input('c_b', 'Pillér méret másik dimenziója', '40', 'cm');
         $blc->boo('c_o', 'Körpillér', 0, '\`c_(phi) = max(c_a, c_b)\`');
@@ -53,6 +111,7 @@ Class Slab extends \Ecc
             $blc->note('Javaslat [Világos kék 6.8 49.o] alapján. Nem teljesülés esetén peremgerenda tervezése javasolt, vagy tényleges nyomatékok figyelembevételével kell az átlyukadást ellenőrizni!');
         $blc->region1('piller0');
 
+        $f3->_d = $f3->_d/10;
         if ($f3->_l_c*100 <= 2*$f3->_d + max($f3->_c_a, $f3->_c_b)/2 && $f3->_beta == 1.5 && $f3->_c_o == 0) {
             $blc->txt('Sarok négyszögpillér, kisebb konzol esete:', '\`l_c = '.$f3->_l_c.'\ [m]`');
             $blc->def('u', $f3->_c_a + $f3->_c_b + 4*$f3->_d, 'u = c_a + c_b + 4*d= %% [cm]');
