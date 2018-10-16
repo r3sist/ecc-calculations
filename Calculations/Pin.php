@@ -12,7 +12,7 @@ Class Pin extends \Ecc
 
         $blc->toc();
 
-        $blc->img('https://structure.hu/ecc/pin0.jpg');
+        $blc->img('https://structure.hu/ecc/pin0.jpg', 'Híd saru');
 
         $blc->h1('Saru erők', '');
         $blc->input('REdz', '`R_(Ed,z)` Függőleges reakcióerő', 950, 'kN', '');
