@@ -13,6 +13,7 @@ Class SteelSection extends \Ecc
      */
     public function calc($f3, $blc, $ec)
     {
+        $blc->toc();
         $ec->sectionFamilyList();
         $ec->sectionList($f3->_sectionFamily);
         $ec->saveSectionData($f3->_sectionName, true);
