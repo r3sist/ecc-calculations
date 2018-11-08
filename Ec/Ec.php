@@ -120,7 +120,7 @@ class Ec extends \Prefab
         }
     }
 
-    public function boltList($name = 'btName', $default = 'M16', $title = 'Csavar átmérő')
+    public function boltList($name = 'btName', $default = 'M16', $title = 'Csavar betöltése')
     {
         $boltDb = $this->getBoltArray();
         $keys =  array_keys($boltDb);
@@ -128,7 +128,7 @@ class Ec extends \Prefab
         foreach ($keys as $key) {
             $list[$key] = $key;
         }
-        \Blc::instance()->lst($name, $list, '`'.$name.':` '.$title, $default, '');
+        \Blc::instance()->lst($name, $list, $title, $default, '');
     }
 
     public function sectionFamilyList($variableName = 'sectionFamily', $title = 'Szelvény család', $default = 'HEA')
@@ -147,7 +147,7 @@ class Ec extends \Prefab
             'O' => 'O',
             'ROR' => 'ROR',
         ];
-        \Blc::instance()->lst($variableName, $list, '`'.$variableName.':` '.$title, $default, '');
+        \Blc::instance()->lst($variableName, $list, $title, $default, '');
     }
 
     public function sectionList($familyName = 'HEA', $variableName = 'sectionName', $title = 'Szelvény név', $default = 'HEA200')
@@ -159,7 +159,7 @@ class Ec extends \Prefab
         foreach ($result as $section) {
             $list[$section['name2']] = $section['name2'];
         }
-        \Blc::instance()->lst($variableName, $list, '`'.$variableName.':` '.$title, $default, '');
+        \Blc::instance()->lst($variableName, $list, $title, $default, '');
     }
 
     public function saveSectionData($sectionName, $renderTable = false, $arrayName = 'sectionData')
