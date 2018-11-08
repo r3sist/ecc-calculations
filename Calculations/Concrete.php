@@ -5,11 +5,14 @@ namespace Calculation;
 Class Concrete extends \Ecc
 {
 
-    public function calc($f3)
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc($f3, $blc, $ec)
     {
-        $ec = \Ec::instance();
-        $blc = \Blc::instance();
-
         $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/material) alapján történnek.');
 
         $ec->matList('mat', 'C25/30', 'Beton anyag');

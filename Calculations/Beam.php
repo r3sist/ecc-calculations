@@ -5,11 +5,14 @@ namespace Calculation;
 Class Beam extends \Ecc
 {
 
-    public function calc($f3)
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc($f3, $blc, $ec)
     {
-        $ec = \Ec::instance();
-        $blc = \Blc::instance();
-
         $blc->region0('material', 'Anyagminőségek megadása');
             $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
             $ec->saveMaterialData($f3->_cMat, 'c');

@@ -5,11 +5,14 @@ namespace Calculation;
 Class LinQ extends \Ecc
 {
 
-    public function calc($f3)
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc($f3, $blc, $ec)
     {
-        $ec = \Ec::instance();
-        $blc = \Blc::instance();
-
         $blc->input('x', 'Gerenda koordináták', '2,6,10,14', 'm', 'Gerenda `x.i` pozíciói, vesszővel elválasztva, 0-tól számítva.');
         $blc->input('xMAX', 'Teher felület hossza', '16', 'm', '');
         $blc->input('qMAX', 'Megoszló teher (növekvő) maximális értéke', '10', 'kN/m²', '');

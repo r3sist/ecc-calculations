@@ -5,11 +5,14 @@ namespace Calculation;
 Class Wall extends \Ecc
 {
 
-    public function calc($f3)
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc($f3, $blc, $ec)
     {
-        $ec = \Ec::instance();
-        $blc = \Blc::instance();
-
         $blc->input('l', 'Fal hossz', '1', 'm', '');
         $blc->input('t_w', 'Fal vastagság', '200', 'mm', '');
         if ($f3->_t_w <= 100) {

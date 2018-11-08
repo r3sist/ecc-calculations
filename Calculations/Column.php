@@ -5,11 +5,14 @@ namespace Calculation;
 Class Column extends \Ecc
 {
 
-    public function calc($f3)
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc($f3, $blc, $ec)
     {
-        $ec = \Ec::instance();
-        $blc = \Blc::instance();
-
         $blc->h1('Közelítő méretfelvétel');
         $blc->input('N_Ed', '`N_(Ed)`: Nyomóerő', '1000', 'kN', '');
         $ec->matList('mat', 'C35/45');

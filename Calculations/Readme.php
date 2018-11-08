@@ -5,11 +5,14 @@ namespace Calculation;
 Class Readme extends \Ecc
 {
 
-    public function calc($f3)
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc($f3, $blc, $ec)
     {
-        $blc = \Blc::instance();
-        $ec = \Ec::instance();
-
         $blc->toc();
 
         $text1 = file_get_contents($f3->BASE.'vendor/resist/ecc-calculations/README.md');

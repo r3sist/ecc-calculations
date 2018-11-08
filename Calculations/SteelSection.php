@@ -5,11 +5,14 @@ namespace Calculation;
 Class SteelSection extends \Ecc
 {
 
-    public function calc($f3)
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc($f3, $blc, $ec)
     {
-        $ec = \Ec::instance();
-        $blc = \Blc::instance();
-
         $ec->sectionFamilyList();
         $ec->sectionList($f3->_sectionFamily);
         $ec->saveSectionData($f3->_sectionName, true);

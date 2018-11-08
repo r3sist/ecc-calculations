@@ -5,10 +5,14 @@ namespace Calculation;
 Class Math extends \Ecc
 {
 
-    public function calc($f3)
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc($f3, $blc, $ec)
     {
-        $ec = \Ec::instance();
-        $blc = \Blc::instance();
         $lava = new \Khill\Lavacharts\Lavacharts;
 
         $blc->h1('Lejtés');

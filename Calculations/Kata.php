@@ -5,10 +5,14 @@ namespace Calculation;
 Class Kata extends \Ecc
 {
 
-    public function calc($f3)
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc($f3, $blc, $ec)
     {
-        $blc = \Blc::instance();
-
         $blc->region0('adatok', 'Szerződés adatok');
             $blc->input('megbizoNev', '``Megbízó név');
             $blc->input('megbizoCim', '``Megbízó címe');
