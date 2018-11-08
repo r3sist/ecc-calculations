@@ -60,7 +60,7 @@ Class Wind extends \Ecc
         $blc->def('qpz', $ec->qpz($f3->_h, $f3->_terrainCat), 'q_(p)(z) = %% [(kN)/m^2]', 'Torlónyomás');
         if ($f3->_NSEN) {
             $blc->math('v_(b, NSEN) = c_(a\l\t, NSEN)*c_(dir)*c_(season)*c_(prob)*v_(b, 0, NSEN) = '.$f3->_NSEN_calt.'*1.0*1.0*'.$f3->_NSEN_vb0);
-            $blc->def('qpz', \EcNSEN::qpzNSEN($f3->_h, $f3->_terrainCat, $f3->_NSEN_calt, $f3->_NSEN_c0z, $f3->_NSEN_vb0), 'q_(p, NSEN)(z) = %% [(kN)/m^2]', 'Torlónyomás');
+            $blc->def('qpz', $ec->qpzNSEN($f3->_h, $f3->_terrainCat, $f3->_NSEN_calt, $f3->_NSEN_c0z, $f3->_NSEN_vb0), 'q_(p, NSEN)(z) = %% [(kN)/m^2]', 'Torlónyomás');
         }
         $blc->success1('success0');
 

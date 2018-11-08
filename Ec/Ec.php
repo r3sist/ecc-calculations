@@ -427,6 +427,53 @@ class Ec extends \Prefab
         return number_format((1 + 7*$Ivz)*0.5*(1.25/1000)*($vmz*$vmz), 3);
     }
 
+    public static function qpzNSEN($z, $terrainCat, $cAlt, $c0z, $vb0)
+    {
+        $terrainDb = array(
+            '0' => array(
+                'z0' => 0.003,
+                'zmin' => 2.0,
+                'kr' => 0.160,
+            ),
+            '1' => array(
+                'z0' => 0.01,
+                'zmin' => 2.0,
+                'kr' => 0.170,
+            ),
+            '2' => array(
+                'z0' => 0.05,
+                'zmin' => 4.0,
+                'kr' => 0.190,
+            ),
+            '3' => array(
+                'z0' => 0.3,
+                'zmin' => 8.0,
+                'kr' => 0.220,
+            ),
+            '4' => array(
+                'z0' => 1.0,
+                'zmin' => 16.0,
+                'kr' => 0.240,
+            )
+        );
+        $cDir = 1.0;
+        $cSeason = 1.0;
+        $cProb = 1.0;
+        $vb = $vb0*$cDir*$cSeason*$cAlt*$cProb;
+        $z0 = $terrainDb[$terrainCat]['z0'];
+        $zmin = $terrainDb[$terrainCat]['zmin'];
+        $kr = $terrainDb[$terrainCat]['kr'];
+        if ($z < $zmin) {
+            $z = $zmin;
+        }
+        $crz = $kr*log($z/$z0);
+        $vmz = $crz*$c0z*$vb;
+        $ki = 1;
+        $sigmaV = $kr*$ki*$vb;
+        $Ivz = $sigmaV/$vmz;
+        return number_format((1 + 7*$Ivz)*0.5*(1.25/1000)*($vmz*$vmz), 3);
+    }
+
     public function linterp($x1, $y1, $x2, $y2, $x)
     {
         return (($x - $x1)*($y2 - $y1)/($x2 - $x1)) + $y1;
