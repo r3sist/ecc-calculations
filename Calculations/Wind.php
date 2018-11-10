@@ -14,6 +14,8 @@ Class Wind extends \Ecc
     {
         $blc->note('Szélterhek egyszerűsített számítása. [Changelog](https://bitbucket.org/resist/ecc-calculations/history-node/f1da14f0c5f3d7e38cfa344e336fbab7fd276136/Calculations/Wind.php?at=master)');
 
+        $blc->boo('makeWrite', 'Elrendezési képek generálása', false, '');
+
         $blc->toc();
 
         $blc->input('h', 'Épület magasság', 10, 'm');
@@ -344,25 +346,30 @@ Class Wind extends \Ecc
             $blc->math('e = '.$e.' [m]', '');
 
             $blc->table($flat);
-            $blc->region0('flat'.$case['id'], 'Zóna elrendezés: Lapostető - '.$case['case']);
-            $write = array(
-                array('size' => 20, 'x' => 25, 'y' => 25, 'text' => '('.$case['wind'].')'),
-                array('size' => 14, 'x' => 180, 'y' => 385, 'text' => 'F:'.$wF.'kN/m²'),
-                array('size' => 14, 'x' => 180, 'y' => 550, 'text' => 'F:'.$wF.'kN/m²'),
-                array('size' => 14, 'x' => 180, 'y' => 480, 'text' => 'G:'.$wG.'kN/m²'),
-                array('size' => 14, 'x' => 270, 'y' => 420, 'text' => 'H:'.$wH.'kN/m²'),
-                array('size' => 14, 'x' => 360, 'y' => 385, 'text' => 'I:'.$wI.'kN/m²'),
-                array('size' => 14, 'x' => 300, 'y' => 610, 'text' => number_format($f3->_d0, 1).'m'),
-                array('size' => 14, 'x' => 540, 'y' => 450, 'text' => number_format($f3->_b0, 1).'m'),
-                array('size' => 14, 'x' => 240, 'y' => 140, 'text' => number_format($e/10, 1) .'m'),
-                array('size' => 14, 'x' => 300, 'y' => 140, 'text' => number_format($e/2-$e/10, 1) .'m'),
-                array('size' => 14, 'x' => 360, 'y' => 140, 'text' => number_format(($f3->_d0 - $e/2 > 0 ? $f3->_d0 - $e/2 : 0), 1) .'m'),
-                array('size' => 14, 'x' => 50, 'y' => 385, 'text' => number_format($e/4, 1) .'m'),
-                array('size' => 14, 'x' => 50, 'y' => 445, 'text' => number_format($f3->_b0-2*($e/4), 1) .'m'),
-                array('size' => 14, 'x' => 50, 'y' => 510, 'text' => number_format($e/4, 1) .'m'),
-            );
-            $blc->write('vendor/resist/ecc-calculations/canvas/wind0.jpg', $write, 'Zóna elrendezés: Lapostető - '.$case['case']);
-            $blc->region1('flat'.$case['id']);
+
+            if ($f3->_makeWrite) {
+                $blc->region0('flat'.$case['id'], 'Zóna elrendezés: Lapostető - '.$case['case']);
+                    $write = array(
+                        array('size' => 20, 'x' => 25, 'y' => 25, 'text' => '('.$case['wind'].')'),
+                        array('size' => 14, 'x' => 180, 'y' => 385, 'text' => 'F:'.$wF.'kN/m²'),
+                        array('size' => 14, 'x' => 180, 'y' => 550, 'text' => 'F:'.$wF.'kN/m²'),
+                        array('size' => 14, 'x' => 180, 'y' => 480, 'text' => 'G:'.$wG.'kN/m²'),
+                        array('size' => 14, 'x' => 270, 'y' => 420, 'text' => 'H:'.$wH.'kN/m²'),
+                        array('size' => 14, 'x' => 360, 'y' => 385, 'text' => 'I:'.$wI.'kN/m²'),
+                        array('size' => 14, 'x' => 300, 'y' => 610, 'text' => number_format($f3->_d0, 1).'m'),
+                        array('size' => 14, 'x' => 540, 'y' => 450, 'text' => number_format($f3->_b0, 1).'m'),
+                        array('size' => 14, 'x' => 240, 'y' => 140, 'text' => number_format($e/10, 1) .'m'),
+                        array('size' => 14, 'x' => 300, 'y' => 140, 'text' => number_format($e/2-$e/10, 1) .'m'),
+                        array('size' => 14, 'x' => 360, 'y' => 140, 'text' => number_format(($f3->_d0 - $e/2 > 0 ? $f3->_d0 - $e/2 : 0), 1) .'m'),
+                        array('size' => 14, 'x' => 50, 'y' => 385, 'text' => number_format($e/4, 1) .'m'),
+                        array('size' => 14, 'x' => 50, 'y' => 445, 'text' => number_format($f3->_b0-2*($e/4), 1) .'m'),
+                        array('size' => 14, 'x' => 50, 'y' => 510, 'text' => number_format($e/4, 1) .'m'),
+                    );
+                    $blc->write('vendor/resist/ecc-calculations/canvas/wind0.jpg', $write, 'Zóna elrendezés: Lapostető - '.$case['case']);
+                $blc->region1('flat'.$case['id']);
+            } else {
+                $blc->txt('', 'Elrendezési kép generálás kikapcsolva.');
+            }
         }
 
         // WALL
@@ -471,20 +478,24 @@ Class Wind extends \Ecc
             $blc->math('e = '.$e.'', '');
 
             $blc->table($wall);
-            $blc->region0('wall0'.$case['id'], 'Fal zóna elrendezés');
-            $write = array(
-                array('size' => 14, 'x' => 30, 'y' => 400, 'text' => 'D:'.$wD.'kN/m²'),
-                array('size' => 14, 'x' => 380, 'y' => 400, 'text' => 'E:'.$wE.'kN/m²'),
-                array('size' => 14, 'x' => 65, 'y' => 260, 'text' => 'A:'.$wA.'kN/m²'),
-                array('size' => 14, 'x' => 235, 'y' => 260, 'text' => 'B:'.$wB.'kN/m²'),
-                array('size' => 14, 'x' => 380, 'y' => 260, 'text' => 'C:'.($f3->_d0 - $e > 0 ? $wC : 0).'kN/m²'),
-                array('size' => 14, 'x' => 450, 'y' => 360, 'text' => ''.number_format($f3->_b0, 1).'m'),
-                array('size' => 14, 'x' => 250, 'y' => 580, 'text' => ''.number_format($f3->_d0, 1).'m'),
-                array('size' => 14, 'x' => 180, 'y' => 100, 'text' => ''.number_format($e/5, 1) .'m'),
-                array('size' => 14, 'x' => 240, 'y' => 100, 'text' => ''.number_format($e - $e/5, 1) .'m'),
-                array('size' => 14, 'x' => 315, 'y' => 100, 'text' => ''.number_format(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0), 1).'m'),
-            );
-            $blc->write('vendor/resist/ecc-calculations/canvas/wind2.jpg', $write, 'Fal zóna elrendezés');
+            if ($f3->_makeWrite) {
+                $blc->region0('wall0'.$case['id'], 'Fal zóna elrendezés');
+                $write = array(
+                    array('size' => 14, 'x' => 30, 'y' => 400, 'text' => 'D:'.$wD.'kN/m²'),
+                    array('size' => 14, 'x' => 380, 'y' => 400, 'text' => 'E:'.$wE.'kN/m²'),
+                    array('size' => 14, 'x' => 65, 'y' => 260, 'text' => 'A:'.$wA.'kN/m²'),
+                    array('size' => 14, 'x' => 235, 'y' => 260, 'text' => 'B:'.$wB.'kN/m²'),
+                    array('size' => 14, 'x' => 380, 'y' => 260, 'text' => 'C:'.($f3->_d0 - $e > 0 ? $wC : 0).'kN/m²'),
+                    array('size' => 14, 'x' => 450, 'y' => 360, 'text' => ''.number_format($f3->_b0, 1).'m'),
+                    array('size' => 14, 'x' => 250, 'y' => 580, 'text' => ''.number_format($f3->_d0, 1).'m'),
+                    array('size' => 14, 'x' => 180, 'y' => 100, 'text' => ''.number_format($e/5, 1) .'m'),
+                    array('size' => 14, 'x' => 240, 'y' => 100, 'text' => ''.number_format($e - $e/5, 1) .'m'),
+                    array('size' => 14, 'x' => 315, 'y' => 100, 'text' => ''.number_format(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0), 1).'m'),
+                );
+                $blc->write('vendor/resist/ecc-calculations/canvas/wind2.jpg', $write, 'Fal zóna elrendezés');
+            } else {
+                $blc->txt('', 'Elrendezési kép generálás kikapcsolva.');
+            }
             $blc->region1('wall0');
 
         }
@@ -579,19 +590,24 @@ Class Wind extends \Ecc
             if ($case['wind'] == '+') {
                 $class = '2';
             }
-            $blc->region0('canopy0'.$class.$case['id'], 'Pilletető zóna elrendezés '.$case['wind']);
-            $write = array(
-                array('size' => 20, 'x' => 25, 'y' => 25, 'text' => '('.$case['wind'].')'),
-                array('size' => 12, 'x' => 180, 'y' => 150, 'text' => 'A:'.$wA.'kN/m²'),
-                array('size' => 12, 'x' => 180, 'y' => 30, 'text' => 'B:'.$wB.'kN/m²'),
-                array('size' => 12, 'x' => 10, 'y' => 150, 'text' => 'C:'.$wC.'kN/m²'),
-                array('size' => 12, 'x' => 225, 'y' => 300, 'text' => number_format($f3->_d0, 1).'m'),
-                array('size' => 12, 'x' => 420, 'y' => 100, 'text' => number_format($f3->_b0, 1).'m'),
-                array('size' => 12, 'x' => 340, 'y' => 25, 'text' => number_format($f3->_b0/10, 1) .'m'),
-                array('size' => 12, 'x' => 185, 'y' => 225, 'text' => number_format($f3->_d0/10, 1) .'m'),
-            );
-            $blc->write('vendor/resist/ecc-calculations/canvas/wind1.jpg', $write, 'Pilletető elrendezés '.$case['wind']);
-            $blc->region1('canopy0'.$class);
+
+            if ($f3->_makeWrite) {
+                $blc->region0('canopy0'.$class.$case['id'], 'Pilletető zóna elrendezés '.$case['wind']);
+                    $write = array(
+                        array('size' => 20, 'x' => 25, 'y' => 25, 'text' => '('.$case['wind'].')'),
+                        array('size' => 12, 'x' => 180, 'y' => 150, 'text' => 'A:'.$wA.'kN/m²'),
+                        array('size' => 12, 'x' => 180, 'y' => 30, 'text' => 'B:'.$wB.'kN/m²'),
+                        array('size' => 12, 'x' => 10, 'y' => 150, 'text' => 'C:'.$wC.'kN/m²'),
+                        array('size' => 12, 'x' => 225, 'y' => 300, 'text' => number_format($f3->_d0, 1).'m'),
+                        array('size' => 12, 'x' => 420, 'y' => 100, 'text' => number_format($f3->_b0, 1).'m'),
+                        array('size' => 12, 'x' => 340, 'y' => 25, 'text' => number_format($f3->_b0/10, 1) .'m'),
+                        array('size' => 12, 'x' => 185, 'y' => 225, 'text' => number_format($f3->_d0/10, 1) .'m'),
+                    );
+                    $blc->write('vendor/resist/ecc-calculations/canvas/wind1.jpg', $write, 'Pilletető elrendezés '.$case['wind']);
+                $blc->region1('canopy0'.$class);
+            } else {
+                $blc->txt('', 'Elrendezési kép generálás kikapcsolva.');
+            }
         }
         $blc->txt('', '(+) szélnyomás&nbsp;&nbsp;&nbsp; (-) szélszívás');
 
@@ -664,7 +680,12 @@ Class Wind extends \Ecc
             )
         );
         $blc->table($atticTable,'Szabadon álló fal', '');
-        $blc->write('vendor/resist/ecc-calculations/canvas/wind3.jpg', array(), 'Szabadon álló fal');
+
+        if ($f3->_makeWrite) {
+            $blc->write('vendor/resist/ecc-calculations/canvas/wind3.jpg', array(), 'Szabadon álló fal');
+        } else {
+            $blc->txt('', 'Elrendezési kép generálás kikapcsolva.');
+        }
 
         $blc->h1('Egyedi szélteher');
         $blc->input('c_custom', '`c_(cust\om)` egyedi alaki tényező', '2.2', '', '');
