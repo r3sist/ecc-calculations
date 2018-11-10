@@ -13,8 +13,8 @@ Class Weld extends \Ecc
      */
     public function calc($f3, $blc, $ec)
     {
-        $blc->input('a', 'Varrat gyökméret', 4, 'mm');
-        $blc->input('L', 'Varrat összes hossz', 100, 'mm');
+        $blc->input('a', 'Varrat gyökméret', '4', 'mm', '', 'numeric');
+        $blc->input('L', 'Varrat összes hossz', '100', 'mm', '', 'numeric');
         $ec->matList();
         $blc->input('t', 'Lemezvastagság', 10, 'mm');
         $blc->input('F', '`F_(Ed)`: Erő', 10, 'kN');
