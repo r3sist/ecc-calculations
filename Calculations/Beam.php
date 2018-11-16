@@ -171,11 +171,9 @@ Class Beam extends \Ecc
             $blc->label('yes', max($f3->_Asws1, $f3->_Asws2).' &gt; '.$f3->_s1max);
         }
 
-
-
-
-
-
+        $blc->h4('Betonacél és beton rugalmassái modulus aránya:');
+        $blc->def('nE', \H3::n1(($f3->_rEs*1000)/($f3->_cEceff*1000)), 'n_E = %%');
+        
         $blc->h1('Nyírt keresztmetszet egyszerűsített számítása');
         $blc->note('[Vasbeton szerkezetek 6.3 (32.o)]');
         $blc->txt('Húzott vashányad meghatározása:');
