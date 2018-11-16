@@ -67,7 +67,7 @@ class Ec extends \Prefab
         $matDb = $this->getMaterialArray();
         try {
             return $matDb[$name][$property];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
@@ -77,7 +77,7 @@ class Ec extends \Prefab
         $boltDb = $this->getBoltArray();
         try {
             return $boltDb[$name][$property];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
