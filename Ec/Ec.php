@@ -100,35 +100,54 @@ class Ec extends \Prefab
         return $this->matProp($matName, 'fu');
     }
 
-    public function matList($matName = 'mat', $default = 'S235', $title = 'Anyagminőség')
+    public function matList($variableName = 'mat', $default = 'S235', $title = 'Anyagminőség')
     {
         $blc = \Blc::instance();
         $matDb = $this->getMaterialArray();
         $keys =  array_keys($matDb);
-        $list = array();
+        $list = [];
         foreach ($keys as $key) {
             $list[$key] = $key;
         }
-        $blc->lst($matName, $list, $title, $default, '');
+        $blc->lst($variableName, $list, $title, $default, '');
 
-        if (\Base::instance()->get('_'.$matName) == 'Units') {
+        if (\Base::instance()->get('_'.$variableName) == 'Units') {
             $units = '';
             foreach ($matDb['Units'] as $prop => $unit) {
-                $units .= $prop.' ['.$unit.']; ';
+                if ($prop != '' && $prop != 'name') {
+                    if ($unit === 0 || $unit == '') {
+                        $unit = '-';
+                    }
+                    $units .= $prop.' ['.$unit.']; ';
+                }
             }
             $blc->txt($units);
         }
     }
 
-    public function boltList($name = 'btName', $default = 'M16', $title = 'Csavar betöltése')
+    public function boltList($variableName = 'bolt', $default = 'M16', $title = 'Csavar betöltése')
     {
+        $blc = \Blc::instance();
         $boltDb = $this->getBoltArray();
         $keys =  array_keys($boltDb);
         $list = [];
         foreach ($keys as $key) {
             $list[$key] = $key;
         }
-        \Blc::instance()->lst($name, $list, $title, $default, '');
+        \Blc::instance()->lst($variableName, $list, $title, $default, '');
+
+        if (\Base::instance()->get('_'.$variableName) == 'Units') {
+            $units = '';
+            foreach ($boltDb['Units'] as $prop => $unit) {
+                if ($prop != '' && $prop != 'name') {
+                    if ($unit === 0 || $unit == '') {
+                        $unit = '-';
+                    }
+                    $units .= $prop.' ['.$unit.']; ';
+                }
+            }
+            $blc->txt($units);
+        }
     }
 
     public function sectionFamilyList($variableName = 'sectionFamily', $title = 'Szelvény család', $default = 'HEA')
