@@ -112,16 +112,22 @@ class Ec extends \Prefab
         $blc->lst($variableName, $list, $title, $default, '');
 
         if (\Base::instance()->get('_'.$variableName) == 'Units') {
-            $units = '';
+            $units = 'A számítás a továbbiakban az alapértelmezett értékkel fut le: *'.$default.'*
+            
+Jellemzők és mértékegységek: 
+            
+';
             foreach ($matDb['Units'] as $prop => $unit) {
                 if ($prop != '' && $prop != 'name') {
                     if ($unit === 0 || $unit == '') {
                         $unit = '-';
                     }
-                    $units .= $prop.' ['.$unit.']; ';
+                    $units .= '+ '.$prop.' ['.$unit.']
+';
                 }
             }
-            $blc->txt($units);
+            $blc->md($units);
+            \Base::instance()->set('_'.$variableName, $default);
         }
     }
 
@@ -137,13 +143,18 @@ class Ec extends \Prefab
         \Blc::instance()->lst($variableName, $list, $title, $default, '');
 
         if (\Base::instance()->get('_'.$variableName) == 'Units') {
-            $units = '';
+            $units = 'A számítás a továbbiakban az alapértelmezett értékkel fut le: *'.$default.'*
+            
+Jellemzők és mértékegységek: 
+            
+';
             foreach ($boltDb['Units'] as $prop => $unit) {
                 if ($prop != '' && $prop != 'name') {
                     if ($unit === 0 || $unit == '') {
                         $unit = '-';
                     }
-                    $units .= $prop.' ['.$unit.']; ';
+                    $units .= '+ '.$prop.' ['.$unit.']
+';
                 }
             }
             $blc->txt($units);
