@@ -13,7 +13,11 @@ Class Readme extends \Ecc
      */
     public function calc($f3, $blc, $ec)
     {
-        $blc->toc();
+        $f3->set('HIGHLIGHT', true);
+
+        $blc->region0('toc', 'Tartalomjegyzék');
+            $blc->toc();
+        $blc->region1('toc');
 
         $text1 = file_get_contents($f3->BASE.'vendor/resist/ecc-calculations/README.md');
         $blc->md($text1);

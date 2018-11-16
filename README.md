@@ -2,37 +2,33 @@
 
 Az ***Ecc*** egy webes számítási dokumentumokat kezelő szerveroldali keretrendszer. 
 
-Egy dokumentum beviteli mező, kép, szöveg, matematikai kifejezés stb. blokkokból épül fel. A rendszer része egy Eurocode alapú függvény- és adatgyűjtemény is.
-
-A dokumentumok forráskódja megtekinthető: [bitbucket/resist/ecc-calculations](https://bitbucket.org/resist/ecc-calculations/src) 
+Egy dokumentum ( *natív számítási osztály* ) beviteli mező, kép, szöveg, matematikai kifejezés stb. blokkokból épül fel. A rendszer része egy Eurocode alapú függvény- és adatgyűjtemény is. 
 
 ## Számítások futtatása
 
-Dokumentumvezérlő *Futtatás* parancsára vagy *Enter* billentyűparancsra a számítás lefut. Automatikusan lefut továbbá bizonyos beviteli mezők változatásakor.
+A menü *Futtatás* parancsára vagy *Enter* billentyűparancsra a számítás lefut. Automatikusan lefut továbbá bizonyos beviteli mezők változatásakor.
 
 ## Számítások mentése szerverre
 
-A módosított beviteli mezők elmenthetők a szerverre a Dokumentumvezérlő *Mentés szerverre* parancsára vagy az *s* billentyűparancsra.
+A módosított beviteli mezők elmenthetők a szerverre a menü *Mentés szerverre* parancsára vagy az *s* billentyűparancsra.
 
-A rendszer a legfelső sorba (vízszintes vonal a cím alatt) írt *Projekt néven* fogja elmenteni a paramétereket.
+A rendszer a legfelső sorba (vízszintes vonal a cím alatt) írt *Projekt néven* fogja elmenteni a paramétereket. Azonos név esetén felülírás van!
 
-A mentés a bejelentkezett felhasználónak lesz csak elérhető. Mentés betölthető vagy törölhető a [kezdőlapi](https://structure.hu/calc) listázásnál.
+Mentés betölthető vagy törölhető a [kezdőlapi](https://structure.hu/calc) listázásnál vagy a menüből.
 
-## Nyomtatás, PDF mentés
+## Nyomtatás, PDF nyomtatás
 
-Nyomtatás és PDF mentés elérhető a dokumentumvezérlőből. 
+Az értesítés-, tartalomjegyzék- és összecsukott blokkok (összecsukott fejezetek, régiók, megjegyzések) nem kerülnek nyomtatásra.
 
-Az értesítési-, tartalomjegyzék- és összecsukott blokkok (összecsukott fejezetek, régiók, megjegyzések) nem kerülnek nyomtatásra.
-
-A PDF mentés szerver oldalon történik, így egyes blokkok (pl. beviteli mezők) helyettesítésre kerülnek. 
+Nyomtatáshoz a rendszer automatikusan átalakított megjelenést biztosít.
 
 ## Jegyzetek
 
-Megjegyzések a számításhoz - előhívható a dokumentumvezérlőből vagy a *n* billetyűparancsra.
+Megjegyzések a számításhoz - előhívható a menüből vagy a *n* billetyűparancsra.
 
 ## Pecsét
 
-Dokumentumvezérlőből vagy *p* billentyűparancsra előhívható tervpecsét mentett dokumentumokhoz. 
+Menüből vagy *p* billentyűparancsra előhívható tervpecsét mentett dokumentumokhoz. 
 
 ## Billentyűparancsok
 
@@ -40,13 +36,19 @@ Dokumentumvezérlőből vagy *p* billentyűparancsra előhívható tervpecsét m
 + *n*: jegyzetek mutatása/rejtése
 + *s*: dokuemntum mentése szerverre
 + *p*: pecsét mutatása
-+ *t* lap teteje
++ *t*: lap teteje
+
+## Forráskód, changelog, fejlesztés
+
+A dokumentumok forráskódja megtekinthető: [bitbucket/resist/ecc-calculations](https://bitbucket.org/resist/ecc-calculations/src)
+
+Forráskód, changelog és hozzászólás linkek megtalálhatók a menüben.
+
+Hozzászólások, észrevételek a tároló hibajegy kezelő rendszerén keresztül, megfelelő címkézéssel történhet.
 
 ---
 
----
-
-# Ecc Calculations
+# Ecc
 
 **Native classes of Eurocode based calculations for structural design on [structure.hu](https://structure.hu)**
 
@@ -55,29 +57,27 @@ Dokumentumvezérlőből vagy *p* billentyűparancsra előhívható tervpecsét m
 + **Repository:** [bitbucket/resist/ecc-calculations](https://bitbucket.org/resist/ecc-calculations)
 + **Issue tracker:** [bitbucket/resist/ecc-calculations/issues](https://bitbucket.org/resist/ecc-calculations/issues)
 + **Changelog:** - [bitbucket/resist/ecc-calculations/commits](https://bitbucket.org/resist/ecc-calculations/commits)
-+ **License:** CDDL-1.0 Copyright 2018 Bence VÁNKOS
 
 --- 
 
 ## General notes for development
 
-+ ***Ecc*** (actually *Ecc()* class) is the PHP framework that runs, renders, updates etc. calculations (in fact the calculation classes' *calc()* method).
++ ***Ecc*** (actually *Ecc()* class) is the PHP framework that runs, renders, updates etc. calculations (in fact the native calculation classes' *calc()* method).
 + *Ecc* (and whole website) uses [Fatfree Framework](https://fatfreeframework.com) as engine, it's autoloaded and Fatfree singleton object is available everywhere globally as **`$f3`**. *Hive* is *f3*'s global storage.
 + ***Blc()*** class is part of the *Ecc* framework and it's supposed to render GUI elements like inputs, definitions and other blocks. Calculation methods are built up from these blocks, but may contain vanilla PHP code too.
-+ ***Ec()*** class contains Eurocode specific methods, datas or predefined GUI elements. Using this class is optional. ***EcNSEN()*** is similar to *Ec()* but contains Eurocode Norwegian National Annex specific methods. The two classes can be used parallelly.
-+ [AsciiMath](http://asciimath.org/) **math expressions** are compiled by [MathJax](https://www.mathjax.org), write them between with code marks anywhere (needs to be escaped in Markdown regions). e.g. \\`x=1\\`.
++ ***Ec()*** class contains Eurocode specific methods, datas or predefined GUI elements. *Ec()* autoloaded as well.
++ [AsciiMath](http://asciimath.org/) **math expressions** are compiled by [MathJax](https://www.mathjax.org) on client side, write them between with &grave; code marks anywhere. (Needs to be escaped in Markdown regions unless mentioned otherwise.)
 + HTML tags are cleaned generally.
 + [Markdown](https://en.wikipedia.org/wiki/Markdown) is enabled generally.
-+ Toggled GUI elements are not printed.
++ [GUMP](https://github.com/Wixel/GUMP) and [V3](https://bitbucket.org/resist/v3/) validation libraries are available.
 + Regions always need two lines of code using the same identifier name: starter and end blocks (marked in method name by 0 and 1)
-+ `$help` parameter creates small muted text block generally. Markdown is enabled, renders only: `br, em, i, strong, b, a, code` tags.
-+ Reserved variable final names: `_project*`, `_stamp*`, `print` - e.g. `$blc->def('project', 1, '%%')` creates `f3->_project` variable in Hive, which is reserved for saved data name
++ Reserved variable final names: `_project*`, `_stamp*`, `print` - e.g. `$blc->def('project', 1, '%%')` creates `f3->_project` variable in *Hive*, which is reserved for saved data name.
 
 ---
 
 ## Initialization / Boilerplate calculation class
 
-Example of a calculation class
+Example of a calculation class:
 
 ```php
 
@@ -86,15 +86,12 @@ namespace Calculation;
 // This class will extend Ecc framework
 Class Boilerplate extends \Ecc
 {
-    // This function will be called by Ecc, parameter is Fatfree Framework's singleton
-    public function calc($f3)
+    // "calc" method will be called by Ecc - parameters are given by the consctructor:
+    // $f3 = \Base::instance(); // Ftafree Framework
+    // $blc = \Blc::instance(); // Blc GUI methods
+    // $ec = \Ec::instance(); // Ec Eurocode methods
+    public function calc($f3, $blc, $ec)
     {
-        // Load Eurocode
-        $ec = \Ec::instance();
-        
-        // Load Blc
-        $blc = \Blc::instance();
-        
         // Load LavaChart if needed
         $lava = new \Khill\Lavacharts\Lavacharts;
 
@@ -102,7 +99,7 @@ Class Boilerplate extends \Ecc
         $blc->txt('Hello World!');
         
         // Custom PHP code
-        if (1 == 1) {
+        if (1 === 1) {
             $f3->var = 1;
         }
         
@@ -115,155 +112,230 @@ Class Boilerplate extends \Ecc
 
 ---
 
-## Ecc framework blocks and regions
+## Ecc/Blc framework blocks and regions
 
-### *input* block
+### Dynamic blocks
 
-General input field that defines variable in *f3 Hive*.
+Rendered dynamic blocks are generally form elements that interact with user and handle data submitting.
 
-`$blc->input($variableName, $title, [$defaultValue, $unit, $help])`
+These blocks create global variable in *f3 Hive* with underscore: e.g. `$f3->_x` if `$variableName = 'x'`. Set value is the default value of field or submitted POST data. 
 
-Notes:
+Validation of submitted data is via GUMP if given GUMP validation string (`$gumpValidation`) is not set to `false`. 
+Error block is rendered if validation fails, but calculation will be run with default value of that field.
+e.g. `$gumpValidation = 'alpha_numeric|max_len,100|min_len,6'` 
 
-+ `$variableName` creates global variable in f3 Hive with underscore: e.g. `$f3->_variableName`
-+ `$variableName` is added to title by default, if `title` does not conatin additional *math expression*
+#### *input* block
 
-### *boo* block
+Renders general input field that defines variable in *f3 Hive*.
 
-Boolean checkbox input field that defines variable in *f3 Hive*.
+```php
+$blc->input($variableNname, $title [, $defaultValue = false, $unit = false, $help = false, $gumpValidation = false])
+```
 
-`$blc->boo($variableName, $title, [$defaultValue, $help])`
++ `$variableName` (string) creates variable in *Hive* with underscore.
++ `title` (string) creates label for input field. `$variableName` is added to title by default as math expression, if `$title` does not contain additional *math expression*.
++ `$defaultValue` (mixed) default value of field.
++ `$unit` (string) creates appended label for input field. GUI only feature.
++ `$help` (string) creates help/description text for input field. Markdown and math expressions without escaping are enabled.
++ `$gumpValidation` (string) GUMP validation string.
 
-Notes:
+#### *numeric* block
 
-+ `$variableName` creates global variable in f3 Hive with underscore: e.g. `$f3->_variableName`
+Renders numeric input field that defines variable in *f3 Hive*. 
+
+```php
+numeric($variableNname, $title [, $defaultValue = false, $unit = false, $help = false])
+```
+
++ No additional validation available. This field is an *input block* with `$gumpValidation = 'numeric'`.
++ `$variableName` (string) creates variable in *Hive* with underscore.
++ `title` (string) creates label for input field. `$variableName` is added to title by default as math expression, if `$title` does not contain additional *math expression*.
++ `$defaultValue` (numeric) default value of field.
++ `$unit` (string) creates appended label for input field. GUI only feature.
++ `$help` (string) creates help/description text for input field. Markdown and math expressions without escaping are enabled.
+
+#### *boo* block
+
+Renders boolean checkbox input field that defines variable in *f3 Hive*.
+
+```php
+$blc->boo($variableName, $title [, $defaultValue = false, $help = false])
+```
+
++ `$variableName` (string) creates variable in *Hive* with underscore.
++ `title` (string) creates label for input field. `$variableName` is added to title by default as math expression, if `$title` does not contain additional *math expression*.
++ `$defaultValue` (boolean) default value of field.
++ `$help` (string) creates help/description text for input field. Markdown and math expressions without escaping are enabled.
 + values are `1` or `0`
 
-### *lst* block
+#### *lst* block
 
-List / Selection menu that defines variable in *f3 Hive*.
+Renders list/dropdown menu that defines variable in *f3 Hive*.
 
-`$blc->lst($variableName, $source, $title, [$defaultValue, $help])`
+```php
+$blc->lst($variableName, $source, $title [, $defaultValue = false, $help = false, $gumpValidation = false])
+```
 
-Notes:
++ `$variableName` (string) creates variable in *Hive* with underscore.
++ `$source` (array, mixed) is associative array with GUI text and value pairs: e.g. `['First GUI member' => 0, 'Second GUI member' => 1]`
++ `title` (string) creates label for input field. `$variableName` is added to title by default as math expression, if `$title` does not contain additional *math expression*.
++ returned value is `$source`'s 2nd column.
++ `$defaultValue` (mixed) default value of field and referenced by `$source`'s 2nd column (aka *value*).
++ `$help` (string) creates help/description text for input field. Markdown and math expressions without escaping are enabled.
++ `$gumpValidation` (string) GUMP validation string. **TODO: ignored yet**
 
-+ `$variableName` creates global variable in f3 Hive with underscore: e.g. `$f3->_variableName`
-+ `$source` is associative array: e.g. `['First GUI member' => 0, 'Second GUI member' => 1]`
-+ returned value is `$source`'s 2nd column
-+ `$defaultValue` is referenced by `$source` 2nd column
+#### *area* block
 
-### *area* block
+Renders textarea input field that defines variable in *f3 Hive*.
 
-Textarea input field that defines variable in *f3 Hive*.
+```php
+$blc->area($variableName, $title [, $defaultValue = false, $help = false, $gumpValidation = false])
+```
 
-`$blc->area($variableName, $title, [$default, $help])`
++ `$variableName` (string) creates variable in *Hive* with underscore.
++ `title` (string) creates label for input field. `$variableName` is added to title by default as math expression, if `$title` does not contain additional *math expression*.
++ `$defaultValue` (string) default value of field.
++ `$help` (string) creates help/description text for input field. Markdown and math expressions without escaping are enabled.
++ `$gumpValidation` (string) GUMP validation string. **TODO: ignored yet**
 
-+ `$variableName` creates global variable in f3 Hive with underscore: e.g. `$f3->_variableName`
+#### *def* block
 
-### *def* block
+Variable definition block with rendered math expression support.
 
-Variable definition block with math expression support.
+```php
+$blc->def($variableName, $result, $mathExpression [, $help = false])
+```
 
-`$blc->def($variableName, $result, $math, [$help])`
++ `$variableName` (string) creates variable in *Hive* with underscore.
++ `$result` (mixed) contains any PHP result or calculation that will be stored in `$f3->_variableName`.
++ `$mathExpression` (string) is mathematical expression without \` code marks. *%%* is replaced by `$result`.
++ `$help` (string) creates help/description text for input field. Markdown and math expressions without escaping are enabled.
 
-Notes:
+### Static blocks
 
-+ `$variableName` creates global variable in f3 Hive with underscore: e.g. `$f3->_variableName`
-+ `$result` may contain any PHP calculation that will be stored in `$f3->_variableName`
-+ `$math` is mathematical expression without \` \` code marks. *%%* is replaced by `$result`
+Rendered static blocks are simple GUI elements.
 
-### *hr* block
+#### *hr* block
 
-Simple separator line
+Renders simple separator line.
 
-`$blc->hr();`
+```php
+$blc->hr();
+```
 
-### *h1*, *h2*, *h3* blocks
+#### *h1*, *h2*, *h3* blocks
 
-Headings with lead paragraphs as help.
+Renders headings with lead paragraphs.
 
-`$blc->h1(head, [help]);`
+```php
+$blc->h1($headingTitle [, $subTitle = false]);
+```
 
-`$blc->h2(head, [help]);`
+```php
+$blc->h2($headingTitle [, $subTitle = false]);
+```
 
-`$blc->h3(head, [help]);`
+```php
+$blc->h3($headingTitle [, $subTitle = false]);
+```
 
-Notes:
+```php
+$blc->h4($headingTitle [, $subTitle = false]);
+```
 
-+ *h1* can be toggled on GUI.
++ `$headingTitle` (string) creates heading element. Some HTML is enabled: *span, em, strong, small, code*
++ `$subTitle` (string) creates lead paragraph as subtitle. Markdown and math expressions without escaping are enabled.
++ *h1* block can be toggled on GUI.
++ Heading blocks are not necessary paired with corresponding HTML tag.
 
-### *math* block
+#### *math* block
 
-Simple math text for mathematical expressions, compiled by MathJax.
+Renders simple math text for mathematical expressions, compiled by MathJax.
 
-`$blc->math($math, [$help]);`
+```php
+$blc->math($mathExpression [, $help = false]);
+```
 
-Notes: 
-
-+ In `$math` define expression without code marks \` \`
-+ *%%%* adds vertical spacing.
++ In `$mathExpression` (string) define expression without \` code marks.
++ *%%%* replaced by vertical spacing in `$mathExpression`.
++ `$help` (string) creates help/description text for input field. Markdown and math expressions without escaping are enabled.
 + This block does not define variable.
 
-### *txt* block
+#### *txt* block
 
-Simple text block
+Renders simple text block.
 
-`$blc->txt([$text, $help])`
+```php
+$blc->txt([$text, $help])
+```
 
-Notes:
++ `$help` (string) creates muted text. Markdown and math expressions without escaping are enabled.
++ Both `$txt` and `$help` parameters are optional, since muted helper text can be generated.
 
-+ Both `$txt` and `$help` are optional, since muted helper text can be generated
+#### *html* block
 
-### *html* block
+Renders simple HTML5 block. USE IT CAREFULLY!
 
-Simple HTML5 block
+```php
+$blc->txt($html)
+```
 
-`$blc->txt($html)`
++ `$html` (string) Not cleaned, validated or sanitized!
 
-### *md* block
+#### *md* block
 
-Simple Markdown block
+Renders simple Markdown block.
 
-`$blc->txt($md)`
+```php
+$blc->md($md)
+```
 
-### *note* block
++ `$md` (string) Markdown string. HTML tags are cleaned (except *br*).
++ Math expressions should be written with escaped \` code marks.
 
-Hidden by default notes and foot-notes for users.
 
-`$blc->note($text)`
+#### *note* block
 
-Notes:
+Renders hidden by default notes and foot-notes for users.
 
-+ `$note` may contain math expression.
+```php
+$blc->note($noteText);
+```
 
-### *pre* block
++ `$noteText` (string) is text of note. Markdown and math expressions without escaping are enabled.
 
-Preformatted text block.
+#### *pre* block
 
-`$blc->pre($text)`
+Renders preformatted text block.
 
-### *img* block
+```php
+$blc->pre($text)
+```
 
-Image block with URL and Base64 encoded inline data support.
++ `$text` (string) is the text of block.
++ HTML tags are cleaned in `$text`
 
-`$blc->img($src_base64, [$help])`
+#### *img* block
 
-Notes:
+Renders image block with URL and Base64 encoded inline data support.
 
-+ `$src_base64` may be valid URL or Base64 encoded image data without *data:* clarification
-+ *title* attributum of *img* tag will be the `$help` text
+```php
+$blc->img($src_base64 [, $caption = ''])
+```
 
-### *write* block
++ `$src_base64` (string) may be valid URL or Base64 encoded image data without *data:* clarification
++ `$caption` (string) is set as image caption and *img* tag's title attributum. Markdown and math expressions without escaping are enabled.
 
-Generates image block from canvas file and text source.
+#### *write* block
 
-`$blc->write($imageFile, $textArray, [$help])`
+Generates img block and renders tagged image from canvas file and text source.
 
-Notes:
+```php
+$blc->write($imageFile, $textArray [, $caption = ''])
+```
 
-+ `$imageFile` is canvas file and it is located on server (in *ecc-calculations/canvas* folder): e.g. `'vendor/resist/ecc-calculations/canvas/wind0.jpg'`
-+ Texts are always red
-+ `$textArray` is multidimensional associative array contains font-size, coordinates and texts:
++ `$imageFile` (string) is the canvas file located on server (in *ecc-calculations/canvas* folder): e.g. `'vendor/resist/ecc-calculations/canvas/wind0.jpg'`
++ `$textArray` (array) is multidimensional associative array contains font-size, coordinates and texts:
 
 ```php
 $textArray = array(
@@ -283,50 +355,104 @@ $textArray = array(
 ```
 
 + Coordinates: x/y 0/0: canvas's top left corner, x is horizontal distance; text is placed by it's bottom left corner
++ Texts are always red
++ `$caption` (string) is set as image caption and *img* tag's title attribute. Markdown and math expressions without escaping are enabled.
 
-### Charts
+#### *label* block
 
-#### JSXGraph
+Renders label/badge element.
 
-`TODOC` see Annex/Snippets
-
-#### Google Charts / LavaCharts
-
-`TODOC` see Annex/Snippets
-
-### *label* block
-
-Creates label.
-
-`$blc->label($value, [$help])`
-
-Notes:
+```php
+$blc->label($value [, $text = ''])
+```
 
 + Set `$value = 'yes'` for green label
 + Set `$value = 'no'` for red label
-+ `$help` is added as label text
-+ If `value` is numeric, label is represented as unitilization label converted to [%]: `$value` integer larger than 1.0 will be red. Use `$help` to extend label.
++ If `$value` is numeric, label is represented as unitilization label converted to [%]: `$value` integer larger than 1.0 will be red. Use `$text` to extend label.
++ `$text` (string) is added as label text. Markdown and math expressions without escaping are enabled.
 
-### *region* region
+#### *table* block
 
-General region that can be toggled.
-
+Renders table from associative array.
 
 ```php
-$blc->region0($name, [$help = 'Számítások']) // for start
+$blc->table($array [, $mainKey = '-', $caption])
+```
+
++ `$mainKey` (string) is 1/1 (top left corner) cell's text
++ `$caption` (string) is table caption
++ `$array` (array) is a multidimensional associative array. Outer array contains rows, inner arrays contain columns. Outer array keys are row titles (first column), inner arrays' keys are column titles (means these are repeated in every sub-array!). e.g.: 
+
+```php
+$array = array(
+    "Col-1 Row-1 title" => array(
+        "Col-2 title" => "Col-2 Row-1 value", 
+        "Col-3 title" => "Col-3 Row-1 value",
+    ),
+    "Col-1 Row-2 title" => array(
+            "Col-2 title" => "Col-2 Row-2 value", 
+            "Col-3 title" => "Col-3 Row-2 value",
+        )        
+);
+```
+
+#### *success*, *danger*, *info* blocks
+
+Renders identical regions with title. Learn more at regions.
+
+```php
+$blc->success($md [, $title = false])
+
+$blc->danger($md [, $title = false])
+
+$blc->info($md [, $title = false])
+```
+
++ `$md` (string) is Markdown text of block, math expressions should be escaped.
++ Generated region is with random identifier name.
+
+#### *toast* block
+
+Displays toast alert via javascript.
+
+```php
+$blc->toast($text [, $type = 'info', $title = false])
+```
+
++ `$text` (string) is toast message. Some HTML is enabled (*em, strong*).
++ `$type` (string) is toast type: *info, warning, danger, success*
++ `$title` (string) is toast title. Some HTML is enabled (*em*).
+
+#### *toc()* block
+
+Renders Table of Contents  - numbered list generated by javascript from heading blocks.
+
+```php
+$blc->toc()
+```
+
+### Regions
+
+Regions always need two lines of code using the same identifier name: starter and end blocks (marked in method name by 0 and 1)
+
+#### *region* region
+
+Renders general region that can be toggled.
+
+```php
+$blc->region0($name [, $title = 'Számítások']) // for start
     // some blocks
 $blc->region1($name) // for end
 ```
 
-Notes:
-
-+ `$name` for start and end blocks have to be the same
++ `$name` (string) is identifier. For start and end blocks have to be the same.
++ `$title` (string) is heading of the block
 + Hidden regions are not printed
++ Can be toggled
 
-### *success*, *danger*, *info* regions
+#### *success*, *danger*, *info* regions
 
-Colored regions.
-
+Render olored regions.
 
 ```php
 $blc->success0($name) // for start
@@ -342,61 +468,22 @@ $blc->info0($name) // for start
 $blc->info1($name) // for end
 ```
 
-Notes:
-
-+ `$name` for start and end blocks have to be the same
++ `$name` (string) is identifier. For start and end blocks have to be the same.
 + *success* region is green, *danger* is red, *info* is blue
 
-### *table* block
+### Charts
 
-Generates table from associative array.
+#### JSXGraph
 
-`$blc->table($array, [$mainKey, $help])`
+See Annex/Snippets.
 
-Notes:
+#### Google Charts / LavaCharts
 
-+ `$mainKey` is 1/1 (top left corner) cell's text
-+ `$help` is table caption
-+ `$array` is a multidimensional associative array. Outer array contains rows, inner arrays contain columns. Outer array keys are row titles (first column), inner arrays' keys are column titles (means these are repeated in every sub-array!). e.g.: 
-
-```php
-$table0 = array(
-    "Col-1 Row-1 title" => array(
-        "Col-2 title" => "Col-2 Row-1 value", 
-        "Col-3 title" => "Col-3 Row-1 value",
-    ),
-    "Col-1 Row-2 title" => array(
-            "Col-2 title" => "Col-2 Row-2 value", 
-            "Col-3 title" => "Col-3 Row-2 value",
-        )        
-);
-```
-
-### *success*, *danger*, *info* blocks
-
-Generates identical regions with title.
-
-`$blc->success($md, [$title])`
-
-`$blc->danger($md, [$title])`
-
-`$blc->info($md, [$title])`
-
-Notes:
-
-+ `$md` is Markdown text
-
-### toc() block
-
-Generates Table of Contents  - numbered list by javascript from heading blocks.
-
-`$blc->toc()`
+See Annex/Snippets.
 
 ---
 
 ## *Ec()* Eurocode class
-
-For Eurocode methods call `Ec()` class first.
 
 ### Globals
 
@@ -418,157 +505,290 @@ Available globals:
 + `__GcA` \`gamma_(c,A) = 1.2\`
 + `__GSA` \`gamma_(S,A) = 1.0\`
 
-### *data()*, *boltDb()* and *matDb()* methods and databases
+### Datas
 
-`$ec->data($dbName)` method returns associative array as DB.
+#### *readData(), getBoltArray(), getMaterialArray()* methods
 
-Available database names:
+Returns associative array from database.
 
-+ `$dbName = 'bolt'` for bolts or use `$ec->boltDb()` method directly
-+ `$dbName = 'mat'` for materials or use `$ec->matDb()` method directly
+```php
+$ec->readData($dbName)
+```
 
-Notes:
++ `$dbName` (string) database identifier name. Available database names: *bolt, mat*
 
-+ For datas see Annex of this documentation. Note that `data()` method returns array not JSON formatted data as in Annex.
+Direct methods for *bolt* and *material* datas:
+
+```php
+$ec->getBoltArray() // returns bolt database
+
+$ec->getMaterialArray() // returns material database
+```
+
++ For datas see Annex of this documentation. Note that these methods return array instead of JSON formatted data as it is in Annex.
 + Returned measure-of-units are represented in databases (last record)
 
-### *matProp()* and *boltProp()* methods
+#### *matProp()* and *boltProp()* methods
 
 Returns material or bolt property.
 
-`$ec->matProp($name, $property)`
+```php
+$ec->matProp($name, $property) // returns material data
 
-`$ec->boltProp($name, $property)`
+$ec->boltProp($name, $property) // returns bolt data
+```
 
-Notes:
-
-+ `$name` is material/bolt ID name in DB 
++ `$name` (string) is material/bolt identifier name in database 
 + For materials use name schemas like `'S235'` `'8.8'` `'C60/75'` `'B500'`
 + For bolts use name schema like `'M12'`
-+ `$property` is column name in DB e.g. `'fy'` `'fctk005'`, `'d0'`
++ `$property` (string) is column name in database e.g. `'fy'` `'fctk005'`, `'d0'`
 + Returned measure-of-units are represented in databases (last record)
-+ For exact IDs and properties see Annex of this documentation.
++ For exact identifiers and properties see Annex of this documentation.
 
-### *fy()* and *fu()* methods
+#### *fy()* and *fu()* methods
 
-`$ec->fy($matName, $t)` returns yield strength of steel.
+Returns material yield and ultimate strengths.
 
-`$ec->fu($matName, $t)` returns ultimate strength of steel.
+```php
+$ec->fy($matName, $t) // returns yield strength of steel
 
-Notes:
+$ec->fu($matName, $t) //returns ultimate strength of steel
+```
 
-+ `$matName` is material ID in material DB like `'S235'` `'8.8'` `'C60/75'` `'B500'`
-+ `$t` is plate thickness
-+ Reduced strengths of thick plates are considered if \`t >= 40 mm\`
++ `$matName` (string) is material identifier in material database like `'S235'` `'8.8'` `'C60/75'` `'B500'`
++ `$t` (numeric) is plate thickness in [mm]. Reduced strengths of thick plates are considered if \`t >= 40 mm\`. Alert block is rendered if so.
 + For rebars `fu` returns \`0\`
 
-### *matList()* and *boltList()* methods
+#### *matList()* and *boltList()* methods
 
-Renders *lst* block with available materials/bolts.
+Renders *lst* block with available materials/bolts. Sets selected identifier to a *Hive* variable.
 
-`$ec->matList([$matName = 'mat', $default = 'S235', $title = 'Anyagminőség'])`
+```php
+$ec->matList([$variableName = 'mat', $default = 'S235', $title = 'Anyagminőség']) // renders material list
 
-`$ec->boltList($name = 'btName', $default = 'M16', $title = 'Csavar átmérő')`
+$ec->boltList($variableName = 'bolt', $default = 'M16', $title = 'Csavar átmérő') // renders bolt list
+```
 
-### sectionFamilyList() method
++ `$variableName` (string) is saved name of variable in *Hive*.
++ `$default` (string) is material/bolt identifier name in database, e.g.: `'S235'`, `'M16'`.
++ `$title` (string) is the title of list block. Defined variable name is not part of the title automatically.
++ If user selects *Units* is in displayed list, *txt* block with units is rendered.
+
+#### *sectionFamilyList()* method
 
 Renders *lst* block for steel section families and creates variable for selected one.
 
-`sectionFamilyList([$variableName = 'sectionFamily', $title = 'Szelvény család', $default = 'HEA'])`
+```php
+sectionFamilyList([$variableName = 'sectionFamily', $title = 'Szelvény család', $default = 'HEA'])
+```
 
-Notes: 
++ `$variableName` (string) is the variable in *Hive* selected (or default) section family identifier name in it, e.g. `$f3->_variableName`.
++ `$title` (string) is the title of list block. Defined variable name is not part of the title automatically.
++ `$default` (string) is section family identifier name in database, e.g.: `'HEA'`.
 
-+ Selected (or default) section family is stored in *Hive*, variable name is defined by `$variableName`, e.g. `$f3->_variableName`
-+ List is hardcoded
+#### *sectionList()* method
 
-### sectionList() method
+Renders *lst* block with list of section in actual family and creates variable for selected one's identifier name.
 
-Renders *lst* block with list of section is actual family and creates variable for selected one.
+```php
+sectionList([$familyName = 'HEA', $variableName = 'sectionName', $title = 'Szelvény név', $default = 'HEA200'])
+```
 
-`sectionList([$familyName = 'HEA', $variableName = 'sectionName', $title = 'Szelvény név', $default = 'HEA200'])`
-
-Notes: 
-
-+ Selected (or default) section is stored in *Hive*, variable name is defined by `$variableName`, e.g. `$f3->_variableName`
-+ `$familyName` is the name of section family/group, e.g. `'HEA'`
++ `$familyName` (string) is the name of section family/group, e.g. `'HEA'`
++ `$variableName` (string) is the variable in *Hive* selected (or default) section identifier name in it, e.g. `$f3->_variableName`.
++ `$title` (string) is the title of list block. Defined variable name is not part of the title automatically.
++ `$default` (string) is section identifier name in database, e.g.: `'HEA220'`.
 + Sections for family are queried from database realtime
 
-### sectionData() method
+#### *saveSectionData()* method
 
-Save section data associative array in *Hive*.
+Save section data as associative array in *Hive*.
 
-`sectionData($sectionName, [$renderTable = false, $arrayName = 'sectionData'])`
+```php
+saveSectionData($sectionName, [$renderTable = false, $arrayName = 'sectionData'])
+```
 
-Notes:
-
-+ `$sectionName` is the name of queried section, e.g. `'HEA120'`
++ `$sectionName` (string) is the name of queried section, e.g. `'HEA120'`
 + If `$renderTable` is *true*, data table is rendered for output
 + `$arrayName` is created variable in *Hive*, e.g. `$f3->_arrayName`, `$f3->_arrayName['Iy']`
 + Array keys of values: *G	h	b	tw	tf	r1	r2	r3	Ax	Ay	Az	Ix	Iy	Iz	Iyz	I1	I2	Iw	W1elt	W1elb	W2elt	W2elb	W1pl	W2pl	i_y	i_z	yG	zG	ys	zs	fp*. For more information and units check [https://structure.hu/profil](https://structure.hu/profil)
 
-### *FtRd()* method
+### Steel related routines
 
-`$ec->FtRd($btName, $btMat)`
+General notes:
 
-### *BpRd()* method
++ `$t` (numeric) [mm] is plate thickness in millimeter.
++ `$btMat` (string) is bolt material identifier name.
++ `$stMat` (string) is steel material identifier name.
++ `$btName` (string) is bolt (size) identifier name.
 
-`$ec->BpRd($btName, $stMat, $t)`
+#### *FtRd()* method
 
-### *FvRd()* method
+Returns tension resistance per bolt in [kN].
 
-`$ec->FvRd($btName, $btMat, $n, [$As = 0])`
+```php
+$ec->FtRd($btName, $btMat)
+```
 
-### *FbRd()* method
+#### *BpRd()* method
 
-`$ec->FbRd($btName, $btMat, $stMat, $ep1, $ep2, $t, $inner)`
+Returns punching shear resistance of the bolt head and the nut in [kN].
 
-### *VplRd()* method
+```php
+$ec->BpRd($btName, $stMat, $t)
+```
 
-`$ec->VplRd($Av, $matName, $t)`
+#### *FvRd()* method
 
-### *NtRd()* method
+Returns Shear force per bolt for the ultimate limit state in [kN].
 
-`$ec->NtRd($A, $Anet, $matName, $t)`
+```php
+$ec->FvRd($btName, $btMat, $n, [$As = 0])
+```
 
-### *NuRd()* method
++ For *4.8, 5.8, 6.8* and *10.9* bolt materials returns 80% reduced resistance. Information block is rendered if so.
++ `$n` (numeric) is number of shear planes or number of the friction surfaces.
++ `$As` (numeric) [mm^2] is Tensile stress area. It can be overwritten with set of `$As`.
 
-`$ec->NuRd($Anet, $matName, $t)`
+#### *FbRd()* method
 
-### *NplRd()* method
+Returns bearing resistance per bolt in [kN].
 
-`$ec->NplRd($A, $matName, $t)`
+```php
+$ec->FbRd($btName, $btMat, $stMat, $ep1, $ep2, $t, $inner)
+```
 
-### *NcRd()* method
++ `$ep1` (numeric) [mm]
+    + The end distance from the centre of a fastener hole to the adjacent end of any part, measured in the direction of load transfer
+    + The spacing between centres of fasteners in an outer line in the direction of load transfer
++ `$ep2` (numeric) [mm]
+    + The edge distance from the centre of a fastener hole to the adjacent edge of any part, measured at right angles to the direction of load transfer
+    + The spacing measured perpendicular to the load transfer direction between adjacent lines of fasteners
++ `$inner` (boolean) sets inner or end bolt. For inner bolts use `$inner = 1`, for end bolts use `$inner = 0`.
 
-`$ec->NcRd($A, $fy)`
+#### *VplRd()* method
 
-### *McRd() method
+Returns plastic shear resistance for 1-2 Cross-section class in [kN].
 
-`$ec->McRd($W, $fy)`
+```php
+$ec->VplRd($Av, $matName, $t)
+```
 
-### *qpz()* method
++ `$Av` (numeric) [mm^2] is cross-section area in [mm^2]
 
-`$ec->qpz($z, $terrainCat)`
+#### *NtRd()* method
 
-### *linterp* method
+Returns design value of the resistance of tension force in [kN].
 
-`$ec->linterp($x1, $y1, $x2, $y2, $x)`
+```php
+$ec->NtRd($A, $Anet, $matName, $t)
+```
 
----
++ Uses *NuRd(), NplRd()*
++ `$A` (numeric) [mm^2] is gross cross-section area in [mm^2]
++ `$Anet` (numeric) [mm^2] is net area of section without holes in [mm^2]
 
-## EcNSEN() class - Norwegian National Annnex
+#### *NuRd()* method
 
-For NS-EN Eurocode methods call `EcNSEN()` class first.
+Returns design ultimate resistance to normal forces of the net cross-section at holes for fasteners in [kN]
 
-### *qpzNSEN()* method
+```php
+$ec->NuRd($Anet, $matName, $t)
+```
 
-`$ecNSEN->qpzNSEN($z, $terrainCat, $cAlt, $c0z, $vb0)`
++ `$Anet` (numeric) [mm^2] is net area of a cross section without holes in [mm^2]
+
+#### *NplRd()* method
+
+Returns design plastic resistance to normal forces of the gross cross-section in [kN].
+
+```php
+$ec->NplRd($A, $matName, $t)
+```
+
++ `$A` (numeric) [mm^2] is gross cross-section area in [mm^2]
+
+#### *NcRd()* method
+
+// TODO doc
+
+```php
+$ec->NcRd($A, $fy)
+```
+
++ `$A`
++ `$fy`
+
+#### *McRd()* method
+
+// TODO doc
+
+```php
+$ec->McRd($W, $fy)
+```
+
++ `$W`
++ `$fy`
+
+### Load routines
+
+#### *qpz()* method
+
+Returns wind peak velocity pressure.
+
+```php
+$ec->qpz($z, $terrainCat)
+```
+
++ `$z` (numeric) [m] is height in meter
++ `$terrainCat` (numeric) is terrain category: *1, 2, 3, 4*
+
+Hard coded constants:
+
+```php
+$vb0 = 23.6;
+$cDir = 1.0;
+$cSeason = 1.0;
+$cAlt = 1.0;
+$cProb = 1.0;
+$c0z = 1;
+$ki = 1;
+```
+
+### Mathematical routines
+
+#### *linterp()* method
+
+Returns linear interpolated result.
+
+```php
+$ec->linterp($x1, $y1, $x2, $y2, $x)
+```
+
++ `$x1, $y1` and `$x2, $y2` pairs are known scalars
++ returned value is *y* for given `$x`
+
+### Methods and routines for NSEN/Norwegian National Annnex
+
+#### *qpzNSEN()* method
+
+Returns Norwegian wind peak velocity pressure.
+
+```php
+$ecNSEN->qpzNSEN($z, $terrainCat, $cAlt, $c0z, $vb0)
+```
 
 --- 
 # Notes 
 
-```
+## DEPRECATED 
+
+```html
 <input name="_noFooter" id="_noFooter" type="hidden" value="1">
 ``` 
 
 print without footer
+
+## License
+
+CDDL-1.0 Copyright 2018 Bence VÁNKOS
