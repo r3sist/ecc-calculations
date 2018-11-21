@@ -11,7 +11,7 @@ Class Wall extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->input('l', 'Fal hossz', '1', 'm', '');
         $blc->input('t_w', 'Fal vastagság', '200', 'mm', '');
