@@ -267,10 +267,10 @@ Jellemzők és mértékegységek:
                         \Blc::instance()->math('f_(yd) = '.$value.' [N/(mm^2)]', 'Folyáshatár tervezési értéke');
                         break;
                     case 'fck':
-                        \Blc::instance()->math('f_(ck) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`D150/300` henger)');
+                        \Blc::instance()->math('f_(ck) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`phi 150×300` henger)');
                         break;
                     case 'fckcube':
-                        \Blc::instance()->math('f_(ck,cu\be) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`150/150/150` kocka)');
+                        \Blc::instance()->math('f_(ck,cu\be) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`cancel(square) 150×150×150` kocka)');
                         break;
                     case 'fcm':
                         \Blc::instance()->math('f_(cm) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság várható értéke');
