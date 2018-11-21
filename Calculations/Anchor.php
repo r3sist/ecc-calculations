@@ -11,7 +11,7 @@ Class Anchor extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $ec->matList('aMat','B500', 'Tüske anyagminőség');
         $ec->matList('cMat','C40/50', 'Beton anyagminőség');
