@@ -90,7 +90,13 @@ Class Boilerplate extends \Ecc
     // $f3 = \Base::instance(); // Ftafree Framework
     // $blc = \Blc::instance(); // Blc GUI methods
     // $ec = \Ec::instance(); // Ec Eurocode methods
-    public function calc($f3, $blc, $ec)
+    
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     */
+    public function calc(object $f3, object $blc, object $ec): void
     {
         // Load LavaChart if needed
         $lava = new \Khill\Lavacharts\Lavacharts;
