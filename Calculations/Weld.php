@@ -11,7 +11,7 @@ Class Weld extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->input('a', 'Varrat gyökméret', '4', 'mm', '', 'numeric');
         $blc->input('L', 'Varrat összes hossz', '100', 'mm', '', 'numeric');
