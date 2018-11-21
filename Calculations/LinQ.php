@@ -11,7 +11,7 @@ Class LinQ extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->input('x', 'Gerenda koordináták', '2,6,10,14', 'm', 'Gerenda `x.i` pozíciói, vesszővel elválasztva, 0-tól számítva.');
         $blc->input('xMAX', 'Teher felület hossza', '16', 'm', '');
