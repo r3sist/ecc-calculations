@@ -11,7 +11,7 @@ Class Kata extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->region0('adatok', 'Szerződés adatok');
             $blc->input('megbizoNev', '``Megbízó név');
