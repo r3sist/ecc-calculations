@@ -11,7 +11,7 @@ Class Column extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->h1('Közelítő méretfelvétel');
         $blc->input('N_Ed', '`N_(Ed)`: Nyomóerő', '1000', 'kN', '');
