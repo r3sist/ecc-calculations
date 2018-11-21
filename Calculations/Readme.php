@@ -11,7 +11,7 @@ Class Readme extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $f3->set('HIGHLIGHT', true);
 
@@ -121,25 +121,6 @@ $blc->chart(\'ScatterChart\', \'3\', $lava);
 
         $blc->h1('Tests');
 
-        $blc->input('x0', 'no validation: abc', 'abc', '', '', false);
-        $blc->txt('in Hive: '.$f3->_x0);
-
-        $blc->input('x1', 'numeric: abc', 'abc', '', '', 'numeric');
-        $blc->txt('in Hive: '.$f3->_x1);
-
-        $blc->input('x2', 'numeric: -10', -10, '', '', 'numeric');
-        $blc->txt('in Hive: '.$f3->_x2);
-
-        $blc->input('x3', 'numeric: 113.25', 113.25, '', '', 'numeric');
-        $blc->txt('in Hive: '.$f3->_x3);
-
-        $blc->input('4', 'alphanumeric: abc', 'abc', '', '', 'alpha_numeric');
-        $blc->txt('in Hive: '.$f3->_x4);
-
-        $blc->input('x5', 'alphanumeric: abc d', 'abc d', '', '', 'alpha_numeric');
-        $blc->txt('in Hive: '.$f3->_x5);
-
-        $blc->input('x6', 'alphanumeric: $', '$', '', '', 'alpha_numeric');
-        $blc->txt('in Hive: '.$f3->_x6);
+        $blc->numeric('x0', '', 100, '', '');
     }
 }
