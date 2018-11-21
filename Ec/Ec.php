@@ -4,6 +4,8 @@
  * https://resist.hu
  */
 
+declare(strict_types = 0);
+
 namespace Ec;
 
 class Ec extends \Prefab
@@ -42,7 +44,7 @@ class Ec extends \Prefab
         }
     }
 
-    public function readData($dbName)
+    public function readData(string $dbName): array
     {
         $this->f3->md->load(array('dname = :dname', ':dname' => $dbName));
         if (!$this->f3->md->dry()) {
@@ -52,17 +54,17 @@ class Ec extends \Prefab
         return array('');
     }
 
-    public function getMaterialArray()
+    public function getMaterialArray(): array
     {
         return $this->readData('mat');
     }
 
-    public function getBoltArray()
+    public function getBoltArray(): array
     {
         return $this->readData('bolt');
     }
 
-    public function matProp($name, $property)
+    public function matProp(string $name, string $property): float
     {
         $matDb = $this->getMaterialArray();
         try {
@@ -72,7 +74,7 @@ class Ec extends \Prefab
         }
     }
 
-    public function boltProp($name, $property)
+    public function boltProp(string $name, string $property): float
     {
         $boltDb = $this->getBoltArray();
         try {
@@ -82,7 +84,7 @@ class Ec extends \Prefab
         }
     }
 
-    public function fy($matName, $t)
+    public function fy(string $matName, float $t): float
     {
         if ($t > 40) {
             \Blc::instance()->html('','Lemezvastagság miatt csökkentett szilárdság figyelembe véve:', '');
@@ -91,7 +93,7 @@ class Ec extends \Prefab
         return $this->matProp($matName, 'fy');
     }
 
-    public function fu($matName, $t)
+    public function fu(string $matName, float $t): float
     {
         if ($t > 40) {
             \Blc::instance()->html('','Lemezvastagság miatt csökkentett szilárdság figyelembe véve:', '');
@@ -100,7 +102,7 @@ class Ec extends \Prefab
         return $this->matProp($matName, 'fu');
     }
 
-    public function matList($variableName = 'mat', $default = 'S235', $title = 'Anyagminőség')
+    public function matList(string $variableName = 'mat', string $default = 'S235', string $title = 'Anyagminőség'): void
     {
         $blc = \Blc::instance();
         $matDb = $this->getMaterialArray();
@@ -131,7 +133,7 @@ Jellemzők és mértékegységek:
         }
     }
 
-    public function boltList($variableName = 'bolt', $default = 'M16', $title = 'Csavar betöltése')
+    public function boltList(string $variableName = 'bolt', string $default = 'M16', string $title = 'Csavar betöltése'): void
     {
         $blc = \Blc::instance();
         $boltDb = $this->getBoltArray();
@@ -161,7 +163,7 @@ Jellemzők és mértékegységek:
         }
     }
 
-    public function sectionFamilyList($variableName = 'sectionFamily', $title = 'Szelvény család', $default = 'HEA')
+    public function sectionFamilyList(string $variableName = 'sectionFamily', string $title = 'Szelvény család', string $default = 'HEA'): void
     {
         $list = [
             'HEA' => 'HEA',
@@ -180,7 +182,7 @@ Jellemzők és mértékegységek:
         \Blc::instance()->lst($variableName, $list, $title, $default, '');
     }
 
-    public function sectionList($familyName = 'HEA', $variableName = 'sectionName', $title = 'Szelvény név', $default = 'HEA200')
+    public function sectionList(string $familyName = 'HEA', string $variableName = 'sectionName', string $title = 'Szelvény név', string $default = 'HEA200'): void
     {
         $familyName = \V3::alphanumeric($familyName);
         $query = "SELECT * FROM steelSection WHERE name2 LIKE '$familyName%'";
@@ -192,7 +194,7 @@ Jellemzők és mértékegységek:
         \Blc::instance()->lst($variableName, $list, $title, $default, '');
     }
 
-    public function saveSectionData($sectionName, $renderTable = false, $arrayName = 'sectionData')
+    public function saveSectionData(string $sectionName, bool $renderTable = false, string $arrayName = 'sectionData'): void
     {
         $sectionName = $this->f3->clean($sectionName);
 
@@ -223,7 +225,7 @@ Jellemzők és mértékegységek:
         }
     }
 
-    public function saveMaterialData($matName, $prefix = '')
+    public function saveMaterialData(string $matName, string $prefix = ''): void
     {
         // Saves all material properties from DB to hive variables, with prefix. e.g.: prefixfck, prefixfy etc
         $matName = $this->f3->clean($matName);
@@ -237,7 +239,7 @@ Jellemzők és mértékegységek:
         try {
             $matData = $matDb[$matName];
         } catch (Exception $e) {
-            return $e->getMessage();
+            throw new \Exception($e->getMessage());
         }
 
         \Blc::instance()->region0('materialData'.$prefix, 'Anyagjellemzők');
@@ -336,18 +338,18 @@ Jellemzők és mértékegységek:
         \Blc::instance()->region1('materialData'.$prefix);
     }
 
-    public function FtRd($btName, $btMat)
+    public function FtRd(string $btName, string $btMat): float
     {
         return (0.9 * $this->matProp($btMat, 'fu') * $this->boltProp($btName, 'As')) / (1000 * $this->f3->__GM2);
     }
 
-    public function BpRd($btName, $stMat, $t)
+    public function BpRd(string $btName, string $stMat, float $t): float
     {
         return (0.6 * pi() * $this->boltProp($btName, 'dm') * $this->fu($stMat, $t) * $t) / (1000 * $this->f3->__GM2);
     }
 
     // Nyírt csavar
-    public function FvRd($btName, $btMat, $n, $As = 0)
+    public function FvRd(string $btName, string $btMat, int $n, float $As = 0): float
     {
         if ($As == 0) {
             $As = $this->boltProp($btName, 'As');
@@ -361,7 +363,7 @@ Jellemzők és mértékegységek:
     }
 
     // Csavar palástnyomás
-    public function FbRd($btName, $btMat, $stMat, $ep1, $ep2, $t, $inner)
+    public function FbRd(string $btName, string $btMat, string $stMat, float $ep1, float $ep2, float $t, bool $inner): float
     {
         $fust = $this->fu($stMat, $t);
         $k1 = min(2.8*($ep2/ $this->boltProp($btName, 'd0')) - 1.7, 2.5);
@@ -380,39 +382,41 @@ Jellemzők és mértékegységek:
     }
 
     // Acél keresztmetszet nyírási ellenállása: Av [mm2], t [mm], returns [kN]
-    public function VplRd($Av, $matName, $t)
+    public function VplRd(float $Av, string $matName, float $t): float
     {
         $fy = $this->fy($matName, $t);
         return ($Av*$fy)/(sqrt(3)*$this->f3->__GM0*1000);
     }
 
     // Acél keresztmetszet húzási ellenállása: A Anet [mm2], t [mm], returns [kN]
-    public function NtRd($A, $Anet, $matName, $t)
+    public function NtRd(float $A, float $Anet, string $matName, float $t): float
     {
         return min($this->NuRd($Anet, $matName, $t), $this->NplRd($A, $matName, $t));
     }
 
-    public function NuRd($Anet, $matName, $t)
+    public function NuRd(float $Anet, string $matName, float $t): float
     {
         $fu = $this->fu($matName, $t);
         return (0.9*$Anet*$fu)/($this->f3->__GM2*1000);
     }
 
-    public function NplRd($A, $matName, $t)
+    public function NplRd(float $A, string $matName, float $t): float
     {
         $fy = $this->fy($matName, $t);
         return ($A*$fy)/($this->f3->__GM0*1000);
     }
 
-    public function NcRd($A, $fy) {
+    public function NcRd(float $A, float $fy): float
+    {
         return ($A*$fy)/($this->f3->__GM0*1000);
     }
 
-    public function McRd($W, $fy) {
+    public function McRd(float $W, float $fy): float
+    {
         return ($W*$fy)/($this->f3->__GM0*1000000);
     }
 
-    public function qpz($z, $terrainCat)
+    public function qpz(float $z, int $terrainCat): float
     {
         $terrainDb = array(
             '1' => array(
@@ -457,7 +461,7 @@ Jellemzők és mértékegységek:
         return number_format((1 + 7*$Ivz)*0.5*(1.25/1000)*($vmz*$vmz), 3);
     }
 
-    public static function qpzNSEN($z, $terrainCat, $cAlt, $c0z, $vb0)
+    public static function qpzNSEN(float $z, int $terrainCat, float $cAlt, float $c0z, float $vb0): float
     {
         $terrainDb = array(
             '0' => array(
@@ -504,12 +508,12 @@ Jellemzők és mértékegységek:
         return number_format((1 + 7*$Ivz)*0.5*(1.25/1000)*($vmz*$vmz), 3);
     }
 
-    public function linterp($x1, $y1, $x2, $y2, $x)
+    public function linterp(float $x1, float $y1, float $x2, float $y2, float $x): float
     {
         return (($x - $x1)*($y2 - $y1)/($x2 - $x1)) + $y1;
     }
 
-    public function A($D, $multiplicator = 1)
+    public function A(float $D, int $multiplicator = 1): float
     {
         return $D*$D*pi()*0.25*$multiplicator;
     }
