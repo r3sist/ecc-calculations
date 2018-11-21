@@ -11,7 +11,7 @@ Class Concrete extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/material) alapján történnek.');
 
