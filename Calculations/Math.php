@@ -11,7 +11,7 @@ Class Math extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $lava = new \Khill\Lavacharts\Lavacharts;
 
