@@ -10,7 +10,7 @@ Class Wind extends \Ecc
      * @var $blc \Blc
      * @var $ec \Ec\Ec
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->note('Szélterhek egyszerűsített számítása. [Changelog](https://bitbucket.org/resist/ecc-calculations/history-node/f1da14f0c5f3d7e38cfa344e336fbab7fd276136/Calculations/Wind.php?at=master)');
 
