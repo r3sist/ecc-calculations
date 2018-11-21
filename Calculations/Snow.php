@@ -10,7 +10,7 @@ Class Snow extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc($f3, $blc, $ec)
+    public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->input('A', 'Tengerszint feletti magasság', 400, 'm');
         $blc->input('C', '`C_e*C_t` Szél- és hőmérséklet összevont tényező', 1, '', 'Védett terep esetén megfontolandó: (környező terepnél alacsonyabb fekvés): \`C.e = 1.2\`');
