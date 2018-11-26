@@ -54,12 +54,12 @@ Class Weld extends \Ecc
 
         $blc->h1('Feszültség alapú általános eljárás');
         $blc->input('sigma_T', '`sigma_⊥`: Merőleges normálfeszültség', 100, 'MPa');
-        $blc->input('tau_T', '`tao_⊥`: Merőleges nyírófeszültség', 100, 'MPa');
-        $blc->input('tau_ii', '`tao_(||)`: Párhuzamos nyírófeszültség', 100, 'MPa');
-        $blc->txt('Megfelelőségi feltételek [MPa]:');
+        $blc->input('tau_T', '`tau_⊥`: Merőleges nyírófeszültség', 100, 'MPa');
+        $blc->input('tau_ii', '`tau_(||)`: Párhuzamos nyírófeszültség', 100, 'MPa');
+        $blc->txt('Megfelelőségi feltételek `[MPa]`:');
         $a = sqrt(pow($f3->_sigma_T, 2) + 3*(pow($f3->_tau_ii, 2) + pow($f3->_tau_T, 2)));
         $b = ($f3->_fu/($f3->_bw*$f3->__GM2));
         $blc->math("sqrt(sigma_⊥^2 + 3*(tau_(||)^2 + tau_⊥^2)) =  $a %%% < %%% f_u/(beta_w*gamma_(M2)) = $b");
-        $blc->label($a/$b, 'Kihasználtság');
+        $blc->label($a/$b, 'kihasználtság');
     }
 }
