@@ -63,7 +63,7 @@ Class Bolt extends \Ecc
         $blc->def('F_bRd', $ec->FbRd($f3->_bName, $f3->_bMat, $f3->_sMat, $ep1, $ep2, $f3->_t, $f3->_inner),'F_(b,Rd) = %% [kN]', 'Csavar palástnyomási ellenállása');
         $blc->label($f3->_V/$f3->_F_bRd, 'Palástnyomási kihasználtság');
 
-        $blc->region0('r2', '*k.1* és *&alpha;.b* tényezők');
+        $blc->region0('r2', '`k_1` és `alpha_b` tényezők');
             $blc->math('k_1 = '.$f3->___k1.'%%%alpha_b = '.$f3->___alphab);
         $blc->region1('r2');
 
