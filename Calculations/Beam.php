@@ -64,9 +64,11 @@ Class Beam extends \Ecc
             $blc->info1('Aw');
         $blc->region1('stirrup');
 
-        $blc->numeric('MEd', '`M_(Ed)` Nyomatéki igénybevétel', 100, 'kNm');
-        $blc->numeric('VEd', '`V_(Ed)` Nyíróerő igénybevétel', 500, 'kN');
-        $blc->numeric('NEd', '`N_(Ed)` Normál igénybevétel', 0, 'kN');
+        $blc->region0('Ed', 'Terhek megadása');
+            $blc->numeric('MEd', '`M_(Ed)` Nyomatéki igénybevétel', 100, 'kNm');
+            $blc->numeric('VEd', '`V_(Ed)` Nyíróerő igénybevétel', 500, 'kN');
+            $blc->numeric('NEd', '`N_(Ed)` Normál igénybevétel', 0, 'kN');
+        $blc->region1('Ed');
 
         $blc->h1('Vasbeton keresztmetszet teherbírási számítása');
         $blc->def('d', $f3->_h - $f3->_cnom - max($f3->_Aswfi1, $f3->_Aswfi2) - $f3->_Astfi/2, 'd = h - c_(nom) - phi_(sw,max) - phi_(st)/2 = %% [mm]', 'Hatékony magasság');
