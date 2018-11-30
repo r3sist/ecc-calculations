@@ -213,10 +213,10 @@ Class Beam extends \Ecc
         $blc->lst('rho_l', $rhos, '`rho_(l,calc):` Húzott vashányad', 0);
         $blc->note('`V_(Rd,c) = c*b_w*d*f_(ctd)` képlethez `c(f_(ctd))` értékei meghatározhtaók táblázatosan. Dulácska biztonság javára történő közelítő képletével van itt számolva a `c`. [Világos kék [19]]');
         $c = (1.2 -  $f3->_cfck/150)*(0.15*$f3->_rho_l + 0.45/(1 + $f3->_d/1000));
-        $blc->def('c', $c, 'c = (1.2 - f_(ck)/150)*(0.15*rho_l + 0.45/(1+d/1000)) = %%');
+        $blc->def('c', \H3::n4($c), 'c = (1.2 - f_(ck)/150)*(0.15*rho_l + 0.45/(1+d/1000)) = %%');
 
         $blc->success0('VRdc');
-            $blc->def('VRdc', $c*$f3->_b_w*$f3->_d*$f3->_cfctd/1000, 'V_(Rd,c) = c*b_w*d*f_(ctd) = %% [kN]');
+            $blc->def('VRdc', \H3::n2($c*$f3->_b_w*$f3->_d*$f3->_cfctd/1000), 'V_(Rd,c) = c*b_w*d*f_(ctd) = %% [kN]');
         $blc->success1('VRdc');
 
 
