@@ -184,7 +184,7 @@ Class Beam extends \Ecc
         $blc->note('`l_(bd)` a lehorgonyzási hossz tervezési értéke.');
         $blc->numeric('d', 'Keresztmetszet hatékony magasság', 200, 'mm');
         $blc->numeric('b_w', 'Keresztmetszet gerinc szélesség', 200, 'mm');
-        $blc->def('rho_lcalc', min($f3->_A_sl/($f3->_b_w*$f3->_d), 0.02), 'rho_l = min(A_(sl)/(b_w*d), 0.02) = %%', 'Húzott vashányad');
+        $blc->def('rho_lcalc', \H3::n2(min($f3->_A_sl/($f3->_b_w*$f3->_d), 0.02)*100), 'rho_l = min(A_(sl)/(b_w*d), 0.02) = %% %', 'Húzott vashányad');
         $blc->note('A húzott vashányad a biztonság javára való közelítéssel mindig lehet 0. Támasznál általában 0.');
 
         $rhos = [
