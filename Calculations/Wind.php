@@ -501,7 +501,7 @@ Class Wind extends \Ecc
         }
 
         $blc->h1('Oldalain nyitott ferdesíkú pilletető');
-        $blc->boo('phi', 'Torlasz', '1', '');
+        $blc->boo('phi', 'Torlasz', true, '');
         $blc->math('phi = '.$f3->_phi, '');
 
         $canopyTypes = array(
