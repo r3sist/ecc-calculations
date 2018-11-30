@@ -44,12 +44,12 @@ Class Beam extends \Ecc
                 $blc->def('Ast', \H3::n0($ec->A($f3->_Astfi, $f3->_Astdb)), 'A_(st) = %% [mm^2]', 'Alkalmazott húzott vasmennyiség');
                 $blc->def('Asc', \H3::n0($ec->A($f3->_Ascfi, $f3->_Ascdb)), 'A_(sc) = %% [mm^2]', 'Alkalmazott nyomott vasmennyiség');
                 $blc->def('As', \H3::n0($f3->_Ast + $f3->_Asc), 'A_s = %% [mm^2]', 'Alkalmazott összes vasmennyiség');
+                $dst = 0;
+                if ($f3->_Astdb > 0) {
+                    $dst = $f3->_h - $f3->_cnom - max($f3->_Aswfi1, $f3->_Aswfi2) - $f3->_Astfi/2;
+                }
+                $blc->def('dst', $dst, 'd_(st) = %% [mm]', 'Húzott vasalás hasznos magassága');
             $blc->info1('As');
-            $dst = 0;
-            if ($f3->_Astdb > 0) {
-                $dst = $f3->_h - $f3->_cnom - max($f3->_Aswfi1, $f3->_Aswfi2) - $f3->_Astfi/2;
-            }
-            $blc->def('dst', $dst, 'd_(st) = %% [mm]', 'Húzott vasalás hasznos magassága');
         $blc->region1('reinforcement');
 
         $blc->region0('stirrup', 'Nyírási vasalás megadása');
