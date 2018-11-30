@@ -23,7 +23,7 @@ Class Snow extends \Ecc
             $f3->_s_k = 1.25 + ($f3->_A - 400)/400;
         }
         $blc->math('s_k = '.$f3->_s_k*$f3->_C.'[(kN)/m^2]', 'Felszíni hó karakterisztikus értéke');
-        $blc->math('psi_0 = 0.5 %%% psi_1 = 0.2 %%% psi_2 = 0', 'Kombinációs tényezők');
+        $blc->math('psi_0 = 0.5 %%%psi_1 = 0.2 %%%psi_2 = 0', 'Kombinációs tényezők');
 
         $blc->h1('Hóteher félnyereg-, nyereg- és összekapcsolódó nyeregtetők esetén');
         $blc->input('alpha', 'Nyeregtető hajlása', 0, '°');
@@ -61,17 +61,15 @@ Class Snow extends \Ecc
             $_find = '60-';
         }
 
-        $blc->html('<!--');
-        $blc->def('mu_1',number_format($_mu[$_find]['mu1'], 2),'mu_1=%%', '');
-        $blc->def('mu_2',number_format($_mu[$_find]['mu2'], 2),'mu_2=%%', '');
-        $blc->def('mu_3',number_format($_mu[$_find]['mu3'], 2),'mu_3=%%', '');
-        $blc->def('s_1',number_format($f3->_mu_1*$f3->_s_k,2),'s_1=%%[(kN)/m^2]', '');
-        $blc->def('s_2',number_format($f3->_mu_2*$f3->_s_k,2),'s_2=%%[(kN)/m^2]', '');
-        $blc->def('s_3',number_format($f3->_mu_3*$f3->_s_k,2),'s_3=%%[(kN)/m^2]', '');
-        $blc->html('-->');
+        $f3->_mu_1 = number_format($_mu[$_find]['mu1'], 2);
+        $f3->_mu_2 = number_format($_mu[$_find]['mu2'], 2);
+        $f3->_mu_3 = number_format($_mu[$_find]['mu3'], 2);
+        $f3->_s_1 = number_format($f3->_mu_1*$f3->_s_k,2);
+        $f3->_s_2 = number_format($f3->_mu_2*$f3->_s_k,2);
+        $f3->_s_3 = number_format($f3->_mu_3*$f3->_s_k,2);
 
-        $blc->math('mu_1 = '.$f3->_mu_1.' %%% mu_2 = '.$f3->_mu_2.' %%% mu_3 = '.$f3->_mu_3.'', 'Alaki tényezők');
-        $blc->math('s_1 = '.$f3->_s_1.' %%% s_2 = '.$f3->_s_2.' %%% s_3 = '.$f3->_s_3.'', 'Tető hóteher karakterisztikus értékei');
+        $blc->math('mu_1 = '.$f3->_mu_1.'%%%mu_2 = '.$f3->_mu_2.'%%%mu_3 = '.$f3->_mu_3.'', 'Alaki tényezők');
+        $blc->math('s_1 = '.$f3->_s_1.'%%%s_2 = '.$f3->_s_2.'%%%s_3 = '.$f3->_s_3.'[(kN)/m^2]', 'Tető hóteher karakterisztikus értékei');
 
         $blc->region0('r0','Félnyeregtető teherelrendezése és alaki tényezője');
         $write = array(
@@ -109,7 +107,7 @@ Class Snow extends \Ecc
         $blc->write('vendor/resist/ecc-calculations/canvas/snow0.jpg', $write, 'Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön');
 
         $blc->h1('Magasabb szerkezethez kapcsolódó tetők', 'Felhalmozódó hóteher átrendeződés után');
-        $blc->math('alpha = '.$f3->_alpha.'° %%% h = '.$f3->_h.'[m] %%% mu_1 = '.$f3->_mu_1.' %%% s_k = '.$f3->_s_k.'[(kN)/m^2]', 'Alkalmazott értékek');
+        $blc->math('alpha = '.$f3->_alpha.'°%%%h = '.$f3->_h.'[m]%%%mu_1 = '.$f3->_mu_1.'%%%s_k = '.$f3->_s_k.'[(kN)/m^2]', 'Alkalmazott értékek');
         $blc->def('gamma_set', 2, 'gamma_(set) = %% [(kN)/m^3]', 'Megülepedett hó térfogatsúlya');
         $blc->input('b_3', 'Lecsúszó hó hossza', 10, 'm');
         $blc->input('b_1', 'Szomszédos épület hossza', 20, 'm');
