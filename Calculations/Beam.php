@@ -131,6 +131,22 @@ Class Beam extends \Ecc
 	    ';
         $blc->jsx('geom', $js);
 
+        $blc->h2('Nyírási teherbírás');
+        $blc->region0('V');
+            $blc->math('gamma_c = '.$f3->__Gc, 'Beton biztonsági tényező');
+            $blc->def('CRdc', 0.18/$f3->__Gc, 'C_(Rd,c) = 0.18/gamma_c = %%');
+            $blc->math('d_(st) = '.$f3->_dst.' [mm]', 'Húzott vasalás hasznos magassága');
+            $blc->def('k', min(1 + sqrt(200/$f3->_dst), 2), 'k = min{(1 + sqrt(200/d_(st))), (2):} = %%');
+            $blc->def('rho1', \H3::n4(min($f3->_Ast/$f3->_b/$f3->_dst, 0.02)), 'rho_1 = {(A_(st)/b/d_(st)), (0.02):} = %%', 'Húzott acélhányad értéke, felülről korlátozva');
+            $blc->math('b = '.$f3->_b.' [mm]', 'Keresztmetszet alsó szélessége');
+            $blc->math('f_(ck) = '.$f3->_cfck.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`cancel(square) 150×150×150` kocka)');
+            $VRdc = ($f3->_CRdc*$f3->_k*pow(100*$f3->_rho1*$f3->_cfck, 1/3)*$f3->_b*$f3->_dst)/1000;
+        $blc->def('VRdc', $VRdc, 'V_(Rdc) = C_(Rdc)*(100*rho_1*f_(ck))^(1/3)*b*d_(st) = %% [kN]', 'Keresztmetszet nyírási teherbírása');
+        $blc->region1('V');
+        $blc->success0('Vresult');
+            $blc->math('V_(Rd,c) = '.\H3::n2($VRdc).' [kN]', 'Keresztmetszet nyírási teherbírása');
+        $blc->success1('Vresult');
+
         $blc->h1('Szerkesztési szabályok ellenőrzése');
         $blc->h4('Minimális húzott vasmennyiség:');
         $blc->def('rhoMin', max(0.26*($f3->_cfctm/$f3->_rfy), 0.0015), 'rho_(min) = max{(0.26*f_(ctm)/f_(yk)),(0.0015):} = max{(0.26*'.$f3->_cfctm.'/'.$f3->_rfy.'),(0.0015):} = %%', 'Minimális húzott vashányad');
