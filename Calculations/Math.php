@@ -48,7 +48,7 @@ Class Math extends \Ecc
         $dataTable2->addNumberColumn('y');
         $dataTable2->addRow([$f3->_x, $f3->_y]);
         $tables = new \Khill\Lavacharts\DataTables\JoinedDataTable($dataTable1,$dataTable2);
-        $lava->ScatterChart('3', $tables, ['legend' => ['position' => 'none'],'title' => 'Lineáris interpoláció',]);
+        $lava->ScatterChart('3', $tables, ['legend' => ['position' => 'none'], 'title' => 'Lineáris interpoláció',]);
         $blc->chart('ScatterChart', '3', $lava);
     }
 }
