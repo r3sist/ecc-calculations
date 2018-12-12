@@ -35,9 +35,9 @@ Class Grider extends \Ecc
             $blc->lst('griderSection', $griderSections, 'Tartó keresztmetszet', 't', '');
             $blc->numeric('h', 'Tartó teljes magassága', 900, 'mm', 'Középső keresztmetszetben');
             if ($f3->_griderSection == 't' || $f3->_griderSection == 'i') {
-                $blc->numeric('b_ft', '`b_(ft)`: Fejlemez szélessége', 500, 'mm', '');
-                $blc->numeric('h_ft', '`h_(ft)`:Fejlemez magassága', 150, 'mm', '');
-                $blc->numeric('h_ht', '`h_(ht)`:Fejkiékelés magassága', 30, 'mm', '');
+                $blc->numeric('b_ft', '`b_(ft):` Fejlemez szélessége', 500, 'mm', '');
+                $blc->numeric('h_ft', '`h_(ft):` Fejlemez magassága', 150, 'mm', '');
+                $blc->numeric('h_ht', '`h_(ht):` Fejkiékelés magassága', 30, 'mm', '');
             } else {
                 $f3->_b_ft = 0;
                 $f3->_h_ft = 0;
@@ -45,9 +45,9 @@ Class Grider extends \Ecc
             }
 
             if ($f3->_griderSection == 'i') {
-                $blc->numeric('b_fb', '`b_(fb)`:Alsó öv szélessége', 400, 'mm', '');
-                $blc->numeric('h_fb', '`h_(fb)`:Alsó öv magassága', 300, 'mm', '');
-                $blc->numeric('h_hb', '`h_(hb)` Alsó öv kiékelés magassága', 30, 'mm', '');
+                $blc->numeric('b_fb', '`b_(fb):` Alsó öv szélessége', 400, 'mm', '');
+                $blc->numeric('h_fb', '`h_(fb):` Alsó öv magassága', 300, 'mm', '');
+                $blc->numeric('h_hb', '`h_(hb):` Alsó öv kiékelés magassága', 30, 'mm', '');
             } else {
                 $f3->_b_fb = 0;
                 $f3->_h_fb = 0;
