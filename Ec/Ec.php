@@ -267,10 +267,10 @@ Jellemzők és mértékegységek:
                         \Blc::instance()->math('f_(yd) = '.$value.' [N/(mm^2)]', 'Folyáshatár tervezési értéke');
                         break;
                     case 'fck':
-                        \Blc::instance()->math('f_(ck) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`phi 150×300` henger)');
+                        \Blc::instance()->math('f_(ck) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`phi` 150×300 henger)');
                         break;
                     case 'fckcube':
-                        \Blc::instance()->math('f_(ck,cu\be) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`cancel(square) 150×150×150` kocka)');
+                        \Blc::instance()->math('f_(ck,cube) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`square` 150×150×150 kocka)');
                         break;
                     case 'fcm':
                         \Blc::instance()->math('f_(cm) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság várható értéke');
@@ -310,7 +310,7 @@ Jellemzők és mértékegységek:
                         break;
                     case 'fbd':
                         \Blc::instance()->math('f_(bd)= '.$value.' [N/(mm^2)]', 'Beton és acél közti kapcsolati szilárdság bordás betonacéloknál, jó tapadás esetén');
-                        \Blc::instance()->boo('fbd07', '` `  Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa', 1, 'Csökkentés 70%-ra');
+                        \Blc::instance()->boo('fbd07', 'Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa', 1, 'Csökkentés 70%-ra');
                         if ($this->f3->_fbd07) {
                             \Blc::instance()->def('fbd', $this->f3->get('_'.$prefix.'fbd')*0.7, 'f_(bd,eff) = f_(bd)*0.7 = %%');
                         }
@@ -320,7 +320,7 @@ Jellemzők és mértékegységek:
                         \Blc::instance()->note('`f.cd = f.ck/gamma.c`');
                         break;
                     case 'fiinf28':
-                        \Blc::instance()->math('phi(infty,28) = '.$value.'', 'Kúszási tényező átlagos végértéke. (Állandó/tartós terhelés, 70% páratartalom, 28 napos szilárdság terhelése, képlékeny konzisztencia betonozása, 100 mm egyenértékű lemezvastagság.)');
+                        \Blc::instance()->math('phi(infty,28) = '.$value.'', 'Kúszási tényező átlagos végértéke. (Állandó/tartós terhelés, 70% párat., 28 n. szil. terhelése, képlékeny konzisztencia betonozása, 100 mm egyenértékű lemezvast.)');
                         break;
                     case 'Eceff':
                         \Blc::instance()->math('E_(c,eff) = '.$value.' [(kN)/(mm^2)] = '.$value*100 .' [(kN)/(cm^2)]', 'Beton hatásos alakváltozási tényezője a kúszás végértékével');
