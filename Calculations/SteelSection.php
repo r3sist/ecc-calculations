@@ -37,19 +37,19 @@ Class SteelSection extends \Ecc
         $blc->region1('rEgyedi');
 
         if ($f3->_A_v == 0) {
-            $blc->def('A_v', $f3->_sectionData['Az']*100, 'A_v = A_(z,"'.$f3->_sectionName.'") = %% [mm²]', 'Nyírási keresztmetszet');
+            $blc->def('A_v', $f3->_sectionData['Az']*100, 'A_v = A_(z,'.$f3->_sectionName.') = %% [mm^2]', 'Nyírási keresztmetszet');
         }
 
         if ($f3->_A == 0) {
-            $blc->def('A', $f3->_sectionData['Ax']*100, 'A = A_(x,"'.$f3->_sectionName.'") = %% [mm²]', 'Húzási keresztmetszet');
+            $blc->def('A', $f3->_sectionData['Ax']*100, 'A = A_(x,"'.$f3->_sectionName.'") = %% [mm^2]', 'Húzási keresztmetszet');
         }
 
         if ($f3->_Wpl == 0) {
-            $blc->def('Wpl', $f3->_sectionData['W1pl']*1000, 'W_(pl) = W_(1,pl,"'.$f3->_sectionName.'") = %% [mm³]', 'Képlékeny keresztmetszeti modulus');
+            $blc->def('Wpl', $f3->_sectionData['W1pl']*1000, 'W_(pl) = W_(1,pl,"'.$f3->_sectionName.'") = %% [mm^3]', 'Képlékeny keresztmetszeti modulus');
         }
 
         if ($f3->_Wel == 0) {
-            $blc->def('Wel', $f3->_sectionData['W1elt']*1000, 'W_(el) = W_(1,el,t,"'.$f3->_sectionName.'") = %% [mm³]', 'Rugalmas keresztmetszeti modulus');
+            $blc->def('Wel', $f3->_sectionData['W1elt']*1000, 'W_(el) = W_(1,el,t,"'.$f3->_sectionName.'") = %% [mm^3]', 'Rugalmas keresztmetszeti modulus');
         }
 
         $blc->region0('r0', 'Nettó keresztmetszet számítás, csavarszám megadása');
