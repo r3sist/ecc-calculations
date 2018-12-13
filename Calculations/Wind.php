@@ -480,23 +480,23 @@ Class Wind extends \Ecc
             $blc->table($wall);
             if ($f3->_makeWrite) {
                 $blc->region0('wall0'.$case['id'], 'Fal zóna elrendezés');
-                $write = array(
-                    array('size' => 14, 'x' => 30, 'y' => 400, 'text' => 'D:'.$wD.'kN/m²'),
-                    array('size' => 14, 'x' => 380, 'y' => 400, 'text' => 'E:'.$wE.'kN/m²'),
-                    array('size' => 14, 'x' => 65, 'y' => 260, 'text' => 'A:'.$wA.'kN/m²'),
-                    array('size' => 14, 'x' => 235, 'y' => 260, 'text' => 'B:'.$wB.'kN/m²'),
-                    array('size' => 14, 'x' => 380, 'y' => 260, 'text' => 'C:'.($f3->_d0 - $e > 0 ? $wC : 0).'kN/m²'),
-                    array('size' => 14, 'x' => 450, 'y' => 360, 'text' => ''.number_format($f3->_b0, 1).'m'),
-                    array('size' => 14, 'x' => 250, 'y' => 580, 'text' => ''.number_format($f3->_d0, 1).'m'),
-                    array('size' => 14, 'x' => 180, 'y' => 100, 'text' => ''.number_format($e/5, 1) .'m'),
-                    array('size' => 14, 'x' => 240, 'y' => 100, 'text' => ''.number_format($e - $e/5, 1) .'m'),
-                    array('size' => 14, 'x' => 315, 'y' => 100, 'text' => ''.number_format(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0), 1).'m'),
-                );
-                $blc->write('vendor/resist/ecc-calculations/canvas/wind2.jpg', $write, 'Fal zóna elrendezés');
+                    $write = array(
+                        array('size' => 14, 'x' => 30, 'y' => 400, 'text' => 'D:'.$wD.'kN/m²'),
+                        array('size' => 14, 'x' => 380, 'y' => 400, 'text' => 'E:'.$wE.'kN/m²'),
+                        array('size' => 14, 'x' => 65, 'y' => 260, 'text' => 'A:'.$wA.'kN/m²'),
+                        array('size' => 14, 'x' => 235, 'y' => 260, 'text' => 'B:'.$wB.'kN/m²'),
+                        array('size' => 14, 'x' => 380, 'y' => 260, 'text' => 'C:'.($f3->_d0 - $e > 0 ? $wC : 0).'kN/m²'),
+                        array('size' => 14, 'x' => 450, 'y' => 360, 'text' => ''.number_format($f3->_b0, 1).'m'),
+                        array('size' => 14, 'x' => 250, 'y' => 580, 'text' => ''.number_format($f3->_d0, 1).'m'),
+                        array('size' => 14, 'x' => 180, 'y' => 100, 'text' => ''.number_format($e/5, 1) .'m'),
+                        array('size' => 14, 'x' => 240, 'y' => 100, 'text' => ''.number_format($e - $e/5, 1) .'m'),
+                        array('size' => 14, 'x' => 315, 'y' => 100, 'text' => ''.number_format(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0), 1).'m'),
+                    );
+                    $blc->write('vendor/resist/ecc-calculations/canvas/wind2.jpg', $write, 'Fal zóna elrendezés');
+                $blc->region1('wall0');
             } else {
                 $blc->txt('', 'Elrendezési kép generálás kikapcsolva.');
             }
-            $blc->region1('wall0');
 
         }
 
