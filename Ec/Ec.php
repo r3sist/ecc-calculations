@@ -163,6 +163,25 @@ Jellemzők és mértékegységek:
         }
     }
 
+    public function rebarList(string $variableName = 'fi', int $default = 16, string $title = 'Vasátmérő', string $help = ''): void
+    {
+        $blc = \Blc::instance();
+        $source = [
+            'ϕ6' => 6,
+            'ϕ8' => 8,
+            'ϕ10' => 10,
+            'ϕ12' => 12,
+            'ϕ16' => 16,
+            'ϕ20' => 20,
+            'ϕ25' => 25,
+            'ϕ28' => 28,
+            'ϕ32' => 32,
+            'ϕ36' => 36,
+            'ϕ40' => 40,
+        ];
+        \Blc::instance()->lst($variableName, $source, $title, $default, $help);
+    }
+
     public function sectionFamilyList(string $variableName = 'sectionFamily', string $title = 'Szelvény család', string $default = 'HEA'): void
     {
         $list = [
@@ -516,6 +535,44 @@ Jellemzők és mértékegységek:
     public function A(float $D, int $multiplicator = 1): float
     {
         return $D*$D*pi()*0.25*$multiplicator;
+    }
+
+    // Original: https://github.com/hellofromtonya/Quadratic/blob/master/solver.php
+    public function quadratic( $a, $b, $c, $root = 'both', $precision = 3 ) {
+        $bsmfac = $b * $b - 4 * $a * $c;
+        if ( $bsmfac < 0 ) { // Accounts for complex roots.
+            $plusminusone = ' + ';
+            $plusminustwo = ' - ';
+            $bsmfac *= - 1;
+            $complex = (sqrt( $bsmfac ) / (2 * $a));
+            if ( $a < 0 ) { //if negative imaginary term, tidies appearance.
+                $plusminustwo = ' + ';
+                $plusminusone = ' - ';
+                $complex *= - 1;
+            } // End if ($a < 0)
+            $lambdaone = round( -$b / (2 * $a), $precision ) . $plusminusone . round( $complex, $precision ) . 'i';
+            $lambdatwo = round( -$b / (2 * $a), $precision ) . $plusminustwo . round( $complex, $precision ) . 'i';
+        } // End if ($bsmfac < 0)
+        else if ( $bsmfac == 0 ) { // Simplifies if b^2 = 4ac (real roots).
+            $lambdaone = round( -$b / (2 * $a), $precision );
+            $lambdatwo = round( -$b / (2 * $a), $precision );
+        } // End else if (bsmfac == 0)
+        else { // Finds real roots when b^2 != 4ac.
+            $lambdaone = (-$b + sqrt( $bsmfac )) / (2 * $a);
+            $lambdaone = round( $lambdaone, $precision );
+            $lambdatwo = (-$b - sqrt( $bsmfac )) / (2 * $a);
+            $lambdatwo = round( $lambdatwo, $precision );
+        } // End else
+        // Return what is asked for.
+        if ( 'root1' == $root ) {
+            return $lambdaone;
+        }
+        if ( 'root2' == $root ) {
+            return $lambdatwo;
+        }
+        if ( 'both' == $root ) {
+            return $lambdaone . ' and ' . $lambdatwo;
+        }
     }
 
 }
