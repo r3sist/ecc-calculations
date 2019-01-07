@@ -612,11 +612,13 @@ $ec->fu($matName, $t) //returns ultimate strength of steel
 + `$t` (numeric) is plate thickness in [mm]. Reduced strengths of thick plates are considered if \`t >= 40 mm\`. Alert block is rendered if so.
 + For rebars `fu` returns \`0\`
 
-#### *matList()* and *boltList()* methods
+#### *rebarList()*, *matList()* and *boltList()* methods
 
-Renders *lst* block with available materials/bolts. Sets selected identifier to a *Hive* variable.
+Renders *lst* block with available rebar diameters, materials and bolts. Sets selected identifier to a *Hive* variable.
 
 ```php
+$ec->rebarList([$variableName = 'fi', $default = 16, $title = 'Vasátmérő', $help = '']) // renders rebar list
+
 $ec->matList([$variableName = 'mat', $default = 'S235', $title = 'Anyagminőség']) // renders material list
 
 $ec->boltList($variableName = 'bolt', $default = 'M16', $title = 'Csavar átmérő') // renders bolt list
@@ -625,6 +627,7 @@ $ec->boltList($variableName = 'bolt', $default = 'M16', $title = 'Csavar átmér
 + `$variableName` (string) is saved name of variable in *Hive*.
 + `$default` (string) is material/bolt identifier name in database, e.g.: `'S235'`, `'M16'`.
 + `$title` (string) is the title of list block. Defined variable name is not part of the title automatically.
++ `$help` (string) is subtext for list block.
 + If user selects *Units* is in displayed list, *txt* block with units is rendered.
 
 #### *sectionFamilyList()* method
