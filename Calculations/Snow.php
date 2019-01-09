@@ -12,18 +12,18 @@ Class Snow extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $blc->input('A', 'Tengerszint feletti magasság', 400, 'm');
-        $blc->input('C', '`C_e*C_t` Szél- és hőmérséklet összevont tényező', 1, '', 'Védett terep esetén megfontolandó: (környező terepnél alacsonyabb fekvés): \`C.e = 1.2\`');
+        $blc->region0('baseData', 'Alap adatok');
+            $blc->input('A', 'Tengerszint feletti magasság', 400, 'm');
+            $blc->input('C', '`C_e*C_t` Szél- és hőmérséklet összevont tényező', 1, '', 'Védett terep esetén megfontolandó: (környező terepnél alacsonyabb fekvés): \`C.e = 1.2\`');
 
-        $blc->hr();
-
-        if($f3->_A <= 400){
-            $f3->_s_k = 1.25;
-        } else {
-            $f3->_s_k = 1.25 + ($f3->_A - 400)/400;
-        }
-        $blc->math('s_k = '.$f3->_s_k*$f3->_C.'[(kN)/m^2]', 'Felszíni hó karakterisztikus értéke');
-        $blc->math('psi_0 = 0.5 %%%psi_1 = 0.2 %%%psi_2 = 0', 'Kombinációs tényezők');
+            if($f3->_A <= 400){
+                $f3->_s_k = 1.25;
+            } else {
+                $f3->_s_k = 1.25 + ($f3->_A - 400)/400;
+            }
+            $blc->math('s_k = '.$f3->_s_k*$f3->_C.'[(kN)/m^2]', 'Felszíni hó karakterisztikus értéke');
+            $blc->math('psi_0 = 0.5 %%%psi_1 = 0.2 %%%psi_2 = 0', 'Kombinációs tényezők');
+        $blc->region1('baseData');
 
         $blc->h1('Hóteher félnyereg-, nyereg- és összekapcsolódó nyeregtetők esetén');
         $blc->input('alpha', 'Nyeregtető hajlása', 0, '°');
