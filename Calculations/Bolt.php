@@ -15,7 +15,17 @@ Class Bolt extends \Ecc
     {
         $blc->toc();
 
+        $blc->region0('r1', 'Csavar adatbázis');
+        $blc->table($ec->getBoltArray(), 'Csavar','');
+        $blc->region1('r1');
+
         $ec->boltList('bName');
+        $blc->region0('r0', 'Csavar jellemzők');
+        $blc->def('d_0', $ec->boltProp($f3->_bName, 'd0'),'d_0 = %% [mm]', 'Lyuk átmérő');
+        $f3->_d = $ec->boltProp($f3->_bName, 'd');
+        $blc->def('A', $ec->boltProp($f3->_bName, 'A'),'A = %% [mm^2]', 'Csavar keresztmetszeti terület');
+        $blc->def('A_s', $ec->boltProp($f3->_bName, 'As'),'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
+        $blc->region1('r0');
 
         $ec->matList('bMat', '8.8', 'Csavar anyagminőség');
         $ec->saveMaterialData($f3->_bMat, 'b');
@@ -26,19 +36,9 @@ Class Bolt extends \Ecc
         $blc->input('n', 'Nyírási síkok száma', 1, '', '');
         $blc->input('N', '`F_(t.Ed)` Húzóerő egy csavarra', 20, 'kN', '');
         $blc->input('V', '`F_(v.Ed)` Nyíróerő egy csavarra', 30, 'kN', '');
-        
-        $blc->region0('r0', 'Jellemzők');
-            $blc->math('btMat = '.$f3->_bMat);
-            $blc->def('d_0', $ec->boltProp($f3->_bName, 'd0'),'d_0 = %% [mm]', 'Lyuk átmérő');
-            $f3->_d = $ec->boltProp($f3->_bName, 'd');
-            $blc->def('A', $ec->boltProp($f3->_bName, 'A'),'A = %% [mm^2]', 'Csavar keresztmetszeti terület');
-            $blc->def('A_s', $ec->boltProp($f3->_bName, 'As'),'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
-            $f3->_sfy = $ec->fy($f3->_sMat, $f3->_t);
-        $blc->region1('r0');
+        $f3->_sfy = $ec->fy($f3->_sMat, $f3->_t);
+        $blc->math('f_y(t) = '.$f3->_sfy.' [N/(mm^2)]');
 
-        $blc->region0('r1', 'Csavar adatbázis');
-            $blc->table($ec->getBoltArray(), 'Csavar','');
-        $blc->region1('r1');
 
         $blc->h1('Egy csavar húzási- és kigombolódási ellenállása', '***D*** nem feszített, húzott és ***E*** feszített, húzott csavarok');
         $blc->def('F_tRd', $ec->FtRd($f3->_bName, $f3->_bMat),'F_(t,Rd) = %% [kN]', 'Csavar húzási ellenállása');
