@@ -18,9 +18,9 @@ Class Wind extends \Ecc
 
         $blc->toc();
 
-        $blc->input('h', 'Épület magasság', 10, 'm');
-        $blc->input('b', 'Épület hossz', 20, 'm');
-        $blc->input('d', 'Épület szélesség', 12, 'm');
+        $blc->input('h', '`h:` Épület magasság', 10, 'm');
+        $blc->input('b', '`b:` Épület hossz', 20, 'm');
+        $blc->input('d', '`d:` Épület szélesség', 12, 'm');
 
         $terrainCats = [
             'I. Nyílt terep' => 1,
