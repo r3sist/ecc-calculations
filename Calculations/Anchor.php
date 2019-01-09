@@ -15,24 +15,24 @@ Class Anchor extends \Ecc
     {
         $ec->matList('aMat','B500', 'Tüske anyagminőség');
         $ec->matList('cMat','C40/50', 'Beton anyagminőség');
-        $blc->input('D', 'Csapátmérő', '20', 'mm', '');
-        $blc->input('e', 'Beton felületek közti hézag', '10', 'mm', '');
-        $blc->input('c1t', '`c_(1t)` Tüske tengely erő irányra merőlegesen', '100', 'mm', '');
-        $blc->input('c2t', '`c_(2t)` Tüske tengely erő irányban', '100', 'mm', '');
-        $blc->input('n', 'Csapok száma', '2', '', '');
+        $blc->input('D', '`D:` Csapátmérő', '20', 'mm', '');
+        $blc->input('e', '`e:` Beton felületek közti hézag', '10', 'mm', '');
+        $blc->input('c1t', '`c_(1t):` Tüske tengely erő irányra merőlegesen', '100', 'mm', '');
+        $blc->input('c2t', '`c_(2t):` Tüske tengely erő irányban', '100', 'mm', '');
+        $blc->input('n', '`n:` Csapok száma', '2', '', '');
         $steelPlateDOF = [
             '0' => 0,
             '1' => 1,
             '2' => 2
         ];
-        $blc->lst('n_s', $steelPlateDOF, '`n_s` Acéllemez befogási tényező', '0');
-        $blc->input('GRd', '`gamma_(Rd)`', '1.3', '', '');
-        $blc->input('FVEd', '`F_(V,Rd)` Mértékadó nyíróerő csapban', '30', 'kN', '');
+        $blc->lst('n_s', $steelPlateDOF, '`n_s:` Acéllemez befogási tényező', '0');
+        $blc->input('GRd', '`gamma_(Rd):`', '1.3', '', '');
+        $blc->input('FVEd', '`F_(V,Ed):` Mértékadó nyíróerő csap képen', '30', 'kN', '');
         $states = [
             'Tartós, ideiglenes' => 1,
             'Földrengés' => 2
         ];
-        $blc->lst('limit', $states, '`li\mit` Tervezési állapot', 2);
+        $blc->lst('limit', $states, '`li\mit:` Tervezési állapot', 2);
 
         $blc->region0('r0', 'Számítások');
             $blc->def('fyk', $ec->matProp($f3->_aMat,'fy'), 'f_(y,k) = %% [MPa]', 'Csap karakterisztikus folyáshatára');
@@ -95,7 +95,7 @@ Class Anchor extends \Ecc
         $blc->def('FVRd', $f3->_alpha_s*$f3->_f/1000, 'F_(V,Rd) = alpha_s*f = %% [kN]', 'Nyírási csap ellenállása');
         $blc->success0('s0');
             $blc->def('FVRdS', $f3->_FVRd*$f3->_n, 'F_(V,Rd,sum) = F_(V,Rd)*n = %% [kN]', 'Nyírási csapok ellenállása');
-            $blc->label($f3->_FVEd/$f3->_FVRdS, 'Kihasználtság');
+            $blc->label($f3->_FVEd/$f3->_FVRdS, 'Csap kép kihasználtság');
         $blc->success1('s0');
     }
 }
