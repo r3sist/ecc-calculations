@@ -21,5 +21,37 @@ Class Config extends \Ecc
             $f3->mu->ueccnativemathml = \V3::boo($f3->_nativeMath);
             $f3->mu->save();
         }
+
+        if ($f3->urole >= 30) {
+            $blc->h1('Admin');
+            $query = "SELECT * FROM ecc_calculations ORDER BY cname ASC";
+            $calcList = $f3->get('db')->exec($query);
+            foreach ($calcList as $calcData) {
+                $f3->mc->reset();
+                $f3->mc->load(['cname = :cname', ':cname' => $calcData['cname']]);
+
+                $blc->region0('admin'.$calcData['cname'], $calcData['cname']);
+                $blc->h2($calcData['cname']);
+
+                $blc->input($calcData['cname'].'___ctitle', 'title', $calcData['ctitle'], '', '');
+                $f3->mc->ctitle = $f3->get('_'.$calcData['cname'].'___ctitle');
+
+                $blc->input($calcData['cname'].'___csubtitle', 'subtitle', $calcData['csubtitle'], '', '');
+                $f3->mc->csubtitle = $f3->get('_'.$calcData['cname'].'___csubtitle');
+
+                $blc->input($calcData['cname'].'___cdescription', 'description', $calcData['cdescription'], '', '');
+                $f3->mc->cdescription = $f3->get('_'.$calcData['cname'].'___cdescription');
+
+                $blc->lst($calcData['cname'].'___cgroup', ['S' => 'S', 'L' => 'L', 'G' => 'G', 'C' => 'C'], 'group', $calcData['cgroup'], '', '');
+                $f3->mc->cgroup = $f3->get('_'.$calcData['cname'].'___cgroup');
+
+                $blc->boo($calcData['cname'].'___cexpreimental', 'experimental', $calcData['cexperimental'], '');
+                $f3->mc->cexpreimental = $f3->get('_'.$calcData['cname'].'___cexpreimental');
+                if (!$f3->mc->dry()) {
+                    $f3->mc->save();
+                }
+                $blc->region1('admin'.$calcData['cname']);
+            }
+        }
     }
 }
