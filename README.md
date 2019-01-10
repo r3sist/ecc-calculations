@@ -146,7 +146,7 @@ $blc->input($variableNname, $title [, $defaultValue = false, $unit = false, $hel
 ```
 
 + `$variableName` (string) creates variable in *Hive* with underscore.
-+ `title` (string) creates label for input field. `$variableName` is added to title by default as math expression, if `$title` does not contain additional *math expression*.
++ `$title` (string) creates label for input field. `$variableName` is added to title by default as math expression, if `$title` does not contain additional *math expression*.
 + `$defaultValue` (mixed) default value of field.
 + `$unit` (string) creates appended label for input field. GUI only feature.
 + `$help` (string) creates help/description text for input field. Markdown and math expressions without escaping are enabled.
