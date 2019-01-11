@@ -13,11 +13,11 @@ Class Weld extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $blc->input('a', 'Varrat gyökméret', '4', 'mm', '', 'numeric');
-        $blc->input('L', 'Varrat összes hossz', '100', 'mm', '', 'numeric');
+        $blc->input('a', '`a:` Varrat gyökméret', '4', 'mm', '', 'numeric');
+        $blc->input('L', '`L:` Varrat összes hossz', '100', 'mm', '', 'numeric');
         $ec->matList();
-        $blc->input('t', 'Lemezvastagság', 10, 'mm');
-        $blc->input('F', '`F_(Ed)`: Erő', 10, 'kN');
+        $blc->input('t', '`t:` Lemezvastagság', 10, 'mm');
+        $blc->input('F', '`F_(Ed):`Erő', 10, 'kN');
         $blc->boo('w', 'Kétoldali sarokvarrat', 0);
         $blc->def('w', $f3->_w + 1, 'w_(sarok) = %%');
 
@@ -54,8 +54,8 @@ Class Weld extends \Ecc
 
         $blc->h1('Feszültség alapú általános eljárás');
         $blc->input('sigma_T', '`sigma_(_|_):` Merőleges normálfeszültség', 100, 'MPa');
-        $blc->input('tau_T', '`tau_(_|_)`: Merőleges nyírófeszültség', 100, 'MPa');
-        $blc->input('tau_ii', '`tau_(||)`: Párhuzamos nyírófeszültség', 100, 'MPa');
+        $blc->input('tau_T', '`tau_(_|_):` Merőleges nyírófeszültség', 100, 'MPa');
+        $blc->input('tau_ii', '`tau_(||):` Párhuzamos nyírófeszültség', 100, 'MPa');
         $blc->txt('Megfelelőségi feltételek `[MPa]`:');
         $a = sqrt(pow($f3->_sigma_T, 2) + 3*(pow($f3->_tau_ii, 2) + pow($f3->_tau_T, 2)));
         $b = ($f3->_fu/($f3->_bw*$f3->__GM2));
