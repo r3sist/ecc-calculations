@@ -13,8 +13,8 @@ Class Snow extends \Ecc
     public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->region0('baseData', 'Alap adatok');
-            $blc->input('A', 'Tengerszint feletti magasság', 400, 'm');
-            $blc->input('C', '`C_e*C_t` Szél- és hőmérséklet összevont tényező', 1, '', 'Védett terep esetén megfontolandó: (környező terepnél alacsonyabb fekvés): \`C.e = 1.2\`');
+            $blc->input('A', '`A:` Tengerszint feletti magasság', 400, 'm');
+            $blc->input('C', '`C_e*C_t:` Szél- és hőmérséklet összevont tényező', 1, '', 'Védett terep esetén megfontolandó: (környező terepnél alacsonyabb fekvés): \`C.e = 1.2\`');
 
             if($f3->_A <= 400){
                 $f3->_s_k = 1.25;
@@ -26,7 +26,7 @@ Class Snow extends \Ecc
         $blc->region1('baseData');
 
         $blc->h1('Hóteher félnyereg-, nyereg- és összekapcsolódó nyeregtetők esetén');
-        $blc->input('alpha', 'Nyeregtető hajlása', 0, '°');
+        $blc->input('alpha', '`alpha:` Nyeregtető hajlása', 0, '°');
         $blc->boo('bs', 'Akadályozott hólecsúszás', 0, '');
 
         if($f3->_bs) {
@@ -94,7 +94,7 @@ Class Snow extends \Ecc
         $blc->region1('r1');
 
         $blc->h1('Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön', 'Helyi hóhatások a tetőn');
-        $blc->input('h', 'Kiálló rész magassága', 1.2, 'm', '');
+        $blc->input('h', '`h:` Kiálló rész magassága', 1.2, 'm', '');
         $blc->def('mu_w2',max(0.8, min((2*$f3->_h)/$f3->_s_k, 2)),'mu_(w2) = %%', 'Alaki tényező');
         $blc->def('l_s', min(15, max(5, 2*$f3->_h)),'l_s = %% [m]', 'Hózug szélessége');
         $blc->def('q_sum', $f3->_mu_w2*$f3->_s_k,'q_(sum) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
@@ -107,11 +107,11 @@ Class Snow extends \Ecc
         $blc->write('vendor/resist/ecc-calculations/canvas/snow0.jpg', $write, 'Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön');
 
         $blc->h1('Magasabb szerkezethez kapcsolódó tetők', 'Felhalmozódó hóteher átrendeződés után');
-        $blc->math('alpha = '.$f3->_alpha.'°%%%h = '.$f3->_h.'[m]%%%mu_1 = '.$f3->_mu_1.'%%%s_k = '.$f3->_s_k.'[(kN)/m^2]', 'Alkalmazott értékek');
+        $blc->math('alpha = '.$f3->_alpha.'[deg]%%%h = '.$f3->_h.'[m]%%%mu_1 = '.$f3->_mu_1.'%%%s_k = '.$f3->_s_k.'[(kN)/m^2]', 'Alkalmazott értékek');
         $blc->def('gamma_set', 2, 'gamma_(set) = %% [(kN)/m^3]', 'Megülepedett hó térfogatsúlya');
-        $blc->input('b_3', 'Lecsúszó hó hossza', 10, 'm');
-        $blc->input('b_1', 'Szomszédos épület hossza', 20, 'm');
-        $blc->input('b_2', 'Alacsonyabb épület hossza', 20, 'm');
+        $blc->input('b_3', '`b_3:` Lecsúszó hó hossza', 10, 'm');
+        $blc->input('b_1', '`b_1:` Szomszédos épület hossza', 20, 'm');
+        $blc->input('b_2', '`b_2:` Alacsonyabb épület hossza', 20, 'm');
         $f3->_mu_s = 0;
         if ($f3->_alpha > 15) {
             $f3->_mu_s = $f3->_mu_1*($f3->_b_3/$f3->_l_s);
