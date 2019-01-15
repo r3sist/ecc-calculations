@@ -22,7 +22,6 @@ Class Weld extends \Ecc
         $blc->def('w', $f3->_w + 1, 'w_(sarok) = %%');
 
         $blc->region0('r0');
-            $blc->math('mat = ' . $f3->_mat);
             $blc->def('l', $f3->_L - 2 * $f3->_a, 'l = L - 2*a = %% [mm]', 'Figyelembe vett varrathossz');
             $blc->def('bw', $ec->matProp($f3->_mat, 'betaw'), 'beta_w = %%', 'Hegesztési tényező');
             $blc->def('fy', $ec->fy($f3->_mat, $f3->_t), 'f_y=%% [MPa]', 'Folyáshatár');
