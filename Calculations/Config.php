@@ -51,10 +51,26 @@ Class Config extends \Ecc
 
                 $blc->boo($calcData['cname'].'___cexpreimental', 'experimental', $calcData['cexperimental'], '');
                 $f3->mc->cexpreimental = $f3->get('_'.$calcData['cname'].'___cexpreimental');
+
+                $blc->boo($calcData['cname'].'___chidden', 'hidden', $calcData['chidden'], '');
+                $f3->mc->chidden = $f3->get('_'.$calcData['cname'].'___chidden');
+
                 if (!$f3->mc->dry()) {
                     $f3->mc->save();
                 }
                 $blc->region1('admin'.$calcData['cname']);
+            }
+
+            $blc->h2('Új számítás hozzáadása');
+            $blc->input('cname', 'Osztály azonosító', '', '', 'ecc-calculation osztály azonosító (URL azonosító lesz)', 'alpha');
+            $blc->txt('Composer autoload lefuttatása szükséges!');
+            if ($f3->_cname) {
+                $f3->mc->reset();
+                $f3->mc->cname = ucfirst($f3->get('_cname'));
+                $f3->mc->save();
+
+                $blc->toast('Új osztály beszúrva', 'success', '');
+                $blc->html('<script>$("#_cname").val("");</script>');
             }
         }
     }
