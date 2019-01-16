@@ -15,12 +15,16 @@ Class Config extends \Ecc
     {
         $f3->set('mu', new \DB\SQL\Mapper($f3->get('db'), 'users'));
 
-        $blc->boo('nativeMath', 'Szerveroldali ASCIIMath konvertálás MathML formátumba', $f3->udata['ueccnativemathml'], 'A módosítások aktiválásához teljes oldal újratöltése szükséges.');
+        $blc->h1('Képletek kezelése');
+        $blc->boo('nativeMath', 'Szerveroldali ASCIIMath konvertálás MathML formátumba', $f3->udata['ueccnativemathml'], 'MathJax helyett szerverordali képlet generálás. Csak Firefox alatt. Rondább, de gyorsabb megjelenítés.');
+        $blc->boo('svgMath', 'Képletek SVG képekként', $f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre. Ez érinti a MS Word exportot is.');
         $f3->mu->load(array('uid = :uid', ':uid' => $f3->get('uid')));
         if (!$f3->mu->dry()) {
             $f3->mu->ueccnativemathml = \V3::boo($f3->_nativeMath);
+            $f3->mu->ueccsvgmath = \V3::boo($f3->_svgMath);
             $f3->mu->save();
         }
+        $blc->txt(false, 'A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
 
         if ($f3->urole >= 30) {
             $blc->h1('Admin');
