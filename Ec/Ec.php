@@ -102,7 +102,7 @@ class Ec extends \Prefab
         return $this->matProp($matName, 'fu');
     }
 
-    public function matList(string $variableName = 'mat', string $default = 'S235', string $title = 'Anyagminőség'): void
+    public function matList(string $variableName = 'mat', string $default = 'S235', $title = ['', 'Anyagminőség']): void
     {
         $blc = \Blc::instance();
         $matDb = $this->getMaterialArray();
