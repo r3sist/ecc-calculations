@@ -16,25 +16,25 @@ Class Math extends \Ecc
         $lava = new \Khill\Lavacharts\Lavacharts;
 
         $blc->h1('Lejtés');
-        $blc->input('slope', '``Lejtés', '3', '% vagy °', '');
+        $blc->numeric('slope', ['', 'Lejtés'], 3, '% / °', '');
         $slope_deg = rad2deg(atan($f3->_slope/100));
         $slope_per = tan(deg2rad($f3->_slope))*100;
-        $blc->def('slope_deg', number_format($slope_deg, 2), $f3->_slope.'% = %% °', '');
-        $blc->def('slope_deg', number_format($slope_per, 2), $f3->_slope.'° = %% %', '');
+        $blc->def('slope_deg', number_format($slope_deg, 2), $f3->_slope.'% = %% [deg]', '');
+        $blc->def('slope_deg', number_format($slope_per, 2), $f3->_slope.'° = %% [%]', '');
 
         $blc->h1('Hőmérséklet rudakon');
-        $blc->def('alpha_T_st', number_format(0.000012, 6), 'alpha_(T,steel) = %% 1/K', '');
-        $blc->input('L', 'Rúdhossz', '10', 'm', '');
-        $blc->input('DeltaT', 'Hőmérséklet változás', '40', '°', '');
-        $blc->def('DeltaL', number_format($f3->_alpha_T_st*($f3->_L*1000)*$f3->_DeltaT, 2), 'DeltaL = %% mm', '');
+        $blc->def('alpha_T_st', number_format(0.000012, 6), 'alpha_(T,steel) = %% [1/K]', '');
+        $blc->numeric('L', ['L', 'Rúdhossz'], 10, 'm', '');
+        $blc->numeric('DeltaT', ['Delta T', 'Hőmérséklet változás'], 40, 'deg', '');
+        $blc->def('DeltaL', number_format($f3->_alpha_T_st*($f3->_L*1000)*$f3->_DeltaT, 2), 'Delta L = %% [mm]', '');
 
         $blc->h1('Lineáris interpoláció');
-        $blc->input('x1', '', '1', '', '');
-        $blc->input('y1', '', '5', '', '');
-        $blc->input('x2', '', '2', '', '');
-        $blc->input('y2', '', '20', '', '');
+        $blc->numeric('x1', ['x_1', ''], 1, '', '');
+        $blc->numeric('y1', ['y_1', ''], 5, '', '');
+        $blc->numeric('x2', ['x_2', ''], 2, '', '');
+        $blc->numeric('y2', ['y_2', ''], 20, '', '');
         $blc->info0('i0');
-            $blc->input('x', '', '3', '', '');
+            $blc->numeric('x', ['x', ''], 3, '', '');
             $blc->def('y', (($f3->_x - $f3->_x1)*($f3->_y2 - $f3->_y1)/($f3->_x2 - $f3->_x1)) + $f3->_y1, 'y = %%');
         $blc->info1('i0');
 
