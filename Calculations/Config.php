@@ -17,7 +17,7 @@ Class Config extends \Ecc
 
         $blc->h1('Képletek kezelése');
         $blc->boo('nativeMath', 'Szerveroldali ASCIIMath konvertálás MathML formátumba', $f3->udata['ueccnativemathml'], 'MathJax helyett szerverordali képlet generálás. Csak Firefox alatt. Rondább, de gyorsabb megjelenítés.');
-        $blc->boo('svgMath', 'Képletek SVG képekként', $f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre. Ez érinti a MS Word exportot is.');
+        $blc->boo('svgMath', 'Képletek SVG képekként', $f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre.');
         $f3->mu->load(array('uid = :uid', ':uid' => $f3->get('uid')));
         if (!$f3->mu->dry()) {
             $f3->mu->ueccnativemathml = \V3::boo($f3->_nativeMath);
