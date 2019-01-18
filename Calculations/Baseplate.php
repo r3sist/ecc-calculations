@@ -13,13 +13,12 @@ Class Baseplate extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $blc->h1('Bázislemez');
+        $blc->numeric('N_Ed', ['N_(Ed)', 'Húzóerő'], 56, 'kN','Bázislemezre ható eredő húzóerő');
+        $blc->numeric('V_Ed', ['V_(Ed)', 'Nyróerő'], 56, 'kN','Bázislemezre ható eredő nyíróerő');
+        $blc->numeric('t_b', ['t_b', 'Bázislemez vastagság'], 16, 'mm','');
+        $blc->numeric('b_a', ['b_a', 'Szélső lehorgonyzások közti vízszintes távolság'], 280, 'mm', '');
+        $blc->numeric('h_a', ['h_a', 'Szélső lehorgonyzások közti függőleges távolság'], 280, 'mm', '');
 
-        $blc->numeric('N_Ed', '`N_(Ed)`: Húzóerő','56', 'kN','Bázislemezre ható eredő húzóerő');
-        $blc->numeric('V_Ed', '`V_(Ed)`: Nyróerő','56', 'kN','Bázislemezre ható eredő nyíróerő');
-        $blc->numeric('t_b', 'Bázislemez vastagság','16', 'mm','');
-        $blc->numeric('b_a', 'Szélső lehorgonyzások közti vízszintes távolság','280', 'mm','');
-        $blc->numeric('h_a', 'Szélső lehorgonyzások közti függőleges távolság','280', 'mm','');
         $blc->region0('mat', 'Anyagok');
             $ec->matList('smat', 'S235', 'Lemez anyag');
             $ec->saveMaterialData($f3->_smat, 's');
@@ -28,9 +27,11 @@ Class Baseplate extends \Ecc
             $ec->matList('cmat', 'C25/30', 'Beton anyag');
             $ec->saveMaterialData($f3->_cmat, 'c');
         $blc->region1('mat');
-        $blc->numeric('n_u', 'Felső lehorgonyzások száma', 2, '', 'Húzás felvételéhez');
-        $blc->numeric('n_d', 'Alsó lehorgonyzások száma', 2, '', 'Nyírás felvételéhez');
-        $blc->numeric('phi', 'Horgony átmérő', 16, 'mm', '');
+
+        $blc->numeric('n_u', ['n_u', 'Felső lehorgonyzások száma'], 2, '', 'Húzás felvételéhez');
+        $blc->numeric('n_d', ['n_d', 'Alsó lehorgonyzások száma'], 2, '', 'Nyírás felvételéhez');
+//        $blc->numeric('phi', ['phi', 'Horgony átmérő'], 16, 'mm', '');
+        $ec->rebarList('phi', 16, ['phi', 'Horgony átmérő'], '');
         $blc->def('A_s', \H3::n0($ec->A($f3->_phi)), 'A_s = %% [mm^2]', 'Egy horgony keresztmetszete');
         $blc->def('b', 2*20 + $f3->_phi + $f3->_b_a, 'b = 2*20 + 2* phi/2 + b_a = %% [mm]', 'Bázislemez ajánlott szélessége');
 
@@ -38,6 +39,7 @@ Class Baseplate extends \Ecc
         $blc->note('Húzásra csak a felső sor horgonyai vannak figyelembe véve!');
         $blc->def('N_Rda', ($f3->_A_s*$f3->_afyd)/1000, 'N_(Rd,a) = A_s * f_(yd,a) = %% [kN]', 'Egy horgony húzási ellenállása');
         $blc->def('N_Rd', $f3->_N_Rda*$f3->_n_u, 'N_(Rd) = n_u*N_(Rd,a) = %% [kN]', 'Húzott (felső) horgonyok húzási ellenállása');
+        $blc->txt('Húzott (felső) horgonyok kihasználtsága:');
         $blc->label($f3->_N_Ed/$f3->_N_Rd, 'húzási kihasználtság');
 
         $blc->h1('Horgony-varrat meghatározása');
@@ -48,7 +50,7 @@ Class Baseplate extends \Ecc
             $blc->def('a', ceil(($f3->_F_wEd*sqrt(3)*$f3->_b_w*$f3->__GM2)/$f3->_sfu), 'a = ceil((F_(w,Ed)*sqrt(3)*beta_w*gamma_(M2))/(f_u)) = %% [mm]', 'Minimális varrat gyökméret');
         $blc->region1('weld0');
         $blc->success0('weld1');
-            $blc->math('a = '.$f3->_a.' [mm]');
+            $blc->math('a = '.$f3->_a.' [mm]', 'Minimális varrat gyökméret');
         $blc->success1('weld1');
 
         $blc->h1('Hajlított lemez ellenőrzése');
