@@ -67,7 +67,7 @@ Class Bolt extends \Ecc
         $blc->region1('r2');
 
         $blc->h1('Egy csavar húzás és nyírás interakciója', '***AD*** osztály');
-        $blc->def('U_vt', (($f3->_V / $f3->_F_vRd) + ($f3->_N / (1.4*$f3->_F_tRd)))*100, 'U_(vt) = F_(v,Ed)/F_(v,Rd) + F_(t,Ed)/(1.4*F_(t,Rd)) = %% [%]', 'Interakciós kihasználtság');
+        $blc->def('U_vt', \H3::n1((($f3->_V / $f3->_F_vRd) + ($f3->_N / (1.4*$f3->_F_tRd)))*100), 'U_(vt) = F_(v,Ed)/F_(v,Rd) + F_(t,Ed)/(1.4*F_(t,Rd)) = %% [%]', 'Interakciós kihasználtság');
         $blc->label($f3->_U_vt/100, 'Interakciós kihasználtság');
 
         $blc->h1('Egyszerűsített eljárás nyírásra optimalizálásra');
@@ -190,7 +190,7 @@ Class Bolt extends \Ecc
         $blc->def('A_net', $f3->_l_net*$f3->_t, 'A_(n et) = l_(n et)*t = %% [mm^2]', 'Vizsgált nettó keresztmetszeti terület');
         $blc->def('NplRd', $ec->NplRd($f3->_A, $f3->_sMat, $f3->_t), 'N_(pl,Rd) = (A*f_y)/gamma_(M,0) = %% [kN]', 'Teljes km. folyási ellenállása');
         $blc->def('NuRd', $ec->NuRd($f3->_A_net, $f3->_sMat, $f3->_t), 'N_(u,Rd) = (0.9*A_(n\et)*f_u)/gamma_(M,2) = %% [kN]', 'Nettó km. képlékeny töréssel szembeni ellenállása');
-        $blc->def('NtRd', $ec->NtRd($f3->_A, $f3->_A_net, $f3->_sMat, $f3->_t), 'N_(t,Rd) = min(N_(pl,Rd), N_(u,Rd)) = %% [kN]', 'Húzási ellenállás');
+        $blc->def('NtRd', $ec->NtRd($f3->_A, $f3->_A_net, $f3->_sMat, $f3->_t), 'N_(t,Rd) = min{(N_(pl,Rd)), (N_(u,Rd)):} = %% [kN]', 'Húzási ellenállás');
         $blc->label($f3->_FvEd/$f3->_NtRd, 'Keresztmetszet kihasználtsága húzásra');
 
         $blc->h2('Csoportos kiszakadás');
