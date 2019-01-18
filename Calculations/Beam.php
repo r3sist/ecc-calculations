@@ -25,21 +25,21 @@ Class Beam extends \Ecc
         $blc->region1('material');
 
         $blc->region0('geometry', 'Geometria megadása');
-            $blc->numeric('h', 'Keresztmetszet teljes magassága', 700, 'mm', '');
-            $blc->numeric('hf', '`h_f:` Keresztmetszet felső övének magassága', 150, 'mm', '');
-            $blc->numeric('b', 'Keresztmetszet alsó szélessége', 250, 'mm', '');
-            $blc->numeric('bf', '`b_f:` Keresztmetszet felső szélessége', 600, 'mm', '');
+            $blc->numeric('h', ['h', 'Keresztmetszet teljes magassága'], 700, 'mm', '');
+            $blc->numeric('hf', ['h_f', 'Keresztmetszet felső övének magassága'], 150, 'mm', '');
+            $blc->numeric('b', ['b', 'Keresztmetszet alsó szélessége'], 250, 'mm', '');
+            $blc->numeric('bf', ['b_f', 'Keresztmetszet felső szélessége'], 600, 'mm', '');
             $blc->info0('Ac');
                 $blc->def('Ac', $f3->_hf*$f3->_bf + ($f3->_h - $f3->_hf)*$f3->_b, 'A_c = %% [mm^2]', 'Beton keresztmetszet területe');
             $blc->info1('Ac');
         $blc->region1('geometry');
 
         $blc->region0('reinforcement', 'Gerenda vasalás megadása');
-            $blc->numeric('Ascdb', '`A_(sc):` Hosszirányú nyomott felső vasalás', 2, 'db', '');
-            $blc->numeric('Ascfi', '`phi_(sc):` Hosszirányú nyomott felső vasalás átmérője', 20, 'mm', '');
-            $blc->numeric('Astdb', '`A_(st):` Hosszirányú húzott alsó vasalás', 2, 'db', '');
-            $blc->numeric('Astfi', '`phi_(st):` Hosszirányú húzott alsó vasalás átmérője', 20, 'mm', '');
-            $blc->numeric('cnom', '`c_(nom):` Betonfedés', 25, 'mm', '');
+            $blc->numeric('Ascdb', ['A_(sc)', 'Hosszirányú nyomott felső vasalás'], 2, 'db', '');
+            $blc->numeric('Ascfi', ['phi_(sc)', 'Hosszirányú nyomott felső vasalás átmérője'], 20, 'mm', '');
+            $blc->numeric('Astdb', ['A_(st)', 'Hosszirányú húzott alsó vasalás'], 2, 'db', '');
+            $blc->numeric('Astfi', ['phi_(st)', 'Hosszirányú húzott alsó vasalás átmérője'], 20, 'mm', '');
+            $blc->numeric('cnom', ['c_(nom)', 'Betonfedés'], 25, 'mm', '');
             $blc->info0('As');
                 $blc->def('Ast', \H3::n0($ec->A($f3->_Astfi, $f3->_Astdb)), 'A_(st) = %% [mm^2]', 'Alkalmazott húzott vasmennyiség');
                 $blc->def('Asc', \H3::n0($ec->A($f3->_Ascfi, $f3->_Ascdb)), 'A_(sc) = %% [mm^2]', 'Alkalmazott nyomott vasmennyiség');
@@ -55,19 +55,19 @@ Class Beam extends \Ecc
         $blc->region0('stirrup', 'Nyírási vasalás megadása');
             $f3->_Aswdb1 = 2;
             $f3->_Aswdb2 = 2;
-            $blc->numeric('Aswfi1', '`phi_(sw,1):` Nyírási vasalás átmérője', 10, 'mm', 'Álló kengyelezés, 2 szárral');
-            $blc->numeric('Asws1', '`s_(sw,1):` Nyírási vasalás kiosztása', 200, 'mm', '');
-            $blc->numeric('Aswfi2', '`phi_(sw,2):` Nyírási vasalás átmérője', 0, 'mm', 'Másodlagos álló kengyelezés 2 szárral');
-            $blc->numeric('Asws2', '`s_(sw,2):` Nyírási vasalás kiosztása', 200, 'mm', '');
+            $blc->numeric('Aswfi1', ['phi_(sw,1)', 'Nyírási vasalás átmérője'], 10, 'mm', 'Álló kengyelezés, 2 szárral');
+            $blc->numeric('Asws1', ['s_(sw,1)', 'Nyírási vasalás kiosztása'], 200, 'mm', '');
+            $blc->numeric('Aswfi2', ['phi_(sw,2)', 'Nyírási vasalás átmérője'], 0, 'mm', 'Másodlagos álló kengyelezés 2 szárral');
+            $blc->numeric('Asws2', ['s_(sw,2)', 'Nyírási vasalás kiosztása'], 200, 'mm', '');
             $blc->info0('Aw');
                 $blc->def('Asw', \H3::n0(($f3->_Aswdb1*($ec->A($f3->_Aswfi1)/$f3->_Asws1) + $f3->_Aswdb2*($ec->A($f3->_Aswfi2)/$f3->_Asws2))*1000), 'A_(sw) = %% [mm^2]', 'Nyírási kengyel vasalás fajlagos keresztmetszeti területe');
             $blc->info1('Aw');
         $blc->region1('stirrup');
 
         $blc->region0('Ed', 'Terhek megadása');
-            $blc->numeric('MEd', '`M_(Ed)` Nyomatéki igénybevétel', 100, 'kNm');
-            $blc->numeric('VEd', '`V_(Ed)` Nyíróerő igénybevétel', 500, 'kN');
-            $blc->numeric('NEd', '`N_(Ed)` Normál igénybevétel', 0, 'kN');
+            $blc->numeric('MEd', ['M_(Ed)', 'Nyomatéki igénybevétel'], 100, 'kNm');
+            $blc->numeric('VEd', ['V_(Ed)', 'Nyíróerő igénybevétel'], 500, 'kN');
+            $blc->numeric('NEd', ['N_(Ed)', 'Normál igénybevétel'], 0, 'kN');
         $blc->region1('Ed');
 
         $blc->h1('Vasbeton keresztmetszet teherbírási számítása');
@@ -139,7 +139,7 @@ Class Beam extends \Ecc
             $blc->def('k', min(1 + sqrt(200/$f3->_dst), 2), 'k = min{(1 + sqrt(200/d_(st))), (2):} = %%');
             $blc->def('rho1', \H3::n4(min($f3->_Ast/$f3->_b/$f3->_dst, 0.02)), 'rho_1 = {(A_(st)/b/d_(st)), (0.02):} = %%', 'Húzott acélhányad értéke, felülről korlátozva');
             $blc->math('b = '.$f3->_b.' [mm]', 'Keresztmetszet alsó szélessége');
-            $blc->math('f_(ck) = '.$f3->_cfck.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (`cancel(square) 150×150×150` kocka)');
+            $blc->math('f_(ck) = '.$f3->_cfck.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (□150×150×150 kocka)');
             $VRdc = ($f3->_CRdc*$f3->_k*pow(100*$f3->_rho1*$f3->_cfck, 1/3)*$f3->_b*$f3->_dst)/1000;
         $blc->def('VRdc', $VRdc, 'V_(Rdc) = C_(Rdc)*(100*rho_1*f_(ck))^(1/3)*b*d_(st) = %% [kN]', 'Keresztmetszet nyírási teherbírása');
         $blc->region1('V');
@@ -196,10 +196,10 @@ Class Beam extends \Ecc
         $blc->note('[Vasbeton szerkezetek 6.3 (32.o)]');
         $blc->txt('Húzott vashányad meghatározása:');
 
-        $blc->numeric('A_sl', 'Húzott vasalás vizsgált keresztmetszeten átvezetve', 0, 'mm²', '\`l_(bd) + d\`-vel túlvezetett húzott vasak vehetők figyelembe');
-        $blc->note('`l_(bd)` a lehorgonyzási hossz tervezési értéke.');
-        $blc->numeric('d', 'Keresztmetszet hatékony magasság', 200, 'mm');
-        $blc->numeric('b_w', 'Keresztmetszet gerinc szélesség', 200, 'mm');
+        $blc->numeric('A_sl', ['A_(sl)', 'Húzott vasalás vizsgált keresztmetszeten átvezetve'], 0, 'mm²', '$l_(bd) + d$ -vel túlvezetett húzott vasak vehetők figyelembe');
+        $blc->note('$l_(bd)$ a lehorgonyzási hossz tervezési értéke.');
+        $blc->numeric('d', ['d', 'Keresztmetszet hatékony magasság'], 200, 'mm');
+        $blc->numeric('b_w', ['b_w', 'Keresztmetszet gerinc szélesség'], 200, 'mm');
         $blc->def('rho_lcalc', \H3::n2(min($f3->_A_sl/($f3->_b_w*$f3->_d), 0.02)*100), 'rho_l = min(A_(sl)/(b_w*d), 0.02) = %% %', 'Húzott vashányad');
         $blc->note('A húzott vashányad a biztonság javára való közelítéssel mindig lehet 0. Támasznál általában 0.');
 
@@ -210,17 +210,13 @@ Class Beam extends \Ecc
             '1.00 %' => 1.00/100,
             '2.00 %' => 2.00/100,
         ];
-        $blc->lst('rho_l', $rhos, '`rho_(l,calc):` Húzott vashányad', 0);
-        $blc->note('`V_(Rd,c) = c*b_w*d*f_(ctd)` képlethez `c(f_(ctd))` értékei meghatározhtaók táblázatosan. Dulácska biztonság javára történő közelítő képletével van itt számolva a `c`. [Világos kék [19]]');
+        $blc->lst('rho_l', $rhos, ['rho_(l,calc)', 'Húzott vashányad'], 0);
+        $blc->note('$V_(Rd,c) = c*b_w*d*f_(ctd)$ képlethez $c(f_(ctd))$ értékei meghatározhtaók táblázatosan. Dulácska biztonság javára történő közelítő képletével van itt számolva a $c$. [Világos kék [19]]');
         $c = (1.2 -  $f3->_cfck/150)*(0.15*$f3->_rho_l + 0.45/(1 + $f3->_d/1000));
         $blc->def('c', \H3::n4($c), 'c = (1.2 - f_(ck)/150)*(0.15*rho_l + 0.45/(1+d/1000)) = %%');
 
         $blc->success0('VRdc');
             $blc->def('VRdc', \H3::n2($c*$f3->_b_w*$f3->_d*$f3->_cfctd/1000), 'V_(Rd,c) = c*b_w*d*f_(ctd) = %% [kN]');
         $blc->success1('VRdc');
-
-
-
-
     }
 }
