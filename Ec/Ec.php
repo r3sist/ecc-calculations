@@ -181,6 +181,31 @@ Jellemzők és mértékegységek:
         \Blc::instance()->lst($variableName, $source, $title, $default, $help);
     }
 
+    public function rebarTable(string $variableNameBulk = 'As'): float
+    {
+        $blc = \Blc::instance();
+        $f3 = \Base::instance();
+        $variableNameBulk = \V3::varname($variableNameBulk);
+        $fields = [
+            ['name' => 50, 'title' => 'Ø8', 'type' => 'input', 'sum' => true],
+            ['name' => 79, 'title' => 'Ø10', 'type' => 'input', 'sum' => true],
+            ['name' => 112, 'title' => 'Ø12', 'type' => 'input', 'sum' => true],
+            ['name' => 154, 'title' => 'Ø16', 'type' => 'input', 'sum' => true],
+            ['name' => 314, 'title' => 'Ø20', 'type' => 'input', 'sum' => true],
+            ['name' => 491, 'title' => 'Ø25', 'type' => 'input', 'sum' => true],
+            ['name' => 616, 'title' => 'Ø28', 'type' => 'input', 'sum' => true],
+            ['name' => 804, 'title' => 'Ø32', 'type' => 'input', 'sum' => true],
+        ];
+        $blc->bulk($variableNameBulk.'Bulk', $fields);
+        $As = 0;
+        if (isset($f3->sum)) {
+            foreach ($f3->sum as $key => $value) {
+                $As = $As + $value*$key;
+            }
+        }
+        return $As;
+    }
+
     public function sectionFamilyList(string $variableName = 'sectionFamily', string $title = 'Szelvény család', string $default = 'HEA'): void
     {
         $list = [
