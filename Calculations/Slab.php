@@ -20,16 +20,14 @@ Class Slab extends \Ecc
         $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
         $ec->saveMaterialData($f3->_rMat, 'r');
         $blc->lst('dir', ['Egy irányban teherhordó' => 1, 'Két irányban teherhordó' => 2], 'Teherhordás módja', 2);
-        $blc->input('h', 'Lemez vastagsága', '250', 'mm');
-        $blc->input('d', 'Lemez hatékony vastagsága', '200', 'mm');
+        $blc->numeric('h', ['h', 'Lemez vastagsága'], 250, 'mm');
+        $blc->numeric('d', ['d', 'Lemez hatékony vastagsága'], 200, 'mm');
 
         $blc->h1('Lemezekre vonatkozó szerkesztési szabályok');
 
-        $blc->h2('Monolit lemezek legkisebb vastagsága');
-        $blc->txt('Nyírási vasalás nélkül: `h_(min) = 70 [mm]`');
-        $blc->txt('Nyírási vasalással: `h_(min) = 200 [mm]`');
-
-        $blc->h2('Minimális húzott vasmennyiség');
+        $blc->txt('Monolit lemezek legkisebb vastagsága:');
+        $blc->txt('Nyírási vasalás nélkül: $h_(min) = 70 [mm]$, nyírási vasalással: $h_(min) = 200 [mm]$');
+        $blc->txt('Minimális húzott vasmennyiség:');
         $blc->note('A húzott hajlítási fővasalásra előírt minimális és maximális vashányad a gerendákéval megegyező. [Vasbeton szerkezetek 8.5.1]');
         if ($f3->_dir == 1) {
             $blc->txt('Egyirányban teherhordó lemezek keresztirányú elosztó vasalásának keresztmetszete legalább a fővasalásénak 20%-a legyen.');
@@ -37,11 +35,9 @@ Class Slab extends \Ecc
         }
         $blc->def('rhoMin', max(0.26*($f3->_cfctm/$f3->_rfy), 0.0015), 'rho_(min) = max{(0.26*f_(ctm)/f_(yk)),(0.0015):} = max{(0.26*'.$f3->_cfctm.'/'.$f3->_rfy.'),(0.0015):} = %%', 'Minimális húzott vashányad');
         $blc->def('AsMin', $f3->_rhoMin*1000*$f3->_d, 'A_(s,min) = rho_(min)*1000[mm]*d = %% [(mm^2)/m]', 'Előírt minimális húzott vasmennyiség négyszög keresztmetszet esetén');
-
-        $blc->h2('Maximális összes vasmennyiség');
+        $blc->txt('Maximális összes vasmennyiség:');
         $blc->def('AsMax', 0.04*1000*$f3->_h, 'A_(s,max) = 0.04*1000[mm]*h = %% [(mm^2)/m]', 'Összes hosszvasalás megengedett legnagyobb mennyisége négyszög keresztmetszetben');
-
-        $blc->h2('Legnagyobb vastávolság');
+        $blc->txt('Legnagyobb vastávolság');
         if ($f3->_h > 100) {
             $blc->def('sMax', min(2*$f3->_h, 300), 's_(max) = min{(2h),(300):} = %% [mm]', 'Fő vasalás max vastávolsága');
             if ($f3->_dir == 1) {
@@ -55,8 +51,7 @@ Class Slab extends \Ecc
             }
         }
         $blc->note('Kétirányban teherhordó lemez esetén mindkét irányban a fő vasalásra jellemző értéket kell figyelembe venni.');
-
-        $blc->h2('Legnagyobb vasátmérő');
+        $blc->txt('Legnagyobb vasátmérő:');
         $blc->def('phiMax', $f3->_h/10, 'phi_(max) = h/10 = %% [mm]');
 
         $blc->region0('more0', 'További megjegyzések');
@@ -67,7 +62,7 @@ A méretezett alsó mezővasalás legalább 50%-át a támaszig kell vezetni és
 A felső vasalást:
 
 + szélső, nem befogott támasz esetén a szélsó mezőnyomaték 15%-ára kell méretezni,és a mező 0,l-szeres hosszáig be kell vezetni,
-+ belső támasz esetén a szomszédos mezőnyomatékok nagyobbikának legalább 25%-ára kell méretezni, és mindkét mező minimum O,2-szeres hosszán végig kell vezetni.
++ belső támasz esetén a szomszédos mezőnyomatékok nagyobbikának legalább 25%-ára kell méretezni, és mindkét mező minimum 0.2-szeres hosszán végig kell vezetni.
         
 Sarkainál felemelkedésben gátolt, kétirányban teherhordó lemezek sarkainál a csavarónyomatékok felvételére kétirányú felső vasalást kell tervezni, amelynek intenzitása pontosabb számítás hiányában megegyezik a rövidebb irányban futó alsó vasaláséval, és mindkét irányban a megfelelő támaszköz 0,2-szereséig be kell vezetni.');
 
@@ -76,29 +71,29 @@ Sarkainál felemelkedésben gátolt, kétirányban teherhordó lemezek sarkainá
         $blc->region1('more0');
         $blc->h1('Pontokon megtámasztott síklemez födémek átlyukadása', 'Átszúródási vizsgálatok');
         $blc->note('[Vasbeton szerkezetek 6.8 (49.o)]');
-        $blc->input('c_a', 'Pillér méret egyik dimenziója', '40', 'cm');
-        $blc->input('c_b', 'Pillér méret másik dimenziója', '40', 'cm');
-        $blc->boo('c_o', 'Körpillér', 0, '\`c_(phi) = max(c_a, c_b)\`');
+        $blc->numeric('c_a', ['c_a', 'Pillér méret egyik dimenziója'], 40, 'cm');
+        $blc->numeric('c_b', ['c_b', 'Pillér méret másik dimenziója'], 40, 'cm');
+        $blc->boo('c_o', 'Körpillér', 0, '$c_(phi) = max(c_a, c_b)$');
         if ($f3->_c_o) {
             $f3->_c_a = max($f3->_c_a, $f3->_c_b);
             $f3->_c_b = max($f3->_c_a, $f3->_c_b);
         }
 
         $blc->h2('Nyíróerők központos reakcióerő esetében');
-        $blc->input('VEd', '`V_(Ed)`: Központos reakcióerő', '500', 'kN', 'Lemez alatti és feletti oszlop normálerejének különbsége');
+        $blc->input('VEd', ['V_(Ed)', 'Központos reakcióerő'], 500, 'kN', 'Lemez alatti és feletti oszlop normálerejének különbsége');
         $betas = [
           'Sarok oszlop 1.5' => 1.5,
           'Szélső oszlop 1.4' => 1.4,
           'Közbenső oszlop 1.15' => 1.15,
         ];
-        $blc->lst('beta', $betas, '`beta:` Teher- és megtámasztás bizonytalansági tényező', '1.5', 'Számításba nem vett hajéítónyomaték hatása');
+        $blc->lst('beta', $betas,  ['beta', 'Teher- és megtámasztás bizonytalansági tényező'], 1.5, 'Számításba nem vett hajéítónyomaték hatása');
 
         $blc->region0('piller0', 'Pillérkiosztás szerkesztési szabályainak ellenőrzése');
-            $blc->md('Az ellenőrzés *x* és *y* irányban is lefuttatandó!');
-            $blc->input('l_1', 'Pillérköz 1', '6', 'm');
-            $blc->input('l_2', 'Szomszédos pillérköz', '5', 'm');
-            $blc->input('l_c', 'Lemezszél és szélső pillér távolsága', '0.5', 'm', 'Lemez konzolhossz');
-            $blc->math('0.8 < l_i/l_(i+1)='.$f3->_l_1/$f3->_l_2.' < 1.25', 'Szabvány szerinti feltétel');
+            $blc->txt('**Az ellenőrzés *x* és *y* irányban is lefuttatandó!**');
+            $blc->numeric('l_1', ['l_1', 'Pillérköz 1'], 6, 'm');
+            $blc->numeric('l_2', ['l_2', 'Szomszédos pillérköz'], 5, 'm');
+            $blc->numeric('l_c', ['l_c', 'Lemezszél és szélső pillér távolsága'], 0.5, 'm', 'Lemez konzolhossz');
+            $blc->math('0.8 < (l_i/l_(i+1)='.$f3->_l_1/$f3->_l_2.') < 1.25', 'Szabvány szerinti feltétel');
             if (0.8 <= $f3->_l_1/$f3->_l_2 && $f3->_l_1/$f3->_l_2 <= 1.25) {
                 $blc->label('yes', 'ok');
             } else {
@@ -116,7 +111,7 @@ Sarkainál felemelkedésben gátolt, kétirányban teherhordó lemezek sarkainá
 
         $f3->_d = $f3->_d/10;
         if ($f3->_l_c*100 <= 2*$f3->_d + max($f3->_c_a, $f3->_c_b)/2 && $f3->_beta == 1.5 && $f3->_c_o == 0) {
-            $blc->txt('Sarok négyszögpillér, kisebb konzol esete:', '\`l_c = '.$f3->_l_c.'\ [m]`');
+            $blc->txt('Sarok négyszögpillér, kisebb konzol esete:', '$l_c = '.$f3->_l_c.' [m]$');
             $blc->def('u', $f3->_c_a + $f3->_c_b + 4*$f3->_d, 'u = c_a + c_b + 4*d= %% [cm]');
         } elseif ($f3->_l_c*100 <= 2*$f3->_d + $f3->_c_a/2 && $f3->_beta == 1.5 && $f3->_c_o == 1) {
             $blc->txt('Sarok körpillér, kisebb konzol esete:');
@@ -140,13 +135,13 @@ Sarkainál felemelkedésben gátolt, kétirányban teherhordó lemezek sarkainá
         $blc->def('vEd', ($f3->_beta*$f3->_VEd)/($f3->_u*$f3->_d)*10000, 'v_(Ed) = (beta*V_(Ed))/(u*d) = %% [(kN)/m^2]');
 
         $blc->h2('Beton teherbírásának ellenőrzése ');
-
+        $blc->txt('`TODO`');
         $blc->hr();
 
         $blc->h1('Kétirányban teherhordó lemez képlékeny igénybevétele');
-        $blc->input('p_Ed', '`p_(Ed)`: Felületen megoszló teher', '5', 'kN/m²', '');
-        $blc->input('l_x', 'Lemez szélesség x irányban', '10', 'm', '');
-        $blc->input('l_y', 'Lemez szélesség x irányban', '10', 'm', '');
+        $blc->numeric('p_Ed', ['p_Ed', 'Felületen megoszló teher'], 5, 'kN/m²', '');
+        $blc->numeric('l_x', ['l_x', 'Lemez szélesség x irányban'], 10, 'm', '');
+        $blc->numeric('l_y', ['l_y', 'Lemez szélesség x irányban'], 10, 'm', '');
         
         if ($f3->_l_x/$f3->_l_y <= 2) {
             $blc->label('yes', 'Két irányban teherhordó lemez');
@@ -176,20 +171,19 @@ Sarkainál felemelkedésben gátolt, kétirányban teherhordó lemezek sarkainá
         $blc->math('eta = '. $f3->_eta);
 
         $blc->region0('r0');
-        $blc->def('p_y', (1-(4/3)*$f3->_eta)*$f3->_p_Ed, 'p_y = %% [(kN)/m^2]');
-        $blc->def('p_x', ((4/3)*$f3->_eta)*$f3->_p_Ed, 'p_x = %% [(kN)/m^2]');
-        $blc->def('p_check', $f3->_p_x + $f3->_p_y, 'p_x + p_y = %% [(kN)/m^2]');
+        $blc->def('p_y', \H3::n2((1-(4/3)*$f3->_eta)*$f3->_p_Ed), 'p_y = %% [(kN)/m^2]');
+        $blc->def('p_x', \H3::n2(((4/3)*$f3->_eta)*$f3->_p_Ed), 'p_x = %% [(kN)/m^2]');
+        $blc->def('p_check', \H3::n2($f3->_p_x + $f3->_p_y), 'p_x + p_y = %% [(kN)/m^2]');
         $blc->region1('r0');
 
-        $blc->def('m_y', ($f3->_p_y * $f3->_l_y * $f3->_l_y)/8, 'm_y = (p_y * l_y^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
-        $blc->def('m_x', ($f3->_p_x * $f3->_l_x * $f3->_l_x)/8, 'm_x = (p_x * l_x^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
-        $blc->def('m_xyA', $f3->_m_y, 'm_(xyA) := %% [(kNm)/m]', 'Sarkok gátolt felemelkedéséből származó csvarónyomaték');
+        $blc->def('m_y', \H3::n2(($f3->_p_y * $f3->_l_y * $f3->_l_y)/8), 'm_y = (p_y * l_y^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
+        $blc->def('m_x', \H3::n2(($f3->_p_x * $f3->_l_x * $f3->_l_x)/8), 'm_x = (p_x * l_x^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
+        $blc->def('m_xyA', \H3::n2($f3->_m_y), 'm_(xyA) := %% [(kNm)/m]', 'Sarkok gátolt felemelkedéséből származó csvarónyomaték');
 
         if ($f3->_m_y >= $f3->_m_x) {
-            $blc->label('yes', '\`m_y >= m_x\`');
+            $blc->label('yes', '$m_y >= m_x$');
         } else {
-            $blc->label('no', '\`m_y < m_x\`');
+            $blc->label('no', '$m_y < m_x$');
         }
-        $blc->note('Test note');
     }
 }
