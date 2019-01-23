@@ -36,50 +36,6 @@ Class Layers extends \Ecc
         ];
         $blc->bulk($bulkName, $fields);
 
-//        $blc->region0('r0', 'Rétegek megadása');
-//
-//        $blc->info0('i0');
-//        $blc->input('cnt','Beviteli mezők száma','2','','');
-//        $blc->info1('i0');
-//
-//        $i = 1;
-//        while($i <= $f3->_cnt){
-//            $blc->txt($i.'. réteg');
-//            $blc->input('n'.$i,'`n_'.$i.'`: Réteg neve','','','');
-//            $blc->input('v'.$i,'`v_'.$i.'`: Vastagság','','cm','');
-//            $blc->input('q'.$i,'`q_'.$i.'`: Térfogatsúly','','kN/m³','');
-//            $blc->input('p'.$i,'`p_'.$i.'`: Felület súly','','kN/m²','');
-//            $blc->hr();
-//            $i++;
-//        }
-//        $blc->region1('r0');
-//
-//        $table = array();
-//        $i = 1;
-//        $p = 0;
-//        while($i <= $f3->_cnt){
-//            if ($f3->get('_n'.$i)) {
-//                if (!$f3->get('_p'.$i)) {
-//                    $table[$f3->get('_n'.$i)]['Vastagság `[cm]`'] = '`'.$f3->get('_v'.$i).'`';
-//                    $table[$f3->get('_n'.$i)]['Térfogatsúly `[(kN)/m^3]`'] = '`'.$f3->get('_q'.$i).'`';
-//                    $p0 = number_format($f3->get('_q'.$i)*($f3->get('_v'.$i)/100), 3);
-//                    $p = $p + $p0;
-//                    $table[$f3->get('_n'.$i)]['Felület súly `[(kN)/m^2]`'] = '`= '.$p0.'`';
-//                } else {
-//                    $table[$f3->get('_n'.$i)]['Vastagság `[cm]`'] = '';
-//                    $table[$f3->get('_n'.$i)]['Térfogatsúly `[(kN)/m^3]`'] = '';
-//                    $table[$f3->get('_n'.$i)]['Felület súly `[(kN)/m^2]`'] = '`'.$f3->get('_p'.$i).'`';
-//                    $p = $p + $f3->get('_p'.$i);
-//                }
-//            }
-//            $i++;
-//        }
-//        $table['Összesen<!--success-->']['Vastagság `[cm]`'] = '';
-//        $table['Összesen<!--success-->']['Térfogatsúly `[(kN)/m^3]`'] = '';
-//        $table['Összesen<!--success-->']['Felület súly `[(kN)/m^2]`'] = '`'.$p.'`';
-//
-//       $blc->table($table,'Réteg');
-
         $blc->region0('t0', 'Lindab trapézlemez önsúlyok');
         $table0 = array(
             "LTP20×0.4" => array("Önsúly [kN/m&sup2;]" => 0.032),
