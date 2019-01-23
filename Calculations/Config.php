@@ -24,7 +24,7 @@ Class Config extends \Ecc
             $f3->mu->ueccsvgmath = \V3::boo($f3->_svgMath);
             $f3->mu->save();
         }
-        $blc->txt(false, 'A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
+        $blc->txt('A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
 
         if ($f3->urole >= 30) {
             $blc->h1('Admin');
@@ -35,7 +35,7 @@ Class Config extends \Ecc
                 $f3->mc->load(['cname = :cname', ':cname' => $calcData['cname']]);
 
                 $blc->region0('admin'.$calcData['cname'], $calcData['cname']);
-                $blc->h2($calcData['cname']);
+                $blc->h2('['.$calcData['cname'].'](https://structure.hu/calc/'.$calcData['cname'].')');
 
                 $blc->input($calcData['cname'].'___ctitle', 'title', $calcData['ctitle'], '', '');
                 $f3->mc->ctitle = $f3->get('_'.$calcData['cname'].'___ctitle');
