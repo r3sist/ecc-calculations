@@ -13,8 +13,8 @@ Class Snow extends \Ecc
     public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->region0('baseData', 'Alap adatok');
-            $blc->input('A', '`A:` Tengerszint feletti magasság', 400, 'm');
-            $blc->input('C', '`C_e*C_t:` Szél- és hőmérséklet összevont tényező', 1, '', 'Védett terep esetén megfontolandó: (környező terepnél alacsonyabb fekvés): \`C.e = 1.2\`');
+            $blc->numeric('A', ['A', 'Tengerszint feletti magasság'], 400, 'm');
+            $blc->numeric('C', ['C_e*C_t', 'Szél- és hőmérséklet összevont tényező'], 1, '', 'Védett terep esetén megfontolandó: (környező terepnél alacsonyabb fekvés): $C_e = 1.2$');
 
             if($f3->_A <= 400){
                 $f3->_s_k = 1.25;
@@ -26,7 +26,7 @@ Class Snow extends \Ecc
         $blc->region1('baseData');
 
         $blc->h1('Hóteher félnyereg-, nyereg- és összekapcsolódó nyeregtetők esetén');
-        $blc->input('alpha', '`alpha:` Nyeregtető hajlása', 0, '°');
+        $blc->numeric('alpha', ['alpha', 'Nyeregtető hajlása'], 0, '$[deg]$');
         $blc->boo('bs', 'Akadályozott hólecsúszás', 0, '');
 
         if($f3->_bs) {
@@ -61,12 +61,12 @@ Class Snow extends \Ecc
             $_find = '60-';
         }
 
-        $f3->_mu_1 = number_format($_mu[$_find]['mu1'], 2);
-        $f3->_mu_2 = number_format($_mu[$_find]['mu2'], 2);
-        $f3->_mu_3 = number_format($_mu[$_find]['mu3'], 2);
-        $f3->_s_1 = number_format($f3->_mu_1*$f3->_s_k,2);
-        $f3->_s_2 = number_format($f3->_mu_2*$f3->_s_k,2);
-        $f3->_s_3 = number_format($f3->_mu_3*$f3->_s_k,2);
+        $f3->_mu_1 = \H3::n2($_mu[$_find]['mu1']);
+        $f3->_mu_2 = \H3::n2($_mu[$_find]['mu2']);
+        $f3->_mu_3 = \H3::n2($_mu[$_find]['mu3']);
+        $f3->_s_1 = \H3::n2($f3->_mu_1*$f3->_s_k);
+        $f3->_s_2 = \H3::n2($f3->_mu_2*$f3->_s_k);
+        $f3->_s_3 = \H3::n2($f3->_mu_3*$f3->_s_k);
 
         $blc->math('mu_1 = '.$f3->_mu_1.'%%%mu_2 = '.$f3->_mu_2.'%%%mu_3 = '.$f3->_mu_3.'', 'Alaki tényezők');
         $blc->math('s_1 = '.$f3->_s_1.'%%%s_2 = '.$f3->_s_2.'%%%s_3 = '.$f3->_s_3.'[(kN)/m^2]', 'Tető hóteher karakterisztikus értékei');
@@ -94,7 +94,7 @@ Class Snow extends \Ecc
         $blc->region1('r1');
 
         $blc->h1('Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön', 'Helyi hóhatások a tetőn');
-        $blc->input('h', '`h:` Kiálló rész magassága', 1.2, 'm', '');
+        $blc->numeric('h', ['h', 'Kiálló rész magassága'], 1.2, 'm', '');
         $blc->def('mu_w2',max(0.8, min((2*$f3->_h)/$f3->_s_k, 2)),'mu_(w2) = %%', 'Alaki tényező');
         $blc->def('l_s', min(15, max(5, 2*$f3->_h)),'l_s = %% [m]', 'Hózug szélessége');
         $blc->def('q_sum', $f3->_mu_w2*$f3->_s_k,'q_(sum) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
@@ -109,32 +109,39 @@ Class Snow extends \Ecc
         $blc->h1('Magasabb szerkezethez kapcsolódó tetők', 'Felhalmozódó hóteher átrendeződés után');
         $blc->math('alpha = '.$f3->_alpha.'[deg]%%%h = '.$f3->_h.'[m]%%%mu_1 = '.$f3->_mu_1.'%%%s_k = '.$f3->_s_k.'[(kN)/m^2]', 'Alkalmazott értékek');
         $blc->def('gamma_set', 2, 'gamma_(set) = %% [(kN)/m^3]', 'Megülepedett hó térfogatsúlya');
-        $blc->input('b_3', '`b_3:` Lecsúszó hó hossza', 10, 'm');
-        $blc->input('b_1', '`b_1:` Szomszédos épület hossza', 20, 'm');
-        $blc->input('b_2', '`b_2:` Alacsonyabb épület hossza', 20, 'm');
-        $f3->_mu_s = 0;
+        $blc->input('b_3', ['b_3', 'Lecsúszó hó hossza'], 10, 'm');
+        $blc->input('b_1', ['b_1', 'Szomszédos épület hossza'], 20, 'm');
+        $blc->input('b_2', ['b_2', 'Alacsonyabb épület hossza'], 20, 'm');
         if ($f3->_alpha > 15) {
-            $f3->_mu_s = $f3->_mu_1*($f3->_b_3/$f3->_l_s);
+            $blc->def('mu_s', \H3::n2($f3->_mu_1*($f3->_b_3/$f3->_l_s)), 'mu_s = mu_1(alpha)*(b_3/l_s) = %%', 'Felső tetőszakaszról lecsúszó mennyiséghez tartozó alaki tényező');
+        } else {
+            $blc->def('mu_s', 0, 'mu_s = %%', 'Felső tetőszakaszról lecsúszó mennyiséghez tartozó alaki tényező $(alpha < 15 [deg])$');
         }
-        $blc->math('mu_s = '.$f3->_mu_s.'', 'Alacsonybab épület alaki tényezője');
-        $blc->def('mu_w', number_format(max(min(4.0, ($f3->_b_1 + $f3->_b_2)/(2*$f3->_h), ($f3->_gamma_set*$f3->_h)/$f3->_s_k), 0.8),2), 'mu_w = max(min(4.0; (b_1 + b_2)/(2h); (gamma_(set)*h)/s_k), 0.8) = %%', 'Szél átrendező hatásához tartozó alaki tényezője');
-        $blc->def('l_s2', number_format(min(max(5, 2*$f3->_h), 15), 2), 'l_(s2) = min(max(5 [m]; 2*h), 15 [m]) = %% [m]', 'Lecsúszó hó eloszlása');
-        $blc->def('q_sum2', number_format(($f3->_mu_s + $f3->_mu_w)*$f3->_s_k, 2),'q_(sum2) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
-        $blc->def('q_plus2', number_format((($f3->_mu_s + $f3->_mu_w) - 0.8)*$f3->_s_k, 2),'q_(plus2) = %% [(kN)/m^2]', 'Megoszló terhelés többlet alap hóhoz képest');
-        $write = array(
-            array('size' => 14, 'x' => 90, 'y' => 35, 'text' => $f3->_mu_s.''),
-            array('size' => 14, 'x' => 90, 'y' => 85, 'text' => $f3->_mu_w.''),
-            array('size' => 14, 'x' => 140, 'y' => 165, 'text' => $f3->_b_3.'m'),
-            array('size' => 14, 'x' => 255, 'y' => 165, 'text' => $f3->_l_s2.'m'),
-            array('size' => 14, 'x' => 455, 'y' => 265, 'text' => $f3->_h.'m'),
-            array('size' => 14, 'x' => 110, 'y' => 340, 'text' => $f3->_b_1.'m'),
-            array('size' => 14, 'x' => 290, 'y' => 340, 'text' => $f3->_b_2.'m'),
-            array('size' => 14, 'x' => 210, 'y' => 250, 'text' => $f3->_q_sum2.'kN/m²'),
-            array('size' => 14, 'x' => 355, 'y' => 250, 'text' => $f3->_s_k*0.8.'kN/m²'),
-        );
+        $blc->def('mu_w', \H3::n2(max(min(4.0, ($f3->_b_1 + $f3->_b_2)/(2*$f3->_h), ($f3->_gamma_set*$f3->_h)/$f3->_s_k), 0.8)), 'mu_w = max{(min{(4.0), ((b_1 + b_2)/(2h)), ((gamma_(set)*h)/s_k):}), (0.8):} = %%', 'Szél átrendező hatásához tartozó alaki tényezője');
+        $blc->def('l_s2', \H3::n2(min(max(5, 2*$f3->_h), 15)), 'l_(s2) = min{(max{(5 [m]), (2*h):}), (15 [m]):} = %% [m]', 'Lecsúszó hó eloszlása');
+        $blc->def('q_plus2', \H3::n2((($f3->_mu_s + $f3->_mu_w) - 0.8)*$f3->_s_k),'q_(plus2) = %% [(kN)/m^2]', 'Megoszló terhelés többlet alap hóhoz képest');
+        $blc->success0('qsum2');
+            $blc->def('q_sum2', \H3::n2(($f3->_mu_s + $f3->_mu_w)*$f3->_s_k),'q_(sum2) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
+            $write = array(
+                array('size' => 14, 'x' => 390, 'y' => 175, 'text' => $f3->_l_s2.'m'),
+                array('size' => 14, 'x' => 130, 'y' => 230, 'text' => $f3->_mu_s.''),
+                array('size' => 14, 'x' => 130, 'y' => 270, 'text' => $f3->_mu_w.''),
+                array('size' => 14, 'x' => 130, 'y' => 325, 'text' => 0.8 .''),
+                array('size' => 12, 'x' => 245, 'y' => 45, 'text' => $f3->_b_3.'m'),
+                array('size' => 12, 'x' => 570, 'y' => 230, 'text' => $f3->_h.'m'),
+                array('size' => 12, 'x' => 170, 'y' => 500, 'text' => $f3->_b_1.'m'),
+                array('size' => 12, 'x' => 470, 'y' => 500, 'text' => $f3->_b_2.'m'),
+                array('size' => 14, 'x' => 305, 'y' => 210, 'text' => '∑:'.$f3->_q_sum2.'kN/m²'),
+                array('size' => 14, 'x' => 550, 'y' => 280, 'text' => $f3->_s_k*0.8.'kN/m²'),
+            );
+            if ($f3->_b_2 < $f3->_l_s2) {
+                $blc->txt('$b_2 < l_s$, ezért a tető másik szélén teher teljes értéke:');
+                $qsum22 = $ec->linterp(0, $f3->_q_sum2, $f3->_l_s2, $f3->_s_k*0.8, $f3->_b_2);
+                $blc->txt('$q_(∑2,'.$f3->_b_2.'[m]) = '.$qsum22.' [(kN)/m^2]$', '$l i n t e r p(0,'.$f3->_q_sum2.','.$f3->_l_s2.','.$f3->_s_k*0.8.','.$f3->_b_2.')$');
+                array_push($write, array('size' => 14, 'x' => 440, 'y' => 260, 'text' => "3m-nél:\n".$qsum22.'kN/m²'));
+                $write[0] = array('size' => 14, 'x' => 390, 'y' => 175, 'text' => $f3->_l_s2.'m -> '.$f3->_b_2.'m');
+            }
+        $blc->success1('qsum2');
         $blc->write('vendor/resist/ecc-calculations/canvas/snow3.jpg', $write, 'Hófelhalmozódást is tartalmazó hóteher átrendeződés magasabb épülethez csatlakozó tető esetén');
-        if ($f3->_b_2 < $f3->_l_s2) {
-            $blc->html('`b_2 <= l_s`, ezért a tető szélén a megoszló terhelés: `'.number_format(($f3->_b_2*$f3->_q_plus2)/$f3->_l_s2 + $f3->_s_k*0.8, 2).'[(kN)/m^2]`');
-        }
     }
 }
