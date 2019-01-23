@@ -19,12 +19,14 @@ Class Math extends \Ecc
         $blc->numeric('slope', ['', 'Lejtés'], 3, '% / °', '');
         $slope_deg = rad2deg(atan($f3->_slope/100));
         $slope_per = tan(deg2rad($f3->_slope))*100;
-        $blc->def('slope_deg', number_format($slope_deg, 2), $f3->_slope.'% = %% [deg]', '');
-        $blc->def('slope_deg', number_format($slope_per, 2), $f3->_slope.'° = %% [%]', '');
+        $blc->def('slope_deg', \H3::n2($slope_deg), $f3->_slope.'% = %% [deg]', '');
+        $blc->def('slope_per', \H3::n2($slope_per), $f3->_slope.'° = %% [%]', '');
+        $blc->numeric('L', ['L', 'Hossz'], 10, 'm', '');
+        $blc->def('h', \H3::n2($f3->_L*$f3->_slope_per*0.01), 'h = %% [m]', 'Emelkedés');
 
         $blc->h1('Hőmérséklet rudakon');
+        $blc->math('L = '.$f3->_L.'[m]', 'Rúdhossz');
         $blc->def('alpha_T_st', number_format(0.000012, 6), 'alpha_(T,steel) = %% [1/K]', '');
-        $blc->numeric('L', ['L', 'Rúdhossz'], 10, 'm', '');
         $blc->numeric('DeltaT', ['Delta T', 'Hőmérséklet változás'], 40, 'deg', '');
         $blc->def('DeltaL', number_format($f3->_alpha_T_st*($f3->_L*1000)*$f3->_DeltaT, 2), 'Delta L = %% [mm]', '');
 
