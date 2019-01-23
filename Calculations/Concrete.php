@@ -17,11 +17,11 @@ Class Concrete extends \Ecc
 
         $ec->matList('mat', 'C25/30', 'Beton anyag');
         $ec->saveMaterialData($f3->_mat, false);
-        $blc->txt('', 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
+        $blc->txt(false, 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
         $blc->note('A szilárdsági osztályhoz tartozó jellemzők a 28 napos korban meghatározott, hengeren mért nyomószilárdság fck karakterisztikus értékén alapulnak.');
 
-        $blc->h1('Beton jellemzői `t` napos korban');
-        $blc->input('t', 'Idő', '10', 'nap', '', false);
+        $blc->h1('Beton jellemzői $t$ napos korban');
+        $blc->numeric('t', ['t', 'Idő'], '10', 'nap', '');
         $cem = [
             'CEM 52,5 R' => 0.2,
             'CEM 42,5 R' => 0.2,
@@ -31,7 +31,7 @@ Class Concrete extends \Ecc
             'CEM 32,5 N' => 0.38
         ];
         $blc->note('R: nagy kezdő szilárdság; N: normál kezdő szilárdság');
-        $blc->lst('cem', $cem, 'Cement típus', 0.25, '', false);
+        $blc->lst('cem', $cem, ['', 'Cement típus'], 0.25, '', false);
         $blc->def('betacc', exp($f3->_cem*(1-sqrt(28/$f3->_t))), 'beta_c = %%');
         $blc->def('fcmt', number_format($f3->_fcm*$f3->_betacc, 2), 'f_(c,m)(t) = beta_c*f_(c,m) = %% [N/(mm^2)]', 'Nyomószilárdság várható értéke');
         $y = $f3->_fck;
