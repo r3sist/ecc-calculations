@@ -1,69 +1,12 @@
-# Használati útmutató
-
-Az ***Ecc*** egy webes számítási dokumentumokat kezelő szerveroldali keretrendszer. 
-
-Egy dokumentum ( *natív számítási osztály* ) beviteli mező, kép, szöveg, matematikai kifejezés stb. blokkokból épül fel. A rendszer része egy Eurocode alapú függvény- és adatgyűjtemény is. 
-
-## Számítások futtatása
-
-A menü *Futtatás* parancsára vagy *Enter* billentyűparancsra a számítás lefut. Automatikusan lefut továbbá bizonyos beviteli mezők változatásakor.
-
-## Számítások mentése szerverre
-
-A módosított beviteli mezők elmenthetők a szerverre a menü *Mentés szerverre* parancsára vagy az *s* billentyűparancsra.
-
-A rendszer a legfelső sorba (vízszintes vonal a cím alatt) írt *Projekt néven* fogja elmenteni a paramétereket. Azonos név esetén felülírás van!
-
-Mentés betölthető vagy törölhető a [kezdőlapi](https://structure.hu/calc) listázásnál vagy a menüből.
-
-## Nyomtatás, PDF nyomtatás
-
-Az értesítés-, tartalomjegyzék- és összecsukott blokkok (összecsukott fejezetek, régiók, megjegyzések) nem kerülnek nyomtatásra.
-
-Nyomtatáshoz a rendszer automatikusan átalakított megjelenést biztosít.
-
-## Jegyzetek
-
-Megjegyzések a számításhoz - előhívható a menüből vagy a *n* billetyűparancsra.
-
-## Pecsét
-
-Menüből vagy *p* billentyűparancsra előhívható tervpecsét mentett dokumentumokhoz. 
-
-## Txt kimenet
-
-Menüből vagy *x* billentyűparancsra előhívható szöveges kimenet.
-Fix hosszúságú sorok 75 oszlopból állnak. 
-Nem kezelt blokkok: kép, html (pl. táblázatok), tartalomjegyzék
-
-## Billentyűparancsok
-
-+ *Enter*: futtatás
-+ *n*: jegyzetek mutatása/rejtése
-+ *s*: dokuemntum mentése szerverre
-+ *p*: pecsét mutatása/rejtése
-+ *t*: lap teteje
-+ *x*: txt output mutatása/rejtése
-
-## Forráskód, changelog, fejlesztés
-
-A dokumentumok forráskódja megtekinthető: [bitbucket/resist/ecc-calculations](https://bitbucket.org/resist/ecc-calculations/src)
-
-Forráskód, changelog és hozzászólás linkek megtalálhatók a menüben.
-
-Hozzászólások, észrevételek a tároló hibajegy kezelő rendszerén keresztül, megfelelő címkézéssel történhet.
-
----
-
 # Ecc
 
 **Native classes of Eurocode based calculations for structural design on [structure.hu](https://structure.hu)**
 
 (c) 2018 Bence VÁNKOS &nbsp;&nbsp;&nbsp;&nbsp; ![email](https://structure.hu/img/emailB.png)
 
-+ **Repository:** [bitbucket/resist/ecc-calculations](https://bitbucket.org/resist/ecc-calculations)
-+ **Issue tracker:** [bitbucket/resist/ecc-calculations/issues](https://bitbucket.org/resist/ecc-calculations/issues)
-+ **Changelog:** - [bitbucket/resist/ecc-calculations/commits](https://bitbucket.org/resist/ecc-calculations/commits)
++ **Repository:** [github/r3sist/ecc-calculations](https://github.com/r3sist/ecc-calculations)
++ **Issue tracker:** [github/r3sist/ecc-calculations/issues](https://github.com/r3sist/ecc-calculations/issues)
++ **Changelog:** - [github/r3sist/ecc-calculations/commits](https://github.com/r3sist/ecc-calculations/commits/master)
 
 --- 
 
@@ -544,7 +487,7 @@ Call predefined global from *Hive*: e.g. `$f3->__GG`
 
 Available globals:
 
-+ `__GG` \`gamma_(G) = 1.35\`
++ `__GG` $gamma_(G) = 1.35$
 + `__GQ` \`gamma_(Q) = 1.5\`
 + `__GM0` \`gamma_(M0) = 1.0\`
 + `__GM1` \`gamma_(M1) = 1.0\`
