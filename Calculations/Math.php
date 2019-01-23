@@ -22,7 +22,8 @@ Class Math extends \Ecc
         $blc->def('slope_deg', \H3::n2($slope_deg), $f3->_slope.'% = %% [deg]', '');
         $blc->def('slope_per', \H3::n2($slope_per), $f3->_slope.'° = %% [%]', '');
         $blc->numeric('L', ['L', 'Hossz'], 10, 'm', '');
-        $blc->def('h', \H3::n2($f3->_L*$f3->_slope_per*0.01), 'h = %% [m]', 'Emelkedés');
+        $blc->def('hdeg', \H3::n2($f3->_L*$f3->_slope*0.01), 'h_('.$f3->_slope.'%) = %% [m]', 'Emelkedés ');
+        $blc->def('hper', \H3::n2($f3->_L*$slope_per*0.01), 'h_('.\H3::n2($slope_per).'%) = %% [m]', 'Emelkedés');
 
         $blc->h1('Hőmérséklet rudakon');
         $blc->math('L = '.$f3->_L.'[m]', 'Rúdhossz');
