@@ -97,5 +97,14 @@ Class Anchor extends \Ecc
             $blc->def('FVRdS', $f3->_FVRd*$f3->_n, 'F_(V,Rd,sum) = F_(V,Rd)*n = %% [kN]', 'Nyírási *csap kép* ellenállása');
             $blc->label($f3->_FVEd/$f3->_FVRdS, 'Csap kép kihasználtság');
         $blc->success1('s0');
+
+        $blc->h1('Csavarásból származó húzóerő felvétele');
+        $blc->numeric('TEd', ['T_(Ed)', 'Csavarás'], 10, 'kNm');
+        $blc->numeric('b', ['b', 'Tüskék távolsága'], 100, 'mm', 'Gerenda tengely irányra merőlegesen - Nyomaték erőkar');
+        $blc->lst('nN', ['1' => 1, '2' => 2, '3' => 3], ['n_N', 'Tüske párok száma'], 1, 'Húzóerőt ennyi tüske veszi fel');
+        $blc->def('NEd', $f3->_TEd/($f3->_b/1000), 'N_(Ed) = T_(Ed)/b = %% [kN]', 'Erőkar');
+        $blc->def('NplRd', \H3::n2($f3->_nN*(($ec->A($f3->_D)*$f3->_fyd)/($f3->__GM0*1000))), 'N_(pl,Rd) = (D^2 *pi*f_(yd) )/(4*gamma_(M0)) = %% [kN]', '1 db tüske húzűsi ellenállása folyáshatárig');
+        $blc->label(($f3->_NEd/$f3->_nN)/$f3->_NplRd, 'Húzási kihasználtság tüske képre');
+        $blc->txt(false, '$(N_(Ed)/n_N)/N_(pl,Rd)$');
     }
 }
