@@ -28,45 +28,48 @@ Class Config extends \Ecc
 
         if ($f3->urole >= 30) {
             $blc->h1('Admin');
+            $blc->boo('doUpdate', 'Számítás meta adatok mentése', 0, '');
+
             $query = "SELECT * FROM ecc_calculations ORDER BY cname ASC";
             $calcList = $f3->get('db')->exec($query);
+            \L3::instance()->put('ecc', 'edit', 'Edited calcs meta');
             foreach ($calcList as $calcData) {
                 $f3->mc->reset();
                 $f3->mc->load(['cname = :cname', ':cname' => $calcData['cname']]);
 
-                $blc->region0('admin'.$calcData['cname'], $calcData['cname']);
-                $blc->h2('['.$calcData['cname'].'](https://structure.hu/calc/'.$calcData['cname'].')');
+                $blc->region0('admin' . $calcData['cname'], $calcData['cname']);
+                $blc->h2('[' . $calcData['cname'] . '](https://structure.hu/calc/' . $calcData['cname'] . ')');
 
-                $blc->input($calcData['cname'].'___ctitle', 'title', $calcData['ctitle'], '', '');
-                $f3->mc->ctitle = $f3->get('_'.$calcData['cname'].'___ctitle');
+                $blc->input($calcData['cname'] . '___ctitle', 'title', $calcData['ctitle'], '', '');
+                $f3->mc->ctitle = $f3->get('_' . $calcData['cname'] . '___ctitle');
 
-                $blc->input($calcData['cname'].'___csubtitle', 'subtitle', $calcData['csubtitle'], '', '');
-                $f3->mc->csubtitle = $f3->get('_'.$calcData['cname'].'___csubtitle');
+                $blc->input($calcData['cname'] . '___csubtitle', 'subtitle', $calcData['csubtitle'], '', '');
+                $f3->mc->csubtitle = $f3->get('_' . $calcData['cname'] . '___csubtitle');
 
-                $blc->input($calcData['cname'].'___cdescription', 'description', $calcData['cdescription'], '', '');
-                $f3->mc->cdescription = $f3->get('_'.$calcData['cname'].'___cdescription');
+                $blc->input($calcData['cname'] . '___cdescription', 'description', $calcData['cdescription'], '', '');
+                $f3->mc->cdescription = $f3->get('_' . $calcData['cname'] . '___cdescription');
 
-                $blc->lst($calcData['cname'].'___cgroup', ['S' => 'S', 'L' => 'L', 'G' => 'G', 'C' => 'C'], 'group', $calcData['cgroup'], '', '');
-                $f3->mc->cgroup = $f3->get('_'.$calcData['cname'].'___cgroup');
+                $blc->lst($calcData['cname'] . '___cgroup', ['S' => 'S', 'L' => 'L', 'G' => 'G', 'C' => 'C'], 'group', $calcData['cgroup'], '', '');
+                $f3->mc->cgroup = $f3->get('_' . $calcData['cname'] . '___cgroup');
 
-                $blc->boo($calcData['cname'].'___cexpreimental', 'experimental', $calcData['cexperimental'], '');
-                $f3->mc->cexpreimental = $f3->get('_'.$calcData['cname'].'___cexpreimental');
+                $blc->boo($calcData['cname'] . '___cexpreimental', 'experimental', $calcData['cexperimental'], '');
+                $f3->mc->cexpreimental = $f3->get('_' . $calcData['cname'] . '___cexpreimental');
 
-                $blc->boo($calcData['cname'].'___chidden', 'hidden', $calcData['chidden'], '');
-                $f3->mc->chidden = $f3->get('_'.$calcData['cname'].'___chidden');
+                $blc->boo($calcData['cname'] . '___chidden', 'hidden', $calcData['chidden'], '');
+                $f3->mc->chidden = $f3->get('_' . $calcData['cname'] . '___chidden');
 
-                if (!$f3->mc->dry()) {
+                if (!$f3->mc->dry() && $f3->_doUpdate) {
                     $f3->mc->save();
                 }
-                $blc->region1('admin'.$calcData['cname']);
+                $blc->region1('admin' . $calcData['cname']);
             }
 
             $blc->h2('Új számítás hozzáadása');
-            $blc->input('cname', 'Osztály azonosító', '', '', 'ecc-calculation osztály azonosító (URL azonosító lesz)', 'alpha');
+            $blc->input('cnameNew', 'Osztály azonosító', '', '', 'ecc-calculation osztály azonosító (URL azonosító lesz)', 'alpha');
             $blc->txt('Composer autoload lefuttatása szükséges!');
-            if ($f3->_cname) {
+            if ($f3->_cnameNew) {
                 $f3->mc->reset();
-                $f3->mc->cname = ucfirst($f3->get('_cname'));
+                $f3->mc->cname = ucfirst($f3->get('_cnameNew'));
                 $f3->mc->save();
 
                 $blc->toast('Új osztály beszúrva', 'success', '');
