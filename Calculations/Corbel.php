@@ -67,13 +67,13 @@ Class Corbel extends \Ecc
 
         $theta = \H3::n1(rad2deg(atan($f3->_z0/$f3->_ac)));
         if (45 < $theta && $theta < 68) {
-            $blc->def('theta', $theta, 'theta = %% °', '45° és 68° között kell lennie');
+            $blc->def('theta', $theta, 'theta = %% [deg]', '45 és 68 [deg] között kell lennie');
         } else if ($theta <= 45) {
-            $blc->danger('$theta = '.$theta.' °$: 45° és 68° között kell lennie!');
-            $blc->def('theta', 45, 'theta = %% °');
+            $blc->danger('$theta = '.$theta.' [deg]$: 45 és 68[deg] között kell lennie!');
+            $blc->def('theta', 45, 'theta = %% [deg]');
         } else {
-            $blc->def('theta', 68, 'theta = %% °');
-            $blc->danger('$theta = '.$theta.' °$: 45° és 68° között kell lennie!');
+            $blc->def('theta', 68, 'theta = %% [deg]');
+            $blc->danger('$theta = '.$theta.' [deg]$: 45 és 68 [deg] között kell lennie!');
         }
 
         $blc->def('z0', \H3::n0(tan(deg2rad($f3->_theta))*$f3->_ac), 'z_0 = tan(theta)*a_c = %% [mm]', 'Erőkar értéke');
@@ -108,7 +108,7 @@ Class Corbel extends \Ecc
         if ($f3->_lbmin < $f3->_lb) {
             $blc->label('yes', 'Nem szükséges a kampózás');
         } else if ($f3->_lbmin >= $f3->_lb && $f3->_lb > $f3->_lbmin90) {
-            $blc->label('yes', '90°-os kapmózás szükséges!');
+            $blc->label('yes', '90 [deg]-os kapmózás szükséges!');
         } else {
             $blc->label('no', 'Lehorgonyzás az oszlopban!');
         }
