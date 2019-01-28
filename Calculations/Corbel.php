@@ -13,19 +13,8 @@ Class Corbel extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $blc->region0('material', 'Anyagminőségek megadása');
-            $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
-            $ec->saveMaterialData($f3->_cMat, 'c');
-            $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
-            $ec->saveMaterialData($f3->_rMat, 'r');
-        $blc->region1('material');
-
-        $blc->region0('geom', 'Geometria megadása');
-            $blc->numeric('a', ['a', 'Pillér méret egyik irányban'], 400, 'mm', '');
-            $blc->numeric('b', ['b', 'Pillér méret másik irányban'], 400, 'mm', '');
-            $blc->def('Ac', \H3::n0($f3->_a*$f3->_b), 'A_(c) = %% [mm^2]', 'Pillér keresztmetszeti területe');
-            $blc->numeric('cnom', ['c_(nom)', 'Tervezett betontakarás'], 25, 'mm', '');
-        $blc->region1('geom');
+        $column = new \Calculation\Column();
+        $column->moduleColumnData($f3, $blc, $ec);
 
         $blc->img($f3->home.'ecc/column0.jpg', 'övidkonzol erőjáték');
 
