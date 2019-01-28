@@ -11,10 +11,8 @@ Class Column extends \Ecc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function moduleColumnData(object $f3, object $blc, object $ec): void
     {
-        $blc->toc();
-
         $blc->region0('material', 'Anyagminőségek megadása');
             $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
             $ec->saveMaterialData($f3->_cMat, 'c');
@@ -23,11 +21,24 @@ Class Column extends \Ecc
         $blc->region1('material');
 
         $blc->region0('geom', 'Geometria megadása');
-            $blc->input('a', '`a:` Pillér méret egyik irányban', '400', 'mm', '');
-            $blc->input('b', '`b:` Pillér méret másik irányban', '400', 'mm', '');
+            $blc->numeric('a', ['a', 'Pillér méret egyik irányban'], '400', 'mm', '');
+            $blc->numeric('b', ['b', 'Pillér méret másik irányban'], '400', 'mm', '');
             $blc->def('Ac', \H3::n0($f3->_a*$f3->_b), 'A_(c) = %% [mm^2]');
-            $blc->numeric('cnom', '`c_(nom):` Tervezett betontakarás', 25, 'mm', '');
+            $blc->numeric('cnom', ['c_(nom)', 'Tervezett betontakarás'], 25, 'mm', '');
         $blc->region1('geom');
+    }
+
+    /**
+     * @var $f3 \Base
+     * @var $blc \Blc
+     * @var $ec \Ec\Ec
+     * @throws \Exception
+     */
+    public function calc(object $f3, object $blc, object $ec): void
+    {
+        $blc->toc();
+
+        $this->moduleColumnData($f3, $blc, $ec);
 
         $blc->numeric('NEd', ['N_(Ed)', 'Nyomóerő'], 1000, 'kN', '');
 
