@@ -17,6 +17,7 @@ Class ColumnFire extends \Ecc
         $column->moduleColumnData($f3, $blc, $ec);
 
 //        $blc->h1('Tűzállósági határérték meghatározása', 'MSZ-EN 1992-1-2:2013 szabvány 5.3.2. pontja szerint: ***A*** módszer');
+
         $ec->rebarList('phi', 20, ['phi', 'Fő vas átmérő']);
         $ec->rebarList('phis', 20, ['phi_s', 'Kengyel vas átmérő']);
         $blc->def('as', $f3->_cnom + $f3->_phis + 0.5*$f3->_phi, 'a_s = c_(nom) + phi_s + phi/2 = %% [mm]', 'Betontakarás fővas tengelyen. $25 < a_s < 80 [mm]$');
@@ -36,6 +37,9 @@ Class ColumnFire extends \Ecc
             $blc->def('l0fi', $f3->_beta*$f3->_lfi, 'l_(0,fi) = beta*l_(fi) = %% [m]', 'Pillér hatékony kihajlási hossza');
         }
         $blc->def('b1', \H3::n0((2*$f3->_Ac)/($f3->_a + $f3->_b)), 'b\' = (2*A_c)/(a + b) = %% [mm]', '');
+
+        $blc->def('A_s_min', \H3::n0(0.002*$f3->_Ac), 'A_(s, min) = %% [mm^2]', 'Minimális vasmennyiség: 2‰');
+        $blc->def('A_s_max', \H3::n0(0.04*$f3->_Ac), 'A_(s, max) = %% [mm^2]', 'Maximális vasmennyiség: 4%');
 
         $blc->txt('Vasátmérő darabszámok:');
         $As = $ec->rebarTable();
