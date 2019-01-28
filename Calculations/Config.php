@@ -26,6 +26,23 @@ Class Config extends \Ecc
         }
         $blc->txt('A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
 
+        $blc->h1('Mentés feltöltése');
+        $blc->input('saveJson', '*.ecc* fájl tartalma', false, false, 'Kezdőoldalról letöltött *.ecc* fájl tartalmát bemásolva lehet mentést feltölteni. Ez egy JSON sztring. Más felhasználótól származó mentést is bevesz a rendszer. Hibás, hiányzó vagy azóta megváltozott paraméterek esetén alapértelmezésekkel fog számolni.', 'valid_json_string');
+        if ($f3->_saveJson) {
+            $saveDataArray = json_decode($f3->_saveJson, true);
+            $saveDataJson = json_encode($saveDataArray);
+            $blc->pre(json_encode($saveDataArray, JSON_PRETTY_PRINT));
+            $f3->ms->reset();
+            $f3->ms->load();
+            $f3->ms->cname = \V3::varname($saveDataArray['_project_cname']);
+            $f3->ms->sname = $saveDataArray['_project'];
+            $f3->ms->uid = $f3->uid;
+            $f3->ms->sdata = $saveDataJson;
+            $f3->ms->save();
+            $blc->toast('Mentés importálva!');
+            $blc->html('<script>window.location.replace("'.$f3->home.'calc/'.$saveDataArray['_project_cname'].'/load/'.$f3->ms->get('sid').'");</script>');
+        }
+
         if ($f3->urole >= 30) {
             $blc->h1('Admin');
             $blc->boo('doUpdate', 'Számítás meta adatok szerkesztése/mentése', 0, '');
