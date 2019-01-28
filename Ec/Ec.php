@@ -221,6 +221,8 @@ Jellemzők és mértékegységek:
             'L' => 'L',
             'O' => 'O',
             'ROR' => 'ROR',
+            'RHS' => 'RHS',
+            'C' => 'C',
         ];
         \Blc::instance()->lst($variableName, $list, $title, $default, '');
     }
