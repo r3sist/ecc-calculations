@@ -15,6 +15,8 @@ Class Math extends \Ecc
     {
         $lava = new \Khill\Lavacharts\Lavacharts;
 
+        $blc->toc();
+
         $blc->h1('Lejtés');
         $blc->numeric('slope', ['', 'Lejtés'], 3, '% / °', '');
         $slope_deg = rad2deg(atan($f3->_slope/100));
@@ -53,5 +55,15 @@ Class Math extends \Ecc
         $tables = new \Khill\Lavacharts\DataTables\JoinedDataTable($dataTable1,$dataTable2);
         $lava->ScatterChart('3', $tables, ['legend' => ['position' => 'none'], 'title' => 'Lineáris interpoláció',]);
         $blc->chart('ScatterChart', '3', $lava);
+
+        $blc->h1('Cső tömeg számítás');
+        $blc->numeric('D', ['D', 'Cső külső átmérő'], 600, 'mm', '');
+        $blc->numeric('t', ['t', 'Cső falvastagság'], 12, 'mm', '');
+        $blc->def('d', $f3->_D - 2*$f3->_t, 'd = D- 2*t = %% [mm]', 'Belső átmérő');
+        $blc->def('As', $ec->A($f3->_D) - $ec->A($f3->_d), 'A_(steel) = (D^2 pi)/4 - (d^2 pi)/4 = %% [mm^2]');
+        $blc->def('Al', $ec->A($f3->_d), 'A_(liqu i d) = %% [mm^2]');
+        $blc->def('gs', 78.5, 'gamma_(steel) = %% [(kN)/m^3]', '');
+        $blc->numeric('gl', ['gamma_(liqu i d)', 'Folyadék fajsúly'], 10, 'kN/m3', '');
+        $blc->def('qk', \H3::n3(($f3->_As/1000000)*$f3->_gs + ($f3->_Al/1000000)*$f3->_gl), 'q_k = A_(steel)*gamma_(sttel) + A_(liqu i d)*gamma_(liqu i d) = %% [(kN)/(fm)]');
     }
 }
