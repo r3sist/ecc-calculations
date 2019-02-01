@@ -163,7 +163,7 @@ Jellemzők és mértékegységek:
         }
     }
 
-    public function rebarList(string $variableName = 'fi', int $default = 16, $title = 'Vasátmérő', string $help = ''): void
+    public function rebarList(string $variableName = 'fi', int $default = 16, $title = [false, 'Vasátmérő'], string $help = ''): void
     {
         $source = [
             'ϕ6' => 6,
