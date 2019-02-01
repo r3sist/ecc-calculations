@@ -616,4 +616,76 @@ Jellemzők és mértékegységek:
         }
     }
 
+    public function getClosest(float $find, $stackArray, string $returnType = 'closest')
+    {
+        // returnTypes: closest, ceil, floor, linterp
+
+        $returnValue = null;
+        $returnKey = null;
+        ksort($stackArray);
+        $pointerArray = [];
+
+        foreach ($stackArray as $key => $value) {
+            array_push($pointerArray, ['k' => $key, 'v' => $value]);
+        }
+        $keys = array_keys($stackArray);
+        $values = array_values($stackArray);
+        $lowestKey = min($keys);
+        $highestKey = max($keys);
+
+        foreach ($pointerArray as $pointer => $valueArray) {
+            $key = $valueArray['k'];
+            $value = $valueArray['v'];
+
+
+                switch ($returnType) {
+                    case 'closest':
+                        if ($key == $find) {
+                            return $value;
+                        }
+                        if ($returnKey === null || (abs($find - $returnKey) > abs($key - $find))) {
+                            $returnKey = $key;
+                            $returnValue = $value;
+                        }
+                        break;
+                    case 'floor':
+                        if ($key == $find) {
+                            return $value;
+                        }
+                        if ($find <= $lowestKey) {
+                            return $stackArray[$lowestKey];
+                        }
+                        if ($returnKey === null || ($returnKey < $key && $key <= $find)) {
+                            $returnKey = $key;
+                            $returnValue = $value;
+                        }
+                        break;
+                    case 'ceil':
+                        if ($key == $find) {
+                            return $value;
+                        }
+                        if ($find >= $highestKey) {
+                            return $stackArray[$highestKey];
+                        }
+                        if ($returnKey === null && ($returnKey < $key && $key >= $find )) {
+                            $returnKey = $key;
+                            $returnValue = $value;
+                        }
+                        break;
+                    case 'linterp':
+                        if ($key == $find) {
+                            return $value;
+                        }
+                        $floor = $this->getClosest($find, $stackArray, 'floor');
+                        $ceil = $this->getClosest($find, $stackArray, 'ceil');
+                        if ($floor != $ceil) {
+                            return $this->linterp(array_search($floor, $stackArray), $floor, array_search($ceil, $stackArray), $ceil, $find);
+                        }
+                        return $ceil;
+                        break;
+                }
+
+        }
+        return $returnValue;
+    }
 }
