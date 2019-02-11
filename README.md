@@ -1,5 +1,9 @@
 # Ecc
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0c92c45a3e58460f8e51b16541f3944b)](https://www.codacy.com/app/resist/ecc-calculations?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=r3sist/ecc-calculations&amp;utm_campaign=Badge_Grade) 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/?branch=master) 
+[![Maintainability](https://api.codeclimate.com/v1/badges/523e9528df4952adbc69/maintainability)](https://codeclimate.com/github/r3sist/ecc-calculations/maintainability) 
+
 **Native classes of Eurocode based calculations for structural design on [structure.hu](https://structure.hu)**
 
 (c) 2018 Bence VÁNKOS &nbsp;&nbsp;&nbsp;&nbsp; ![email](https://structure.hu/img/emailB.png)
