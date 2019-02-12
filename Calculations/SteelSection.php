@@ -125,7 +125,7 @@ Class SteelSection extends \Ecc
         $blc->label($f3->_NEd/$f3->_NtRd, 'Húzási kihasználtság');
         $blc->txt('', '$N_(Ed)/N_(t,Rd)$');
 
-        $blc->h1('Központosan nyomott rudak ellenállása');
+        $blc->h1('Központosan nyomott rudak rugalmas ellenállása');
         $blc->note('1, 2, 3. kmo. szelvényekre. $A = A_(eff)$ 4. kmo.-ra.');
         $blc->success0('NcRd');
             $blc->def('NcRd', $ec->NcRd($f3->_A, $f3->_fy), 'N_(c,Rd) = %% [kN]');
