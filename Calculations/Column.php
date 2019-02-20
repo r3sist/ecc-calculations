@@ -23,6 +23,10 @@ Class Column extends \Ecc
         $blc->region0('geom', 'Geometria megadása');
             $blc->numeric('a', ['a', 'Pillér méret egyik irányban'], '400', 'mm', '');
             $blc->numeric('b', ['b', 'Pillér méret másik irányban'], '400', 'mm', '');
+            if (max($f3->_a, $f3->_b)/min($f3->_a, $f3->_b) > 4) {
+                $blc->danger('$a/b > 4$: nem pillérként méretezendő!');
+            }
+            $blc->note('$a/b le 4$, min. oldalhosszúság fekve betonozott pillérnél 120 mm, állva betonozottnál 200 mm.');
             $blc->def('Ac', \H3::n0($f3->_a*$f3->_b), 'A_(c) = %% [mm^2]');
             $blc->numeric('cnom', ['c_(nom)', 'Tervezett betontakarás'], 25, 'mm', '');
         $blc->region1('geom');
@@ -40,26 +44,99 @@ Class Column extends \Ecc
 
         $this->moduleColumnData($f3, $blc, $ec);
 
+        $blc->img('https://structure.hu/ecc/column0.jpg');
+        $blc->numeric('l', ['l', 'Pillér hálózati magassága'], 3, 'm');
+        $blc->numeric('upsilon', ['upsilon', 'Kihajlási hossz tényező'], 0.7, '', '');
+        $blc->def('l0', $f3->_upsilon*$f3->_l, 'l_0 = upsilon*l = %% [m]', 'Kihajlási hossz');
+
         $blc->numeric('NEd', ['N_(Ed)', 'Nyomóerő'], 1000, 'kN', '');
 
+        // =============================================================================================================
         $blc->h1('Közelítő méretfelvétel');
+
         $blc->def('Acmin', \H3::n0($f3->_NEd/$f3->_cfcd*1000), 'A_(c,min) = N_(Ed)/(f_(c,d)) = %% [mm^2]', 'Szükséges beton keresztmetszet');
         $blc->math('a = '.$f3->_a.' [mm]', 'Felvett egyik méret');
         $blc->def('bmin', ceil(\H3::n0($f3->_Acmin/$f3->_a)), 'b_(min) = A_(c,min)/a = %% [mm]', 'Szükséges másik méret');
         $blc->txt('Szükséges vasmennyiségek **'.$f3->_a.' × '.$f3->_b.'** keresztmetszethez:');
-        $blc->def('A_s_min', \H3::n0(0.002*$f3->_Ac), 'A_(s, min) = %% [mm^2]', 'Minimális vasmennyiség: 2‰');
+        $blc->def('A_s_min', \H3::n0(max(0.003*$f3->_Ac, (($f3->_NEd*1000)/$f3->_rfyd)*0.1)), 'A_(s, min) = max{(0.1*N_(Ed)/f_(yd)),(0.003*A_c):} = %% [mm^2]', '');
         $blc->def('A_s_max', \H3::n0(0.04*$f3->_Ac), 'A_(s, max) = %% [mm^2]', 'Maximális vasmennyiség: 4%');
 
+        // =============================================================================================================
+        $blc->h1('Központosan nyomott pillérek teherbírása', 'Egyszerűsített módszer, $e_e := 0$');
+        $blc->note('*[Vasbeton Szerkezetek 2016 6.6.3 B)]*');
+        $blc->math('N_(Rd) := varphi*N\'_u', 'Nyomási teherbírás számítása, ahol $varphi$ a kihajlási csökkentő tényező és $N\'_u$ a km. névleges képlékeny teherbírása, $N\'_u = A_c*f_(cd) + A_s*f_(yd)$');
+
+        $phiMaxStack = [
+            150 => 0.6,
+            200 => 0.68,
+            250 => 0.73,
+            300 => 0.77,
+            400 => 0.81,
+            500 => 0.84,
+            600 => 0.87,
+        ];
+        $phiMaxTable = [
+            '$varphi_(max)$' => $phiMaxStack
+        ];
+        $blc->table($phiMaxTable, '$a [mm]$', '$varphi_(max)$ értékei');
+        $blc->def('phiMax', $ec->getClosest($f3->_a, $phiMaxStack, $returnType = 'floor'), 'varphi_(max) = %%', 'Keresés alsó értékhez');
+
+        $blc->lst('reinforcing', ['2 sávban elhelyezett vasalás' => 2, '3 vagy több sávban elhelyezett vasalás' => 3], ['', 'Vasalás']);
+
+        $sigma = 0.94;
+        if ($f3->cfck <= 30) {
+            $sigma = 0.8;
+        }
+        if ($f3->_reinforcing == 3) {
+            $sigma = 0.99;
+            if ($f3->cfck <= 30) {
+                $sigma = 0.94;
+            }
+        }
+        $sigmaCol1 = 'Téglalap km. 2 sávban elhelyezett vasalás';
+        $sigmaCol2 = 'Téglalap km. 3 vagy több sávban elhelyezett vasalás';
+        $sigmaTable = [
+            'C30/37 - C20/25' => [
+                $sigmaCol1 => 0.8,
+                $sigmaCol2 => 0.94,
+            ],
+            'C50/60 - C35/45' => [
+                $sigmaCol1 => 0.94,
+                $sigmaCol2 => 0.99,
+            ],
+        ];
+        $blc->table($sigmaTable, 'Beton', '$sigma$ javasolt értékei');
+        $blc->def('sigma', $sigma, 'sigma = %%');
+        $blc->def('phi', min($f3->_phiMax, min(0.85, 1.1 - $f3->_sigma*((($f3->_l0*1000)/$f3->_a)/30))), 'varphi = min{(varphi_(max)), (min{(0.85), (1.1 - sigma*(l_0/a)/30):}):} = %%');
+        if (($f3->_l0*1000)/$f3->_a > 30) {
+            $blc->danger('$(l_0/a = '.($f3->_l0*1000)/$f3->_a.') > 30$');
+        } else {
+            $blc->math('(l_0/a = '.($f3->_l0*1000)/$f3->_a.') le 30');
+        }
+
+        $f3->_As = $ec->rebarTable('AS');
+        $blc->math('A_s = '.$f3->_As.' [mm^2]');
+        $blc->def('NRd', floor(($f3->_Ac*$f3->_cfcd + $f3->_As*$f3->_rfyd)*$f3->_phi*0.001), 'N_(Rd) = varphi*N\'_u = varphi*(A_c*f_(cd) + A_s*f_(yd)) = %% [kN]');
+        $blc->label($f3->_NEd/$f3->_NRd, 'Kihasználtság');
+
+        // =============================================================================================================
+        $blc->h1('Kengyelezés ellenőrzése');
+        $ec->rebarList('phiMin', 16, 'Legkisebb hosszvas átmérő');
+        $blc->def('ssmax', floor(min(12*$f3->_phiMin, min($f3->_a, $f3->_b), 400)), 's_(s,max) = min{(12*phi_(min)),(min(a,b)),(400):} = %% [mm]', 'Maximális kengyeltávolság');
+        $blc->note('$12$ szorzó MSZ és DIN szerint. EC $20$, MSZ-EN $15$');
+        $blc->txt('Erőbevezetésnél, lemezcsatlakozásnál, hosszvas toldásnál: $s_(s,max,d) = 0.6*s_(s,max) = '. floor(0.6*$f3->_ssmax).'[mm]$');
+
+        // =============================================================================================================
         $blc->h1('Imperfekció', 'Mértékadó normálerőkből számított imperfekciós vízszintes terhelés');
+
         $blc->note('Tartószerkezet geometriai pontatlanságának figyelembe vétele a merevítőrendszert terheli.');
         $blc->note('+x +y -x -y irányokban is hathat.');
         $blc->numeric('Phi0', ['Phi_0', 'Elfordulás alapértéke'], 0.005, '', 'Alapértelmezetten 1/200');
         $blc->numeric('m', ['m', 'Egy szinten lévő pillérek száma'], 10, 'db', '');
         $blc->def('alpham', sqrt(0.5*(1 + 1/$f3->_m)), 'alpha_m = sqrt(0.5*(1+1/m)) = %%', 'Csökkentő tényező oszlopszámtól függően');
-        $blc->numeric('l', ['l', 'Pillér magassága'], 3, 'm');
         $blc->def('alphan', min(1, max(0.6667, 2/sqrt($f3->_l))), 'alpha_n = min{(1),( max{(2/sqrt(l) = '. 2/sqrt($f3->_l).'),(0.667):}):} = %%', '');
         $blc->def('Phi', $f3->_alpham*$f3->_alphan*$f3->_Phi0, 'Phi = alpha_m*alpha_n*Phi_0 = %%', 'Elfordulás oszlopszámtól függő értéke');
-        $blc->lst('upsilon', ['Merevített szerkezet (1)' => 1, 'Kilendülő szerkezet (2)' => 2], ['upsilon', 'Oszlop kihajlási fél-hullámhossza'], 1);
+//        $blc->lst('upsilon', ['Merevített szerkezet (1)' => 1, 'Kilendülő szerkezet (2)' => 2], ['upsilon', 'Oszlop kihajlási fél-hullámhossza'], 1);
         $blc->def('l0', $f3->_l*$f3->_upsilon, 'l_0 = upsilon*l = %% [m]', 'Kihajlási hossz');
         $blc->def('e', \H3::n1($f3->_l0*1000*$f3->_Phi), 'e_(calc) = l_0*Phi = %% [mm] = l/'.\H3::n0(($f3->_l*1000)/\H3::n1($f3->_l0*1000*$f3->_Phi)), 'Egyenértékű elmozdulás');
         $blc->note('Egyszerűsítésként $l/400$ használatát engedi a szabvány');
