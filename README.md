@@ -1,16 +1,12 @@
 # Ecc
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0c92c45a3e58460f8e51b16541f3944b)](https://www.codacy.com/app/resist/ecc-calculations?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=r3sist/ecc-calculations&amp;utm_campaign=Badge_Grade) 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/?branch=master) 
 [![Maintainability](https://api.codeclimate.com/v1/badges/523e9528df4952adbc69/maintainability)](https://codeclimate.com/github/r3sist/ecc-calculations/maintainability) 
 
 **Native classes of Eurocode based calculations for structural design on [structure.hu](https://structure.hu)**
 
-(c) 2018 Bence VÁNKOS &nbsp;&nbsp;&nbsp;&nbsp; ![email](https://structure.hu/img/emailB.png)
-
-+ **Repository:** [github/r3sist/ecc-calculations](https://github.com/r3sist/ecc-calculations)
-+ **Issue tracker:** [github/r3sist/ecc-calculations/issues](https://github.com/r3sist/ecc-calculations/issues)
-+ **Changelog:** - [github/r3sist/ecc-calculations/commits](https://github.com/r3sist/ecc-calculations/commits/master)
+(c) 2018 Bence VÁNKOS  
+![email](https://structure.hu/img/emailB.png)
 
 --- 
 
@@ -20,7 +16,7 @@
 + *Ecc* (and whole website) uses [Fatfree Framework](https://fatfreeframework.com) as engine, it's autoloaded and Fatfree singleton object is available everywhere globally as **`$f3`**. *Hive* is *f3*'s global storage.
 + ***Blc()*** class is part of the *Ecc* framework and it's supposed to render GUI elements like inputs, definitions and other blocks. Calculation methods are built up from these blocks, but may contain vanilla PHP code too.
 + ***Ec()*** class contains Eurocode specific methods, datas or predefined GUI elements. *Ec()* autoloaded as well.
-+ [AsciiMath](http://asciimath.org/) **math expressions** are compiled by [MathJax](https://www.mathjax.org) on client side, write them between with &grave; code marks anywhere. (Needs to be escaped in Markdown regions unless mentioned otherwise.)
++ [AsciiMath](http://asciimath.org/) **math expressions** are compiled by [MathJax](https://www.mathjax.org) on client side, write them between with $ code marks anywhere.
 + HTML tags are cleaned generally.
 + [Markdown](https://en.wikipedia.org/wiki/Markdown) is enabled generally.
 + [GUMP](https://github.com/Wixel/GUMP) and [V3](https://bitbucket.org/resist/v3/) validation libraries are available.
