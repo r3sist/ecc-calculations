@@ -25,6 +25,7 @@ Class Snow extends \Ecc
             $blc->math('psi_0 = 0.5 %%%psi_1 = 0.2 %%%psi_2 = 0', 'Kombinációs tényezők');
         $blc->region1('baseData');
 
+        // =============================================================================================================
         $blc->h1('Hóteher félnyereg-, nyereg- és összekapcsolódó nyeregtetők esetén');
         $blc->numeric('alpha', ['alpha', 'Nyeregtető hajlása'], 0, '$[deg]$');
         $blc->boo('bs', 'Akadályozott hólecsúszás', 0, '');
@@ -91,8 +92,10 @@ Class Snow extends \Ecc
             array('size' => 14, 'x' => 625, 'y' => 90, 'text' => 0.5*$f3->_s_2.'[kN/m²]')
         );
         $blc->write('vendor/resist/ecc-calculations/canvas/snow2.jpg', $write, 'Nyeregtető teherelrendezése és alaki tényezője');
+
         $blc->region1('r1');
 
+        // =============================================================================================================
         $blc->h1('Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön', 'Helyi hóhatások a tetőn');
         $blc->numeric('h', ['h', 'Kiálló rész magassága'], 1.2, 'm', '');
         $blc->def('mu_w2',max(0.8, min((2*$f3->_h)/$f3->_s_k, 2)),'mu_(w2) = %%', 'Alaki tényező');
@@ -100,12 +103,23 @@ Class Snow extends \Ecc
         $blc->def('q_sum', $f3->_mu_w2*$f3->_s_k,'q_(sum) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
         $blc->def('q_plus', ($f3->_mu_w2 - 0.8)*$f3->_s_k,'q_(plus) = %% [(kN)/m^2]', 'Megoszló terhelés többlet alap hóhoz képest');
 
+/*
+         // Legacy write method
         $write = array(
             array('size' => 14, 'x' => 10, 'y' => 35, 'text' => $f3->_q_sum.'kN/m²'),
             array('size' => 14, 'x' => 40, 'y' => 120, 'text' => $f3->_l_s.'m')
         );
         $blc->write('vendor/resist/ecc-calculations/canvas/snow0.jpg', $write, 'Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön');
+*/
+        $svgSnow0 = new \resist\SVG(300, 170);
+        $svgSnow0->addPolygon('10,120 200,120 200,100 150,100 10,50 10,120');
+        $svgSnow0->setColor('red');
+        $svgSnow0->addDimH(10, 140, 150, $f3->_l_s.' m');
+        $svgSnow0->addText(10, 30, $f3->_q_sum.' kN/m²');
+        $svgSnow0->addText(150, 80, 0.8*$f3->_s_k.' kN/m²');
+        $blc->svg($svgSnow0, false, 'Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön');
 
+        // =============================================================================================================
         $blc->h1('Magasabb szerkezethez kapcsolódó tetők', 'Felhalmozódó hóteher átrendeződés után');
         $blc->math('alpha = '.$f3->_alpha.'[deg]%%%h = '.$f3->_h.'[m]%%%mu_1 = '.$f3->_mu_1.'%%%s_k = '.$f3->_s_k.'[(kN)/m^2]', 'Alkalmazott értékek');
         $blc->def('gamma_set', 2, 'gamma_(set) = %% [(kN)/m^3]', 'Megülepedett hó térfogatsúlya');
