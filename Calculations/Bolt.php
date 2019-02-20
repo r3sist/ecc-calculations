@@ -144,27 +144,60 @@ Class Bolt extends \Ecc
         $nb = $f3->_n_c*$f3->_n_r;
         $blc->txt('Csavarok száma: '.$nb);
 
-        $x = 2*$f3->_e2 + ($f3->_n_c - 1)*$f3->_p2;
-        $x1 = 200/$x;
-        $y = 2*$f3->_e1 + ($f3->_n_r - 1)*$f3->_p1;
-        $y1 = 200/$y;
-        $boltPic = [
-            ['size' => 10, 'x' => 140, 'y' => 290, 'text' => $x],
-            ['size' => 10, 'x' => 50, 'y' => 275, 'text' => $f3->_e2],
-            ['size' => 10, 'x' => 140, 'y' => 275, 'text' => ($f3->_n_c - 1).'×'.$f3->_p2],
-            ['size' => 10, 'x' => 240, 'y' => 275, 'text' => $f3->_e2],
-            ['size' => 10, 'x' => 10, 'y' => 140, 'text' => $y],
-            ['size' => 10, 'x' => 255, 'y' => 65, 'text' => $f3->_e1],
-            ['size' => 10, 'x' => 255, 'y' => 140, 'text' => ($f3->_n_r - 1).'×'.$f3->_e2],
-            ['size' => 10, 'x' => 255, 'y' => 235, 'text' => $f3->_e1],
-        ];
+//        $x = 2*$f3->_e2 + ($f3->_n_c - 1)*$f3->_p2;
+//        $x1 = 200/$x;
+//        $y = 2*$f3->_e1 + ($f3->_n_r - 1)*$f3->_p1;
+//        $y1 = 200/$y;
+//        $boltPic = [
+//            ['size' => 10, 'x' => 140, 'y' => 290, 'text' => $x],
+//            ['size' => 10, 'x' => 50, 'y' => 275, 'text' => $f3->_e2],
+//            ['size' => 10, 'x' => 140, 'y' => 275, 'text' => ($f3->_n_c - 1).'×'.$f3->_p2],
+//            ['size' => 10, 'x' => 240, 'y' => 275, 'text' => $f3->_e2],
+//            ['size' => 10, 'x' => 10, 'y' => 140, 'text' => $y],
+//            ['size' => 10, 'x' => 255, 'y' => 65, 'text' => $f3->_e1],
+//            ['size' => 10, 'x' => 255, 'y' => 140, 'text' => ($f3->_n_r - 1).'×'.$f3->_e2],
+//            ['size' => 10, 'x' => 255, 'y' => 235, 'text' => $f3->_e1],
+//        ];
+//
+//        for ($j = 0; $j < $f3->_n_r; $j++) {
+//            for ($i = 0; $i < $f3->_n_c; $i++) {
+//                array_push($boltPic, ['size' => 24, 'x' => 50 + $f3->_e2*$x1 + $i*$f3->_p2*$x1 - 12, 'y' => 50 + $f3->_e1*$y1 + $j*$f3->_p1*$y1 + 12, 'text' => '+']);
+//            }
+//        }
+//        $blc->write('vendor/resist/ecc-calculations/canvas/bolt0.jpg', $boltPic, '');
 
+        $r0 = 300; // image size
+        $width = 2*$f3->_e2 + ($f3->_n_c - 1)*$f3->_p2;
+        $height = 2*$f3->_e1 + ($f3->_n_r - 1)*$f3->_p1;
+        $rhwh = $height/$width;
+        $rhww = 1;
+        if ($height < $width) {
+            $rhww = $height/$width;
+            $rhwh = 1;
+        }
+        $rw = ($r0/$width)/$rhwh;
+        $rh = ($r0/$height)/$rhww; // ratio
+        $svg = new \SVG($r0, $r0);
+        $svg->addRectangle(0, 0, $width*$rw, $height*$rh);
+        $svg->setColor('blue');
+        $svg->setFill('blue');
         for ($j = 0; $j < $f3->_n_r; $j++) {
             for ($i = 0; $i < $f3->_n_c; $i++) {
-                array_push($boltPic, ['size' => 24, 'x' => 50 + $f3->_e2*$x1 + $i*$f3->_p2*$x1 - 12, 'y' => 50 + $f3->_e1*$y1 + $j*$f3->_p1*$y1 + 12, 'text' => '+']);
+                $svg->addCircle($f3->_e2*$rw + $i*$f3->_p2*$rw, $f3->_e1*$rh + $j*$f3->_p1*$rh, 5);
             }
         }
-        $blc->write('vendor/resist/ecc-calculations/canvas/bolt0.jpg', $boltPic, '');
+        $svg->setFill('none');
+        $svg->setColor('red');
+        $svg->addDimH(0, $f3->_e2*$rw, 30, $f3->_e2);
+        $svg->addDimH(0 + $f3->_e2*$rw, ($f3->_n_c - 1)*$f3->_p2*$rw, 30, $f3->_n_c - 1 .'×'.$f3->_p2);
+        $svg->addDimH(0 + $f3->_e2*$rw + ($f3->_n_c - 1)*$f3->_p2*$rw, $f3->_e2*$rw, 30, $f3->_e2);
+        $svg->addDimV(0, $f3->_e1*$rh, $width*$rw - 10, $f3->_e1);
+        $svg->addDimV(0 + $f3->_e1*$rh, ($f3->_n_r - 1)*$f3->_p1*$rh, $width*$rw - 10, $f3->_n_r - 1 .'×'.$f3->_p1);
+        $svg->addDimV(0 + $f3->_e1*$rh + ($f3->_n_r - 1)*$f3->_p1*$rh, $f3->_e1*$rh, $width*$rw - 10, $f3->_e1);
+
+        $blc->html($svg->getSvg());
+
+
         $blc->h2('Csavarkép nyírási teherbírása');
         $blc->numeric('FvEd',['F_(sum,v,Ed)', 'Csavarképre ható erő'], $nb*$f3->_V, 'kN');
         $FRd = min($ec->FbRd($f3->_bName, $f3->_bMat, $f3->_sMat, $f3->_e1, $f3->_e2, $f3->_t, 0, false), $ec->FbRd($f3->_bName, $f3->_bMat, $f3->_sMat, $f3->_p1, $f3->_p2, $f3->_t, 1, false), $ec->FvRd($f3->_bName, $f3->_bMat, $f3->_n, 0, false))*$nb;
