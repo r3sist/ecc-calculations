@@ -1,6 +1,7 @@
+.dev/
 .git/
 .idea/
-.dev/
+.whitepaper/
 vendor/
 composer.phar
 composer.lock
