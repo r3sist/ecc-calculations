@@ -14,7 +14,10 @@ Class Wind extends \Ecc
     {
         $blc->note('Szélterhek egyszerűsített számítása. [Changelog](https://bitbucket.org/resist/ecc-calculations/history-node/f1da14f0c5f3d7e38cfa344e336fbab7fd276136/Calculations/Wind.php?at=master)');
 
+        /*
+        // Legacy write mode:
         $blc->boo('makeWrite', 'Elrendezési képek generálása', false, '');
+        */
 
         $blc->toc();
 
@@ -372,50 +375,48 @@ Class Wind extends \Ecc
             }
             */
 
-            $svgFlat0 = new \resist\SVG(300, 350);
-            /*
+            $svg = new \resist\SVG(600, 350);
             // Generate raw part:
-            $svgFlat0->addText(0, 250, '⇝', false, 'font-size: 40px; fill: blue;');
-            $svgFlat0->addRectangle(50, 70, 200, 50); // Building section
-            $svgFlat0->setFill('#eeeeee'); // Forces
-            $svgFlat0->addRectangle(50, 40, 50, 30); // FG
-            $svgFlat0->addText(55, 65, 'F G');
-            $svgFlat0->addRectangle(100, 50, 100, 20); // H
-            $svgFlat0->addText(105, 65, 'H');
-            $svgFlat0->addRectangle(200, 60, 50, 10); // I
-            $svgFlat0->addText(205, 65, 'I');
-            $svgFlat0->setColor(false);
-            $svgFlat0->setFill('none');
-            $svgFlat0->addRectangle(50, 140, 50, 50); // Building layout F1
-            $svgFlat0->addText(55, 160, 'F');
-            $svgFlat0->addRectangle(50, 190, 50, 70); // Building layout G
-            $svgFlat0->addText(55, 210, 'G');
-            $svgFlat0->addRectangle(50, 260, 50, 50); // Building layout F2
-            $svgFlat0->addText(55, 280, 'F');
-            $svgFlat0->addRectangle(100, 140, 100, 170); // Building layout H
-            $svgFlat0->addText(105, 280, 'H');
-            $svgFlat0->addRectangle(200, 140, 50, 170); // Building layout I
-            $svgFlat0->addText(205, 280, 'I');
+            $svg->setColor('blue');
+            $svg->addText(0, 250, '⇝', false, 'font-size: 40px;');
+            $svg->setColor(false);
+            $svg->addRectangle(100, 70, 200, 50); // Building section
+            $svg->setFill('#eeeeee'); // Forces
+            $svg->addRectangle(100, 40, 50, 30); // FG
+            $svg->addText(105, 65, 'F G');
+            $svg->addRectangle(150, 50, 100, 20); // H
+            $svg->addText(155, 65, 'H');
+            $svg->addRectangle(250, 60, 50, 10); // I
+            $svg->addText(255, 65, 'I');
+            $svg->setFill('none');
+            $svg->addRectangle(100, 140, 50, 50); // Building layout F1
+            $svg->addText(105, 160, 'F');
+            $svg->addRectangle(100, 190, 50, 70); // Building layout G
+            $svg->addText(105, 210, 'G');
+            $svg->addRectangle(100, 260, 50, 50); // Building layout F2
+            $svg->addText(105, 280, 'F');
+            $svg->addRectangle(150, 140, 100, 170); // Building layout H
+            $svg->addText(155, 280, 'H');
+            $svg->addRectangle(250, 140, 50, 170); // Building layout I
+            $svg->addText(255, 280, 'I');
             // Dynamic part:
-            */
-            $svgFlat0->addTrustedRaw('<text x="0" y="250" style="font-size: 40px; fill: blue;">⇝</text><rect x="50" y="70" width="200" height="50" stroke="#333333" stroke-width="1" fill="none"></rect><rect x="50" y="40" width="50" height="30" stroke="#333333" stroke-width="1" fill="#eeeeee"></rect><text x="55" y="65" style="">F G</text><rect x="100" y="50" width="100" height="20" stroke="#333333" stroke-width="1" fill="#eeeeee"></rect><text x="105" y="65" style="">H</text><rect x="200" y="60" width="50" height="10" stroke="#333333" stroke-width="1" fill="#eeeeee"></rect><text x="205" y="65" style="">I</text><rect x="50" y="140" width="50" height="50" stroke="#000000" stroke-width="1" fill="none"></rect><text x="55" y="160" style="">F</text><rect x="50" y="190" width="50" height="70" stroke="#000000" stroke-width="1" fill="none"></rect><text x="55" y="210" style="">G</text><rect x="50" y="260" width="50" height="50" stroke="#000000" stroke-width="1" fill="none"></rect><text x="55" y="280" style="">F</text><rect x="100" y="140" width="100" height="170" stroke="#000000" stroke-width="1" fill="none"></rect><text x="105" y="280" style="">H</text><rect x="200" y="140" width="50" height="170" stroke="#000000" stroke-width="1" fill="none"></rect><text x="205" y="280" style="">I</text>');
-            $svgFlat0->addText(55, 180, $wF.'', false, 'fill: red; font-weight: bold');
-            $svgFlat0->addText(55, 230, $wG.'', false, 'fill: red; font-weight: bold');
-            $svgFlat0->addText(105, 300, $wH.'', false, 'fill: red; font-weight: bold');
-            $svgFlat0->addText(205, 300, $wI.'', false, 'fill: red; font-weight: bold');
-            $svgFlat0->addText(0, 20, ($case['wind'] == '-' ? 'Szívás [-]' : 'Nyomás [+]'), false, 'fill: blue;'); // Case
-            $svgFlat0->setColor('red');
-            $svgFlat0->addDimH(50, 50, 100, \H3::n1($e/10)); // F dim
-            $svgFlat0->addDimH(100, 100, 100, \H3::n1($e/2-$e/10)); // F dim
-            $svgFlat0->addDimH(200, 50, 100, \H3::n1(($f3->_d0 - $e/2 > 0 ? $f3->_d0 - $e/2 : 0))); // F dim
-            $svgFlat0->addDimV(140, 170, 270, 'b='.$f3->_b0);
-            $svgFlat0->addDimV(140, 170, 270, 'b='.$f3->_b0);
-            $svgFlat0->addDimV(140, 50, 30, ''.$e/4);
-            $svgFlat0->addDimV(190, 70, 30, ''.$f3->_b0 - $e/2);
-            $svgFlat0->addDimV(260, 50, 30, ''.$e/4);
-            $svgFlat0->addDimH(50, 200, 330, 'd='.$f3->_d0);
-
-            $blc->svg($svgFlat0);
+            $svg->setColor('blue');
+            $svg->addText(0, 20, ($case['wind'] == '-' ? 'Szívás [-]' : 'Nyomás [+] [kN/m2]'), false, ''); // Case
+            $svg->setColor('red');
+            $svg->addText(105, 180, $wF.'', false, 'fill: red; font-weight: bold');
+            $svg->addText(105, 230, $wG.'', false, 'fill: red; font-weight: bold');
+            $svg->addText(155, 300, $wH.'', false, 'fill: red; font-weight: bold');
+            $svg->addText(255, 300, $wI.'', false, 'fill: red; font-weight: bold');
+            $svg->addDimH(100, 50, 100, \H3::n1($e/10)); // F dim
+            $svg->addDimH(150, 100, 100, \H3::n1($e/2-$e/10)); // F dim
+            $svg->addDimH(250, 50, 100, \H3::n1(($f3->_d0 - $e/2 > 0 ? $f3->_d0 - $e/2 : 0))); // F dim
+            $svg->addDimV(140, 170, 330, 'b='.\H3::n1($f3->_b0));
+            $svg->addDimV(140, 50, 80, ''.\H3::n1($e/4));
+            $svg->addDimV(190, 70, 80, ''.\H3::n1($f3->_b0 - $e/2));
+            $svg->addDimV(260, 50, 80, ''.\H3::n1($e/4));
+            $svg->addDimH(100, 200, 340, 'd='.\H3::n1($f3->_d0));
+            $blc->svg($svg);
+            unset($svg);
         }
 
         // WALL
@@ -497,6 +498,7 @@ Class Wind extends \Ecc
             $wD = number_format($cpD*$f3->_qpz, 1);
             $wE = number_format($cpE*$f3->_qpz, 1);
             $e = min($f3->_b0, 2*$f3->_h);
+            $widthB = \H3::n1(($e < $f3->_d0 ? $e - $e/5 : $e - $f3->_d0));
             $wall = array(
                 '$c$' => array(
                     'A' => $cpA,
@@ -514,16 +516,18 @@ Class Wind extends \Ecc
                 ),
                 'Zóna szélesség $[m]$' => array(
                     'A' => $e/5,
-                    'B' => $e - $e/5,
+                    'B' => $widthB,
                     'C' => ($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0),
                     'D' => $f3->_b0,
                     'E' => $f3->_b0
                 )
             );
             $blc->math('c_(p,i,+) = '.$f3->_cp.'%%%c_(p,i,-) = '.$f3->_cm.'%%%b = '.$f3->_b0.' [m]%%%d = '.$f3->_d0.' [m]', '');
-            $blc->math('e = '.$e.'', '');
+            $blc->math('e = min{(b),(2h):} = '.$e.'', '');
 
             $blc->table($wall);
+            /*
+            // Legacy write mode:
             if ($f3->_makeWrite) {
                 $blc->region0('wall0'.$case['id'], 'Fal zóna elrendezés');
                     $write = array(
@@ -541,6 +545,46 @@ Class Wind extends \Ecc
                     $blc->write('vendor/resist/ecc-calculations/canvas/wind2.jpg', $write, 'Fal zóna elrendezés');
                 $blc->region1('wall0');
             }
+            */
+            $svg = new \resist\SVG(600, 350);
+            // Generate raw part:
+            $svg->setColor('blue');
+            $svg->addText(0, 250, '⇝', false, 'font-size: 40px;');
+            $svg->setColor(false);
+            $svg->addRectangle(100, 50, 200, 50); // Building section
+            $svg->addRectangle(100, 140, 200, 150); // Building layout
+            $svg->setFill('#eeeeee'); // Forces
+            $svg->addRectangle(100, 110, 50, 30); // A
+            $svg->addRectangle(100, 290, 50, 30); // A bottom
+            $svg->addText(105, 65, 'A');
+            $svg->addText(105, 130, '↑');
+            $svg->addText(105, 310, '↓');
+            $svg->addRectangle(150, 120, 100, 20); // B
+            $svg->addRectangle(150, 290, 100, 20); // B bottom
+            $svg->addText(155, 65, 'B');
+            $svg->addRectangle(250, 130, 50, 10); // C
+            $svg->addRectangle(250, 290, 50, 10); // C bottom
+            $svg->addText(255, 65, 'C');
+            $svg->addRectangle(70, 140, 30, 150); // D
+            $svg->addText(105, 220, 'D');
+            $svg->addText(80, 220, '→');
+            $svg->addRectangle(300, 140, 20, 150); // E
+            $svg->addText(280, 220, 'E');
+            $svg->addText(300, 220, '→');
+            // Dynamic part:
+            $svg->setColor('red');
+            $svg->addText(115, 130, $wA.'', false, 'fill: red; font-weight: bold');
+            $svg->addText(155, 130, $wB.'', false, 'fill: red; font-weight: bold');
+            $svg->addText(255, 130, ($f3->_d0 - $e > 0 ? $wC : 0).'', false, 'fill: red; font-weight: bold');
+            $svg->addText(80, 240, $wD.'', false, 'fill: red; font-weight: bold');
+            $svg->addText(300, 240, $wE.'', false, 'fill: red; font-weight: bold');
+            $svg->addDimH(100, 50, 90, \H3::n1($e/5)); // A width
+            $svg->addDimH(150, 100, 90, \H3::n1(($e < $f3->_d0 ? $e - $e/5 : $e - $f3->_d0))); // B width
+            $svg->addDimH(250, 50, 90, \H3::n1(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0)));
+            $svg->addDimV(140, 150, 350, 'b='.\H3::n1($f3->_b0));
+            $svg->addDimH(100, 200, 340, 'd='.\H3::n1($f3->_d0));
+            $blc->svg($svg);
+            unset($svg);
         }
 
         $blc->h1('Oldalain nyitott ferdesíkú pilletető');
@@ -634,6 +678,8 @@ Class Wind extends \Ecc
                 $class = '2';
             }
 
+            /*
+            // Legacy write mode:
             if ($f3->_makeWrite) {
                 $blc->region0('canopy0'.$class.$case['id'], 'Pilletető zóna elrendezés '.$case['wind']);
                     $write = array(
@@ -651,6 +697,38 @@ Class Wind extends \Ecc
             } else {
                 $blc->txt('', 'Elrendezési kép generálás kikapcsolva.');
             }
+            */
+            $svg = new \resist\SVG(600, 300);
+            // Generate raw part:
+            $svg->setColor('blue');
+            $svg->addText(0, 170, '⇝', false, 'font-size: 40px;');
+            $svg->setColor(false);
+            $svg->addRectangle(100, 70, 50, 200); // C1
+            $svg->addText(105, 170, 'C');
+            $svg->addRectangle(100, 70, 200, 50); // B1
+            $svg->addText(200, 95, 'B');
+            $svg->addRectangle(100, 220, 200, 50); // B2
+            $svg->addText(200, 260, 'B');
+            $svg->addRectangle(250, 70, 50, 200); // C2
+            $svg->addText(255, 170, 'C');
+            $svg->addText(200, 170, 'A');
+            // Dynamic part:
+            $svg->setColor('blue');
+            $svg->addText(0, 20, ($case['wind'] == '-' ? 'Szívás (-) [kN/m2]' : 'Nyomás (+) [kN/m2]'), false, ''); // Case
+            $svg->setColor('red');
+            $svg->addText(200, 190, $wA.'', false, 'font-weight: bold');
+            $svg->addText(200, 115, $wB.'', false, 'font-weight: bold');
+            $svg->addText(105, 190, $wC.'', false, 'font-weight: bold');
+            $svg->addDimH(100, 50, 50, \H3::n1($f3->_d0/10));
+            $svg->addDimH(150, 100, 50, \H3::n1($f3->_d0 - 2*0.1*$f3->_d0));
+            $svg->addDimH(250, 50, 50, \H3::n1($f3->_d0/10));
+            $svg->addDimV(70, 50, 70, ''.\H3::n1($f3->_b0/10));
+            $svg->addDimV(120, 100, 70, ''.\H3::n1($f3->_b0 - 2*0.1*$f3->_b0));
+            $svg->addDimV(220, 50, 70, ''.\H3::n1($f3->_b0/10));
+            $svg->addDimV(70, 200, 340, 'b='.\H3::n1($f3->_b0));
+            $svg->addDimH(100, 200, 300, 'd='.\H3::n1($f3->_d0));
+            $blc->svg($svg);
+            unset($svg);
         }
         $blc->txt('', '(+) szélnyomás&nbsp;&nbsp;&nbsp; (-) szélszívás');
 
@@ -724,9 +802,12 @@ Class Wind extends \Ecc
         );
         $blc->table($atticTable,'Szabadon álló fal', '');
 
+        /*
+        // Legacy write mode:
         if ($f3->_makeWrite) {
             $blc->write('vendor/resist/ecc-calculations/canvas/wind3.jpg', array(), 'Szabadon álló fal');
         }
+        */
 
         $blc->h1('Egyedi szélteher');
         $blc->numeric('c_custom', '$c_(cust om)$ egyedi alaki tényező', 2.2, '', '');
