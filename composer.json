@@ -14,5 +14,8 @@
     "resist/v3": "dev-master",
     "resist/h3": "dev-master",
     "wixel/gump": "dev-master"
+  },
+  "require-dev": {
+    "resist/apidoc": "dev-master"
   }
 }
