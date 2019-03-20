@@ -518,7 +518,19 @@ Jellemzők és mértékegységek:
         $ki = 1;
         $sigmaV = $kr*$ki*$vb;
         $Ivz = $sigmaV/$vmz;
-        return number_format((1 + 7*$Ivz)*0.5*(1.25/1000)*($vmz*$vmz), 3);
+        $qpz = number_format((1 + 7*$Ivz)*0.5*(1.25/1000)*($vmz*$vmz), 3);
+
+        $blc = \Blc::instance();
+        $blc->note('$v_(b,0) = '.$vb0.'; c_(dir) = '.$cDir.'; c_(season) = '.$cSeason.'; c_(al t) = '.$cAlt.'$');
+        $blc->note('$v_b = v_(b,0)*c_(dir)*c_(season)*c_(prob)*c_(al t) = '.$vb.'$');
+        $blc->note('$c_(0,z) = '.$c0z.'; z_0 = '.$z0.'; z_(min) = '.$zmin.'; k_r = '.$kr.'; z = '.$z.'$');
+        $blc->note('$c_(r,z) = k_r*log(z/z_0) = '.$crz.'$');
+        $blc->note('$v_(m,z) = c_(r,z)*c_(0,z)*v_b = '.$vmz.'$');
+        $blc->note('$k_i = '.$ki.'; sigma_V = k_r*k_i*v_b = '.$sigmaV.'$');
+        $blc->note('$I_(v,z) = sigma_v/v_(m,z) = '.$Ivz.'$');
+        $blc->note('$q_p(z) = (1 + 7*I_(v,z))*0.5*(1.25/1000)*v_(m,z)^2 = '.$qpz.'$');
+
+        return $qpz;
     }
 
     public static function qpzNSEN(float $z, int $terrainCat, float $cAlt, float $c0z, float $vb0): float
