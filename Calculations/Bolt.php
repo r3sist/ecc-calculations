@@ -177,7 +177,7 @@ Class Bolt extends \Ecc
         }
         $rw = ($r0/$width)/$rhwh;
         $rh = ($r0/$height)/$rhww; // ratio
-        $svg = new \SVG($r0, $r0);
+        $svg = new \resist\SVG($r0, $r0);
         $svg->addRectangle(0, 0, $width*$rw, $height*$rh);
         $svg->setColor('blue');
         $svg->setFill('blue');
