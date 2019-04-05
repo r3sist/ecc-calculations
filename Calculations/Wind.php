@@ -12,8 +12,6 @@ Class Wind extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $blc->note('Szélterhek egyszerűsített számítása. [Changelog](https://bitbucket.org/resist/ecc-calculations/history-node/f1da14f0c5f3d7e38cfa344e336fbab7fd276136/Calculations/Wind.php?at=master)');
-
         /*
         // Legacy write mode:
         $blc->boo('makeWrite', 'Elrendezési képek generálása', false, '');
@@ -62,7 +60,7 @@ Class Wind extends \Ecc
         $blc->region1('more0');
 
         $blc->success0('success0');
-        $blc->def('qpz', $ec->qpz($f3->_h, $f3->_terrainCat), 'q_(p)(z) = %% [(kN)/m^2]', 'Torlónyomás');
+        $blc->def('qpz', $ec->qpz($f3->_h, $f3->_terrainCat), 'q_(p)(z, cat) = %% [(kN)/m^2]', 'Torlónyomás');
         if ($f3->_NSEN) {
             $blc->math('v_(b, NSEN) = c_(al t, NSEN)*c_(dir)*c_(season)*c_(prob)*v_(b, 0, NSEN) = '.$f3->_NSEN_calt.'*1.0*1.0*'.$f3->_NSEN_vb0);
             $blc->def('qpz', $ec->qpzNSEN($f3->_h, $f3->_terrainCat, $f3->_NSEN_calt, $f3->_NSEN_c0z, $f3->_NSEN_vb0), 'q_(p, NSEN)(z) = %% [(kN)/m^2]', 'Torlónyomás');
