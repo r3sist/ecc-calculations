@@ -75,6 +75,18 @@ Class Grider extends \Ecc
             $blc->numeric('b', ['b', 'Terhelő mező szélessége, gerenda osztás'], 4, 'm', 'Szelemenes rendszer esetén a szelemenek terhelt szelemenszakaszok összes hossza a két oldalon');
         $blc->region1('geometry');
 
+        $r = min(400/$f3->_h, 600/max($f3->_b_ft, $f3->_b_fb, $f3->_b_w)); // ratio
+        $svg = new \resist\SVG(600, 400);
+        $svg->addLine(0, 0, $r*$f3->_b_ft, 0); // top line
+        $svg->addLine(0, 0, 0, $r*$f3->_h_ft); // top flange left border
+        $svg->addLine($r*$f3->_b_ft, 0, $r*$f3->_b_ft, $r*$f3->_h_ft); // top flange right border
+        $svg->addLine(0, $r*$f3->_h_ft, $r*$f3->_b_ft/2-$r*$f3->_b_w/2, $r*$f3->_h_ft+$r*$f3->_h_ht);
+        $svg->addLine($r*$f3->_b_ft, $r*$f3->_h_ft, $r*$f3->_b_ft/2+$r*$f3->_b_w/2, $r*$f3->_h_ft+$r*$f3->_h_ht);
+        $svg->addLine($r*$f3->_b_ft/2+$r*$f3->_b_w/2, $r*$f3->_h_ft+$r*$f3->_h_ht, $r*$f3->_b_ft/2+$r*$f3->_b_w/2, $r*($f3->_h-$f3->_h_ft-$f3->_h_ht-$f3->_h_hb-$f3->_h_fb)); // web left
+        $svg->addLine($r*$f3->_b_ft/2-$r*$f3->_b_w/2, $r*$f3->_h_ft+$r*$f3->_h_ht, $r*$f3->_b_ft/2-$r*$f3->_b_w/2, $r*($f3->_h-$f3->_h_ft-$f3->_h_ht-$f3->_h_hb-$f3->_h_fb)); // web right
+//        $blc->svg($svg);
+        unset($svg);
+
         // =============================================================================================================
         $blc->h1('Teher számítás');
         $blc->boo('makeEd', 'Mértékadó terhek kézi megadása', false);
