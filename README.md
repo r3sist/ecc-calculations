@@ -1,6 +1,7 @@
 # Ecc
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/?branch=master) 
+[![Build Status](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/badges/build.png?b=master)](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/build-status/master) 
 [![Maintainability](https://api.codeclimate.com/v1/badges/523e9528df4952adbc69/maintainability)](https://codeclimate.com/github/r3sist/ecc-calculations/maintainability) 
 
 **Native classes of Eurocode based calculations for structural design on [structure.hu](https://structure.hu)**
