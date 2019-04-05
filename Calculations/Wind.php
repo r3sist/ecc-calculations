@@ -498,7 +498,7 @@ Class Wind extends \Ecc
             $wD = number_format($cpD*$f3->_qpz, 1);
             $wE = number_format($cpE*$f3->_qpz, 1);
             $e = min($f3->_b0, 2*$f3->_h);
-            $widthB = \H3::n1(($e < $f3->_d0 ? $e - $e/5 : $e - $f3->_d0));
+            $widthB = \H3::n1(($e < $f3->_d0 ? $e - $e/5 : $f3->_d0 - $e/5));
             $wall = array(
                 '$c$' => array(
                     'A' => $cpA,
@@ -579,7 +579,7 @@ Class Wind extends \Ecc
             $svg->addText(80, 240, $wD.'', false, 'fill: red; font-weight: bold');
             $svg->addText(300, 240, $wE.'', false, 'fill: red; font-weight: bold');
             $svg->addDimH(100, 50, 90, \H3::n1($e/5)); // A width
-            $svg->addDimH(150, 100, 90, \H3::n1(($e < $f3->_d0 ? $e - $e/5 : $e - $f3->_d0))); // B width
+            $svg->addDimH(150, 100, 90, $widthB); // B width
             $svg->addDimH(250, 50, 90, \H3::n1(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0)));
             $svg->addDimV(140, 150, 350, 'b='.\H3::n1($f3->_b0));
             $svg->addDimH(100, 200, 340, 'd='.\H3::n1($f3->_d0));
