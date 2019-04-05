@@ -36,8 +36,26 @@ Class Layers extends \Ecc
         ];
         $blc->bulk($bulkName, $fields);
 
+        $blc->region0('t2', 'Szigetelőanyagok');
+        $table = array(
+            "Kőzetgyapot - lapostető" => array('$gamma_k [(kN)/m^3]$' => '1.4 - 1.5'),
+            "Kőzetgyapot - magastető" => array('$gamma_k [(kN)/m^3]$' => '0.3 - 0.8'),
+            "Kőzetgyapot - hang" => array('$gamma_k [(kN)/m^3]$' => '0.9 - 1.1'),
+            "PVC" => array('$gamma_k [(kN)/m^3]$' => '17'),
+            "EPS" => array('$gamma_k [(kN)/m^3]$' => '0.1 - 0.15'),
+        );
+        $blc->table($table, 'Szigetelőanyagok');
+        $blc->region1('t2');
+
+        $blc->region0('t1', 'Burkolóanyagok');
+        $table = array(
+            "Esztrich" => array('$gamma_k [(kN)/m^3]$' => 18),
+        );
+        $blc->table($table, 'Burkolóanyagok');
+        $blc->region1('t1');
+
         $blc->region0('t0', 'Lindab trapézlemez önsúlyok');
-        $table0 = array(
+        $table = array(
             "LTP20×0.4" => array("Önsúly [kN/m&sup2;]" => 0.032),
             "LTP20×0.5" => array("Önsúly [kN/m&sup2;]" =>0.041),
             "LTP20×0.6" => array("Önsúly [kN/m&sup2;]" =>0.050),
@@ -74,7 +92,7 @@ Class Layers extends \Ecc
             "LTP150×1.25" => array("Önsúly [kN/m&sup2;]" =>0.165),
             "LTP150×1.50<!--info-->" => array("Önsúly [kN/m&sup2;]" =>0.199),
         );
-        $blc->table($table0, 'Lindab trapézlemez');
+        $blc->table($table, 'Lindab trapézlemez');
         $blc->region1('t0');
     }
 }
