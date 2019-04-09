@@ -2,7 +2,7 @@
 
 namespace Calculation;
 
-Class Test extends \Ecc
+Class Impact extends \Ecc
 {
 
     /**
