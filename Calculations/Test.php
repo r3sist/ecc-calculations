@@ -126,7 +126,7 @@ Class Test extends \Ecc
         $blc->h4('img tests', '');
         $blc->img('https://structure.hu/img/ceh.svg', '***md caption*** [SVG source](https://structure.hu/img/ceh.svg)');
         $blc->img('https://sorfi.org/assets/img/brands/webextensions.png', '[PNG source](https://sorfi.org/assets/img/brands/webextensions.png)');
-        $blc->write('vendor/resist/ecc-calculations/canvas/snow3.jpg', [['size' => 14, 'x' => 90, 'y' => 35, 'text' => 'test']], '***write/md test***');
+//        $blc->write('vendor/resist/ecc-calculations/canvas/snow3.jpg', [['size' => 14, 'x' => 90, 'y' => 35, 'text' => 'test']], '***write/md test***');
         $blc->hr();
 
         $blc->hr();
