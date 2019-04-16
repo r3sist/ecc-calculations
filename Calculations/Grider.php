@@ -44,16 +44,18 @@ Class Grider extends \Ecc
                 $f3->_h_ht = 0;
             }
 
+            $blc->numeric('b_w', ['b_w', 'Gerincvastagság'], 160, 'mm', '');
+
             if ($f3->_griderSection == 'i') {
                 $blc->numeric('b_fb', ['b_(fb)', 'Alsó öv szélessége'], 400, 'mm', '');
                 $blc->numeric('h_fb', ['h_(fb)', 'Alsó öv magassága'], 300, 'mm', '');
                 $blc->numeric('h_hb', ['h_(hb)', 'Alsó öv kiékelés magassága'], 30, 'mm', '');
             } else {
-                $f3->_b_fb = 0;
+                $f3->_b_fb = $f3->_b_w;
                 $f3->_h_fb = 0;
                 $f3->_h_hb = 0;
             }
-            $blc->numeric('b_w', ['b_w', 'Gerincvastagság'], 160, 'mm', '');
+
             $blc->def('h_w', $f3->_h-($f3->_h_ft + $f3->_h_fb), 'h_w = %% [mm]', 'Gerinc magasság');
             $Act = $f3->_b_ft*$f3->_h_ft;
             $Acb = $f3->_b_fb*$f3->_h_fb;
@@ -86,6 +88,9 @@ Class Grider extends \Ecc
         $svg->addLine($r*$f3->_b_ft/2-$r*$f3->_b_w/2, $r*$f3->_h_ft+$r*$f3->_h_ht, $r*$f3->_b_ft/2-$r*$f3->_b_w/2, $r*($f3->_h-$f3->_h_ft-$f3->_h_ht-$f3->_h_hb-$f3->_h_fb)); // web right
 //        $blc->svg($svg);
         unset($svg);
+
+//        $blc->def('c', 40, 'c = %% [mm]', 'Betonfedés');
+        $blc->numeric('c', ['c', 'Betonfedés'], 40, 'mm', 'Alul');
 
         // =============================================================================================================
         $blc->h1('Teher számítás');
@@ -177,14 +182,59 @@ Class Grider extends \Ecc
             $blc->success1('Ed');
         }
 
+
+
         // =============================================================================================================
         $blc->h1('Közelítő méretfelvétel');
         $blc->note('@AR');
-        $blc->def('prenp', ceil((($f3->_MEd*1000000)/(0.8*$f3->_h*0.8*$f3->_rfyd))/314), 'n_(phi 20) = ceil(((M_(Ed)*10^6)/(0.8*h*0.8*f_(yd)))/A_(phi 20)) = %%', 'Húzott pászma és lágyvas száma összesen');
+        $blc->def('base', 20, 'base = %% [mm]', '$phi$ vasátmérő alkalmazása');
+        $f3->_Abase = $ec->A($f3->_base);
+        $blc->def('prenp', ceil((($f3->_MEd*1000000)/(0.8*$f3->_h*0.8*$f3->_rfyd))/$f3->_Abase), 'n_(phi 20) = ceil(((M_(Ed)*10^6)/(0.8*h*0.8*f_(yd)))/A_(phi 20)) = %%', 'Húzott pászma és lágyvas becsült száma összesen');
         $blc->note('$0.8h$ hatékony magasság közelítése. $0.8f_(yd)$ repedés tágasság "biztosítására".');
 
         // =============================================================================================================
-        $blc->h1('Keresztmetszet ellenőrzése');
-        $blc->h2('Középső keresztmetszet ellenőrzése hajlításra');
+        $blc->h1('Keresztmetszet közelítő ellenőrzése');
+        $blc->h2('Középső keresztmetszet közelítő ellenőrzése hajlításra');
+
+        $blc->h3('Húzott acélok becsült elrendezése');
+        $blc->def('prenp', ceil(($f3->_b_ft*$f3->_h_ft + ($f3->_b_ft - $f3->_b_w)/2*$f3->_h_ht)*($f3->_cfcd/($f3->_rfyd*$f3->_Abase))), '(n_(phi 20)) = ceil((b_(ft)*h_(ft) - (b_(ft) - b_w)/2*h_(ht))*f_(cd)/(f_(yd)*A_(phi20))) = %%', ' Nyomásra teljesen kihasznált felső öv alapján becsült összes vasszám');
+        $blc->def('a', floor((($f3->_b_fb - 2*$f3->_c)/(2*$f3->_base)) + 1), '(a) = floor((b_(fb) - 2c)/(2*D_(phi20)) + 1) = %%', 'Vaselrendezés - pászma oszlopok száma');
+        $blc->def('ratio', 0.75, 'ratio := %%', 'Pászma-lágyvas arány');
+        $blc->def('bs', 1, 'b_s := %%', 'Lágyvas sorok száma');
+        $blc->def('b', ceil((0.75*$f3->_prenp)/$f3->_a + $f3->_bs), '(b) = ceil((ratio*n_(phi 20))/a + b_s) = %%', 'Vaselrendezés - sorok száma');
+        $blc->def('as', ($f3->_b*$f3->_base + ($f3->_b - 1)*$f3->_base)/2 + $f3->_c, '(a_s) = (b*base + (b - 1)*base)/2 + c = %% [mm]', 'Húzott acélok távolsága alsó széltől');
+        $blc->note('^ KG-nél más - ELLENŐRIZENDŐ!');
+        $blc->def('d', $f3->_h - $f3->_as, '(d) = h - a_s = %% [mm]');
+
+        $blc->h3('Szükséges húzott acél mennyisége');
+        // [kNm] [cm]:
+        $blc->def('z', \H3::n4(1-sqrt(1-200*($f3->_MEd)/(0.1*$f3->_b_ft*pow(0.1*$f3->_d,2)*($f3->_cfcd/10)))), 'zeta = %%', 'Nyomott zóna magassághányada');
+        $blc->def('x', \H3::n0($f3->_z*$f3->_d), '(x) = zeta*d = %% [mm]', 'Nyomott zóna becsült magassága');
+        $blc->def('Asmin', \H3::n0($f3->_b_ft*$f3->_x*($f3->_cfcd/$f3->_rfyd)), 'A_(s,min) = b*x*f_(cd)/f_(yd) = %% [mm^2]', 'Szükséges húzott acélmennyiség');
+        $blc->def('umin', \H3::n4($f3->_Asmin/$f3->_A_c), 'mu_(s,min) = A_(s,min)/A_c = %%', 'Szükséges húzott vashányad');
+
+        $blc->txt('Javasolt vasalás:');
+        $blc->def('np', ceil($f3->_Asmin/$f3->_Abase*$f3->_ratio), 'n_p = ceil(A_(s,min)/A_(phi'.$f3->_base.')*ratio) = %%', 'Pászmák száma');
+        // TODO min 2
+        $blc->def('ns', ceil(($f3->_Asmin - $f3->_np*$f3->_Abase)/$f3->_Abase), 'n_s = %%', 'Lágyvasak száma');
+        $blc->txt(false, 'Pászva-lágyvas arány: $'.$f3->_np/($f3->_np + $f3->_ns)*100 .'%$');
+        $blc->txt('Alkalmazott vasalás:');
+        $blc->numeric('np', ['n_p', 'Alkalmazott pászmák száma'], $f3->_np, '', '');
+        $blc->numeric('ns', ['n_s', 'Alkalmazott lágyvasak száma'], $f3->_ns, '', '');
+        $As = \V3::numeric($f3->_ns) + \V3::numeric($f3->_np);
+        $blc->def('n', $As, 'n = %%');
+        $blc->numeric('a', ['a', 'Alkalmazott vaselrendezés pászma oszlopok száma'], $f3->_a, '', '');
+        $blc->def('b', ceil($f3->_np/$f3->_a) + $f3->_bs, 'b = ceil(n_p/a) + b_s = %%', 'Alkalamzott vaselrendezés sorok száma');
+        $blc->def('As', \H3::n0($f3->_n*$f3->_Abase), 'A_s = n * A_(phi '.$f3->_base.') = %% [mm^2]', 'Alkalamzott húzott acélmennyiség');
+        $blc->def('u', \H3::n4($f3->_As/$f3->_A_c), 'mu_s = A_(s)/A_c = %%', 'Alkalamzott helyettesítő húzott vashányad');
+        $blc->def('as', ($f3->_b*$f3->_base + ($f3->_b - 1)*$f3->_base)/2 + $f3->_c, 'a_s = (b*base + (b - 1)*base)/2 + c = %% [mm]', 'Húzott acélok súlypontjának távolsága alsó széltől');
+        $blc->note('^ KG-nél nagyon más - ELLENŐRIZENDŐ!');
+        $blc->def('d', $f3->_h - $f3->_as, 'd = h - a_s = %% [mm]');
+        $blc->def('x', \H3::n0($f3->_As*$f3->_rfyd/($f3->_b_ft*$f3->_cfcd)), 'x = A_s*f_(yd)/(b_(ft)*f_(cd)) = %% [mm]', 'Nyomott zóna magassága');
+        if ($f3->_x <= $f3->_h_ft + $f3->_h_ht) {
+            $blc->label('yes', 'A nyomott zóna a kiékelt fejlemezen belül van');
+        } else {
+            $blc->label('no', 'A fejlemez magasságát növelni javasolt!');
+        }
     }
 }
