@@ -20,8 +20,8 @@ Class Config extends \Ecc
         $blc->boo('svgMath', 'Képletek SVG képekként', $f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre.');
         $f3->mu->load(array('uid = :uid', ':uid' => $f3->get('uid')));
         if (!$f3->mu->dry()) {
-            $f3->mu->ueccnativemathml = \V3::boo($f3->_nativeMath);
-            $f3->mu->ueccsvgmath = \V3::boo($f3->_svgMath);
+            $f3->mu->ueccnativemathml = $f3->_nativeMath;
+            $f3->mu->ueccsvgmath = $f3->_svgMath;
             $f3->mu->save();
         }
         $blc->txt('A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
