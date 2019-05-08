@@ -57,6 +57,7 @@ Class Grider extends \Ecc
             }
 
             $blc->def('h_w', $f3->_h-($f3->_h_ft + $f3->_h_fb), 'h_w = %% [mm]', 'Gerinc magasság');
+            $blc->note('^ KG-nél T keresztmetszet esetén is van alsó öv');
             $Act = $f3->_b_ft*$f3->_h_ft;
             $Acb = $f3->_b_fb*$f3->_h_fb;
             $Acw = $f3->_h_w*$f3->_b_w;
@@ -208,7 +209,7 @@ Class Grider extends \Ecc
 
         $blc->h3('Szükséges húzott acél mennyisége');
         // [kNm] [cm]:
-        $blc->def('z', \H3::n4(1-sqrt(1-200*($f3->_MEd)/(0.1*$f3->_b_ft*pow(0.1*$f3->_d,2)*($f3->_cfcd/10)))), 'zeta = %%', 'Nyomott zóna magassághányada');
+        $blc->def('z', \H3::n4(1-sqrt(1-200*($f3->_MEd)/(0.1*$f3->_b_ft*pow(0.1*$f3->_d,2)*($f3->_cfcd/10)))), 'zeta = 1-sqrt(1-200*M_(Ed)/(b_(ft)*d^2*f_(cd))) =%%', 'Nyomott zóna magassághányada');
         $blc->def('x', \H3::n0($f3->_z*$f3->_d), '(x) = zeta*d = %% [mm]', 'Nyomott zóna becsült magassága');
         $blc->def('Asmin', \H3::n0($f3->_b_ft*$f3->_x*($f3->_cfcd/$f3->_rfyd)), 'A_(s,min) = b*x*f_(cd)/f_(yd) = %% [mm^2]', 'Szükséges húzott acélmennyiség');
         $blc->def('umin', \H3::n4($f3->_Asmin/$f3->_A_c), 'mu_(s,min) = A_(s,min)/A_c = %%', 'Szükséges húzott vashányad');
@@ -236,5 +237,43 @@ Class Grider extends \Ecc
         } else {
             $blc->label('no', 'A fejlemez magasságát növelni javasolt!');
         }
+        $blc->def('z', \H3::n4($f3->_x/$f3->_d), 'zeta = x/d = %%', 'Nyomott zóna magassághányada');
+        $blc->def('zmax', \H3::n4((0.16 - 0.27)/(22 - 11)*($f3->_l*1000)/$f3->_d + 0.38), 'zeta_(max L/H) =  (0.16-0.27)/(22-11)*l/d*100+0.38 = %%', 'Nyomott zóna magassághányadának korlátozása');
+        $blc->note('^ KG önkényes képlet');
+        if ($f3->_z < $f3->_zmax/1.2) {
+            $blc->label('yes', 'Kevésbé kihasznált km.');
+        } elseif ($f3->_z > $f3->_zmax*1.1) {
+            $blc->label('no', 'Erősen kihasznált km.');
+        } else {
+            $blc->label('yes', 'Jól kihasznált km.');
+        }
+
+        $blc->success0('MRd');
+            $blc->def('MRd', ($f3->_As*$f3->_rfyd*($f3->_d-$f3->_x/2))/1000000, 'M_(Rd) = A_s*f_(yd)*(d-x/2) = %% [kNm]', 'Hajlítási teherbírás tervezési értéke. $M_(Ed) = '.$f3->_MEd.' [kNm]$');
+            $blc->label($f3->_MEd/$f3->_MRd, 'kihasználtság');
+        $blc->success1('MRd');
+
+        $blc->h2('Öv és gerinc elnyíródásának vizsgálata', 'Csatlakozási felületeken fellépő nyírófeszültség');
+        $blc->note('KG alapján. *Vasbeton szerkezetek (2016) 6.5.3. Nyírás a gerinc és a fejlemez között* fejezete is tartalamaz egy eljárást');
+        $blc->note('$V_(Ed) = beta*V_(Ed)/(z*b_i)$');
+        $blc->def('beta', 1, 'beta = %%', 'A később készült betonban a működő hosszirányú erő és a teljes hosszirányú erő aránya a vizsgált keresztmetszetben');
+        $blc->math('V_(Ed) = '.$f3->_VEd.' [kN]', 'Kereszt irányú nyíróerő');
+        $blc->def('zV', $f3->_d - $f3->_x/2, 'z_V = d - x/2 = %% [mm]', 'Együttdolgozó keresztmetszet belső karja');
+        $blc->def('bV', $f3->_b_w - 120, 'b_V = b_w - 120 [mm] = %% [mm]', 'Csatlakozási felület szélessége');
+        $blc->def('vEd', $f3->_beta*($f3->_VEd*1000)/$f3->_zV/$f3->_bV, 'v_(Ed) = beta*V_(Ed)/(z_V*b_V) = %% [N/(mm^2)]');
+
+        $blc->info0('stb');
+            $blc->txt('*STB* képlet alapján - $(S*T)/(b*I)$:', '$T = V_(Ed); b = b_V$');
+            $blc->def('hf', $f3->_x, 'h_f = x = %% [mm]', 'Nyomott öv vastagsága');
+            $blc->math('b_(ft) = '.$f3->_b_ft.' [mm]', 'Övszélesség');
+            $blc->def('hw2', $f3->_h_ht + $f3->_h_w + $f3->_h_hb + ($f3->_h_ft - $f3->_x), 'h_(w2) = %% [mm]', 'Gerincmagasság');
+            $blc->def('sp', \H3::n0(($f3->_hf*$f3->_b_ft*$f3->_hf/2 + $f3->_hw2*$f3->_b_w*($f3->_hf + $f3->_hw2/2) + $f3->_h_fb*$f3->_b_fb*($f3->_hf + $f3->_hw2 + $f3->_h_fb/2))/($f3->_hf*$f3->_b_ft + $f3->_hw2*$f3->_b_w + $f3->_h_fb*$f3->_b_fb)), 's_p = %% [mm]', 'Súlypont fentről számítva');
+            $blc->note('^ KG-nél T keresztmetszet esetén is van alsó öv');
+            $blc->def('S', \H3::n0(($f3->_hf*$f3->_b_ft*($f3->_sp - $f3->_hf/2))/1000), 'S = h_f*b_(ft)*(s_p - h_f/2) = %% [cm^3]', 'Öv tehetetlenségi nyomatéka');
+            $blc->def('I', \H3::n0(($f3->_hf*$f3->_b_ft*pow($f3->_hf/2 - $f3->_sp, 2) + $f3->_hw2*$f3->_b_w*pow($f3->_hf + $f3->_hw2/2 - $f3->_sp, 2) + $f3->_h_fb*$f3->_b_fb*pow($f3->_hf + $f3->_hw2 + $f3->_h_fb/2 - $f3->_sp, 2))/10000), 'I = %% [cm^4]', 'Inercia');
+            $blc->def('I', (     $f3->_hw2*$f3->_b_w*pow($f3->_hf + $f3->_hw2/2 - $f3->_sp, 2)      )/10000 +1, 'I = %% [cm^4]', 'Inercia');
+            $blc->def('vEdSTB', ($f3->_S*$f3->_VEd)/(($f3->_bV/10)*$f3->_I), 'v_(Ed,STB) = (S*V_(Ed))/(b_V*I) = %% [(kN)/(cm^2)]');
+            $blc->note('^ TODO rossz');
+        $blc->info1('stb');
     }
 }
