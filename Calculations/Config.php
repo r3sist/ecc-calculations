@@ -15,17 +15,6 @@ Class Config extends \Ecc
     {
         $f3->set('mu', new \DB\SQL\Mapper($f3->get('db'), 'users'));
 
-        $blc->h1('Képletek kezelése');
-        $blc->boo('nativeMath', 'Szerveroldali ASCIIMath konvertálás MathML formátumba', $f3->udata['ueccnativemathml'], 'MathJax helyett szerverordali képlet generálás. Csak Firefox alatt. Rondább, de gyorsabb megjelenítés.');
-        $blc->boo('svgMath', 'Képletek SVG képekként', $f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre.');
-        $f3->mu->load(array('uid = :uid', ':uid' => $f3->get('uid')));
-        if (!$f3->mu->dry()) {
-            $f3->mu->ueccnativemathml = $f3->_nativeMath;
-            $f3->mu->ueccsvgmath = $f3->_svgMath;
-            $f3->mu->save();
-        }
-        $blc->txt('A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
-
         $blc->h1('Mentés feltöltése');
         $blc->input('saveJson', '*.ecc* fájl tartalma', false, false, 'Kezdőoldalról letöltött *.ecc* fájl tartalmát bemásolva lehet mentést feltölteni. Ez egy JSON sztring. Más felhasználótól származó mentést is bevesz a rendszer. Hibás, hiányzó vagy azóta megváltozott paraméterek esetén alapértelmezésekkel fog számolni.', 'valid_json_string');
         if ($f3->_saveJson) {
@@ -41,6 +30,26 @@ Class Config extends \Ecc
             $f3->ms->save();
             $blc->toast('Mentés importálva!');
             $blc->html('<script>window.location.replace("'.$f3->home.'calc/'.$saveDataArray['_project_cname'].'/load/'.$f3->ms->get('sid').'");</script>');
+        }
+
+        $blc->h1('Felhasználói beállítások');
+        $blc->h2('Képletek kezelése');
+        $blc->boo('nativeMath', 'Szerveroldali ASCIIMath konvertálás MathML formátumba', $f3->udata['ueccnativemathml'], 'MathJax helyett szerverordali képlet generálás. Csak Firefox alatt. Rondább, de gyorsabb megjelenítés.');
+        $blc->boo('svgMath', 'Képletek SVG képekként', $f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre.');
+        $f3->mu->load(array('uid = :uid', ':uid' => $f3->get('uid')));
+        if (!$f3->mu->dry()) {
+            $f3->mu->ueccnativemathml = $f3->_nativeMath;
+            $f3->mu->ueccsvgmath = $f3->_svgMath;
+            $f3->mu->save();
+        }
+        $blc->txt('', 'A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
+
+        $blc->h2('Sablonok', 'MS Word export');
+        $blc->lst('template', ['CÉH' => '', 'Structure' => 'Str'], false, '');
+        $f3->mu->load(array('uid = :uid', ':uid' => $f3->get('uid')));
+        if (!$f3->mu->dry()) {
+            $f3->mu->utemplate = $f3->_template;
+            $f3->mu->save();
         }
 
         if ($f3->urole >= 30) {
