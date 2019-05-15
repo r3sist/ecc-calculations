@@ -15,8 +15,6 @@ Class Pin extends \Ecc
     {
         $blc->toc();
 
-        $blc->img('https://structure.hu/ecc/pin0.jpg', 'Híd saru');
-
         $blc->h1('Saru erők', '');
         $blc->numeric('REdz', ['R_(Ed,z)', 'Függőleges reakcióerő'], 950, 'kN', '');
         $blc->numeric('REdx', ['R_(Ed,x)', 'Hídtengely irányú vízszintes reakcióerő'], 10, 'kN', '');
@@ -148,5 +146,8 @@ Class Pin extends \Ecc
         $blc->txt('Minimum lemez szélesség:  $2.5d_0 = '. ceil(2.5*$f3->_d0).'[mm]$');
         $blc->def('tmin', ceil(0.7*sqrt(($f3->_REd*1000*$f3->__GM0)/$f3->_sfy)), 't_(min) = 0.7*sqrt((R_(Ed)*gamma_(M0))/f_(y,s)) = %% [mm]');
         $blc->def('dmax', floor(2.5*$f3->_tmin), 'd_(max) = 2.5*t_(min) = %% [mm]');
+
+        $blc->hr();
+        $blc->img('https://structure.hu/ecc/pin0.jpg', 'Híd saru @ATL');
     }
 }
