@@ -2,7 +2,7 @@
 
 namespace Calculation;
 
-Class Grider extends \Ecc
+Class Girder extends \Ecc
 {
 
     /**
