@@ -151,9 +151,9 @@ Class Corbel extends \Ecc
         $blc->note('A Nemzeti Melléklet a 0.25 szorzót 0.5-re módosítja.');
         $blc->label($f3->_Aswhmin/$f3->_Aswh, ' vsz. kengyel kihasználtság');
         if ($f3->_ac > 0.5*$f3->_hc) {
-            $blc->info('$a_c > 0.5*h_c$ -  Függőleges kengyelezés nem hagyható el!');
+            $blc->info('$a_c > 0.5*h_c$ ezért a függőleges kengyelezés nem hagyható el!');
         } else {
-            $blc->txt('$a_c < 0.5*h_c$  - Függőleges kengyelezés elhagyható. Ha nem lenne elhagyható, az alábbi feltételnek kell teljesülnie:');
+            $blc->info('$a_c < 0.5*h_c$  ezért a függőleges kengyelezés elhagyható. Ha nem lenne elhagyható, az alábbi feltételnek kell teljesülnie:');
         }
         $blc->numeric('nswv', ['n_(s,w,v)', 'Függőleges zárt $phi '.$f3->_phiwv.'$ kengyelek száma'], 2, '');
         $blc->def('Aswv', floor($f3->_nswv*$ec->A($f3->_phiwv, 2)), 'A_(s,w,v) = %% [mm^2]', 'Alkalamazott függőleges kengyel keresztmetszet');
