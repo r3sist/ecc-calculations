@@ -104,8 +104,8 @@ Class Bolt extends \Ecc
             $blc->def('d_min', number_format($f3->_delta * $f3->_t, 0),'d_(min) = delta*t = %% [mm]');
             $blc->def('e1_opt', number_format(2*$f3->_d_0, 0),'e_(1,opt) = 2*d_0 = %% [mm]', 'Szélső peremtávolság (csavarképpel párhuzamos)');
             $blc->def('e2_opt', number_format(1.5*$f3->_d_0, 0),'e_(2,opt) = 1.5*d_0 = %% [mm]', 'Szélső peremtávolság (csavarképre merőleges)');
-            $blc->def('p1_opt', number_format(3*$f3->_d_0, 0),'p_(1,opt) = 3*d_0 = %% [mm]', 'Belső csvaar távolság (csavarképpel párhuzamos)');
-            $blc->def('p2_opt', number_format(3*$f3->_d_0, 0),'p_(2,opt) = 3*d_0 = %% [mm]', 'Belső csvavar távolság (csavarképre merőleges)');
+            $blc->def('p1_opt', number_format(3*$f3->_d_0, 0),'p_(1,opt) = 3*d_0 = %% [mm]', 'Belső csavartávolság (csavarképpel párhuzamos)');
+            $blc->def('p2_opt', number_format(3*$f3->_d_0, 0),'p_(2,opt) = 3*d_0 = %% [mm]', 'Belső csavartávolság (csavarképre merőleges)');
         $blc->info1('r3');
 
         $blc->h1('Feszített csavarok nyírásra');
