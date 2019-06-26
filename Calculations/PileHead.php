@@ -43,6 +43,7 @@ Class PileHead extends \Ecc
 
         $blc->h2('Segéd geometria a helyettesítő terhelő pillér méretfelvételéhez');
         $blc->numeric('hv', ['h_v', 'Teherelosztó lemez vastagsága'], 0, 'mm', '2/1-es szétterjedéssel számolva');
+        $blc->def('hsum', $f3->_h + $f3->_hv, 'h_(sum) = h + h_v = %% [mm]', 'Teljes vastagság');
         $blc->lst('columnType', ['Körpillér erő alapján felvéve' => 'o', 'Adott méretű négyszögpillér' => 'n'], 'Helyettesítő pillér alkalmazása', 'o', '');
         if ($f3->_columnType == 'o') {
             $ec->matList('c2Mat', 'C40/50', 'Pillér beton anyagminőség');
@@ -116,12 +117,15 @@ Class PileHead extends \Ecc
         } else {
             $blc->label('no', 'Alkalmazott hatékony magasság túl kicsi');
         }
+
+        $blc->h2('Erőjáték');
         $blc->def('hmin', ceil($f3->_deffmin + ($f3->_c + ($f3->_fix + $f3->_fiy)/2)), 'h_(min) = d_(eff,min) + c + (phi_x+phi_y)/2 = %% [mm]', 'Javasolható minimum a vektoriális erőjáték biztosításához a nyírásra vasalatlan cölöpfejben');
         $blc->def('xd2p', \H3::n0($f3->_xdp/2), 'x_(d,p) /2 = %% [mm]', 'Félátló');
         $blc->def('VEdp', $f3->_VEd/$f3->_n, 'V_(Ed,p) = V_(Ed)/n = %% [kN]', 'Cölöperő');
         $blc->def('HEdp', $f3->_VEdp/$f3->_deff*$f3->_xd2p, 'H_(Ed,p) = V_(Ed,p)/d_(eff)*(x_(d,p)/2) = %% [kN]', 'Vízszintes teher egy cölöp felé');
         $blc->def('HAp', $f3->_HEdp/pow(2, 0.5), 'H_(A,p) = H_(Ed,p)/sqrt(2) = %% [kN]', 'Vízszintes teher cölöpök között');
 
+        $blc->h2('Vasalás');
         $blc->def('Asmin', ceil($f3->_HAp*1000/$f3->_rfyd), 'A_(s,min) = H_(A,p) / (f_(yd)) = %% [mm^2]', 'Szükséges húzott betonacél mennyiség - alsó vas');
         $blc->success0('ns');
             $blc->def('fis', $f3->_fix, 'phi_s = phi_x = %% [mm]', 'Húzott betonacél átmérő');
@@ -129,8 +133,19 @@ Class PileHead extends \Ecc
         $blc->success1('ns');
 
         $blc->h2('Vasmennyiség számítása');
-        $blc->def('nsSum', $f3->_n*$f3->_ns, 'n_(s,sum) = %%', 'Fővas szám');
-        $blc->def('ls', ceil($f3->_aph - 2*$f3->_c + 2*400)/1000, 'l_s = %% [m]', 'Fővas hossz');
-        $blc->def('gs', ceil($f3->_aph - 2*$f3->_c + 2*400)/1000, 'g_s = %% [m]', 'Fővas fajlagos tömeg');
+        $blc->def('nsSum', $f3->_n*$f3->_ns, 'n_(s,sum) = n*n_s = %%', 'Fővas szám');
+        $blc->def('ls', ceil($f3->_aph - 2*$f3->_c + 2*400)/1000, 'l_s = a_(ph) - 2*c + 2*400 =%% [m]', 'Fővas hossz');
+        $blc->def('gs', \H3::n2(($ec->A($f3->_fis)/1000000)*7850), 'g_s = (phi_s^2*pi)/4*gamma_(steel) = %% [(kg)/m]', 'Fővas fajlagos tömeg');
+
+        $blc->numeric('lfi0', ['l_(phi_0)', 'Elosztóvasalás kiosztása'], 200, 'mm', 'Alsó-felső alapháló');
+        $ec->rebarList('fi0', 20, ['phi_0', 'Elosztóvasalás vasátmérő']);
+        $blc->def('n0', ceil(($f3->_aph - 2*$f3->_c)/$f3->_lfi0)*4, 'n_0 = ceil((a_(ph) - 2*c)/l_(phi_0))*4 = %%', 'Elosztóvas szám');
+        // TODO itt miért *20?
+        $blc->note('TODO miért *20?');
+        $blc->def('l0', \H3::n2(($f3->_aph - 2*$f3->_c + 2*(($f3->_hsum - 2*$f3->_c)/2 + 20*$f3->_fi0))/1000), 'l_s = a_(ph) - 2*c + 2*(h_(sum)-2c)/2 + 20*phi_0 = %% [m]', 'Elosztóvas hossz');
+        $blc->def('g0', \H3::n2(($ec->A($f3->_fi0)/1000000)*7850), 'g_0 = (phi_0^2*pi)/4*gamma_(steel) = %% [(kg)/m]', 'Elosztóvas fajlagos tömeg');
+
+        $ec->rebarList('fiw', 10, ['phi_w', 'Nyíróvasalás vasátmérő']);
+        // TODO nyíróvasalás számítása
     }
 }
