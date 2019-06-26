@@ -35,6 +35,15 @@ Class Config extends \Ecc
         $blc->info1('upload');
 
         $blc->h1('Felhasználói beállítások');
+
+        $blc->h2('Sablonok', 'MS Word export');
+        $blc->lst('template', ['CÉH' => 'CEH', 'Structure' => 'Structure'], '', $f3->get('udata.utemplate'));
+        $f3->mu->load(array('uid = :uid', ':uid' => $f3->get('uid')));
+        if (!$f3->mu->dry()) {
+            $f3->mu->utemplate = $f3->_template;
+            $f3->mu->save();
+        }
+
         $blc->h2('Képletek kezelése');
         $blc->boo('nativeMath', 'Szerveroldali ASCIIMath konvertálás MathML formátumba', $f3->udata['ueccnativemathml'], 'MathJax helyett szerverordali képlet generálás. Csak Firefox alatt. Rondább, de gyorsabb megjelenítés.');
         $blc->boo('svgMath', 'Képletek SVG képekként', $f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre.');
@@ -45,14 +54,6 @@ Class Config extends \Ecc
             $f3->mu->save();
         }
         $blc->txt('', 'A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
-
-        $blc->h2('Sablonok', 'MS Word export');
-        $blc->lst('template', ['CÉH' => '', 'Structure' => 'Str'], false, '');
-        $f3->mu->load(array('uid = :uid', ':uid' => $f3->get('uid')));
-        if (!$f3->mu->dry()) {
-            $f3->mu->utemplate = $f3->_template;
-            $f3->mu->save();
-        }
 
         if ($f3->urole >= 30) {
             $blc->h1('Admin');
