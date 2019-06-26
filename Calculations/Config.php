@@ -16,6 +16,7 @@ Class Config extends \Ecc
         $f3->set('mu', new \DB\SQL\Mapper($f3->get('db'), 'users'));
 
         $blc->h1('Mentés feltöltése');
+        $blc->info0('upload');
         $blc->input('saveJson', '*.ecc* fájl tartalma', false, false, 'Kezdőoldalról letöltött *.ecc* fájl tartalmát bemásolva lehet mentést feltölteni. Ez egy JSON sztring. Más felhasználótól származó mentést is bevesz a rendszer. Hibás, hiányzó vagy azóta megváltozott paraméterek esetén alapértelmezésekkel fog számolni.', 'valid_json_string');
         if ($f3->_saveJson) {
             $saveDataArray = json_decode($f3->_saveJson, true);
@@ -31,6 +32,7 @@ Class Config extends \Ecc
             $blc->toast('Mentés importálva!');
             $blc->html('<script>window.location.replace("'.$f3->home.'calc/'.$saveDataArray['_project_cname'].'/load/'.$f3->ms->get('sid').'");</script>');
         }
+        $blc->info1('upload');
 
         $blc->h1('Felhasználói beállítások');
         $blc->h2('Képletek kezelése');
