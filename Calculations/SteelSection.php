@@ -102,7 +102,7 @@ Class SteelSection extends \Ecc
 
         $blc->h1('Hajlítás és nyírás kölcsönhatása');
         if ($f3->_VEd >= 0.5*$f3->_VplRd) {
-            $blc->math('v_(Ed) = '.$f3->_VEd.'[kN] %%% >= %%% 0.5*V_(c,Rd) = '. \H3::n2(0.5*$f3->_VplRd).' [kN]');
+            $blc->math('V_(Ed) = '.$f3->_VEd.'[kN] %%% >= %%% 0.5*V_(c,Rd) = '. \H3::n2(0.5*$f3->_VplRd).' [kN]');
             $blc->txt('Ezért a kölcsönhatás figyelembe veendő!');
             $blc->def('rho', \H3::n4(pow(((2*$f3->_VEd)/$f3->_VplRd - 1), 2)), 'rho = ((2*V_(Ed))/V_(pl,Rd) - 1)^2 = %%');
             $blc->note('Nyomatéki teherbírás számításakor a folyáshatárt a nyírt területen $(1 - rho)$ csökkentő tényezővel kell figyelembe venni.');
@@ -112,6 +112,7 @@ Class SteelSection extends \Ecc
             $blc->txt('', 'De: $M_(y,V,Rd) < M_(c,Rd)$');
             $blc->note('Rugalmas számítás során a 3. és 4. kmo. szelvényekre a kölcsönhatást a feszültség alapú általános formulával kell meghatározni.');
         } else {
+            $blc->math('V_(Ed) = '.$f3->_VEd.'[kN] %%% le %%% 0.5*V_(c,Rd) = '. \H3::n2(0.5*$f3->_VplRd).' [kN]');
             $blc->label('yes', 'Kölcsönhatás vizsgálata nem szükséges.');
         }
 
