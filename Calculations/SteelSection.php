@@ -60,19 +60,20 @@ Class SteelSection extends \Ecc
             $blc->def('Wel', $f3->_sectionData['W1elt']*1000, 'W_(el) = W_(1,el,t,"'.$f3->_sectionName.'") = %% [mm^3]', 'Rugalmas keresztmetszeti modulus');
         }
 
-        $blc->region0('r0', 'Nettó keresztmetszet számítás, csavarszám megadása');
-            $blc->numeric('n', 'Csavarok száma', 0, '', 'Nemnulla esetén $A_(n et)$ számítása innen');
+        $blc->boo('calcAnet', 'Eltérő nettó keresztmetszet', false);
+        if ($f3->_calcAnet) {
+            $blc->numeric('n', 'Csavarok száma', 0, '', 'Nettó keresztmetszet számítás csavarszámból. Nemnulla esetén $A_(n et)$ számítása innen.');
             $ec->boltList('btName');
             $d0 = $ec->boltProp($f3->_btName, 'd0');
             if ($f3->_n != 0) {
-                $blc->def('A_net_calculated', $f3->_A - $f3->_n*$d0*$f3->_t, 'A_(n et, calcu lated) = A - n*d_0*t = %% [mm^2]', 'Számított nettó keresztmetszet');
+                $blc->def('A_net', $f3->_A - $f3->_n*$d0*$f3->_t, 'A_(n et) = A - n*d_0*t = %% [mm^2]', 'Számított nettó keresztmetszet');
+            } else {
+                $blc->numeric('A_net', ['A_(n et)', 'Lyukkal gyengített keresztmetszet'], 0.8*$f3->_A, 'mm2', 'Alapérték: $0.8*A$');
             }
-        $blc->region1('r0');
-        if ($f3->_n >0 ) {
-            $blc->def('A_net', $f3->_A_net_calculated, 'A_(n et) = %% [mm^2]');
         } else {
-            $blc->numeric('A_net', ['A_(n et)', 'Lyukkal gyengített keresztmetszet'], 0.8*$f3->_A, 'mm2');
+            $blc->def('A_net', $f3->_A, 'A_(n et) = A = %% [mm^2]', 'Figyelembe vett nettó keresztmetszet');
         }
+
 
         $blc->h1('Nyírt keresztmetszet');
         $blc->note('[Szürke 2007: 5.1.5 41.o]');
