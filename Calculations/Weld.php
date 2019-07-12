@@ -6,31 +6,20 @@ Class Weld extends \Ecc
 {
 
     /**
+     * Required in hive: a, L, w, t, F, mat
      * @var $f3 \Base
      * @var $blc \Blc
      * @var $ec \Ec\Ec
      * @throws \Exception
      */
     public function moduleWeld(object $f3, object $blc, object $ec) {
-        /*
-        // Module usage:
-        $weld = new \Calculation\Weld();
-        $blc->numeric('a', ['a', 'Varrat gyökméret'], 6, 'mm');
-        $blc->numeric('L', ['L', 'Lemez szélesség'], 300, 'mm');
-        $f3->_w = 1;
-        $f3->_t = max($f3->_t1, $f3->_t2);
-        $f3->_F = $f3->_REd;
-        $f3->_mat = $f3->_stMat;
-        $weld->simpleWeld($f3, $blc, $ec);
-        $blc->note('[Varrat modul](https://structure.hu/calc/Weld) betöltésével számítva.');
-        */
 
         $blc->region0('r0', 'Varrat számítások');
         $blc->def('w', $f3->_w + 1, 'w_(sarok) = %%');
         $blc->def('l', $f3->_L - 2 * $f3->_a, 'l = L - 2*a = %% [mm]', 'Figyelembe vett varrathossz');
         $blc->def('bw', $ec->matProp($f3->_mat, 'betaw'), 'beta_w = %%', 'Hegesztési tényező');
-        $blc->def('fy', $ec->fy($f3->_mat, $f3->_t), 'f_y=%% [MPa]', 'Folyáshatár');
-        $blc->def('fu', $ec->fu($f3->_mat, $f3->_t), 'f_u=%% [MPa]', 'Szakítószilárdság');
+        $blc->def('fy', $ec->fy($f3->_mat, $f3->_t), 'f_y=%% [N/(mm^2)]', 'Folyáshatár');
+        $blc->def('fu', $ec->fu($f3->_mat, $f3->_t), 'f_u=%% [N/(mm^2)]', 'Szakítószilárdság');
         $blc->math('F_(Ed) = '.$f3->_F.'[kN]');
         $blc->def('FwEd', $f3->_F / $f3->_l * 1000, 'F_(w,Ed) = F_(Ed)/l = %% [(kN)/m]', 'Fajlagos igénybevétel');
         $blc->region1('r0');
