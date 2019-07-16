@@ -44,15 +44,19 @@ Class ColumnFire extends \Ecc
         $blc->txt('Vasátmérő darabszámok:');
         $As = $ec->rebarTable();
         $blc->def('As', $As, 'A_s = %% [mm^2]', 'Táblázat alapján');
-        $blc->numeric('As', ['A_s', 'Alkalmazott vas mennyiség'], 1256, 'mm2', '');
+        $blc->boo('AsCustom', 'Táblázatos vasmennyiség felülírása', 0, '');
+        if ($f3->_AsCustom) {
+            $blc->numeric('As', ['A_s', 'Alkalmazott vas mennyiség'], 1256, 'mm2', '');
+        }
         if ($f3->_A_s_min > $f3->_As) {
             $blc->danger('Szükséges vasmennyiség: $A_(s,min) = '.$f3->_A_s_min.' [mm^2]$', 'Túl kevés vas');
         }
         if ($f3->_A_s_max < $f3->_As) {
             $blc->danger('Maximális vasmennyiség: $A_(s,max) = '.$f3->_A_s_max.' [mm^2]$', 'Túl sok vas');
         }
+        $blc->txt('$'.\H3::n1(($f3->_As/$f3->_Ac)*100).'%$ vas');
         $blc->def('omega', \H3::n2(($f3->_As*$f3->_rfyd)/($f3->_Ac*$f3->_cfcd)), 'omega = (A_s*f_(yd))/(A_c*f_(cd)) = %%', 'Mechanikai acélhányad normálhőmérsékleten');
-        $blc->numeric('alphacc', ['alpha_(c c)', 'Nyomószilárdság szorzótényezője'], 1, '', 'Lásd EN 1992-1-1');
+        $blc->numeric('alphacc', ['alpha_(c,c)', 'Nyomószilárdság szorzótényezője'], 1, '', 'Lásd EN 1992-1-1');
         $blc->numeric('mufi', ['mu_(fi)', 'Pillér kihasználtsága tűzhatás esetén'], 0.4, '', '$0 < (mu_(fi) = N_(Ed,fi)/N_(Rd)) < 1$');
         $blc->def('Ra', \H3::n2(1.6*($f3->_as - 30)), 'R_a = 1.6*(a_s - 30) = %%', '');
         $blc->def('Rl', \H3::n2(9.6*(5 - $f3->_l0fi)), 'R_l = 9.6*(5 - l_(0,fi)) = %%', '');
@@ -63,7 +67,7 @@ Class ColumnFire extends \Ecc
         } else {
             $blc->def('Rn', 12, 'R_n = %%', 'Vasak nem csak a sarkokban vannak');
         }
-        $blc->def('Retafi', \H3::n2(83*(1-($f3->_mufi*((1 + $f3->_omega)/((0.85/$f3->_alphacc) + $f3->_omega))))), 'R_(eta,fi) = %%');
+        $blc->def('Retafi', \H3::n2(83*(1-($f3->_mufi*((1 + $f3->_omega)/((0.85/$f3->_alphacc) + $f3->_omega))))), 'R_(eta,fi) = 83*(1.00 - mu_(fi)*(1 + omega)/(0.85/alpha_(c,c) + omega)) = %%');
         $blc->def('R', \H3::n0(120*pow(($f3->_Retafi + $f3->_Ra + $f3->_Rl + $f3->_Rb + $f3->_Rn)/120, 1.8)), 'R = 120*((R_(eta,fi) + R_a + R_l + R_b + R_n)/120)^1.8 = %%');
         if ($f3->_R < 30) {
             $blc->info('R0', 'Tűzállóság');
