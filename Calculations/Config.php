@@ -71,24 +71,21 @@ Class Config extends \Ecc
                     $blc->h2('[' . $calcData['cname'] . '](https://structure.hu/calc/' . $calcData['cname'] . ')');
 
                     $blc->input($calcData['cname'] . '___ctitle', 'title', $calcData['ctitle'], '', '');
-                    $f3->mc->ctitle = $f3->get('_' . $calcData['cname'] . '___ctitle');
-
                     $blc->input($calcData['cname'] . '___csubtitle', 'subtitle', $calcData['csubtitle'], '', '');
-                    $f3->mc->csubtitle = $f3->get('_' . $calcData['cname'] . '___csubtitle');
-
                     $blc->input($calcData['cname'] . '___cdescription', 'description', $calcData['cdescription'], '', '');
-                    $f3->mc->cdescription = $f3->get('_' . $calcData['cname'] . '___cdescription');
-
                     $blc->lst($calcData['cname'] . '___cgroup', ['S' => 'S', 'L' => 'L', 'G' => 'G', 'C' => 'C'], 'group', $calcData['cgroup'], '', '');
-                    $f3->mc->cgroup = $f3->get('_' . $calcData['cname'] . '___cgroup');
-
                     $blc->boo($calcData['cname'] . '___cexpreimental', 'experimental', $calcData['cexperimental'], '');
-                    $f3->mc->cexpreimental = $f3->get('_' . $calcData['cname'] . '___cexpreimental');
-
                     $blc->boo($calcData['cname'] . '___chidden', 'hidden', $calcData['chidden'], '');
-                    $f3->mc->chidden = $f3->get('_' . $calcData['cname'] . '___chidden');
+                    $blc->boo($calcData['cname'] . '___cprivate', 'private', $calcData['cprivate'], '');
 
                     if (!$f3->mc->dry() && $f3->_doUpdate) {
+                        $f3->mc->ctitle = $f3->get('_' . $calcData['cname'] . '___ctitle');
+                        $f3->mc->csubtitle = $f3->get('_' . $calcData['cname'] . '___csubtitle');
+                        $f3->mc->cdescription = $f3->get('_' . $calcData['cname'] . '___cdescription');
+                        $f3->mc->cgroup = $f3->get('_' . $calcData['cname'] . '___cgroup');
+                        $f3->mc->cexperimental = $f3->get('_' . $calcData['cname'] . '___cexpreimental');
+                        $f3->mc->chidden = $f3->get('_' . $calcData['cname'] . '___chidden');
+                        $f3->mc->cprivate = $f3->get('_' . $calcData['cname'] . '___cprivate');
                         $f3->mc->save();
                     }
                     $blc->region1('admin' . $calcData['cname']);
