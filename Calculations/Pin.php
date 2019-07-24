@@ -69,7 +69,7 @@ Class Pin extends \Ecc
         $f3->_t = max($f3->_t1, $f3->_t2);
         $f3->_F = $f3->_REd;
         $f3->_mat = $f3->_stMat;
-        $weld->moduleWeld($f3, $blc, $ec);
+        $weld->moduleWeldOld($f3, $blc, $ec);
         $blc->note('[Varrat modul](https://structure.hu/calc/Weld) betöltésével számítva.');
 
         $blc->h1('Csap ellenőrzése');
