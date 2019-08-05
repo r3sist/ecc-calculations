@@ -220,6 +220,7 @@ Jellemzők és mértékegységek:
             'UPE' => 'UPE',
             'L' => 'L',
             'O' => 'O',
+            'D' => 'D',
             'ROR' => 'ROR',
             'RHS' => 'RHS',
             'C' => 'C',
