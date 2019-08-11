@@ -102,5 +102,18 @@ Class Math extends \Ecc
         $blc->def('MEdck', \H3::n3(($f3->_qd*pow($f3->_Lck/1000, 2))/8), 'M_(Ed) = (q_d*L^2)/8 = %% [kNm]', 'Nyomatéki igénybevétel');
         $blc->label($f3->_MEdck/$f3->_MRdck, 'Kihasználtság');
 
+        $blc->h1('Lehorgonyzási hossz');
+        $ec->matList('concreteMaterialName', 'C25/30', 'Beton anyagminőség');
+        $ec->saveMaterialData($f3->_concreteMaterialName, 'c');
+        $ec->matList('rebarMaterialName', 'B500', 'Betonvas anyagminőség');
+        $ec->saveMaterialData($f3->_rebarMaterialName, 'r');
+        $ec->rebarList('phil', 20, ['phi_l', 'Lehorgonyzandó vas átmérője']);
+        $blc->numeric('nrequ', ['n_(requ)', 'Szükséges vas szál'], 1, '', '$A_(s,requ)$ szükséges vaskeresztmetszet helyett');
+        $blc->numeric('nprov', ['n_(prov)', 'Biztosított vas szál'], 1, '', '$A_(s,prov)$ biztosított vaskeresztmetszet helyett');
+        $blc->lst('alphaa', ['Egyenes: 1.0' => 1.0, 'Kampó, hurok, hjlítás: 0.7' => 0.7], ['alpha_a', 'Lehorgonyzás módja'], '1.0', '');
+        $blc->def('lb', ceil(($f3->_phil/4)*($f3->_rfyd/$f3->_cfbd)), 'l_b = phi_l/4*(f_(yd)/f_(bd)) = %% [mm]', 'Lehorgonyzás alapértéke');
+        $blc->def('lbeq', ceil($f3->_alphaa*$f3->_lb), 'l_(b,eq) = alpha_a*l_b = %% [mm]', 'Húzásra kihasznált betonacél lehorgonyzási hossza');
+        $blc->def('lbmin', max(10*$f3->_phil, 100), 'l_(b,min) = max{(10*phi_l),(100):} = %% [mm]', 'Minimális lehorgonyzási hossz');
+        $blc->def('lbd', ceil(max($f3->_lbeq*($f3->_nrequ/$f3->_nprov), $f3->_lbmin)), 'l_(b,d) = max{(l_(b,eq)*n_(requ)/n_(prov)),(l_(b,min)):} = %% [mm]', 'Lehorgonyzási hossz tervezési értéke');
     }
 }
