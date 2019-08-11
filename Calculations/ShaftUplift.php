@@ -14,7 +14,7 @@ Class ShaftUplift extends \Ecc
     public function calc(object $f3, object $blc, object $ec): void
     {
         $blc->numeric('gammac', ['gamma_c', 'Beton fajsúly'], 24, 'kN/m3');
-        $blc->def('gammav', 10, 'gamma_v = %% [(kN)/m^3');
+        $blc->def('gammav', 10, 'gamma_v = %% [(kN)/m^3]');
         $blc->numeric('gammastb', ['gamma_(stb)', 'Stabilizáló erők biztonsági tényezője'], 0.9, '');
         $blc->numeric('gammadst', ['gamma_(dst)', 'Destabilizáló erők biztonsági tényezője'], 1.1, '');
         $blc->numeric('Gxk', ['G_(x,k)', 'Egyéb stabilizáló jellegű teher'], 0, 'kN', 'Karakterisztikus érték');
