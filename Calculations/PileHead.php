@@ -13,28 +13,32 @@ Class PileHead extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $blc->note('KG alapján');
-        $blc->note('**Egyedi** oszlop esetén; cölöpfej pillér alatt.');
+        $blc->note('Irodalom: [1.]: *KG CÉH Excel*; [2.]: *Alapozások és földmegtámasztó szerkezetek tervezése az MSZ EN 1997 szerint (2012)*; [3.]: *Vasbeton szerkezetek korszerű vasalása III. - 169 Iparterv tervezélsi segédlet (1964)*');
 
-        $blc->toc();
+        $blc->h1('Geometria');
+        $blc->lst('type', ['2 cölöpös cölöpfej (gerenda)' => '2piles', '3 cölöpös cölöpfej' => '3piles', '4 cölöpös cölöpfej' => '4piles', 'Sok cölöpös lemez' => 'plate'], 'Cölöpfej kialakítás', '2piles', '');
 
-        $blc->h1('Kezdeti bemenő adatok');
-
-        $blc->h2('Anyagok');
-        $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
-        $ec->saveMaterialData($f3->_cMat, 'c');
-        $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
-        $ec->saveMaterialData($f3->_rMat, 'r');
-        $blc->def('rfywd', $f3->_rfyd, 'f_(ywd) = %% [N/(mm2)]', 'A nyíróbetét acélszilárdság tervezési értéke megegyezik a betonvas anyagminőségével');
-
-        $blc->h2('Geometria, vasalás');
         $blc->numeric('h', ['h', 'Lemezvastagság'], 800, 'mm', '');
-        $blc->numeric('cnom', ['c_(nom)', 'Betontakarás'], 35, 'mm', '');
-        $blc->numeric('cplus', ['c_(+)', 'Betontakarásban'], 28, 'mm', 'Betonfedésben alsó Ø14/20/20 hálóval');
-        $blc->def('c', $f3->_cnom + $f3->_cplus, 'c = %% [mm]', 'Teljes betonfedés');
-        $ec->rebarList('fix', 25, ['phi_x', 'Vasátmérő x irányban']);
-        $ec->rebarList('fiy', 25, ['phi_y', 'Vasátmérő y irányban']);
-        $blc->def('deff', $f3->_h - ($f3->_c + ($f3->_fix + $f3->_fiy)/2), 'd_(eff) = h - (c + (phi_x + phi_y)/2) = %% [mm]', 'Hatékony lemezvastagság - a húzott acélbetétek súlypontja (két irányú háló középvonala) és a nyomott szélső szál közötti távolság');
+        $ec->rebarList('fix', 25, ['phi_x', 'Alsó vasátmérő x fő irányban'], 'Kengyelen');
+        $ec->rebarList('fiw', 16, ['phi_w', 'Kengyel vagy felkötő vasátmérő'], '');
+
+
+        $blc->h1('Anyagok');
+        $blc->md('Szerkezeti osztály: ***S4***; Karbonátosodás okozta korrózió: ***XC2***');
+        $blc->lst('XA', ['XA1 enyhén (XD1 XF3)' => 'XA1', 'XA2 mérsékelten (XD2 XF4)' => 'XA2', 'XA3 erősen (XD3)' => 'XA3'], 'Kémiai környezet agresszivitása', 'XA2', 'Illetve további környezeti osztály feltételek');
+        $XAcmindur = ['XA1' => 35, 'XA2' => 40, 'XA3' => 45];
+        $blc->def('cmindur', $XAcmindur[$f3->_XA], 'c_(min,dur) = %% [mm]', '*MSZ 4798:2016 NAD N1 táblázat* szerinti betonszerkezettől és környezettől függő minimális betonfedés, minimum *XC2* osztály feltételezésével');
+        $blc->def('cminb', $f3->_fiw, 'c_(min,b) := %% [mm]', 'Kívül kengyel feltételezésével kengyel átmérő');
+        $blc->def('cmin', max($f3->_cminb, $f3->_cmindur, 10), 'c_(min) = max{(c_(min,b)),(c_(min,dur)),(10):} = %% [mm]', '');
+        $blc->def('Deltacdev', 10, 'Delta c_(dev) = %% [mm]', 'Kötelező ráhagyás ajánlott értéke *MSZ EN 1992-1-1:2010 4.4.1.3. (1)P* és *NA 3.2.1.* szerint');
+        $blc->def('cnom', $f3->_cmin + $f3->_Deltacdev, 'c_(nom) = c_(min) + Delta c_(dev) = %% [mm]', 'Névleges betonfedés');
+        $ec->matList('concreteMaterialName', 'C30/37', 'Beton anyagminőség');
+        $ec->saveMaterialData($f3->_concreteMaterialName, 'c');
+        $ec->matList('rebarMaterialName', 'B500', 'Betonvas anyagminőség');
+        $ec->saveMaterialData($f3->_rebarMaterialName, 'r');
+        $blc->note('A nyíróbetét acélszilárdság tervezési értéke megegyezik a betonvas anyagminőségével: '.$f3->_rfyd);
+
+        $blc->def('deff', floor($f3->_h - ($f3->_cnom + ($f3->_fix + $f3->_fiw)/2)), 'd_(eff) = h - (c_(nom) + (phi_x + phi_w)/2) = %% [mm]', 'Hatékony lemezvastagság - a húzott acélbetétek súlypontja (két irányú háló középvonala) és a nyomott szélső szál közötti távolság');
 
         $blc->h2('Igénybevétel');
         $blc->numeric('VEd', ['V_(Ed)', 'Átszúródó teher'], 4000, 'kN', 'Nyíróerő tervezési értéke');
@@ -146,6 +150,10 @@ Class PileHead extends \Ecc
         $blc->def('g0', \H3::n2(($ec->A($f3->_fi0)/1000000)*7850), 'g_0 = (phi_0^2*pi)/4*gamma_(steel) = %% [(kg)/m]', 'Elosztóvas fajlagos tömeg');
 
         $ec->rebarList('fiw', 10, ['phi_w', 'Nyíróvasalás vasátmérő']);
-        // TODO nyíróvasalás számítása
+        if ($f3->_hsum < $f3->_hmin && $f3->_hsum < $f3->_hu1) {
+            $blc->def('nw', $f3->_nwopt, 'n_w := n_(w,opt) = %% [db]', 'Nyíróvasak száma');
+        } else {
+            $blc->def('nw', 0, 'n_w := 0 [db]', 'Nyíróvasak száma');
+        }
     }
 }
