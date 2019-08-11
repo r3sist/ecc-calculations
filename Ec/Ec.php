@@ -393,35 +393,30 @@ Jellemzők és mértékegységek:
         return $result;
     }
 
-    public function BpRd(string $btName, string $stMat, float $t, bool $verbose = true): float
+    public function BpRd(string $btName, string $stMat, float $t): float
     {
-        if ($verbose) {
-            \Blc::instance()->note('`BpRd` kigombolódás általános képlet: $(0.6* pi *d_m*f_(u,s)*t)/(gamma_(M2))$');
-        }
+        \Blc::instance()->note('`BpRd` kigombolódás általános képlet: $(0.6* pi *d_m*f_(u,s)*t)/(gamma_(M2))$');
         return (0.6 * pi() * $this->boltProp($btName, 'dm') * $this->fu($stMat, $t) * $t) / (1000 * $this->f3->__GM2);
     }
 
     // Nyírt csavar
-    public function FvRd(string $btName, string $btMat, int $n, float $As = 0, bool $verbose = true): float
+    public function FvRd(string $btName, string $btMat, int $n, float $As = 0): float
     {
         if ($As == 0) {
             $As = $this->boltProp($btName, 'As');
         }
         $result = (( $this->matProp($btMat, 'fu') * $As * 0.6) / (1000 * $this->f3->__GM2) )*$n;
-        if ($verbose) {
-            \Blc::instance()->note('`FvRd` nyírás általános képlet: $n*(f_(u,b)*A_s)/(gamma_(M2))$');
-        }
+        \Blc::instance()->note('$F_(v,Rd)$ nyírás általános képlet: $n*(0.6*f_(u,b)*A_s)/(gamma_(M2))$');
+
         if ($btMat == '4.8' || $btMat == '5.8' || $btMat == '6.8' || $btMat == '10.9') {
-            if ($verbose) {
-                \Blc::instance()->note('`FvRd` nyírás: '.$btMat.' csavar anyag miatt az eredmény 80%-ra csökkentve.');
-            }
+            \Blc::instance()->note('$F_(v,Rd)$ nyírás: '.$btMat.' csavar anyag miatt az eredmény 80%-ra csökkentve.');
             return $result*0.8;
         }
         return $result;
     }
 
     // Csavar palástnyomás
-    public function FbRd(string $btName, string $btMat, string $stMat, float $ep1, float $ep2, float $t, bool $inner, bool $verbose = true): float
+    public function FbRd(string $btName, string $btMat, string $stMat, float $ep1, float $ep2, float $t, bool $inner): float
     {
         $fust = $this->fu($stMat, $t);
         $k1 = min(2.8*($ep2/ $this->boltProp($btName, 'd0')) - 1.7, 2.5);
@@ -436,9 +431,7 @@ Jellemzők és mértékegységek:
         if ($result <= 0) {
             return 0;
         }
-        if ($verbose) {
-            \Blc::instance()->note('`FbRd` palástnyomás általános képlet: $k_1*(alpha_b*f_(u,s)*d*t)/(gamma_(M2))$');
-        }
+        \Blc::instance()->note('$F_(b,Rd)$ palástnyomás általános képlet: $k_1*(alpha_b*f_(u,s)*d*t)/(gamma_(M2))$');
         return $result;
     }
 
