@@ -96,7 +96,7 @@ Class Bolt extends \Ecc
         }
 
         if ($betaLf < 1.0) {
-            $blc->def('F_vRd', $betaLf*$f3->_F_vRd, 'F_(v,Rd) := beta_(lf)*F_(v,Rd) = %% [kN]', 'Hosszú kapcsolat figyelembe vétele');
+            $blc->def('F_vRd', $betaLf*$f3->_F_vRd, 'F_(v,Rd) := beta_(lf)*F_(v,Rd) = %% [kN]', 'Hosszú kapcsolat vagy béléslemez figyelembe vétele');
         }
 
         $blc->label($VEd/$f3->_F_vRd, 'Nyírási kihasználtság');
@@ -115,7 +115,7 @@ Class Bolt extends \Ecc
 
         $blc->def('F_bRd', $ec->FbRd($boltName, $boltMaterialName, $steelMaterialName, $ep1, $ep2, $tPlate, $innerBolt),'F_(b,Rd) = %% [kN]', 'Csavar palástnyomási ellenállása');
         if ($betaLf < 1.0) {
-            $blc->def('F_bRd', $betaLf*$f3->_F_bRd, 'F_(b,Rd) := beta_(lf)*F_(b,Rd) = %% [kN]', 'Hosszú kapcsolat figyelembe vétele');
+            $blc->def('F_bRd', $betaLf*$f3->_F_bRd, 'F_(b,Rd) := beta_(lf)*F_(b,Rd) = %% [kN]', 'Hosszú kapcsolat vagy béléslemez figyelembevétele');
         }
         $blc->note('$k_1 = '.$f3->___k1.'%%%alpha_b = '.$f3->___alphab.'$');
         $blc->label($VEd/$f3->_F_bRd, 'Palástnyomási kihasználtság');
@@ -157,7 +157,7 @@ Class Bolt extends \Ecc
 
         $blc->h1('Egy csavar nyírási- és palástnyomási ellenállása', '***A*** osztály: nem feszített, nyírt csavar');
         $this->moduleOptimalForShear($f3->_bMat, $f3->_sMat, $f3->_t, $f3->_d_0);
-        $blc->boo('inner', 'Belső csavar', 1, '$p_1, p_2$ figyelembe vételéhez');
+        $blc->boo('inner', 'Belső csavar', 1, '$p_1, p_2$ figyelembevételéhez');
         $blc->note('Egy csavar esetén külsőként számolható. Több csavar esetén belső a mértékadó.');
         $blc->numeric('e1', ['e_1', 'Peremtávolság (csavarképpel párhuzamos)'], 50, 'mm', '');
         $blc->numeric('e2', ['e_2', 'Peremtávolság (csavarképre merőleges)'], 50, 'mm', '');
