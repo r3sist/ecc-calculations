@@ -44,7 +44,7 @@ Class Column extends \Ecc
 
         $this->moduleColumnData($f3, $blc, $ec);
 
-        $blc->img('https://structure.hu/ecc/column0.jpg');
+//        $blc->img('https://structure.hu/ecc/column0.jpg');
         $blc->numeric('l', ['l', 'Pillér hálózati magassága'], 3, 'm');
         $blc->numeric('upsilon', ['upsilon', 'Kihajlási hossz tényező'], 0.7, '', '');
         $blc->def('l0', $f3->_upsilon*$f3->_l, 'l_0 = upsilon*l = %% [m]', 'Kihajlási hossz');
