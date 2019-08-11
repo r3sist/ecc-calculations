@@ -38,7 +38,7 @@ Class Weld extends \Ecc
 
         $blc->success0('s0');
         $blc->def('FwRd', \H3::n2(($f3->_fu * $f3->_a) / (sqrt(3) * $f3->_bw * $f3->__GM2) * ($f3->_w)), 'F_(w,Rd) = (f_u*a)/(sqrt(3)*beta_w*gamma_(M2))*w_(sarok)= %% [(kN)/m]', 'Fajlagos teherbírás');
-        $blc->def('FwRdS', \H3::n2(($f3->_FwRd * $f3->_l / 1000)), 'F_(w,Rd,sum) = F_(w,Rd)*l = %% [kN]', 'Varratkép teljes teherbírása:');
+        $blc->def('FwRdS', \H3::n2(($f3->_FwRd * $f3->_l / 1000)), 'F_(w,Rd,sum) = F_(w,Rd)*l = %% [kN]', 'Varratkép teljes teherbírása');
         $blc->label($f3->_F / $f3->_FwRdS, 'Kihasználtság');
         $blc->txt('', '$(F = '.$f3->_F.'[kN])/F_(w,Rd,sum)$');
         $blc->success1('s0');
@@ -79,7 +79,7 @@ Class Weld extends \Ecc
         }
 
         $blc->def('FwRd', \H3::n2(($f3->_fu * $a) / (sqrt(3) * $f3->_bw * $f3->__GM2) * ($f3->_w)), 'F_(w,Rd) = (f_u*a)/(sqrt(3)*beta_w*gamma_(M2))*w_(sarok)= %% [(kN)/m]', 'Fajlagos teherbírás');
-        $blc->def('FwRdS', \H3::n2(($f3->_FwRd * $f3->_l / 1000)), 'F_(w,Rd,sum) = F_(w,Rd)*l = %% [kN]', 'Varratkép teljes teherbírása:');
+        $blc->def('FwRdS', \H3::n2(($f3->_FwRd * $f3->_l / 1000)), 'F_(w,Rd,sum) = F_(w,Rd)*l = %% [kN]', 'Varratkép teljes teherbírása');
         $blc->label($F / $f3->_FwRdS, 'Kihasználtság');
         $blc->txt('', '$(F = '.$F.'[kN])/F_(w,Rd,sum)$');
     }
