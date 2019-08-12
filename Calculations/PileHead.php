@@ -42,8 +42,8 @@ Class PileHead extends \Ecc
 
         $blc->h2('Igénybevétel');
         $blc->numeric('VEd', ['V_(Ed)', 'Átszúródó teher'], 4000, 'kN', 'Nyíróerő tervezési értéke');
-//        $blc->numeric('beta', ['beta', 'Teherelosztás'], 1.15, '', 'Tehereloszlás egyenlőtlenségéből származó hatás tényezője');
-        $blc->def('beta', 1.15, 'beta = %%', 'Tehereloszlás egyenlőtlenségéből származó hatás tényezője - Közbenső pillér esete');
+        $blc->numeric('beta', ['beta', 'Teherelosztás'], 1.15, '', 'Tehereloszlás egyenlőtlenségéből származó hatás tényezője');
+//        $blc->def('beta', 1.15, 'beta = %%', 'Tehereloszlás egyenlőtlenségéből származó hatás tényezője - Közbenső pillér esete');
 
         $blc->h2('Segéd geometria a helyettesítő terhelő pillér méretfelvételéhez');
         $blc->numeric('hv', ['h_v', 'Teherelosztó lemez vastagsága'], 0, 'mm', '2/1-es szétterjedéssel számolva');
