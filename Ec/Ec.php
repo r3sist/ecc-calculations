@@ -163,6 +163,28 @@ Jellemzők és mértékegységek:
         }
     }
 
+    public function wrapNumerics($variableNameA, $variableNameB, $titleArrayAB, $defaultValueA, $defaultValueB, $unitAB = false, $helpAB = false, $middleText = false)
+    {
+        $blc = \Blc::instance();
+
+        $blc->wrapper0($titleArrayAB);
+            $blc->numeric($variableNameA, false, $defaultValueA, $unitAB, false);
+            $blc->wrapper1($middleText);
+            $blc->numeric($variableNameB, false, $defaultValueB, $unitAB, false);
+        $blc->wrapper2($helpAB);
+    }
+
+    public function wrapRebarCount($variableNameCount, $variableNameRebar, $titleArray, $defaultValueCount, $defaultValueRebar = 16, $help = false)
+    {
+        $blc = \Blc::instance();
+
+        $blc->wrapper0($titleArray);
+            $blc->numeric($variableNameCount, false, $defaultValueCount, false, false);
+            $blc->wrapper1(false);
+            $this->rebarList($variableNameRebar, 16, false, false);
+        $blc->wrapper2($help);
+    }
+
     public function rebarList(string $variableName = 'fi', int $default = 16, $title = [false, 'Vasátmérő'], string $help = ''): void
     {
         $source = [
