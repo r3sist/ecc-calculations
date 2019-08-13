@@ -13,10 +13,13 @@ Class Impact extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $blc->note('*[Terhek és hatások (2017) 14.2.1 103.o.]*');
-        $blc->note('*Kemény ütközés*: az energiát elsősorban az ütköző jármű nyeli el. Nincs ütközésvédelem. Nem függ az anyagtól.');
+        $blc->note('*[Terhek és hatások (2017) 14.2.1 103.o.; 7.5 57.o.]*');
+
+        $blc->note('Mellvédek és elválasztó falak vízszintes hasznos terhei. Emberi használatból - *ULS* hasznos teherként:');
+        $blc->note('Magasság: $1.2 [m]$. Osztályok: *A, B, C1*: $0.5$; *C2, C3, C4, D*: $1.0$; *E*: $2.0 $; *C5*, tömeg: $3.0 [(kN)/(fm)]$');
 
         $blc->h1('Gépjárműütközés egyenértékű statikus terhe függőleges tartószerkezeti elemeken', 'Rendkívüli tervezési állapot');
+        $blc->note('*Kemény ütközés*: az energiát elsősorban az ütköző jármű nyeli el. Nincs ütközésvédelem. Nem függ az anyagtól.');
         $blc->lst('location', ['Autópálya, főút / Teherautó, busz' => 'highway', 'Országút / Teherautó, busz' => 'road', 'Lakott területen út / Teherautó, busz' => 'city', 'Garázs, udvar / Csak autó' => 'garage0', 'Garázs, udvar / Teherautó' => 'garage1', 'Raktár, targonca' => 'storage'], 'Hely, típus', 'storage');
 
         $FxText = 'Ütközési irány kijelölt haladási irányban';
@@ -82,16 +85,28 @@ Class Impact extends \Ecc
             $blc->md('Ütközési felület: $0.25×0.25 [m]$');
         }
 
-        $blc->h1('Járműütközés vízszintes terhe parkolóházak korlátain és mellvédjén', 'Rendkívüli tervezési állapot');
-
-        // TODO Járműütközés vízszintes terhe parkolóházak korlátain és mellvédjén [Terhek 57]
-        $blc->md('`TODO Járműütközés vízszintes terhe parkolóházak korlátain és mellvédjén [Terhek 57]`');
-
-        // TODO Mellvédek és elválasztó falak vízszintes hasznos terhei emberi használatból [Terhek 57]
-        $blc->md('`TODO Mellvédek és elválasztó falak vízszintes hasznos terhei emberi használatból [Terhek 57]`');
-
-        // TODO ütközés rámpa mellett [Terhek 57 táblázat]
-        $blc->md('`TODO ütközés rámpa mellett [Terhek 57 táblázat]`');
-
+        $blc->h1('Járműütközés vízszintes terhe parkolóházak korlátain és mellvédjén', '*ULS* hasznos teherként');
+        $blc->note('$sigma_b, sigma_c$ korlát és jármű alakváltozása ütközés esetén. Merev korlát esetén $sigma_b = 0$. Nincs javasolt adat ($: >= 0$)');
+        $blc->txt('Ütközési szélesség: $1.5 [m]$');
+        $blc->lst('weight0', ['Kevesebb, mint 2.5 [to]' => 'lt2500', 'Több, mint 2.5 [to]' => 'gt2500'], 'Tömeg', 'lt2500');
+        $blc->txt('Ütközési magasság: $0.375 [m]$');
+        switch ($f3->_weight0) {
+            case 'lt2500':
+                $blc->math('F_k := 150 [kN]', 'Egyszerűsített módszer, merev korlát.');
+                $blc->math('p_k = (150 [kN])/(1.5 [m]) = 100 [(kN)/(fm)]', 'Vonalmenti teherként');
+                break;
+        }
+        $blc->numeric('m', ['m', 'Számításba veendő össztömeg'], 1500, 'kg', ($f3->_weight0 == 'gt2500')?'$color(red)"Beruházói adatszolgáltatásból!"$ Személyautó: 1500':'Személyautó: 1500');
+        $blc->numeric('v', ['v', 'Korlátra merőleges sebesség'], 4.5, 'm/s', '');
+        $blc->math('sigma_c := 100 [mm]%%%sigma_b := 0');
+        $blc->def('Fk', ceil((0.5*$f3->_m*pow($f3->_v, 2))/(100)),'F_k = (0.5mv^2)/(sigma_c+sigma_b) = %% [kN]');
+        $blc->h2('Rámpák mellett');
+        $blc->boo('longRamp', '20 m-nél hosszabb rámpa', true, '');
+        if ($f3->_longRamp) {
+            $blc->def('Frk', 2*$f3->_Fk, 'F_(r,k) = 2*F_k = %% [kN]');
+        } else {
+            $blc->def('Frk', 0.5*$f3->_Fk, 'F_(r,k) = 0.5*F_k = %% [kN]');
+        }
+        $blc->txt('Ütközési magasság: $0.610 [m]$');
     }
 }
