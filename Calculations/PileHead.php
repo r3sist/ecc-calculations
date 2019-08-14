@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Pilehead analysis according to Eurocodes - ECC calculation class
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+*/
+
 Class PileHead extends \Ecc
 {
 
