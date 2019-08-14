@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Math routines and incubator of test calculations for structural design - ECC calculation class
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Math extends \Ecc
 {
 
