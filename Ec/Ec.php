@@ -378,9 +378,9 @@ Jellemzők és mértékegységek:
                         break;
                     case 'fbd':
                         \Blc::instance()->math('f_(bd)= '.$value.' [N/(mm^2)]', 'Beton és acél közti kapcsolati szilárdság bordás betonacéloknál, jó tapadás esetén');
-                        \Blc::instance()->boo('fbd07', 'Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa', 1, 'Csökkentés 70%-ra');
-                        if ($this->f3->_fbd07) {
-                            \Blc::instance()->def('fbd', $this->f3->get('_'.$prefix.'fbd')*0.7, 'f_(bd,eff) = f_(bd)*0.7 = %%');
+                        \Blc::instance()->boo($prefix.'fbd07', 'Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa', 1, 'Csökkentés 70%-ra');
+                        if ($this->f3->get('_'.$prefix.'fbd07')) {
+                            \Blc::instance()->def($prefix.'fbd', $this->f3->get('_'.$prefix.'fbd')*0.7, 'f_(bd) = f_(bd,eff) = f_(bd)*0.7 = %%');
                         }
                         break;
                     case 'fcd':
