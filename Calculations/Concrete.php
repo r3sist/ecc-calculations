@@ -6,6 +6,20 @@ Class Concrete extends \Ecc
 {
 
     /**
+     *
+     */
+    public function moduleAnchorageLength(int $fi, float $rfyd, float $cfbd, float $alphaa = 1.0, int $nrequ = 1, int $nprov = 1): void
+    {
+        $f3 = \Base::instance();
+        $blc = \Blc::instance();
+
+        $blc->def('al_lb', ceil(($fi/4)*($rfyd/$cfbd)), 'l_b = phi_l/4*f_(yd)/(f_(bd)) = %% [mm]', 'Lehorgonyzás alapértéke');
+        $blc->def('al_lbeq', ceil($alphaa*$f3->_al_lb), 'l_(b,eq) = alpha_a*l_b = %% [mm]', 'Húzásra kihasznált betonacél lehorgonyzási hossza');
+        $blc->def('al_lbmin', max(10*$fi, 100), 'l_(b,min) = max{(10*phi_l),(100):} = %% [mm]', 'Minimális lehorgonyzási hossz');
+        $blc->def('al_lbd', ceil(max($f3->_al_lbeq*($nrequ/$nprov), $f3->_lbmin)), 'l_(b,d) = max{(l_(b,eq)*n_(requ)/n_(prov)),(l_(b,min)):} = %% [mm]', 'Lehorgonyzási hossz tervezési értéke, ahol $n_(requ)/n_(prov)$ a szükséges és biztosított vasak aránya');
+    }
+
+    /**
      * @var $f3 \Base
      * @var $blc \Blc
      * @var $ec \Ec\Ec
@@ -19,6 +33,15 @@ Class Concrete extends \Ecc
         $ec->saveMaterialData($f3->_mat, false);
         $blc->txt(false, 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
         $blc->note('A szilárdsági osztályhoz tartozó jellemzők a 28 napos korban meghatározott, hengeren mért nyomószilárdság fck karakterisztikus értékén alapulnak.');
+
+        $blc->h1('Lehorgonyzási hossz');
+        $ec->matList('rebarMaterialName', 'B500', 'Betonvas anyagminőség');
+        $ec->saveMaterialData($f3->_rebarMaterialName, 'r');
+        $ec->rebarList('phil', 20, ['phi_l', 'Lehorgonyzandó vas átmérője']);
+        $blc->numeric('nrequ', ['n_(requ)', 'Szükséges vas szál'], 1, '', '$A_(s,requ)$ szükséges vaskeresztmetszet helyett');
+        $blc->numeric('nprov', ['n_(prov)', 'Biztosított vas szál'], 1, '', '$A_(s,prov)$ biztosított vaskeresztmetszet helyett');
+        $blc->lst('alphaa', ['Egyenes: 1.0' => 1.0, 'Kampó, hurok, hjlítás: 0.7' => 0.7], ['alpha_a', 'Lehorgonyzás módja'], '1.0', '');
+        $this->moduleAnchorageLength($f3->_phil, $f3->_rfyd, $f3->_fbd, $f3->_alphaa, $f3->_nprov, $f3->_nprov);
 
         $blc->h1('Beton jellemzői $t$ napos korban');
         $blc->numeric('t', ['t', 'Idő'], '10', 'nap', '');
