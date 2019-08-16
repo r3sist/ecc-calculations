@@ -211,6 +211,12 @@ Class Bolt extends \Ecc
         $blc->numeric('n_r', ['n_r', 'Csavar sorok száma'], 1, '', '');
         $nb = $f3->_n_c*$f3->_n_r;
         $blc->txt('Csavarok száma: '.$nb);
+        if ($f3->_n_r < 2) {
+            $f3->_p1 = 0;
+        }
+        if ($f3->_n_c < 2) {
+            $f3->_p2 = 0;
+        }
 
         $x = 2*$f3->_e2 + ($f3->_n_c - 1)*$f3->_p2;
         $x1 = 200/$x;
