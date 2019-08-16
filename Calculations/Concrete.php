@@ -29,8 +29,8 @@ Class Concrete extends \Ecc
     {
         $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/material) alapján történnek.');
 
-        $ec->matList('mat', 'C25/30', 'Beton anyag');
-        $ec->saveMaterialData($f3->_mat, false);
+        $ec->matList('concreteMaterialName', 'C25/30', 'Beton anyagminőség');
+        $ec->saveMaterialData($f3->_concreteMaterialName, false);
         $blc->txt(false, 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
         $blc->note('A szilárdsági osztályhoz tartozó jellemzők a 28 napos korban meghatározott, hengeren mért nyomószilárdság fck karakterisztikus értékén alapulnak.');
 
