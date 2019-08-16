@@ -379,7 +379,7 @@ Class Wind extends \Ecc
             $svg = new \resist\SVG(600, 350);
             // Generate raw part:
             $svg->setColor('blue');
-            $svg->addText(0, 250, '⇝', false, 'font-size: 40px;');
+            $svg->addText(0, 250, '>>', false, 'font-size: 40px;');
             $svg->setColor(false);
             $svg->addRectangle(100, 70, 200, 50); // Building section
             $svg->setFill('#eeeeee'); // Forces
@@ -550,7 +550,7 @@ Class Wind extends \Ecc
             $svg = new \resist\SVG(600, 350);
             // Generate raw part:
             $svg->setColor('blue');
-            $svg->addText(0, 250, '⇝', false, 'font-size: 40px;');
+            $svg->addText(0, 250, '>>', false, 'font-size: 40px;');
             $svg->setColor(false);
             $svg->addRectangle(100, 50, 200, 50); // Building section
             $svg->addRectangle(100, 140, 200, 150); // Building layout
@@ -568,10 +568,10 @@ Class Wind extends \Ecc
             $svg->addText(255, 65, 'C');
             $svg->addRectangle(70, 140, 30, 150); // D
             $svg->addText(105, 220, 'D');
-            $svg->addText(80, 220, '→');
+            $svg->addText(80, 220, '>>');
             $svg->addRectangle(300, 140, 20, 150); // E
             $svg->addText(280, 220, 'E');
-            $svg->addText(300, 220, '→');
+            $svg->addText(300, 220, '>>');
             // Dynamic part:
             $svg->setColor('red');
             $svg->addText(115, 130, $wA.'', false, 'fill: red; font-weight: bold');
@@ -702,7 +702,7 @@ Class Wind extends \Ecc
             $svg = new \resist\SVG(600, 300);
             // Generate raw part:
             $svg->setColor('blue');
-            $svg->addText(0, 170, '⇝', false, 'font-size: 40px;');
+            $svg->addText(0, 170, '>>', false, 'font-size: 40px;');
             $svg->setColor(false);
             $svg->addRectangle(100, 70, 50, 200); // C1
             $svg->addText(105, 170, 'C');
