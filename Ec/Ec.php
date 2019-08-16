@@ -181,7 +181,7 @@ Jellemzők és mértékegységek:
         $blc->wrapper0($titleArray);
             $blc->numeric($variableNameCount, false, $defaultValueCount, false, false);
             $blc->wrapper1(false);
-            $this->rebarList($variableNameRebar, 16, false, false);
+            $this->rebarList($variableNameRebar, $defaultValueRebar, false, false);
         $blc->wrapper2($help);
     }
 
