@@ -35,8 +35,9 @@ Class Beam extends \Ecc
         $blc->region1('geometry');
 
         $blc->region0('reinforcement', 'Gerenda vasalás megadása');
-            $blc->numeric('Ascdb', ['A_(sc)', 'Hosszirányú nyomott felső vasalás'], 2, 'db', '');
-            $blc->numeric('Ascfi', ['phi_(sc)', 'Hosszirányú nyomott felső vasalás átmérője'], 20, 'mm', '');
+        $ec->wrapRebarCount('Ascdb', 'Ascfi', ['A_(sc)', 'Hosszirányú nyomott felső vasalás'], 2, 20, '');
+//            $blc->numeric('Ascdb', ['A_(sc)', 'Hosszirányú nyomott felső vasalás'], 2, 'db', '');
+//            $blc->numeric('Ascfi', ['phi_(sc)', 'Hosszirányú nyomott felső vasalás átmérője'], 20, 'mm', '');
             $blc->numeric('Astdb', ['A_(st)', 'Hosszirányú húzott alsó vasalás'], 2, 'db', '');
             $blc->numeric('Astfi', ['phi_(st)', 'Hosszirányú húzott alsó vasalás átmérője'], 20, 'mm', '');
             $blc->numeric('cnom', ['c_(nom)', 'Betonfedés'], 25, 'mm', '');
