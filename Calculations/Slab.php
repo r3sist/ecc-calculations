@@ -21,7 +21,10 @@ Class Slab extends \Ecc
         $ec->saveMaterialData($f3->_rMat, 'r');
         $blc->lst('dir', ['Egy irányban teherhordó' => 1, 'Két irányban teherhordó' => 2], 'Teherhordás módja', 2);
         $blc->numeric('h', ['h', 'Lemez vastagsága'], 250, 'mm');
-        $blc->numeric('d', ['d', 'Lemez hatékony vastagsága'], 200, 'mm');
+        $ec->wrapRebarCount('sx', 'fix', ['s_x \ \ phi_x', 'x irány vastávolság és átmérő'], 200, 12, '');
+        $ec->wrapRebarCount('sy', 'fiy', ['s_y \ \ phi_y', 'y irány vastávolság és átmérő'], 200, 12, '');
+        $blc->numeric('c', ['c', 'Alsó betonfedés'], 30, 'mm');
+        $blc->def('d', $f3->_h - $f3->_c - ($f3->_fix + $f3->_fiy)/2, 'd = h - c - (phi_x + phi_y)/2 = %% [mm]', 'Hatékony magasság');
 
         $blc->h1('Lemezekre vonatkozó szerkesztési szabályok');
 
