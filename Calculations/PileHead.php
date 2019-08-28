@@ -190,6 +190,8 @@ Class PileHead extends \Ecc
         $blc->def('VRdmax', floor(0.5*$f3->_Dp*$f3->_deff*0.6*(1 - $f3->_cfck/250)*$f3->_cfcd*0.001), 'V_(Rd,max) = 0.5*D_p*d_(eff)*0.6*(1-f_(ck)/250)*f_(cd) = %% [kN]');
         $blc->label($f3->_NEd/$f3->_VRdmax, 'Kihasználtság');
         $blc->txt(false, '$N_(Ed)/V_(Rd,max)$');
+
+        $blc->h1('Nyírás ás átszúródás ellenőrzése', '`TODO`');
 // ============================ old ================================
    /*
 
