@@ -77,7 +77,7 @@ Class PileHead extends \Ecc
             case '2piles':
                 $f3->_np = 2;
                 $blc->def('theta', \H3::n2(rad2deg(atan($f3->_z/(0.5*$f3->_xp)))), 'Theta = arctan(z/(0.5*x_p)) = %%°', 'Belső erők szöge');
-                ($f3->_theta < 30.0)?$blc->danger('$Theta < 30 [deg]$'):true;
+                ($f3->_theta < 26.0)?$blc->danger('$Theta < 26 [deg]$ (Javasolt min 30°)'):true;
                 $blc->def('NEd', ceil($f3->_FEdz/(2*sin(deg2rad($f3->_theta))) + $f3->_FEdy/(2*cos(deg2rad($f3->_theta)))), 'N_(Ed) = F_(Ed,z)/(2*sin(Theta)) + F_(Ed,y)/(2*cos(Theta)) = %% [kN]');
                 $blc->def('HEd', ceil($f3->_FEdz/(2*tan(deg2rad($f3->_theta)))), 'H_(Ed) = F_(Ed,z)/(2*tan(Theta)) = %% [kN]');
                 $blc->note('HEd pillér vízszintes erő az egyik rácsrudat húzza, a másikat nyomja - vízszintes komponensben ez nem jelentkezik.');
