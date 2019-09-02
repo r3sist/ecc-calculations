@@ -191,7 +191,7 @@ Class PileHead extends \Ecc
         $blc->label($f3->_NEd/$f3->_VRdmax, 'Kihasználtság');
         $blc->txt(false, '$N_(Ed)/V_(Rd,max)$');
 
-        $blc->h1('Nyírás ás átszúródás ellenőrzése', '`TODO`');
+        $blc->h1('Nyírás és átszúródás ellenőrzése', '`TODO`');
 // ============================ old ================================
    /*
 
