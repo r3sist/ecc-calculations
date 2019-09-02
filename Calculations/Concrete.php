@@ -17,6 +17,7 @@ Class Concrete extends \Ecc
         $blc->def('al_lbeq', ceil($alphaa*$f3->_al_lb), 'l_(b,eq) = alpha_a*l_b = %% [mm]', 'Húzásra kihasznált betonacél lehorgonyzási hossza');
         $blc->def('al_lbmin', max(10*$fi, 100), 'l_(b,min) = max{(10*phi_l),(100):} = %% [mm]', 'Minimális lehorgonyzási hossz');
         $blc->def('al_lbd', ceil(max($f3->_al_lbeq*($nrequ/$nprov), $f3->_lbmin)), 'l_(b,d) = max{(l_(b,eq)*n_(requ)/n_(prov)),(l_(b,min)):} = %% [mm]', 'Lehorgonyzási hossz tervezési értéke, ahol $n_(requ)/n_(prov)$ a szükséges és biztosított vasak aránya');
+        $blc->success('Lehorgonyzási hossz: $'.$f3->_al_lbd.' [mm]$');
     }
 
     /**
