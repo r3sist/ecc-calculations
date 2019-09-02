@@ -143,24 +143,6 @@ Jellemzők és mértékegységek:
             $list[$key] = $key;
         }
         \Blc::instance()->lst($variableName, $list, $title, $default, '');
-
-        if (\Base::instance()->get('_'.$variableName) == 'Units') {
-            $units = 'A számítás a továbbiakban az alapértelmezett értékkel fut le: *'.$default.'*
-            
-Jellemzők és mértékegységek: 
-            
-';
-            foreach ($boltDb['Units'] as $prop => $unit) {
-                if ($prop != '' && $prop != 'name') {
-                    if ($unit === 0 || $unit == '') {
-                        $unit = '-';
-                    }
-                    $units .= '+ '.$prop.' ['.$unit.']
-';
-                }
-            }
-            $blc->txt($units);
-        }
     }
 
     public function wrapNumerics($variableNameA, $variableNameB, $titleArrayAB, $defaultValueA, $defaultValueB, $unitAB = false, $helpAB = false, $middleText = false)
