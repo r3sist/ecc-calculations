@@ -13,12 +13,12 @@ Class Impact extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $blc->note('*[Terhek és hatások (2017) 14.2.1 103.o.; 7.5 57.o.]*');
-
         $blc->note('Mellvédek és elválasztó falak vízszintes hasznos terhei. Emberi használatból - *ULS* hasznos teherként:');
         $blc->note('Magasság: $1.2 [m]$. Osztályok: *A, B, C1*: $0.5$; *C2, C3, C4, D*: $1.0$; *E*: $2.0 $; *C5*, tömeg: $3.0 [(kN)/(fm)]$');
 
         $blc->h1('Gépjárműütközés egyenértékű statikus terhe függőleges tartószerkezeti elemeken', 'Rendkívüli tervezési állapot');
+        $blc->note('*[MSZ EN 1991-1-7:2015 4.3.2. Ütközés felszerkezetekhez]*');
+        $blc->note('*[Terhek és hatások (2017) 14.2.1 103.o.]*');
         $blc->note('*Kemény ütközés*: az energiát elsősorban az ütköző jármű nyeli el. Nincs ütközésvédelem. Nem függ az anyagtól.');
         $blc->lst('location', ['Autópálya, főút / Teherautó, busz' => 'highway', 'Országút / Teherautó, busz' => 'road', 'Lakott területen út / Teherautó, busz' => 'city', 'Garázs, udvar / Csak autó' => 'garage0', 'Garázs, udvar / Teherautó' => 'garage1', 'Raktár, targonca' => 'storage'], 'Hely, típus', 'storage');
 
@@ -67,7 +67,7 @@ Class Impact extends \Ecc
                 break;
         }
         $blc->note('$F_(d,x)$ és $F_(d,y)$ erőket nem kell egyidejűleg figyelembe venni.');
-        $blc->note('Biztonsági korlát vagy 3 m széles forgalommentes sáv vagy 0.4 m mély árok esetén 50 %-kal csökkenthetők az erők! Valamint korláttal ellátott és 0.25 m magas, min. 0.5 m széles szegély esetén elhagygható.');
+        $blc->note('Biztonsági korlát vagy 3 m széles forgalommentes sáv vagy 0.4 m mély árok esetén 50 %-kal csökkenthetők az erők! Valamint korláttal ellátott és 0.25 m magas, min. 0.5 m széles szegély esetén elhagyható.');
 
         $blc->h1('Gépjárműütközés egyenértékű statikus terhe útpálya feletti szerkezeteken', 'Rendkívüli tervezési állapot');
         $blc->numeric('hu', ['h_u', 'Űrszelvény magassága'], 3, 'm');
@@ -86,6 +86,8 @@ Class Impact extends \Ecc
         }
 
         $blc->h1('Járműütközés vízszintes terhe parkolóházak korlátain és mellvédjén', '*ULS* hasznos teherként');
+        $blc->note('*[MSZ EN 1991-1-1:2005 B melléklet]');
+        $blc->note('*[Terhek és hatások (2017) 7.5 57.o.]');
         $blc->note('$sigma_b, sigma_c$ korlát és jármű alakváltozása ütközés esetén. Merev korlát esetén $sigma_b = 0$. Nincs javasolt adat ($: >= 0$)');
         $blc->txt('Ütközési szélesség: $1.5 [m]$');
         $blc->lst('weight0', ['Kevesebb, mint 2.5 [to]' => 'lt2500', 'Több, mint 2.5 [to]' => 'gt2500'], 'Tömeg', 'lt2500');
@@ -98,6 +100,7 @@ Class Impact extends \Ecc
         }
         $blc->numeric('m', ['m', 'Számításba veendő össztömeg'], 1500, 'kg', ($f3->_weight0 == 'gt2500')?'$color(red)"Beruházói adatszolgáltatásból!"$ Személyautó: 1500':'Személyautó: 1500');
         $blc->numeric('v', ['v', 'Korlátra merőleges sebesség'], 4.5, 'm/s', '');
+        $blc->note('Parkolóházakban 4.5 m/s sebességnél nagyobb is előfordulhat!');
         $blc->math('sigma_c := 100 [mm]%%%sigma_b := 0');
         $blc->def('Fk', ceil((0.5*$f3->_m*pow($f3->_v, 2))/(100)),'F_k = (0.5mv^2)/(sigma_c+sigma_b) = %% [kN]');
         $blc->h2('Rámpák mellett');
