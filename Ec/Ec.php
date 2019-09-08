@@ -117,10 +117,44 @@ class Ec extends \Prefab
         return $this->matProp($matName, 'fu');
     }
 
-    public function matList(string $variableName = 'mat', string $default = 'S235', $title = ['', 'Anyagminőség']): void
+    public function matList(string $variableName = 'mat', string $default = 'S235', $title = ['', 'Anyagminőség'], $category = false): void
     {
         $blc = \Blc::instance();
         $matDb = $this->getMaterialArray();
+
+        if ($category != false) {
+            foreach ($matDb as $key => $value) {
+                switch ($category) {
+                    case 'bolt':
+//                        \H3::dump($value['name']);
+                        if ($value['0'] != 'bolt') {
+                            unset($matDb[$key]);
+                        }
+                        break;
+                    case 'rebar':
+                        if ($value['0'] != 'rebar') {
+                            unset($matDb[$key]);
+                        }
+                        break;
+                    case 'concrete':
+                        if ($value['0'] != 'concrete') {
+                            unset($matDb[$key]);
+                        }
+                        break;
+                    case 'steel':
+                        if ($value['0'] != 'steel') {
+                            unset($matDb[$key]);
+                        }
+                        break;
+                    case 'steels':
+                        if (!in_array($value['0'], ['steel', 'bolt', 'rebar'])) {
+                            unset($matDb[$key]);
+                        }
+                        break;
+                }
+            }
+        }
+
         $keys =  array_keys($matDb);
         $list = [];
         foreach ($keys as $key) {
