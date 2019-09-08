@@ -31,19 +31,6 @@ class Ec extends \Prefab
         $this->f3->set('__GSA', 1.0);
     }
 
-    public function quick($value, $param1, $param2, $param3)
-    {
-        switch ($value) {
-            case 'matList':
-                if ($param1 != '' && $param2 != '' && $param3 != '') {
-                    $this->matList($param1, $param2, $param3);
-                } else {
-                    $this->matList();
-                }
-                break;
-        }
-    }
-
     public function readData(string $dbName): array
     {
         $this->f3->md->load(array('dname = :dname', ':dname' => $dbName));
