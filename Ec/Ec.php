@@ -54,6 +54,35 @@ class Ec extends \Prefab
         return array('');
     }
 
+    /*
+     * Units in database:
+     * ﻿0 [-]
+     * fy [Mpa]
+     * fu [Mpa]
+     * fy40 [Mpa]
+     * fu40 [Mpa]
+     * betaw [-]
+     * fyd [Mpa]
+     * fck [Mpa]
+     * fckcube [Mpa]
+     * fcm [Mpa]
+     * fctm [Mpa]
+     * fctk005 [Mpa]
+     * fctk095 [Mpa]
+     * Ecm color(teal)( GPa)
+     * Ecu3 [-]
+     * Euk [-]
+     * Es [Gpa]
+     * Fc0 [-]
+     * F_c0 [-]
+     * fbd [Mpa]
+     * fcd [Mpa]
+     * fctd [Mpa]
+     * fiinf28 [-]
+     * Eceff [Gpa]
+     * alfat [1/Cdeg]
+     * Epsiloncsinf [-]
+     */
     public function getMaterialArray(): array
     {
         return $this->readData('mat');
@@ -112,25 +141,6 @@ class Ec extends \Prefab
             $list[$key] = $key;
         }
         $blc->lst($variableName, $list, $title, $default, '');
-
-        if (\Base::instance()->get('_'.$variableName) == 'Units') {
-            $units = 'A számítás a továbbiakban az alapértelmezett értékkel fut le: *'.$default.'*
-            
-Jellemzők és mértékegységek: 
-            
-';
-            foreach ($matDb['Units'] as $prop => $unit) {
-                if ($prop != '' && $prop != 'name') {
-                    if ($unit === 0 || $unit == '') {
-                        $unit = '-';
-                    }
-                    $units .= '+ '.$prop.' ['.$unit.']
-';
-                }
-            }
-            $blc->md($units);
-            \Base::instance()->set('_'.$variableName, $default);
-        }
     }
 
     public function boltList(string $variableName = 'bolt', string $default = 'M16', string $title = 'Csavar betöltése'): void
