@@ -240,17 +240,37 @@ Class Bolt extends \Ecc
         }
         $blc->write('vendor/resist/ecc-calculations/canvas/bolt0.jpg', $boltPic, '');
 
-//        $r0 = 300; // image size
-//        $width = 2*$f3->_e2 + ($f3->_n_c - 1)*$f3->_p2;
-//        $height = 2*$f3->_e1 + ($f3->_n_r - 1)*$f3->_p1;
-//        $rhwh = $height/$width;
-//        $rhww = 1;
-//        if ($height < $width) {
-//            $rhww = $height/$width;
-//            $rhwh = 1;
+//        $svg = new \resist\SVG(300, 300);
+//        $x = 2*$f3->_e2 + ($f3->_n_c - 1)*$f3->_p2;
+//        $y = 2*$f3->_e1 + ($f3->_n_r - 1)*$f3->_p1;
+//        $svg->makeRatio(200, 200, $x, $y);
+//        $rx = $svg->getRatio()[0];
+//        $ry = $svg->getRatio()[1];
+//        // Plate:
+//        $x0 = 20;
+//        $y0 = 20;
+//        $svg->addRectangle($x0, $y0, $x, $y);
+//        $svg->setFill('green');
+//        // Bolts:
+//        for ($j = 0; $j < $f3->_n_r; $j++) {
+//            for ($i = 0; $i < $f3->_n_c; $i++) {
+//                $xi = ($f3->_e2 + $i*$f3->_p2);
+//                $yi = ($f3->_e1 + $j*$f3->_p1);
+//                $svg->addCircle($xi, $yi, 5, $x0, $y0);
+//            }
 //        }
-//        $rw = ($r0/$width)/$rhwh;
-//        $rh = ($r0/$height)/$rhww; // ratio
+//        // Dimensions:
+//        $svg->setColor('blue');
+//        $svg->addDimH($x0, $x, 290, $x);
+////        $svg->addDimH($x0, $f3->_e2, 100, 'e2='.$f3->_e1);
+//        if ($f3->_p2) {
+////            $svg->addDimH($x0 + $f3->_e2, $f3->_p2, 100, 'p2='.$f3->_e1);
+//        }
+//        // Show SVG:
+//        $blc->html($svg->getSvg());
+//        $blc->txt('ratio: '.$svg->getRatio()[0].' '.$svg->getRatio()[1].' x: '.$x.' y: '.$y);
+
+
 //        $svg = new \resist\SVG($r0, $r0);
 //        $svg->addRectangle(0, 0, $width*$rw, $height*$rh);
 //        $svg->setColor('blue');
