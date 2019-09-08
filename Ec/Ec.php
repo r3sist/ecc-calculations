@@ -33,7 +33,7 @@ class Ec extends \Prefab
 
     public function readData(string $dbName): array
     {
-        $this->f3->md->load(array('dname = :dname', ':dname' => $dbName));
+        $this->f3->md->load(['dname = :dname', ':dname' => $dbName]);
         if (!$this->f3->md->dry()) {
             return json_decode($this->f3->md->djson, true);
         }
