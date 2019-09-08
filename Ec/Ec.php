@@ -131,7 +131,6 @@ class Ec extends \Prefab
 
     public function boltList(string $variableName = 'bolt', string $default = 'M16', string $title = 'Csavar betöltése'): void
     {
-        $blc = \Blc::instance();
         $boltDb = $this->getBoltArray();
         $keys =  array_keys($boltDb);
         $list = [];
