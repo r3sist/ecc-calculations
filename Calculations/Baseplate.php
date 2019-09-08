@@ -21,11 +21,11 @@ Class Baseplate extends \Ecc
         $blc->numeric('ha', ['h_a', 'Szélső lehorgonyzások közti függőleges távolság'], 250, 'mm', '');
 
         $blc->region0('mat', 'Anyagok');
-            $ec->matList('steelMaterialName', 'S235', 'Lemez anyag');
+            $ec->matList('steelMaterialName', 'S235', 'Lemez anyag', 'steel');
             $ec->saveMaterialData($f3->_steelMaterialName, 's');
-            $ec->matList('anchorMaterialName', 'B500', 'Horgony anyag');
+            $ec->matList('anchorMaterialName', 'B500', 'Horgony anyag', 'steels');
             $ec->saveMaterialData($f3->_anchorMaterialName, 'a');
-            $ec->matList('concreteMaterialName', 'C25/30', 'Beton anyag');
+            $ec->matList('concreteMaterialName', 'C25/30', 'Beton anyag', 'concrete');
             $ec->saveMaterialData($f3->_concreteMaterialName, 'c');
         $blc->region1('mat');
 

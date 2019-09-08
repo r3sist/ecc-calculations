@@ -143,9 +143,9 @@ Class Bolt extends \Ecc
             $blc->def('A_s', $ec->boltProp($f3->_bName, 'As'),'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
         $blc->region1('r0');
 
-        $ec->matList('bMat', '8.8', 'Csavar anyagminőség');
+        $ec->matList('bMat', '8.8', 'Csavar anyagminőség', 'bolt');
         $ec->saveMaterialData($f3->_bMat, 'b');
-        $ec->matList('sMat', 'S235', 'Acél anyagminőség');
+        $ec->matList('sMat', 'S235', 'Acél anyagminőség', 'steel');
         $ec->saveMaterialData($f3->_sMat, 's');
 
         $blc->numeric('t', ['t', 'Kisebbik lemez vastagság'], 10, 'mm', '');
