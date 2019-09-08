@@ -48,10 +48,9 @@ class Ec extends \Prefab
     {
         $this->f3->md->load(array('dname = :dname', ':dname' => $dbName));
         if (!$this->f3->md->dry()) {
-            $this->f3->md->copyto('cdata');
             return json_decode($this->f3->md->djson, true);
         }
-        return array('');
+        return [];
     }
 
     /*
