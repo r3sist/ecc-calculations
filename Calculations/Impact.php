@@ -86,8 +86,8 @@ Class Impact extends \Ecc
         }
 
         $blc->h1('Járműütközés vízszintes terhe parkolóházak korlátain és mellvédjén', '*ULS* hasznos teherként');
-        $blc->note('*[MSZ EN 1991-1-1:2005 B melléklet]');
-        $blc->note('*[Terhek és hatások (2017) 7.5 57.o.]');
+        $blc->note('*[MSZ EN 1991-1-1:2005 B melléklet]*');
+        $blc->note('*[Terhek és hatások (2017) 7.5 57.o.]*');
         $blc->note('$sigma_b, sigma_c$ korlát és jármű alakváltozása ütközés esetén. Merev korlát esetén $sigma_b = 0$. Nincs javasolt adat ($: >= 0$)');
         $blc->txt('Ütközési szélesség: $1.5 [m]$');
         $blc->lst('weight0', ['Kevesebb, mint 2.5 [to]' => 'lt2500', 'Több, mint 2.5 [to]' => 'gt2500'], 'Tömeg', 'lt2500');
