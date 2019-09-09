@@ -30,13 +30,13 @@ Class Concrete extends \Ecc
     {
         $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/material) alapján történnek.');
 
-        $ec->matList('concreteMaterialName', 'C25/30', 'Beton anyagminőség');
+        $ec->matList('concreteMaterialName', 'C25/30', 'Beton anyagminőség', 'concrete');
         $ec->saveMaterialData($f3->_concreteMaterialName, false);
         $blc->txt(false, 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
         $blc->note('A szilárdsági osztályhoz tartozó jellemzők a 28 napos korban meghatározott, hengeren mért nyomószilárdság fck karakterisztikus értékén alapulnak.');
 
         $blc->h1('Lehorgonyzási hossz');
-        $ec->matList('rebarMaterialName', 'B500', 'Betonvas anyagminőség');
+        $ec->matList('rebarMaterialName', 'B500', 'Betonvas anyagminőség', 'rebar');
         $ec->saveMaterialData($f3->_rebarMaterialName, 'r');
         $ec->rebarList('phil', 20, ['phi_l', 'Lehorgonyzandó vas átmérője']);
         $blc->numeric('nrequ', ['n_(requ)', 'Szükséges vas szál'], 1, '', '$A_(s,requ)$ szükséges vaskeresztmetszet helyett');
