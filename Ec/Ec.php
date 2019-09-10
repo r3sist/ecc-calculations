@@ -13,6 +13,10 @@ class Ec extends \Prefab
     /** @var \Base */
     protected $f3; // Structure hive
 
+    /**
+     * Ec constructor.
+     * Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA
+     */
     public function __construct()
     {
         $this->f3 = \Base::instance();
@@ -31,6 +35,11 @@ class Ec extends \Prefab
         $this->f3->set('__GSA', 1.0);
     }
 
+    /**
+     * Get data record by data_id from ecc_data table
+     * @param string $dbName
+     * @return array Assoc. array of read data
+     */
     public function readData(string $dbName): array
     {
         $this->f3->md->load(['dname = :dname', ':dname' => $dbName]);
@@ -40,7 +49,8 @@ class Ec extends \Prefab
         return [];
     }
 
-    /*
+    /**
+     * Get all material data as array from database
      * Units in database:
      * ﻿0 [-]
      * fy [Mpa]
@@ -68,12 +78,17 @@ class Ec extends \Prefab
      * Eceff [Gpa]
      * alfat [1/Cdeg]
      * Epsiloncsinf [-]
+     * @return array Assoc. array of read material data
      */
     public function getMaterialArray(): array
     {
         return $this->readData('mat');
     }
 
+    /**
+     * Get all bolt data as array from database
+     * @return array Assoc. array of read bolt data
+     */
     public function getBoltArray(): array
     {
         return $this->readData('bolt');
