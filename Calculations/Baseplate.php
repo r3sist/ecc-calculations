@@ -66,6 +66,7 @@ Class Baseplate extends \Ecc
                 $yi = ($e + $row*$f3->_ht);
                 $svg->addCircle($xi, $yi, 5, 200, 50);
             }
+            $svg->addLineRatio(0, $yi, 20, $yi, 40, 50, false, true);
         }
         // Anchors for pressure
         $svg->setFill('green');
@@ -75,21 +76,33 @@ Class Baseplate extends \Ecc
                 $yi = ($yp - ($e + $row*$f3->_ht));
                 $svg->addCircle($xi, $yi, 5, 200, 50);
             }
+            $svg->addLineRatio(0, $yi, 20, $yi, 40, 50, false, true);
         }
         $svg->setColor('magenta');
-        $svg->addDimH(0, $xp, 390, $xp, 200); // Plate horizontal
+        $svg->addDimH(0, $xp, 395, $xp, 200); // Plate horizontal
+        $svg->addDimV(0, $yp, 520, $yp, 50); // Plate vertical
+        $svg->addDimV($e, $yp - 2*$e, 545, $yp - 2*$e, 50); // Plate inner vertical
         $svg->addDimH(0, $e, 370, $e, 200); // e2
         $svg->addDimH($e, $ph, 370, \H3::n0($ph), 200); // p2
         ($f3->_nu > 1)?$svg->addDimV($e, $f3->_ht, 150, \H3::n0($f3->_ht), 50):false; // p1
         $svg->addDimV(0, $e, 150, $e, 50); // e1
-        $svg->addDimV($lever0, $lever, 170, $lever, 50); // e1
+        $svg->addDimV($lever0, $lever, 570, $lever, 50); // vertical lever
         $svg->reset();
         $svg->setColor('magenta');
         $svg->addDimH(60, 10, 390, $f3->_tb); // Cross-section of plate
+        // Texts
+        $svg->setColor('black');
+        $svg->addSymbol(80, 200, 'arrow-right');
+        $svg->addText(100, 200, 'N');
+        $svg->addSymbol(70, 220, 'arrow-down');
+        $svg->addText(90, 220, 'V');
+        $svg->addSymbol(80, 200, 'back-left');
+        $svg->addText(120, 200, 'M');
         // Export
-        $svg->addBorder();
-        $blc->html($svg->getSvg());
-
+//        $svg->addBorder();
+//        $blc->html($svg->getSvg());
+        $blc->svg($svg);
+//        $blc->html($svg->getImgSvg());
 
         $blc->h1('Húzott horgonyok ellenőrzése');
         $blc->def('NRda', \H3::n2(($f3->_As*$f3->_afyd)/1000), 'N_(Rd,a) = A_s * f_(yd,a) = %% [kN]', 'Egy horgony húzási ellenállása');
@@ -98,52 +111,60 @@ Class Baseplate extends \Ecc
         $blc->note('Húzásra csak a felső sor horgonyai vannak figyelembe véve!');
         $blc->def('NRdt', $f3->_NRda*$f3->_nt, 'N_(Rd,t) = n_t*N_(Rd,a) = %% [kN]', 'Húzott (felső) horgonyok húzási ellenállása');
         $blc->txt('Húzott (felső) horgonyok kihasználtsága:');
+        $blc->def('ntreq', ceil((4/(pow($f3->_phi, 2)*pi()))*($f3->_NEd*1000/$f3->_afyd)), 'n_(t,req) = %%', 'Minimális húzott horgonyszám');
         $blc->def('NEdsum', $f3->_NEd + $f3->_NEdM, 'N_(Ed,sum) = N_(Ed) + N_(Ed,M) = %% [kN]');
         $blc->label($f3->_NEdsum/$f3->_NRdt, 'húzási kihasználtság');
 
-        $blc->h1('Horgony-varrat meghatározása');
-        $blc->region0('weld0');
-            $blc->def('l', \H3::n1($f3->_phi*pi() - 10), 'l = phi*pi - 10 = %% [mm]', 'Varrathossz horgony kerülete mentén');
-            $blc->def('betaw', $f3->_sbetaw, 'beta_w = %%', 'Hegesztési tényező');
-            $blc->def('FwEd', ($f3->_NEd/$f3->_nt)/$f3->_l * 1000, 'F_(w,Ed) = N_(Ed)/n_t/l = %% [(kN)/m]', 'Fajlagos igénybevétel');
-            $blc->def('a', ceil(($f3->_FwEd*sqrt(3)*$f3->_betaw*$f3->__GM2)/$f3->_sfu), 'a = ceil((F_(w,Ed)*sqrt(3)*beta_w*gamma_(M2))/(f_u)) = %% [mm]', 'Minimális varrat gyökméret');
-        $blc->region1('weld0');
-        $blc->success0('weld1');
-            $blc->math('a = '.$f3->_a.' [mm]', 'Minimális varrat gyökméret');
-        $blc->success1();
+        $blc->h1('Nyírt horgonyok ellenőrzése');
+        $blc->note('Nyírásra csak az alsó sor horgonyai vannak figyelembe véve!');
+        $blc->def('VplRda', \H3::n1(($ec->A($f3->_phi)*$f3->_afyd)/(sqrt(3)*$f3->__GM0*1000)), 'V_(pl,Rd,a) = %% [kN]', 'Egy horgony nyírási ellenállása');
+        $blc->def('VplRd', $f3->_nv*$f3->_VplRda, 'V_(pl,Rd) = n_v*V_(pl,Rd,a) = %% [kN]', 'Nyírt (alsó) horgonyok nyírási ellenállása');
+        $blc->txt('Nyírt (alsó) horgonyok kihasználtsága:');
+        $blc->label($f3->_VEd/$f3->_VplRd,'nyírási kihasználtság');
 
-        $blc->h1('Hajlított lemez ellenőrzése');
+        $blc->h1('Nyírás-húzás interakció összes horgonyra');
+        $Uvt = $f3->_VEd/(($f3->_nt + $f3->_nv)*$f3->_VplRda) + $f3->_NEd/(1.4*($f3->_nt + $f3->_nv)*$f3->_NRda);
+        $blc->math('V_(Ed)/((n_t+n_v)*V_(pl,Rd,a)) + N_(Ed)/(1.4*(n_t+n_v)*N_(Rd,a)) = '.\H3::n1($Uvt*100.0).'[%]', '$M_(Ed)$ figyelmenkívül hagyásával');
+        $blc->label($Uvt, 'interakciós kihaználtság');
+
+        $blc->h1('Hajlított lemez ellenőrzése', 'TODO');
         $blc->def('MEd',$f3->_NEd*0.25*max($f3->_ba, $f3->_ha)/1000, 'M_(Ed) = N_(Ed)*0.25*max{(b_a),(h_a):} = %% [kNm]','Nyomaték a lemezben');
         $blc->def('Ws',(min($f3->_ba, $f3->_ha)*$f3->_tb*$f3->_tb)/6, 'W_s = ((min{(b_a),(h_a):})*t_b^2)/6 = %% [mm^3]', 'Gyenge tengely körüli keresztmetszeti modulus');
         $blc->math('f_(y,s) = '.$f3->_sfy. '[N/(mm^2)]');
         $blc->def('sigmaEds',\H3::n1(($f3->_MEd/$f3->_Ws)*1000000), 'sigma_(Ed,s) = M_(Ed)/W_s = %% [N/(mm^2)]', 'Lemez feszültség');
         $blc->label($f3->_sigmaEds/$f3->_sfy,'lemez kihasználtság');
 
-        $blc->h1('Nyírt horgonyok ellenőrzése');
-        $blc->note('Nyírásra csak az alsó sor horgonyai vannak figyelembe véve!');
-        $blc->def('VplRda', \H3::n1(($ec->A($f3->_phi)*$f3->_afyd)/(sqrt(3)*$f3->__GM0*1000)), 'V_(pl,Rd,a) = %% [kN]', 'Egy horgony nyírási ellenállása');
-        $blc->def('VplRd', $f3->_nv*$f3->_VplRda, 'V_(pl,Rd) = n_v*V_(pl,Rd,a) = %% [kN]', 'Nyírt (alsó) horgonyok nyírási ellenállása');
-        $blc->label($f3->_VEd/$f3->_VplRd,'nyírási kihasználtság');
-
         $blc->h1('Lehorgonyzási hossz számítása');
-        $blc->h1('Csap táblázat');
-        $blc->h1('write block');
-        $blc->h1('Beton nyomás ellenőrzése nyírt csapok alatt');
-//
-//        $blc->h1('Szelemen összekötő szerelvény ellenőrzés');
-//        $blc->md('`TODO`');
-//
-//        $blc->h1('Csatlakozó pengelemez ellenőrzés');
-//        $blc->md('`TODO`');
-//
-//        $blc->h1('Csatlakozó pengelemez varrathossz ellenőrzés');
-//        $blc->md('`TODO`');
-//
-//        $blc->h1('Egyszerűsített csap számítás');
-//        $blc->md('`TODO`');
-//
-//        $blc->h1('Neoprén saru felület méretezés');
-//        $blc->md('`TODO`');
+        $blc->boo('usenprov', 'Húzott horgony kihasználtság figyelembevétele', false, '$n_(t,req)/n_t = '.\H3::n3($f3->_ntreq/$f3->_nt).'$ alkalmazható csökkentő tényező húzás alapján');
+        $nprov = 1;
+        $nreq = 1;
+        if ($f3->_usenprov) {
+            $nprov = $f3->_nt;
+            $nreq = $f3->_ntreq;
+        }
+        $blc->lst('alphaa', ['Egyenes: 1.0' => 1.0, 'Kampó, hurok, hajlítás: 0.7' => 0.7], ['alpha_a', 'Lehorgonyzás módja'], '1.0', '');
+        $blc->txt('Anyagminőségnél **'.(($f3->_cfbd07)?'rossz tapadás':'jó tapadás').'** ($f_(b,d) = '.$f3->_cfbd.'[N/(mm^2)]$) van beállítva');
+        $Concrete = new \Calculation\Concrete();
+        $Concrete->moduleAnchorageLength($f3->_phi, $f3->_afyd, $f3->_cfbd, $f3->_alphaa, $nreq, $nprov);
+
+        $blc->h1('Horgony-varrat meghatározása', '');
+        $wFactor = 1;
+        $blc->boo('useDoubleWeld', 'Dupla varrat alkalmazása', true, '');
+        if ($f3->_useDoubleWeld) {
+            $wFactor = 2;
+        }
+        $blc->def('lw', \H3::n1($wFactor*$f3->_phi*pi()), 'l_w = %% [mm]', 'Egy- vagy kétszeres varrathossz horgony kerülete mentén, teljes kerület figyelembevételével');
+        $blc->def('betaw', $f3->_sbetaw, 'beta_w = %%', 'Hegesztési tényező');
+        $blc->def('NwEd', ($f3->_NEdsum/$f3->_nt)/$f3->_lw * 1000, 'N_(w,Ed) = N_(Ed,sum)/n_t/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel húzásból');
+        $blc->def('VwEd', ($f3->_VEd/$f3->_nv)/$f3->_lw * 1000, 'V_(w,Ed) = V_(Ed)/n_v/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel nyírásból');
+        $blc->def('a', ceil((max($f3->_NwEd, $f3->_VwEd)*sqrt(3)*$f3->_betaw*$f3->__GM2)/$f3->_sfu), 'a = ceil((max{(N_(w,Ed)),(V_(w,Ed)):}*sqrt(3)*beta_w*gamma_(M2))/(f_u)) = %% [mm]', 'Minimális varrat gyökméret');
+        $blc->success0('weld1');
+        $blc->math('a = '.$f3->_a.' [mm]', 'Minimális varrat gyökméret');
+        $blc->success1();
+
+        $blc->h1('Beton nyomás ellenőrzése nyírt csapok alatt', 'TODO');
+        //TODO Egyszerűsített Csap táblázat
+
 
     }
 }
