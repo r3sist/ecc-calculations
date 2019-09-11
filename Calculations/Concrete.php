@@ -43,7 +43,7 @@ Class Concrete extends \Ecc
         $blc->numeric('nprov', ['n_(prov)', 'Biztosított vas szál'], 1, '', '$A_(s,prov)$ biztosított vaskeresztmetszet helyett');
         $blc->lst('alphaa', ['Egyenes: 1.0' => 1.0, 'Kampó, hurok, hajlítás: 0.7' => 0.7], ['alpha_a', 'Lehorgonyzás módja'], '1.0', '');
         $blc->txt('Anyagminőségnél **'.(($f3->_fbd07)?'rossz tapadás':'jó tapadás').'** ($f_(b,d) = '.$f3->_fbd.'[N/(mm^2)]$) van beállítva');
-        $this->moduleAnchorageLength($f3->_phil, $f3->_rfyd, $f3->_fbd, $f3->_alphaa, $f3->_nprov, $f3->_nprov);
+        $this->moduleAnchorageLength($f3->_phil, $f3->_rfyd, $f3->_fbd, $f3->_alphaa, $f3->_nrequ, $f3->_nprov);
 
         $blc->h1('Beton jellemzői $t$ napos korban');
         $blc->numeric('t', ['t', 'Idő'], '10', 'nap', '');
