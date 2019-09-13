@@ -23,7 +23,7 @@ Class Snow extends \Ecc
             }
             $blc->math('s_k = '.$f3->_s_k*$f3->_C.'[(kN)/m^2]', 'Felszíni hó karakterisztikus értéke');
             $blc->math('psi_0 = 0.5 %%%psi_1 = 0.2 %%%psi_2 = 0', 'Kombinációs tényezők');
-        $blc->region1('baseData');
+        $blc->region1();
 
         // =============================================================================================================
         $blc->h1('Hóteher félnyereg-, nyereg- és összekapcsolódó nyeregtetők esetén');
@@ -165,9 +165,9 @@ Class Snow extends \Ecc
         $blc->def('mu_w', \H3::n2(max(min(4.0, ($f3->_b_1 + $f3->_b_2)/(2*$f3->_h), ($f3->_gamma_set*$f3->_h)/$f3->_s_k), 0.8)), 'mu_w = max{(min{(4.0), ((b_1 + b_2)/(2h)), ((gamma_(set)*h)/s_k):}), (0.8):} = %%', 'Szél átrendező hatásához tartozó alaki tényezője');
         $blc->def('l_s2', \H3::n2(min(max(5, 2*$f3->_h), 15)), 'l_(s2) = min{(max{(5 [m]), (2*h):}), (15 [m]):} = %% [m]', 'Lecsúszó hó eloszlása');
         $blc->def('q_plus2', \H3::n2((($f3->_mu_s + $f3->_mu_w) - 0.8)*$f3->_s_k),'q_(plus2) = %% [(kN)/m^2]', 'Megoszló terhelés többlet alap hóhoz képest');
-        $blc->success0('qsum2');
+        $blc->success0();
             $blc->def('q_sum2', \H3::n2(($f3->_mu_s + $f3->_mu_w)*$f3->_s_k),'q_(sum2) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
-        $blc->success1('qsum2');
+        $blc->success1();
 /*
         // Legacy write method:
         $write = array(
@@ -228,8 +228,6 @@ Class Snow extends \Ecc
         $svg->addText(140, 195, 'μ1='.$f3->_mu_1);
         $svg->addText(140, 160, 'μw='.$f3->_mu_w);
         $svg->addText(140, 120, 'μs='.$f3->_mu_s);
-
-
         $blc->svg($svg, false, 'Hófelhalmozódást is tartalmazó hóteher átrendeződés magasabb épülethez csatlakozó tető esetén');
         unset($svg);
     }
