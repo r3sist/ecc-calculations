@@ -20,7 +20,7 @@ Class Baseplate extends \Ecc
             $ec->saveMaterialData($f3->_anchorMaterialName, 'a');
             $ec->matList('concreteMaterialName', 'C25/30', 'Beton anyag', 'concrete');
             $ec->saveMaterialData($f3->_concreteMaterialName, 'c');
-        $blc->region1('mat');
+        $blc->region1();
 
         $blc->info0();
             $blc->txt('Erők:');
@@ -162,7 +162,7 @@ Class Baseplate extends \Ecc
         $blc->def('NwEd', ($f3->_NEdsum/$f3->_nt)/$f3->_lw * 1000, 'N_(w,Ed) = N_(Ed,sum)/n_t/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel húzásból');
         $blc->def('VwEd', ($f3->_VEd/$f3->_nv)/$f3->_lw * 1000, 'V_(w,Ed) = V_(Ed)/n_v/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel nyírásból');
         $blc->def('a', ceil((max($f3->_NwEd, $f3->_VwEd)*sqrt(3)*$f3->_betaw*$f3->__GM2)/$f3->_sfu), 'a = ceil((max{(N_(w,Ed)),(V_(w,Ed)):}*sqrt(3)*beta_w*gamma_(M2))/(f_u)) = %% [mm]', 'Minimális varrat gyökméret');
-        $blc->success0('weld1');
+        $blc->success0();
         $blc->math('a = '.$f3->_a.' [mm]', 'Minimális varrat gyökméret');
         $blc->success1();
 
