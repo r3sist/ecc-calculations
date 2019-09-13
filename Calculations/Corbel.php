@@ -22,7 +22,7 @@ Class Corbel extends \Ecc
             $blc->img($f3->home.'ecc/corbel0.jpg', 'Rövidkonzol erőjáték');
             $blc->img($f3->home.'ecc/corbel1.jpg', 'Rövidkonzol vasalás');
             $blc->img($f3->home.'ecc/corbel3.jpg', 'Felső csomópont');
-        $blc->region1('img');
+        $blc->region1();
 
         $blc->numeric('ac', ['a_c', 'Terheló függőleges erő hatásvonala az oszlop szélétől'], 125, 'mm', '');
         $blc->numeric('hc', ['h_c', 'Konzol magassága'], 250, 'mm', '');
@@ -53,10 +53,10 @@ Class Corbel extends \Ecc
         $blc->def('d', \H3::n0($f3->_hc - $f3->_cnom - $f3->_phiwv - ($f3->_nMainRow*$f3->_phiMain + ($f3->_nMainRow - 1)*$f3->_deltaMain)/2) - $f3->_delta, 'd = h_c - c_(nom) - phi_(s,w,v) - (n_(s,mai n,row)*phi_(s,mai n) + (n_(s,mai n,row) - 1)*Delta_(s,mai n))/2 - delta = %% [mm]', 'Hatékony magasság húzott vaskép tengelyében');
         $blc->def('aH', ($f3->_hc - $f3->_d) + $f3->_tp, 'a_H = (h_c - d) - t_p = %% [mm]', 'Vízszintes erő hatásvonala húzott vasaktól');
 
-        $blc->info0('amin');
+        $blc->info0();
             $blc->def('bp', $f3->_b - 2*$f3->_s0, 'b_(p,min) >= b - 2*(c_(nom) + phi_(s,mai n)/2) = %% [mm]', 'Teherelosztó lemez minimum hossza pillér $b$ szélességével párhuzamosan');
             $blc->def('aMin', ceil($f3->_ac + $f3->_ap*0.5 + 2*$f3->_s0 + sqrt(2)*($f3->_hc - $f3->_d)), 'a_(min) = a_c + a_p/2 + 2*s_0 + sqrt(2)*(h_c - d) = %% [mm]', 'Konzol mélység minimális mérete, hurkos fővas lehorgonyzásához rövidkonzol külső oldalán');
-        $blc->info1('amin');
+        $blc->info1();
         $blc->note('A teherelosztó lemez bektösének a súrlódás figyelembevétele nélkül fel kell tudnia venni $H_(Ed)$ erőt.');
 
 
@@ -89,18 +89,18 @@ Class Corbel extends \Ecc
         $blc->def('y', \H3::n2(getValidRoot($f3->_x, [$f3->_y1, $f3->_y2])), 'y = %% [mm]', 'Fizikailag lehetséges gyök választása');
         $blc->def('theta', rad2deg(atan($f3->_x/$f3->_y1)), 'theta = %% [deg]', '$N_c$ nyomott rácsrúd ferdesége');
         if ($f3->_theta <= 45) {
-            $blc->danger0('theta');
+            $blc->danger0();
                 $blc->txt('$theta = '.$f3->_theta.' [deg]$: $45$ és $68 [deg]$ között kell lennie!');
                 $blc->txt('A ferde nyomóerő túl lapos. A rövidkonzol magassága vagy szélessége növelendő. $f_(cd)$ növelése nem gazdaságos.');
-            $blc->danger1('theta');
+            $blc->danger1();
         }
         if ($f3->_theta > 68) {
-            $blc->danger0('theta');
+            $blc->danger0();
                 $blc->txt('$theta = '.$f3->_theta.' [deg]$, de $45$ és $68 [deg]$ között kell lennie!');
                 $blc->txt('A rövidkonzol teljes magassága nem használható ki, a betonék túl magasra kerül.');
                 $blc->def('theta', 68, 'theta := %% [deg]', '$theta$ felülírása.');
                 $blc->def('y', \H3::n2($f3->_x/2.5), 'y = x/2.5 = %% [mm]', 'Derékszögű betonék $y$ mérete');
-            $blc->danger1('theta');
+            $blc->danger1();
         }
 
         $blc->def('z0', floor(tan(deg2rad($f3->_theta))*($f3->_ac + $f3->_alpha*$f3->_aH)), 'z_0 = tan(theta)*(a_c + alpha*a_H) = %% [mm]');
