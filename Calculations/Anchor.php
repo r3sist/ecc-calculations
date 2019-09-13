@@ -13,9 +13,9 @@ Class Anchor extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $ec->matList('aMat','B500', ['', 'Tüske anyagminőség']);
-        $ec->matList('cMat','C40/50', ['', 'Beton anyagminőség']);
-        $blc->numeric('D', ['D', 'Csapátmérő'], 20, 'mm', '');
+        $ec->matList('aMat','B500', ['', 'Tüske anyagminőség'], 'steels');
+        $ec->matList('cMat','C40/50', ['', 'Beton anyagminőség'], 'concrete');
+        $ec->rebarList('D', 20, ['D', 'Csapátmérő'], '');
         $blc->numeric('e', ['e', 'Beton felületek közti hézag'], 10, 'mm', '');
         $blc->numeric('c1t', ['c_(1t)', 'Tüske tengely erő irányra merőlegesen'], 100, 'mm', 'Gerenda végétől tüske tengelyig vett érték');
         $blc->numeric('c2t', ['c_(2t)', 'Tüske tengely erő irányban'], 100, 'mm', 'Gerenda hossz irányú szélétől tüske tengelyig vett legkisebb érték');
@@ -95,13 +95,13 @@ Class Anchor extends \Ecc
             } else {
                 $blc->def('f', ($f3->_D*$f3->_D*sqrt($f3->_fcd*$f3->_fyd)*$f3->_alpha_c*$f3->_alpha_er)/$f3->_GRd, 'f = (D^2*sqrt(f_(cd)*f_(yd))*alpha_c*alpha_(er))/gamma_(Rd) = %% [N]');
             }
-        $blc->region1('r0');
+        $blc->region1();
 
         $blc->def('FVRd', $f3->_alpha_s*$f3->_f/1000, 'F_(V,Rd) = alpha_s*f = %% [kN]', 'Egy nyírási csap ellenállása');
-        $blc->success0('s0');
+        $blc->success0();
             $blc->def('FVRdS', $f3->_FVRd*$f3->_n, 'F_(V,Rd,sum) = F_(V,Rd)*n = %% [kN]', 'Nyírási *csap kép* ellenállása');
             $blc->label($f3->_FVEd/$f3->_FVRdS, 'Csap kép kihasználtság');
-        $blc->success1('s0');
+        $blc->success1();
 
         $blc->h1('Csavarásból származó húzóerő felvétele');
         $blc->numeric('TEd', ['T_(Ed)', 'Csavarás'], 10, 'kNm');
