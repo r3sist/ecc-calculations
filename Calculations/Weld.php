@@ -22,7 +22,7 @@ Class Weld extends \Ecc
         $blc->def('fu', $ec->fu($f3->_mat, $f3->_t), 'f_u=%% [N/(mm^2)]', 'Szakítószilárdság');
         $blc->math('F_(Ed) = '.$f3->_F.'[kN]');
         $blc->def('FwEd', $f3->_F / $f3->_l * 1000, 'F_(w,Ed) = F_(Ed)/l = %% [(kN)/m]', 'Fajlagos igénybevétel');
-        $blc->region1('r0');
+        $blc->region1();
 
         if ($f3->_l <= 30) {
             $blc->danger('Varrathossz rövidebb $30 [mm]$-nél! Szabvány szerint nem figyelembe vehető.');
@@ -36,12 +36,12 @@ Class Weld extends \Ecc
             $blc->danger('$l >= 150*a = ' . 150 * $f3->_a . ' [mm]$, ezért indokolt a varrat teherbírásának csökkentése, nem zártszelvények esetén.');
         }
 
-        $blc->success0('s0');
+        $blc->success0();
         $blc->def('FwRd', \H3::n2(($f3->_fu * $f3->_a) / (sqrt(3) * $f3->_bw * $f3->__GM2) * ($f3->_w)), 'F_(w,Rd) = (f_u*a)/(sqrt(3)*beta_w*gamma_(M2))*w_(sarok)= %% [(kN)/m]', 'Fajlagos teherbírás');
         $blc->def('FwRdS', \H3::n2(($f3->_FwRd * $f3->_l / 1000)), 'F_(w,Rd,sum) = F_(w,Rd)*l = %% [kN]', 'Varratkép teljes teherbírása');
         $blc->label($f3->_F / $f3->_FwRdS, 'Kihasználtság');
         $blc->txt('', '$(F = '.$f3->_F.'[kN])/F_(w,Rd,sum)$');
-        $blc->success1('s0');
+        $blc->success1();
     }
 
     /**
@@ -64,7 +64,7 @@ Class Weld extends \Ecc
             $blc->def('fu', $ec->fu($steelMaterialName, $tPlate), 'f_u=%% [N/(mm^2)]', 'Szakítószilárdság');
             $blc->math('F_(Ed) = '.$F.'[kN]');
             $blc->def('FwEd', $F / $f3->_l * 1000, 'F_(w,Ed) = F_(Ed)/l = %% [(kN)/m]', 'Fajlagos igénybevétel');
-        $blc->region1('r0');
+        $blc->region1();
 
         if ($f3->_l <= 30) {
             $blc->danger('Varrathossz rövidebb $30 [mm]$-nél! Szabvány szerint nem figyelembe vehető.');
