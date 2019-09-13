@@ -59,10 +59,10 @@ Class Math extends \Ecc
         $blc->numeric('y1', ['y_1', ''], 5, '', '');
         $blc->numeric('x2', ['x_2', ''], 2, '', '');
         $blc->numeric('y2', ['y_2', ''], 20, '', '');
-        $blc->info0('i0');
+        $blc->info0();
             $blc->numeric('x', ['x', ''], 3, '', '');
             $blc->def('y', (($f3->_x - $f3->_x1)*($f3->_y2 - $f3->_y1)/($f3->_x2 - $f3->_x1)) + $f3->_y1, 'y = %%');
-        $blc->info1('i0');
+        $blc->info1();
 
         $dataTable1 = $lava->DataTable();
         $dataTable1->addNumberColumn('x');
