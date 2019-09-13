@@ -20,8 +20,6 @@ Class Math extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $lava = new \Khill\Lavacharts\Lavacharts;
-
         $blc->toc();
 
         $blc->h1('Vas keresztmetszet');
@@ -36,7 +34,7 @@ Class Math extends \Ecc
             $blc->math('phi_(25): '.floor($ec->A(25)).' [mm^2]');
             $blc->math('phi_(28): '.floor($ec->A(25)).' [mm^2]');
             $blc->math('phi_(32): '.floor($ec->A(32)).' [mm^2]');
-        $blc->region1('rebars', 'Keresztmetszetek');
+        $blc->region1();
 
         $blc->h1('Lejtés');
         $blc->numeric('slope', ['', 'Lejtés'], 3, '% / °', '');
@@ -63,19 +61,30 @@ Class Math extends \Ecc
             $blc->numeric('x', ['x', ''], 3, '', '');
             $blc->def('y', (($f3->_x - $f3->_x1)*($f3->_y2 - $f3->_y1)/($f3->_x2 - $f3->_x1)) + $f3->_y1, 'y = %%');
         $blc->info1();
+        
+//        $lava = new \Khill\Lavacharts\Lavacharts;
+//        $dataTable1 = $lava->DataTable();
+//        $dataTable1->addNumberColumn('x');
+//        $dataTable1->addNumberColumn('y');
+//        $dataTable1->addRow([$f3->_x1, $f3->_y1]);
+//        $dataTable1->addRow([$f3->_x2, $f3->_y2]);
+//        $dataTable2 = $lava->DataTable();
+//        $dataTable2->addNumberColumn('x');
+//        $dataTable2->addNumberColumn('y');
+//        $dataTable2->addRow([$f3->_x, $f3->_y]);
+//        $tables = new \Khill\Lavacharts\DataTables\JoinedDataTable($dataTable1,$dataTable2);
+//        $lava->ScatterChart('3', $tables, ['legend' => ['position' => 'none'], 'title' => 'Lineáris interpoláció',]);
+//        $blc->chart('ScatterChart', '3', $lava);
 
-        $dataTable1 = $lava->DataTable();
-        $dataTable1->addNumberColumn('x');
-        $dataTable1->addNumberColumn('y');
-        $dataTable1->addRow([$f3->_x1, $f3->_y1]);
-        $dataTable1->addRow([$f3->_x2, $f3->_y2]);
-        $dataTable2 = $lava->DataTable();
-        $dataTable2->addNumberColumn('x');
-        $dataTable2->addNumberColumn('y');
-        $dataTable2->addRow([$f3->_x, $f3->_y]);
-        $tables = new \Khill\Lavacharts\DataTables\JoinedDataTable($dataTable1,$dataTable2);
-        $lava->ScatterChart('3', $tables, ['legend' => ['position' => 'none'], 'title' => 'Lineáris interpoláció',]);
-        $blc->chart('ScatterChart', '3', $lava);
+        $blc->jsxDriver();
+        $js = '
+            var b = JXG.JSXGraph.initBoard("interpolation", {boundingbox: ['.min($f3->_x/2, $f3->_x1/2, $f3->_x2/2).', '.max($f3->_y*2, $f3->_y1*2, $f3->_y2*2).', '.max($f3->_x*2, $f3->_x1*2, $f3->_x2*2).', '.min($f3->_y/2, $f3->_y1/2, $f3->_y2/2).'], axis:true, showCopyright:false, keepaspectratio: false, showNavigation: true});
+            var p1 = b.create("point", ['.$f3->_x1.', '.$f3->_y1.'], {name: "x1, y1", size:2, fillColor: "blue", strokeColor: "blue"});
+            var p2 = b.create("point", ['.$f3->_x2.', '.$f3->_y2.'], {name: "x2, y2", size:2, fillColor: "blue", strokeColor: "blue"});
+            var li = b.create("line",["x1, y1","x2, y2"], {strokeColor:"#00ff00", strokeWidth:2});
+            var p2 = b.create("point", ['.$f3->_x.', '.$f3->_y.'], {name: "x, y", size:2, attractors: [li], attractorDistance:0.2, snatchDistance: 2});
+            ';
+        $blc->jsx('interpolation', $js);
 
         $blc->h1('Cső tömeg számítás');
         $blc->numeric('D', ['D', 'Cső külső átmérő'], 600, 'mm', '');
