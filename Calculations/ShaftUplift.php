@@ -45,12 +45,12 @@ Class ShaftUplift extends \Ecc
         $blc->def('Vv', $f3->_Av*$f3->_hv + ($f3->_Al - $f3->_Av)*($f3->_vl/1000), 'V_v = A_v*h_v + (A_l - A_v)*v_l = %% [m^3]', 'Szerkezet által kiszorított térfogat');
         $blc->note('A lemezszélesítésre kerülő föld súlya nem vesz részt a stabilizáló erőkben, de a szélesítés tömege és kiszorítása igen.');
 
-        $blc->info0('akna2');
+        $blc->info0();
             $blc->txt('Stabilizáló erő:');
             $blc->def('Gstbd', $f3->_Gld + $f3->_Gfd + $f3->_Gxd, 'G_(stb,d) = G_(l,d) + G_(f,d) + G_(x,d) = %% [kN]');
             $blc->txt('Destabilizáló erő:');
             $blc->def('Qdstd', $f3->_gammadst*$f3->_gammav*$f3->_Vv, 'Q_(dst,d) = gamma_(dst)*gamma_v*V_v = %% [kN]');
             $blc->label($f3->_Qdstd/$f3->_Gstbd, 'Kihasználtság');
-        $blc->info1('akna2');
+        $blc->info1();
        }
 }
