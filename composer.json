@@ -7,10 +7,10 @@
     "classmap": ["Calculations/", "Ec/"]
   },
   "require": {
-    "ext-json": "*",
     "php": ">=7.2.0",
-    "resist/svg": "dev-master",
+    "ext-json": "*",
     "bcosca/fatfree-core": "3.6.*",
+    "resist/svg": "dev-master",
     "resist/v3": "dev-master",
     "resist/h3": "dev-master",
     "wixel/gump": "dev-master"
