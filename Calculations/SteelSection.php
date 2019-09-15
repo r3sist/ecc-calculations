@@ -15,11 +15,11 @@ Class SteelSection extends \Ecc
     {
         $blc->toc();
 
-        $blc->info0('F');
+        $blc->info0();
         $blc->numeric('VEd', ['V_(Ed)', 'Nyíróerő'], 100, 'kN');
         $blc->numeric('MEd', ['M_(Ed)', 'Hajlítónyomaték'], 100, 'kNm');
         $blc->numeric('NEd', ['N_(Ed)', 'Húzóerő'], 200, 'kN');
-        $blc->info1('F');
+        $blc->info1();
 
         $ec->sectionFamilyList();
         $ec->sectionList($f3->_sectionFamily);
@@ -42,7 +42,7 @@ Class SteelSection extends \Ecc
             $blc->numeric('A', ['A', 'Egyedi húzási keresztmetszet'], 0, 'mm²', '');
             $blc->numeric('Wpl', ['W_(pl)', 'Egyedi képlékeny keresztmetszeti modulus'], 0, 'mm³', '');
             $blc->numeric('Wel', ['W_(el)', 'Egyedi rugalmas keresztmetszeti modulus'], 0, 'mm³', '');
-        $blc->region1('rEgyedi');
+        $blc->region1();
 
         if ($f3->_A_v == 0) {
             $blc->def('A_v', $f3->_sectionData['Az']*100, 'A_v = A_(z,'.$f3->_sectionName.') = %% [mm^2]', 'Nyírási keresztmetszet');
@@ -77,18 +77,18 @@ Class SteelSection extends \Ecc
 
         $blc->h1('Nyírt keresztmetszet');
         $blc->note('[Szürke 2007: 5.1.5 41.o]');
-        $blc->success0('v');
+        $blc->success0();
             $blc->def('VplRd', \H3::n2($ec->VplRd($f3->_A_v, $f3->_mat, $f3->_t)), 'V_(c,Rd) = V_(pl,Rd) = (A_v*f_y)/(sqrt(3)*gamma_(M0)) = %% [kN]', 'Nyírási ellenállás 1 és 2. kmo. esetén');
-        $blc->success1('v');
+        $blc->success1();
         $blc->note('3 és 4. kmo. esetén $V_(c,Rd) = (A_w*f_y)/(sqrt(3)*gamma_(M0))$ *H* és *I* szelvénynél. Általános esetben $(I*t)/S*f_y/(sqrt(3)*gamma_(M0))$');
         $blc->label($f3->_VEd/$f3->_VplRd, 'Nyírási kihasználtság');
         $blc->txt('', '$V_(Ed)/V_(pl,Rd)$');
 
         $blc->h1('Hajlított keresztmetszet');
         $blc->note('[Szürke 2007: 5.1.4 41.o]');
-        $blc->success0('McRdpl');
-        $blc->def('McRdpl', \H3::n2($ec->McRd($f3->_Wpl, $f3->_fy)), 'M_(c,Rd,pl) = (W_(pl)*f_y)/gamma_(M0) = %% [kNm]', '1 és 2. kmo. esetén');
-        $blc->success1('McRdpl');
+        $blc->success0();
+            $blc->def('McRdpl', \H3::n2($ec->McRd($f3->_Wpl, $f3->_fy)), 'M_(c,Rd,pl) = (W_(pl)*f_y)/gamma_(M0) = %% [kNm]', '1 és 2. kmo. esetén');
+        $blc->success1();
         $blc->def('McRdel', \H3::n2($ec->McRd($f3->_Wel, $f3->_fy)), 'M_(c,Rd,el) = (W_(el)*f_y)/gamma_(M0) = %% [kNm]', '3 . kmo. esetén');
         $blc->note('4. kmo. esetén $W_(eff)$ hatékony keresztmetszet rugalmas keresztmetszeti modulussal kell számolni.');
         $blc->note('Nyomott zónában a nem oválfuratos lyukgyengítést nem kell figyelembe venni. Húzott öv lyukgyengítésére vizsgálat szükséges:');
@@ -121,17 +121,17 @@ Class SteelSection extends \Ecc
         $blc->note('Keresztmetszeti besorolásra nincs szükség.');
         $blc->def('NplRd', $ec->NplRd($f3->_A, $f3->_mat, $f3->_t), 'N_(pl,Rd) = (A*f_y)/gamma_(M,0) = %% [kN]', 'Teljes km. folyási ellenállása');
         $blc->def('NuRd', $ec->NuRd($f3->_A_net, $f3->_mat, $f3->_t), 'N_(u,Rd) = (0.9*A_(n\et)*f_u)/gamma_(M,2) = %% [kN]', 'Nettó km. képlékeny töréssel szembeni ellenállása');
-        $blc->success0('NtRd');
+        $blc->success0();
             $blc->def('NtRd', $ec->NtRd($f3->_A, $f3->_A_net, $f3->_mat, $f3->_t), 'N_(t,Rd) = min(N_(pl,Rd), N_(u,Rd)) = %% [kN]', 'Húzási ellenállás');
-        $blc->success1('NtRd');
+        $blc->success1();
         $blc->label($f3->_NEd/$f3->_NtRd, 'Húzási kihasználtság');
         $blc->txt('', '$N_(Ed)/N_(t,Rd)$');
 
         $blc->h1('Központosan nyomott rudak rugalmas ellenállása');
         $blc->note('1, 2, 3. kmo. szelvényekre. $A = A_(eff)$ 4. kmo.-ra.');
-        $blc->success0('NcRd');
+        $blc->success0();
             $blc->def('NcRd', $ec->NcRd($f3->_A, $f3->_fy), 'N_(c,Rd) = %% [kN]');
-        $blc->success1('NcRd');
+        $blc->success1();
         $blc->math('N_(Ed) = '.$f3->_NEd.' [kN]', 'Húzó-nyomó erő');
         $blc->label($f3->_NEd/$f3->_NcRd, 'Nyomási kihasználtság');
         $blc->note('Oválfuratok esetén a furatok nem kitöltöttek, ezért nettó keresztmetszettel kell számolni.');
