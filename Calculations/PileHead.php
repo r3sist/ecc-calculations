@@ -20,7 +20,7 @@ Class PileHead extends \Ecc
      */
     public function calc(object $f3, object $blc, object $ec): void
     {
-        $blc->note('Irodalom: [1.]: *KG CÉH Excel*; [2.]: *Alapozások és földmegtámasztó szerkezetek tervezése az MSZ EN 1997 szerint (2012)*; [3.]: *Vasbeton szerkezetek korszerű vasalása III. - 169 Iparterv tervezélsi segédlet (1964)* [4.]: *MSZ EN 1992-1-1:2010*');
+        $blc->note('[Whitepaper 1](https://structure.hu/ecc/pileheadWp0.pdf) Irodalom: [1.]: *KG CÉH Excel*; [2.]: *Alapozások és földmegtámasztó szerkezetek tervezése az MSZ EN 1997 szerint (2012)*; [3.]: *Vasbeton szerkezetek korszerű vasalása III. - 169 Iparterv tervezélsi segédlet (1964)* [4.]: *MSZ EN 1992-1-1:2010*.');
 
         $blc->h1('Fejtömb kialakítás');
 //        $blc->lst('type', ['2 cölöpös cölöpfej (gerenda)' => '2piles', '3 cölöpös cölöpfej' => '3piles', '4 cölöpös cölöpfej' => '4piles', 'Sok cölöpös lemez' => 'plate'], 'Cölöpfej kialakítás', '2piles', '');
