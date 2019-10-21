@@ -40,7 +40,7 @@ Class Corbel extends \Ecc
 
         $ec->rebarList('phiMain', 20, ['phi_(s,mai n)', 'Felvett hurkos fővas átmérő *(A)*'], '');
         $blc->def('nMain', 2, 'n_(s,mai n) = %%', 'Hurkos fővasnak két szára van.');
-        $blc->note('Nagyon széles konzolba beférne 2 keskeny hurkos vas egymás melé egy sorba, de itt csak kettővel számol.');
+        $blc->note('Nagyon széles konzolba beférne 2 keskeny hurkos vas egymás mellé egy sorba, de itt csak kettővel számol.');
         $blc->numeric('nMainRow', ['n_(s,mai n,row)', 'Alkalmazott $phi '.$f3->_phiMain.'$ hurkos fővas sor'], 1);
         $ec->rebarList('phiwh', 10, ['phi_(s,w,h)', 'Felvett vízszintes kengyel vasátmérő'], '');
         $ec->rebarList('phiwv', 12, ['phi_(s,w,v)', 'Felvett függőleges kengyel vasátmérő'], '');
