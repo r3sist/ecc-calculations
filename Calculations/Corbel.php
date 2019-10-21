@@ -146,7 +146,7 @@ Class Corbel extends \Ecc
         $blc->txt('A vízszintes kengyelezés nem hagyható el a nyomott rácsrúd felhasadásának megakadályozásához.');
         $blc->numeric('nswh', ['n_(s,w,h)', 'Vízszintes zárt $phi '.$f3->_phiwh.'$ kengyelek száma'], floor(($f3->_ac + 50)/50), '');
         $blc->txt('Vízszintes kengyelek alulról rendezve kb.: $Delta_(w,h) = '.floor(($f3->_d-2*$f3->_cnom)/$f3->_nswh).' [mm]$ távolságra kerülnek egymástól');
-        $blc->def('Aswh', floor($f3->_nswh*$ec->A($f3->_phiwh, 2)), 'A_(s,w,h) = %% [mm^2]', 'Alkalamazott vízszintes kengyel keresztmetszet');
+        $blc->def('Aswh', floor($f3->_nswh*$ec->A($f3->_phiwh, 2)), 'A_(s,w,h) = %% [mm^2]', 'Alkalmazott vízszintes kengyel keresztmetszet');
         $blc->def('Aswhmin', ceil(0.5*$f3->_Ascalc), 'A_(s,w,h,min) = 0.5*A_(s,calc) = %% [mm^2]', 'Szükséges vízszintes kengyel keresztmetszet');
         $blc->note('A Nemzeti Melléklet a 0.25 szorzót 0.5-re módosítja.');
         $blc->label($f3->_Aswhmin/$f3->_Aswh, ' vsz. kengyel kihasználtság');
@@ -156,7 +156,7 @@ Class Corbel extends \Ecc
             $blc->info('$a_c < 0.5*h_c$  ezért a függőleges kengyelezés elhagyható. Ha nem lenne elhagyható, az alábbi feltételnek kell teljesülnie:');
         }
         $blc->numeric('nswv', ['n_(s,w,v)', 'Függőleges zárt $phi '.$f3->_phiwv.'$ kengyelek száma'], 2, '');
-        $blc->def('Aswv', floor($f3->_nswv*$ec->A($f3->_phiwv, 2)), 'A_(s,w,v) = %% [mm^2]', 'Alkalamazott függőleges kengyel keresztmetszet');
+        $blc->def('Aswv', floor($f3->_nswv*$ec->A($f3->_phiwv, 2)), 'A_(s,w,v) = %% [mm^2]', 'Alkalmazott függőleges kengyel keresztmetszet');
         $blc->def('Aswvmin', ceil(0.5*($f3->_FEd/$f3->_rfyd)*1000), 'A_(s,w,v,min) = 0.5*F_(Ed)/(f_(yd)) = %% [mm^2]', 'Szükséges függőleges kengyel keresztmetszet');
         $blc->label($f3->_Aswvmin/$f3->_Aswv, 'függ. kengyel kihasználtság');
         $blc->note('Vsz. kengyelek kampói az oszlopba kerüljenek. A függ. kengyelek kampói a rk. alsó felén legyenek. A függ. kengyelek vegyék körbe a vővasat és vsz. kengyeleket.');
