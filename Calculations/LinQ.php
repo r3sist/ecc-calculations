@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Beams' line loads calculation of variable distributed load - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class LinQ extends \Ecc
 {
 
@@ -89,13 +96,13 @@ Class LinQ extends \Ecc
                 'size' => 14,
                 'x' => 120,
                 'y' => 215,
-                'text' => $table[$x[0]]['p [kN/m]'].'kN/m'
+                'text' => $table[$x[0]][$colNameB].'kN/m'
             ),
             array(
                 'size' => 14,
                 'x' => 260,
                 'y' => 215,
-                'text' => $table[$x[1]]['p [kN/m]'].'kN/m   ...'
+                'text' => $table[$x[1]][$colNameB].'kN/m   ...'
             )
         );
         $blc->write('vendor/resist/ecc-calculations/canvas/linQ0.jpg', $write, 'Gerenda kiosztás geometriája');
