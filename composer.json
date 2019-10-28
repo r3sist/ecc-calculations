@@ -13,7 +13,8 @@
     "resist/svg": "dev-master",
     "resist/v3": "dev-master",
     "resist/h3": "dev-master",
-    "wixel/gump": "dev-master"
+    "wixel/gump": "dev-master",
+    "ikkez/f3-flash": ">=1.0.0"
   },
   "require-dev": {
     "resist/apidoc": "dev-master"
