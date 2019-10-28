@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Analysis of baseplate in RC elements according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Baseplate extends \Ecc
 {
 

@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Analysis of steel windbrace joint according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class JointWindbrace extends \Ecc
 {
 

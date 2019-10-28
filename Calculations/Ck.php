@@ -3,7 +3,7 @@
 namespace Calculation;
 
 /**
- *  - ECC calculation class
+ * Analysis of CK sheets according to Eurocodes - Calculation class for ECC framework
  *
  * (c) Bence VÁNKOS
  * https:// structure.hu

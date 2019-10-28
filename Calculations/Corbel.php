@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Analysis RC columns' corbels according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Corbel extends \Ecc
 {
 

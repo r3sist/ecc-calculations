@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Mechanical analysis of steel sections according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class SteelSection extends \Ecc
 {
 

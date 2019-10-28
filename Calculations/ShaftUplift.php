@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Analysis of RC shaft uplifting according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class ShaftUplift extends \Ecc
 {
 

@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Welded joint analysis according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Weld extends \Ecc
 {
 

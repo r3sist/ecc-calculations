@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Test class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Test extends \Ecc
 {
 

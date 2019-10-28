@@ -1,12 +1,15 @@
 <?php
-/**
- * Copyright (c) 2018. Bence VÁNKOS
- * https://resist.hu
- */
 
 declare(strict_types = 0);
 
 namespace Ec;
+
+/**
+ * Eurocode globals and predefined GUI elements for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
 
 class Ec extends \Prefab
 {

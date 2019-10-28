@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Analysis of bolts and bolted joints according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Bolt extends \Ecc
 {
     /**

@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * RC wall analysis according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Wall extends \Ecc
 {
 

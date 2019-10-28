@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Impact and horizontal load calculations according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Impact extends \Ecc
 {
 

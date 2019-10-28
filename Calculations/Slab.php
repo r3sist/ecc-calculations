@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * RC slab analysis according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Slab extends \Ecc
 {
 

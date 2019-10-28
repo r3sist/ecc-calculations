@@ -3,7 +3,7 @@
 namespace Calculation;
 
 /**
- * Math routines and incubator of test calculations for structural design - ECC calculation class
+ * Math routines and incubator of test calculations for structural design - Calculation class for ECC framework
  *
  * (c) Bence VÁNKOS
  * https:// structure.hu

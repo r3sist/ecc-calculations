@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Dead load analysis according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Layers extends \Ecc
 {
 

@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * RC beam analysis according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Beam extends \Ecc
 {
 

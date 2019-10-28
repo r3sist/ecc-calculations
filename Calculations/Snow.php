@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Snow load analysis according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Snow extends \Ecc
 {
     /**

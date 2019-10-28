@@ -3,7 +3,7 @@
 namespace Calculation;
 
 /**
- * Pilehead analysis according to Eurocodes - ECC calculation class
+ * Pilehead analysis according to Eurocodes - Calculation class for ECC framework
  *
  * (c) Bence VÁNKOS
  * https:// structure.hu

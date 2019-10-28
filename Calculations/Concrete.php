@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Concrete material related calculations according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Concrete extends \Ecc
 {
 

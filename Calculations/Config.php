@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Configuration class for ECC framework - user and calculation settings
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Config extends \Ecc
 {
 

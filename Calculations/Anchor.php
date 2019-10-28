@@ -2,6 +2,13 @@
 
 namespace Calculation;
 
+/**
+ * Analysis of achoring of PC beams according to Eurocodes - Calculation class for ECC framework
+ *
+ * (c) Bence VÁNKOS
+ * https:// structure.hu
+ */
+
 Class Anchor extends \Ecc
 {
 
