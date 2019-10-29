@@ -13,9 +13,10 @@ Class Bolt extends \Ecc
 {
     /**
      * Module: Optimal e1, e2, p1, p2 and d sizes calculation for Shear
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
+     * @param string $boltMatName
+     * @param string $steelMatName
+     * @param int $tPlate
+     * @param int $d0Bolt
      */
     public function moduleOptimalForShear(string $boltMatName, string $steelMatName, int $tPlate, int $d0Bolt) {
         $f3 = \Base::instance();
@@ -63,9 +64,17 @@ Class Bolt extends \Ecc
 
     /**
      * Module: Shear force and bearing resistance per bolt for the ultimate limit state
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
+     * @param int $e1
+     * @param int $e2
+     * @param int $p1
+     * @param int $p2
+     * @param string $boltName
+     * @param string $boltMaterialName
+     * @param string $steelMaterialName
+     * @param float $VEd
+     * @param int $tPlate
+     * @param int $numberOfShearPlanes
+     * @param bool $innerBolt
      */
     public function moduleShearAndBearingPerBolt(int $e1, int $e2, int $p1, int $p2, string $boltName, string $boltMaterialName, string $steelMaterialName, float $VEd, int $tPlate, int $numberOfShearPlanes = 1, bool $innerBolt = true) {
         $f3 = \Base::instance();
@@ -85,9 +94,11 @@ Class Bolt extends \Ecc
 
     /**
      * Module: Shear force per bolt for the ultimate limit state
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
+     * @param string $boltName
+     * @param string $boltMaterialName
+     * @param float $VEd
+     * @param int $numberOfShearPlanes
+     * @param float $betaLf
      */
     public function moduleShear(string $boltName, string $boltMaterialName, float $VEd, int $numberOfShearPlanes = 1, float $betaLf = 1) {
         $f3 = \Base::instance();
@@ -110,9 +121,15 @@ Class Bolt extends \Ecc
 
     /**
      * Module: Bearing force per bolt for the ultimate limit state
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
+     * @param string $boltName
+     * @param string $boltMaterialName
+     * @param float $VEd
+     * @param string $steelMaterialName
+     * @param int $ep1
+     * @param int $ep2
+     * @param int $tPlate
+     * @param bool $innerBolt
+     * @param float $betaLf
      */
     public function moduleBearing(string $boltName, string $boltMaterialName, float $VEd, string $steelMaterialName, int $ep1, int $ep2, int $tPlate, bool $innerBolt, float $betaLf = 1) {
         $f3 = \Base::instance();
@@ -127,18 +144,20 @@ Class Bolt extends \Ecc
         $blc->label($VEd/$f3->_F_bRd, 'Palástnyomási kihasználtság');
     }
 
-        /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, $ec): void
+    public function calc(\Base $f3, \Blc $blc, \Ec\Ec $ec): void
     {
         $blc->toc();
 
         $blc->region0('r1', 'Csavar adatbázis');
-            $blc->table($ec->getBoltArray(), 'Csavar','');
+            $blc->table($ec->readData('bolt'), 'Csavar','');
+//            $boltDb = $ec->readData('bolt');
+//            $scheme = array_keys($boltDb[0]);
+//            array_unshift($scheme , 'Csavar');
+//            $rows = [];
+//            foreach ($boltDb as $key => $value) {
+//                $row = [$key];
+//                array_push($rows, $row);
+//            }
         $blc->region1();
 
         $ec->boltList('bName');
