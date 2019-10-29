@@ -100,7 +100,7 @@ class Ec extends \Prefab
 
     public function boltProp(string $name, string $property): float
     {
-        $boltDb = $this->getBoltArray();
+        $boltDb = $this->readData('bolt');
         try {
             return $boltDb[$name][$property];
         } catch (\Exception $e) {
@@ -174,7 +174,7 @@ class Ec extends \Prefab
 
     public function boltList(string $variableName = 'bolt', string $default = 'M16', string $title = 'Csavar betöltése'): void
     {
-        $boltDb = $this->getBoltArray();
+        $boltDb = $this->readData('bolt');
         $keys =  array_keys($boltDb);
         $list = [];
         foreach ($keys as $key) {
