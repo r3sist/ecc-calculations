@@ -44,62 +44,66 @@ Class Layers extends \Ecc
         $blc->bulk($bulkName, $fields);
 
         $blc->region0('t2', 'Szigetelőanyagok');
-        $table = array(
-            "Kőzetgyapot - lapostető" => array('$gamma_k [(kN)/m^3]$' => '1.4 - 1.5'),
-            "Kőzetgyapot - magastető" => array('$gamma_k [(kN)/m^3]$' => '0.3 - 0.8'),
-            "Kőzetgyapot - hang" => array('$gamma_k [(kN)/m^3]$' => '0.9 - 1.1'),
-            "PVC" => array('$gamma_k [(kN)/m^3]$' => '17'),
-            "EPS" => array('$gamma_k [(kN)/m^3]$' => '0.1 - 0.15'),
-        );
-        $blc->table($table, 'Szigetelőanyagok');
-        $blc->region1('t2');
+            $scheme = ['Szigetelő anyagok', '$gamma_k [(kN)/m^3]$'];
+            $rows = [
+                ['Kőzetgyapot - lapostető', '1.4 - 1.5'],
+                ['Kőzetgyapot - magastető', '0.3 - 0.8'],
+                ['Kőzetgyapot - hang', '0.9 - 1.1'],
+                ['PVC', 17],
+                ['EPS', '0.1 - 0.15'],
+            ];
+            $blc->tbl($scheme, $rows);
+        $blc->region1();
 
         $blc->region0('t1', 'Burkolóanyagok');
-        $table = array(
-            "Esztrich" => array('$gamma_k [(kN)/m^3]$' => 18),
-        );
-        $blc->table($table, 'Burkolóanyagok');
-        $blc->region1('t1');
+            $scheme = ['Burkolóanyagok', '$gamma_k [(kN)/m^3]$'];
+            $rows = [
+                ['Esztrich', 18],
+                ['Greslap', 24],
+            ];
+            $blc->tbl($scheme, $rows);
+        $blc->region1();
 
         $blc->region0('t0', 'Lindab trapézlemez önsúlyok');
-        $table = array(
-            "LTP20×0.4" => array("Önsúly [kN/m&sup2;]" => 0.032),
-            "LTP20×0.5" => array("Önsúly [kN/m&sup2;]" =>0.041),
-            "LTP20×0.6" => array("Önsúly [kN/m&sup2;]" =>0.050),
-            "LTP20×0.7" => array("Önsúly [kN/m&sup2;]" =>0.059),
+            $scheme = ['Trapézlemez', '$gamma_k [(kN)/m^3]$'];
+            $rows = [
+                ["LTP20×0.4",  0.032],
+                ["LTP20×0.5", 0.041],
+                ["LTP20×0.6", 0.050],
+                ["LTP20×0.7", 0.059],
 
-            "LTP45×0.5" => array("Önsúly [kN/m&sup2;]" =>0.045),
-            "LTP45×0.6" => array("Önsúly [kN/m&sup2;]" =>0.054),
-            "LTP45×0.7" => array("Önsúly [kN/m&sup2;]" =>0.064),
+                ["LTP45×0.5", 0.045],
+                ["LTP45×0.6", 0.054],
+                ["LTP45×0.7", 0.064],
 
-            "LTP85×0.75" => array("Önsúly [kN/m&sup2;]" =>0.072),
-            "LTP85×0.88" => array("Önsúly [kN/m&sup2;]" =>0.086),
-            "LTP85×1.00" => array("Önsúly [kN/m&sup2;]" =>0.098),
-            "LTP85×1.13" => array("Önsúly [kN/m&sup2;]" =>0.111),
-            "LTP85×1.25" => array("Önsúly [kN/m&sup2;]" =>0.123),
-            "LTP85×1.50<!--info-->" => array("Önsúly [kN/m&sup2;]" =>0.149),
+                ["LTP85×0.75", 0.072],
+                ["LTP85×0.88", 0.086],
+                ["LTP85×1.00", 0.098],
+                ["LTP85×1.13", 0.111],
+                ["LTP85×1.25", 0.123],
+                ["LTP85×1.50<!--info-->", 0.149],
 
-            "LTP100×0.75" => array("Önsúly [kN/m&sup2;]" =>0.081),
-            "LTP100×0.88" => array("Önsúly [kN/m&sup2;]" =>0.095),
-            "LTP100×1.00" => array("Önsúly [kN/m&sup2;]" =>0.109),
-            "LTP100×1.13" => array("Önsúly [kN/m&sup2;]" =>0.124),
-            "LTP100×1.25" => array("Önsúly [kN/m&sup2;]" =>0.137),
-            "LTP100×1.50" => array("Önsúly [kN/m&sup2;]" =>0.166),
+                ["LTP100×0.75", 0.081],
+                ["LTP100×0.88", 0.095],
+                ["LTP100×1.00", 0.109],
+                ["LTP100×1.13", 0.124],
+                ["LTP100×1.25", 0.137],
+                ["LTP100×1.50", 0.166],
 
-            "LTP135×0.75" => array("Önsúly [kN/m&sup2;]" =>0.088),
-            "LTP135×0.88" => array("Önsúly [kN/m&sup2;]" =>0.104),
-            "LTP135×1.00" => array("Önsúly [kN/m&sup2;]" =>0.118),
-            "LTP135×1.13" => array("Önsúly [kN/m&sup2;]" =>0.134),
-            "LTP135×1.25" => array("Önsúly [kN/m&sup2;]" =>0.149),
-            "LTP135×1.50" => array("Önsúly [kN/m&sup2;]" =>0.180),
+                ["LTP135×0.75", 0.088],
+                ["LTP135×0.88", 0.104],
+                ["LTP135×1.00", 0.118],
+                ["LTP135×1.13", 0.134],
+                ["LTP135×1.25", 0.149],
+                ["LTP135×1.50", 0.180],
 
-            "LTP150×0.75" => array("Önsúly [kN/m&sup2;]" =>0.097),
-            "LTP150×0.88" => array("Önsúly [kN/m&sup2;]" =>0.114),
-            "LTP150×1.00" => array("Önsúly [kN/m&sup2;]" =>0.131),
-            "LTP150×1.25" => array("Önsúly [kN/m&sup2;]" =>0.165),
-            "LTP150×1.50<!--info-->" => array("Önsúly [kN/m&sup2;]" =>0.199),
-        );
-        $blc->table($table, 'Lindab trapézlemez');
-        $blc->region1('t0');
+                ["LTP150×0.75", 0.097],
+                ["LTP150×0.88", 0.114],
+                ["LTP150×1.00", 0.131],
+                ["LTP150×1.25", 0.165],
+                ["LTP150×1.50<!--info-->", 0.199],
+            ];
+            $blc->tbl($scheme, $rows);
+        $blc->region1();
     }
 }
