@@ -88,15 +88,6 @@ class Ec extends \Prefab
         return $this->readData('mat');
     }
 
-    /**
-     * Get all bolt data as array from database
-     * @return array Assoc. array of read bolt data
-     */
-    public function getBoltArray(): array
-    {
-        return $this->readData('bolt');
-    }
-
     public function matProp(string $name, string $property): float
     {
         $matDb = $this->getMaterialArray();
