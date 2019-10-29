@@ -20,23 +20,18 @@ Class Column extends \Ecc
      */
     public function moduleColumnData(object $f3, object $blc, object $ec): void
     {
-        $blc->region0('material', 'Anyagminőségek megadása');
-            $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
-            $ec->saveMaterialData($f3->_cMat, 'c');
-            $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
-            $ec->saveMaterialData($f3->_rMat, 'r');
-        $blc->region1('material');
+        $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
+        $ec->saveMaterialData($f3->_cMat, 'c');
+        $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
+        $ec->saveMaterialData($f3->_rMat, 'r');
 
-        $blc->region0('geom', 'Geometria megadása');
-            $blc->numeric('a', ['a', 'Pillér méret egyik irányban'], '400', 'mm', '');
-            $blc->numeric('b', ['b', 'Pillér méret másik irányban'], '400', 'mm', '');
-            if (max($f3->_a, $f3->_b)/min($f3->_a, $f3->_b) > 4) {
-                $blc->danger('$a/b > 4$: nem pillérként méretezendő!');
-            }
-            $blc->note('$a/b le 4$, min. oldalhosszúság fekve betonozott pillérnél 120 mm, állva betonozottnál 200 mm.');
-            $blc->def('Ac', \H3::n0($f3->_a*$f3->_b), 'A_(c) = %% [mm^2]');
-            $blc->numeric('cnom', ['c_(nom)', 'Tervezett betontakarás'], 25, 'mm', '');
-        $blc->region1('geom');
+        $ec->wrapNumerics('a', 'b', ['a×b', 'Pillér méretek'], 400, 400, 'mm', '', '×');
+        if (max($f3->_a, $f3->_b)/min($f3->_a, $f3->_b) > 4) {
+            $blc->danger('$a/b > 4$: nem pillérként méretezendő!');
+        }
+        $blc->note('$a/b le 4$, min. oldalhosszúság fekve betonozott pillérnél 120 mm, állva betonozottnál 200 mm.');
+        $blc->def('Ac', \H3::n0($f3->_a*$f3->_b), 'A_(c) = %% [mm^2]');
+        $blc->numeric('cnom', ['c_(nom)', 'Tervezett betontakarás'], 25, 'mm', '');
     }
 
     /**
