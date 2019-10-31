@@ -149,15 +149,16 @@ Class Bolt extends \Ecc
         $blc->toc();
 
         $blc->region0('r1', 'Csavar adatbázis');
-            $blc->table($ec->readData('bolt'), 'Csavar','');
-//            $boltDb = $ec->readData('bolt');
-//            $scheme = array_keys($boltDb[0]);
-//            array_unshift($scheme , 'Csavar');
-//            $rows = [];
-//            foreach ($boltDb as $key => $value) {
-//                $row = [$key];
-//                array_push($rows, $row);
-//            }
+            $boltDb = $ec->readData('bolt');
+            // Generate multidimensional array for tbl() scheme:
+            $scheme = array_keys($boltDb['M12']);
+            array_unshift($scheme , 'Csavar');
+            $rows = [];
+            foreach ($boltDb as $key => $value) {
+                array_unshift($value, $key);
+                array_push($rows, $value);
+            }
+            $blc->tbl($scheme, $rows);
         $blc->region1();
 
         $ec->boltList('bName');
