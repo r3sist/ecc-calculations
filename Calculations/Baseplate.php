@@ -84,8 +84,8 @@ Class Baseplate extends \Ecc
         $svg->addRectangle(0, 0, $xp, $yp, 200, 50);
         $svg->setFill('red');
         // Anchors for tension
-        for($row = 0; $row <= $f3->_nu - 1; $row++) {
-            for($col = 0; $col <= $f3->_nc - 1; $col++) {
+        for ($row = 0; $row <= $f3->_nu - 1; $row++) {
+            for ($col = 0; $col <= $f3->_nc - 1; $col++) {
                 $xi = ($e + $col*$ph);
                 $yi = ($e + $row*$f3->_ht);
                 $svg->addCircle($xi, $yi, 5, 200, 50);
@@ -94,8 +94,8 @@ Class Baseplate extends \Ecc
         }
         // Anchors for pressure
         $svg->setFill('green');
-        for($row = 0; $row <= ($f3->_nr - $f3->_nu) - 1; $row++) {
-            for($col = 0; $col <= $f3->_nc - 1; $col++) {
+        for ($row = 0; $row <= ($f3->_nr - $f3->_nu) - 1; $row++) {
+            for ($col = 0; $col <= $f3->_nc - 1; $col++) {
                 $xi = ($xp - ($e + $col*$ph));
                 $yi = ($yp - ($e + $row*$f3->_ht));
                 $svg->addCircle($xi, $yi, 5, 200, 50);
