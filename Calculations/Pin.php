@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Pin extends \Ecc
+Class Pin
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->toc();
 
@@ -29,17 +22,17 @@ Class Pin extends \Ecc
         $blc->numeric('REdzser', ['R_(Ed,z,ser)', 'Függőleges reakcióerő használhatósági határállapotban'], 460, 'kN', '');
         $blc->numeric('REdxser', ['R_(Ed,x,ser)', 'Hídtengely irányú vízszintes reakcióerő használhatósági határállapotban'], 200, 'kN', '');
         $blc->numeric('lamda', ['lamda', 'Dinamikus tényező'], 1.2, '', '');
-        $blc->info0('REd');
+        $blc->info0();
             $blc->def('REd', \H3::n1($f3->_lamda*sqrt(pow($f3->_REdz, 2) + pow($f3->_REdx, 2))), 'R_(Ed) = lamda*sqrt(R_(Ed,z)^2 + R_(Ed,x)^2) = %% [kN]');
             $blc->def('REdser', \H3::n1($f3->_lamda*sqrt(pow($f3->_REdzser, 2) + pow($f3->_REdxser, 2))), 'R_(Ed,ser) = lamda*sqrt(R_(Ed,z,ser)^2 + R_(Ed,x,ser)^2) = %% [kN]');
-        $blc->info1('REd');
+        $blc->info1();
 
         $blc->h1('Csap kialakítás', 'Csavar osztály: ***A*** - tengelyre merőlegesen terhelt, nem feszített');
         $ec->matList('btMat', '6.8', 'Csap anyagminőség');
         $ec->saveMaterialData($f3->_btMat, 'b');
-        $blc->success0('s0');
+        $blc->success0();
             $blc->def('d_y', ceil(sqrt((4*$f3->_REd*1000)/(pi()*$f3->_bfy))), 'd_(y) = sqrt((4*R_(Ed))/(pi*f_(y,b))) = %% [mm]', 'Csavar folyás alapján felvett átmérő');
-        $blc->success1('s0');
+        $blc->success1();
         $blc->numeric('d', ['d', 'Alkalamzott csap átmérő'], 70, 'mm', '');
         $blc->def('d0', $f3->_d + 3, 'd_0 = d + 3 = %% [mm]', 'Figyelembe vett lukméret');
         $blc->lst('n', ['1' => 1, '2' => 2], ['n', 'Nyírási síkok száma'], 2, '', '');

@@ -4,21 +4,12 @@ namespace Calculation;
 
 /**
  * Analysis of achoring of PC beams according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
+ * @copyright 2019 Bence VÁNKOS | https://structure.hu
  */
 
-Class Anchor extends \Ecc
+Class Anchor
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $ec->matList('aMat','B500', ['', 'Tüske anyagminőség'], 'steels');
         $ec->matList('cMat','C40/50', ['', 'Beton anyagminőség'], 'concrete');

@@ -9,16 +9,10 @@ namespace Calculation;
  * https:// structure.hu
 */
 
-Class PileHead extends \Ecc
+Class PileHead
 {
 
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->note('[Whitepaper 1](https://structure.hu/ecc/pileheadWp0.pdf) Irodalom: [1.]: *KG CÉH Excel*; [2.]: *Alapozások és földmegtámasztó szerkezetek tervezése az MSZ EN 1997 szerint (2012)*; [3.]: *Vasbeton szerkezetek korszerű vasalása III. - 169 Iparterv tervezélsi segédlet (1964)* [4.]: *MSZ EN 1992-1-1:2010*.');
 

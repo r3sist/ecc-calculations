@@ -9,16 +9,16 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Baseplate extends \Ecc
+Class Baseplate
 {
+    private $concrete;
 
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function __construct(\Calculation\Concrete $concrete)
+    {
+        $this->concrete = $concrete;
+    }
+
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->region0('mat', 'Anyagok');
             $ec->matList('steelMaterialName', 'S235', 'Lemez anyag', 'steel');
@@ -173,8 +173,8 @@ Class Baseplate extends \Ecc
         }
         $blc->lst('alphaa', ['Egyenes: 1.0' => 1.0, 'Kampó, hurok, hajlítás: 0.7' => 0.7], ['alpha_a', 'Lehorgonyzás módja'], '1.0', '');
         $blc->txt('Anyagminőségnél **'.(($f3->_cfbd07)?'rossz tapadás':'jó tapadás').'** ($f_(b,d) = '.$f3->_cfbd.'[N/(mm^2)]$) van beállítva');
-        $Concrete = new \Calculation\Concrete();
-        $Concrete->moduleAnchorageLength($f3->_phi, $f3->_afyd, $f3->_cfbd, $f3->_alphaa, $nreq, $nprov);
+
+        $this->concrete->moduleAnchorageLength($f3->_phi, $f3->_afyd, $f3->_cfbd, $f3->_alphaa, $nreq, $nprov);
 
         $blc->h1('Horgony-varrat meghatározása', '');
         $wFactor = 1;

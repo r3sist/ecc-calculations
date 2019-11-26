@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Config extends \Ecc
+Class Config
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->h1('Mentés feltöltése');
         $blc->info0();

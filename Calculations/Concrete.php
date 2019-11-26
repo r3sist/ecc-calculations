@@ -9,16 +9,12 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Concrete extends \Ecc
+Class Concrete
 {
-
-    /**
-     *
-     */
     public function moduleAnchorageLength(int $fi, float $rfyd, float $cfbd, float $alphaa = 1.0, int $nrequ = 1, int $nprov = 1): void
     {
         $f3 = \Base::instance();
-        $blc = \Blc::instance();
+        $blc = \Ecc\Blc::instance();
 
         $blc->def('al_lb', ceil(($fi/4)*($rfyd/$cfbd)), 'l_b = phi_l/4*f_(yd)/(f_(bd)) = %% [mm]', 'Lehorgonyzás alapértéke');
         $blc->def('al_lbeq', ceil($alphaa*$f3->_al_lb), 'l_(b,eq) = alpha_a*l_b = %% [mm]', 'Húzásra kihasznált betonacél lehorgonyzási hossza');
@@ -27,13 +23,7 @@ Class Concrete extends \Ecc
         $blc->success('Lehorgonyzási hossz: $'.$f3->_al_lbd.' [mm]$');
     }
 
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/material) alapján történnek.');
 

@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Wall extends \Ecc
+Class Wall
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->numeric('l', ['l', 'Fal hossz'], 1, 'm', '');
         $blc->numeric('t_w', ['t_w', 'Fal vastagság'], 200, 'mm', '');

@@ -11,35 +11,23 @@ namespace Calculation;
 
 Class Beam extends \Ecc
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
-        $blc->toc();
+        $blc->note('[Lásd még](https://structure.hu/berci/section) @TB');
 
-        $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/section) alapján történnek.');
+        $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
+        $ec->saveMaterialData($f3->_cMat, 'c');
+        $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
+        $ec->saveMaterialData($f3->_rMat, 'r');
 
-        $blc->region0('material', 'Anyagminőségek megadása');
-            $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
-            $ec->saveMaterialData($f3->_cMat, 'c');
-            $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
-            $ec->saveMaterialData($f3->_rMat, 'r');
-        $blc->region1('material');
 
-        $blc->region0('geometry', 'Geometria megadása');
+        $blc->info0('Geometria');
             $blc->numeric('h', ['h', 'Keresztmetszet teljes magassága'], 700, 'mm', '');
             $blc->numeric('hf', ['h_f', 'Keresztmetszet felső övének magassága'], 150, 'mm', '');
             $blc->numeric('b', ['b', 'Keresztmetszet alsó szélessége'], 250, 'mm', '');
             $blc->numeric('bf', ['b_f', 'Keresztmetszet felső szélessége'], 600, 'mm', '');
-            $blc->info0('Ac');
-                $blc->def('Ac', $f3->_hf*$f3->_bf + ($f3->_h - $f3->_hf)*$f3->_b, 'A_c = %% [mm^2]', 'Beton keresztmetszet területe');
-            $blc->info1('Ac');
-        $blc->region1('geometry');
+            $blc->def('Ac', $f3->_hf*$f3->_bf + ($f3->_h - $f3->_hf)*$f3->_b, 'A_c = %% [mm^2]', 'Beton keresztmetszet területe');
+        $blc->info1();
 
         $blc->region0('reinforcement', 'Gerenda vasalás megadása');
         $ec->wrapRebarCount('Ascdb', 'Ascfi', ['A_(sc)', 'Hosszirányú nyomott felső vasalás'], 2, 20, '');

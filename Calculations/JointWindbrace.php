@@ -2,6 +2,9 @@
 
 namespace Calculation;
 
+use \Calculation\Bolt;
+use \Calculation\Weld;
+
 /**
  * Analysis of steel windbrace joint according to Eurocodes - Calculation class for ECC framework
  *
@@ -9,20 +12,19 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class JointWindbrace extends \Ecc
+Class JointWindbrace
 {
+    protected $bolt;
+    protected $weld;
 
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function __construct(Bolt $bolt, Weld $weld)
     {
-        $weldClass = new \Calculation\Weld();
-        $boltClass = new \Calculation\Bolt();
+        $this->bolt = $bolt;
+        $this->weld = $weld;
+    }
 
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    {
         $blc->img('https://structure.hu/ecc/JointWindbrace0.jpg');
 
         $ec->matList('steelMaterialName', 'S235', 'Szelvények, lemezek anyagminősége');
@@ -62,7 +64,7 @@ Class JointWindbrace extends \Ecc
                 $f3->_d = $ec->boltProp($f3->_boltName, 'd');
                 $f3->_As = $ec->boltProp($f3->_boltName, 'As');
 
-                $boltClass->moduleOptimalForShear($f3->_boltMaterialName, $f3->_steelMaterialName, min($f3->_t1, $f3->_t2), $f3->_d0);
+                $this->bolt->moduleOptimalForShear($f3->_boltMaterialName, $f3->_steelMaterialName, min($f3->_t1, $f3->_t2), $f3->_d0);
 
                 $blc->numeric('nr', ['n_r', 'Csavar sorok száma'], 1, '', 'Erőre merőleges irányban');
                 $blc->numeric('nc', ['n_c', 'Csavar oszlopok száma'], 1, '', 'Erővel párhuzamos irányban');
@@ -112,20 +114,20 @@ Class JointWindbrace extends \Ecc
                 }
 
                 $blc->h3('Csavar nyírás ellenőrzése:');
-                $boltClass->moduleShear($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_nv, $f3->_betaLf);
+                $this->bolt->moduleShear($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_nv, $f3->_betaLf);
 
                 if ($f3->_nc > 1 || $f3->_nr > 1) {
                     $blc->h3('Csavar palástnyomás ellenőrzése, belső csavarokhoz:');
                     $blc->math('t_1 = '.$f3->_t1.'[mm]:');
-                    $boltClass->moduleBearing($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_steelMaterialName, $f3->_p1, $f3->_p2, $f3->_t1, true, $f3->_betaLf);
+                    $this->bolt->moduleBearing($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_steelMaterialName, $f3->_p1, $f3->_p2, $f3->_t1, true, $f3->_betaLf);
                     $blc->math('t_2 = '.$f3->_t2.'[mm]:');
-                    $boltClass->moduleBearing($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_steelMaterialName, $f3->_p1, $f3->_p2, $f3->_t2, true, 1);
+                    $this->bolt->moduleBearing($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_steelMaterialName, $f3->_p1, $f3->_p2, $f3->_t2, true, 1);
                 } else {
                     $blc->h3('Csavar palástnyomás ellenőrzése (külső csavarként):');
                     $blc->math('t_1 = '.$f3->_t1.'[mm]:');
-                    $boltClass->moduleBearing($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_steelMaterialName, $f3->_e1, $f3->_e2, $f3->_t1, false, $f3->_betaLf);
+                    $this->bolt->moduleBearing($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_steelMaterialName, $f3->_e1, $f3->_e2, $f3->_t1, false, $f3->_betaLf);
                     $blc->math('t_2 = '.$f3->_t2.'[mm]:');
-                    $boltClass->moduleBearing($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_steelMaterialName, $f3->_e1, $f3->_e2, $f3->_t2, false, 1);
+                    $this->bolt->moduleBearing($f3->_boltName, $f3->_boltMaterialName, $f3->_VEd, $f3->_steelMaterialName, $f3->_e1, $f3->_e2, $f3->_t2, false, 1);
                 }
 
                 if ($f3->_boltMaterialName == '10.9') {
@@ -170,7 +172,7 @@ Class JointWindbrace extends \Ecc
                 $blc->numeric('Lwwx', ['L_(ww,x)', 'Csomólemezek közti átfedés'], 100, 'mm', '');
                 $blc->def('Lww', 2*$f3->_Lwwx + $f3->_Lwwy, 'L_(ww) = 2*L_(ww,x) + L_(ww,y) = %% [mm]', 'Átfedés 3 oldalon körbevarrva, egyszeres sarokvarrattal');
                 $blc->numeric('aww', ['a_(ww)', 'Varrat gyökméret'], 4, 'mm', '');
-                $weldClass->moduleWeld($f3->_Lww, $f3->_aww, $f3->_FEd, $f3->_steelMaterialName, max($f3->_t2, $f3->_t1), false);
+                $this->weld->moduleWeld($f3->_Lww, $f3->_aww, $f3->_FEd, $f3->_steelMaterialName, max($f3->_t2, $f3->_t1), false);
                 break;
         }
 
@@ -235,7 +237,7 @@ Class JointWindbrace extends \Ecc
         $blc->boo('weldOnBothSide1', 'Kétoldali sarokvarrat figyelembevétele', true);
         $blc->numeric('a1', ['a_1', 'Varrat gyökméret'], 4, 'mm', '');
         $blc->math('L_(1,base) = '.$f3->_L1base.'[mm]%%%n_1 = '.$f3->_n1.'%%%t_1 = '.$f3->_t1.'[mm]');
-        $weldClass->moduleWeld($f3->_L1base, $f3->_a1, $f3->_NEd1, $f3->_steelMaterialName, $f3->_t1, $f3->_weldOnBothSide1);
+        $this->weld->moduleWeld($f3->_L1base, $f3->_a1, $f3->_NEd1, $f3->_steelMaterialName, $f3->_t1, $f3->_weldOnBothSide1);
 
         $blc->h2('Csomólemez és rácsrúd kapcsolata');
         $blc->numeric('Lw0', ['L_(w,0)', 'Varrathossz'], 75, 'mm', '');
@@ -243,6 +245,6 @@ Class JointWindbrace extends \Ecc
         $blc->boo('weldOnBothSidew', 'Kétoldali sarokvarrat figyelembevétele', false);
         $blc->def('Lw', $f3->_Lw0*$f3->_nw0, 'L_w = %% [mm]', 'Összes varrathossz');
         $blc->numeric('aw', ['a_w', 'Varrat gyökméret'], 4, 'mm', '');
-        $weldClass->moduleWeld($f3->_Lw, $f3->_aw, $f3->_NEd2, $f3->_steelMaterialName, $f3->_t2, $f3->_weldOnBothSidew);
+        $this->weld->moduleWeld($f3->_Lw, $f3->_aw, $f3->_NEd2, $f3->_steelMaterialName, $f3->_t2, $f3->_weldOnBothSidew);
     }
 }

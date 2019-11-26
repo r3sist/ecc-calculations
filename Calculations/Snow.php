@@ -9,15 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Snow extends \Ecc
+Class Snow
 {
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->region0('baseData', 'Alap adatok');
             $blc->numeric('A', ['A', 'Tengerszint feletti magasság'], 400, 'm');

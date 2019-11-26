@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Column extends \Ecc
+Class Column
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function moduleColumnData(object $f3, object $blc, object $ec): void
+    public function moduleColumnData(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
         $ec->saveMaterialData($f3->_cMat, 'c');

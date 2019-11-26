@@ -9,17 +9,16 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Weld extends \Ecc
+Class Weld
 {
-
     /**
-     * Required in hive: a, L, w, t, F, mat
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
+     * @param \Base $f3
+     * @param \Ecc\Blc $blc
+     * @param \Ec\Ec $ec
+     * @deprecated
+     * @todo remove
      */
-    public function moduleWeldOld(object $f3, object $blc, object $ec) {
+    public function moduleWeldOld(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec) {
 
         $blc->region0('r0', 'Varrat számítások');
         $blc->def('w', $f3->_w + 1, 'w_(sarok) = %%');
@@ -51,17 +50,11 @@ Class Weld extends \Ecc
         $blc->success1();
     }
 
-    /**
-     *
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
+
     public function moduleWeld(int $length, int $a, float $F, string $steelMaterialName = 'S235', int $tPlate = 10, $weldOnBothSide = false) {
         $f3 = \Base::instance();
-        $blc = \Blc::instance();
-        $ec = \Ec\Ec::instance();
+        $blc = \Ecc\Blc::instance();
+        $ec = new \Ec\Ec($f3, $blc); // TODO DIC
 
         $blc->region0('r0', 'Varrat számítások');
             $blc->def('w', \V3::numeric($weldOnBothSide) + 1, 'w_(sarok) = %%');
@@ -91,7 +84,7 @@ Class Weld extends \Ecc
         $blc->txt('', '$(F = '.$F.'[kN])/F_(w,Rd,sum)$');
     }
 
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->numeric('a', ['a', 'Varrat gyökméret'], 4, 'mm', '');
         $blc->numeric('L', ['L', 'Varrat egyoldali bruttó hossz'], 100, 'mm', 'Pl. lemezszélesség');
@@ -100,7 +93,7 @@ Class Weld extends \Ecc
         $blc->numeric('F', ['F', 'Erő'], 10, 'kN');
         $blc->boo('w', 'Kétoldali sarokvarrat', 0);
 
-        $this->moduleWeldOld($f3, $blc, $ec);
+        $this->moduleWeldOld($f3, $blc, $ec); // TODO deprecated method
 
         $blc->hr();
         $blc->img('https://structure.hu/ecc/weld0.jpg', 'CÉH Tekla hegesztési utasítás');

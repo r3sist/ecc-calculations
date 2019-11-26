@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Girder extends \Ecc
+Class Girder
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->note('KG számításai alapján.');
         $blc->region0('mat', 'Anyagminőségek');
@@ -28,7 +21,7 @@ Class Girder extends \Ecc
             $ec->matList('rmat', 'B500', 'Lágyvas');
             $ec->saveMaterialData($f3->_rmat, 'r');
             $blc->input('pmat', 'Feszítőbetét jele', 'Fp100-R2', '', '');
-        $blc->region1('mat');
+        $blc->region1();
 
         $blc->region0('geometry', 'Geometria');
             $griderTypes = ['Párhuzamos övű' => 0, 'Lejtett felső övű' => 1];
@@ -83,7 +76,7 @@ Class Girder extends \Ecc
             $G = \H3::n2(($f3->_A_c + $f3->_A_c0)/2*$f3->_l*$f3->_gamma/1000000);
             $blc->def('G', $G, 'G = %% [kN]', 'Tartó súlya, $G = '.\H3::n2($G/10) .' [t]$');
             $blc->numeric('b', ['b', 'Terhelő mező szélessége, gerenda osztás'], 4, 'm', 'Szelemenes rendszer esetén a szelemenek terhelt szelemenszakaszok összes hossza a két oldalon');
-        $blc->region1('geometry');
+        $blc->region1();
 
         $r = min(400/$f3->_h, 600/max($f3->_b_ft, $f3->_b_fb, $f3->_b_w)); // ratio
         $svg = new \resist\SVG(600, 400);
@@ -187,7 +180,7 @@ Class Girder extends \Ecc
             $blc->success0('Ed');
                 $blc->def('MEd', $MQ + $Mq, 'M_(Ed) = %% [kNm]', 'Nyomaték tartóközépen');
                 $blc->def('VEd', $VQ + $Vq, 'V_(Ed) = %% [kN]', 'Nyíróerő tartóvégen');
-            $blc->success1('Ed');
+            $blc->success1();
         }
 
 
@@ -258,7 +251,7 @@ Class Girder extends \Ecc
         $blc->success0('MRd');
             $blc->def('MRd', ($f3->_As*$f3->_rfyd*($f3->_d-$f3->_x/2))/1000000, 'M_(Rd) = A_s*f_(yd)*(d-x/2) = %% [kNm]', 'Hajlítási teherbírás tervezési értéke. $M_(Ed) = '.$f3->_MEd.' [kNm]$');
             $blc->label($f3->_MEd/$f3->_MRd, 'kihasználtság');
-        $blc->success1('MRd');
+        $blc->success1();
 
         $blc->h2('Öv és gerinc elnyíródásának vizsgálata', 'Csatlakozási felületeken fellépő nyírófeszültség');
         $blc->note('KG alapján. *Vasbeton szerkezetek (2016) 6.5.3. Nyírás a gerinc és a fejlemez között* fejezete is tartalamaz egy eljárást');
@@ -281,6 +274,6 @@ Class Girder extends \Ecc
             $blc->def('I', (     $f3->_hw2*$f3->_b_w*pow($f3->_hf + $f3->_hw2/2 - $f3->_sp, 2)      )/10000 +1, 'I = %% [cm^4]', 'Inercia');
             $blc->def('vEdSTB', ($f3->_S*$f3->_VEd)/(($f3->_bV/10)*$f3->_I), 'v_(Ed,STB) = (S*V_(Ed))/(b_V*I) = %% [(kN)/(cm^2)]');
             $blc->note('^ TODO rossz');
-        $blc->info1('stb');
+        $blc->info1();
     }
 }

@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class SteelSection extends \Ecc
+Class SteelSection
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->toc();
 
@@ -80,7 +73,6 @@ Class SteelSection extends \Ecc
         } else {
             $blc->def('A_net', $f3->_A, 'A_(n et) = A = %% [mm^2]', 'Figyelembe vett nettó keresztmetszet');
         }
-
 
         $blc->h1('Nyírt keresztmetszet');
         $blc->note('[Szürke 2007: 5.1.5 41.o]');

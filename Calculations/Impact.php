@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Impact extends \Ecc
+Class Impact
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->note('Mellvédek és elválasztó falak vízszintes hasznos terhei. Emberi használatból - *ULS* hasznos teherként:');
         $blc->note('Magasság: $1.2 [m]$. Osztályok: *A, B, C1*: $0.5$; *C2, C3, C4, D*: $1.0$; *E*: $2.0 $; *C5*, tömeg: $3.0 [(kN)/(fm)]$');

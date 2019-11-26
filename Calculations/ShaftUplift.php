@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class ShaftUplift extends \Ecc
+Class ShaftUplift
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->numeric('gammac', ['gamma_c', 'Beton fajsúly'], 24, 'kN/m3');
         $blc->def('gammav', 10, 'gamma_v = %% [(kN)/m^3]');

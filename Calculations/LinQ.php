@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class LinQ extends \Ecc
+Class LinQ
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->note('Számítás apropója, hogy gerenda irányra merőlegesen, egyenletesen változó megoszló felületi teher (pl. hózug teher) szétosztást a Consteel nem tud kezelni. A felületi teher vonalmenti teherré alakítható a lenti számítás alapján.');
         $blc->input('x', ['x_i,x_j,..', 'Gerenda koordináták'], '2,6,10,14', 'm', 'Gerenda $x$ pozíciói (koordinátái), vesszővel elválasztva, $0[m]$-től számítva.');

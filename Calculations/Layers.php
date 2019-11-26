@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Layers extends \Ecc
+Class Layers
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->note('Ha a réteghez nincs felületi súly megadva, vastagságból és térfogatsúlyból számol, egyébként a felületi súly a mértékadó.');
         $bulkName = 'layers';
@@ -46,11 +39,14 @@ Class Layers extends \Ecc
         $blc->region0('t2', 'Szigetelőanyagok');
             $scheme = ['Szigetelő anyagok', '$gamma_k [(kN)/m^3]$'];
             $rows = [
+                ['EPS', '0.1 - 0.15'],
                 ['Kőzetgyapot - lapostető', '1.4 - 1.5'],
                 ['Kőzetgyapot - magastető', '0.3 - 0.8'],
                 ['Kőzetgyapot - hang', '0.9 - 1.1'],
                 ['PVC', 17],
-                ['EPS', '0.1 - 0.15'],
+                ['XPS hab általános', 0.4],
+                ['XPS hab padló', 0.6],
+                ['XPS hab homlokzat', '0.5 - 0.9'],
             ];
             $blc->tbl($scheme, $rows);
         $blc->region1();

@@ -2,6 +2,8 @@
 
 namespace Calculation;
 
+use \Calculation\Column;
+
 /**
  * Analysis RC columns' corbels according to Eurocodes - Calculation class for ECC framework
  *
@@ -9,21 +11,20 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Corbel extends \Ecc
+Class Corbel
 {
+    private $column;
 
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function __construct(Column $column)
+    {
+        $this->column = $column;
+    }
+
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->note('Lásd még: *EC2 6.5.: Tervezés rácsmodellek alapján.*');
 
-        $column = new Column();
-        $column->moduleColumnData($f3, $blc, $ec);
+        $this->column->moduleColumnData($f3, $blc, $ec);
         $blc->txt('', '$b$ méret a rövidkonzol szélessége');
 
         $blc->region0('img', 'Elrendezési képek');

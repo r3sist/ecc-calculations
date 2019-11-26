@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Ck extends \Ecc
+Class Ck
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->numeric('hck', ['h', 'Lap vastagság'], 16, 'mm', '');
         $blc->numeric('Lck', ['L', 'Fesztávolság'], 1300, 'mm', '');

@@ -9,16 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Slab extends \Ecc
+Class Slab
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->toc();
 
@@ -73,7 +66,7 @@ Class Slab extends \Ecc
                 $blc->label('no', 'nem ok');
             }
             $blc->note('Javaslat [Vasbeton szerkezetek (2016) 6.8 49.o.] alapján. Nem teljesülés esetén peremgerenda tervezése javasolt, vagy tényleges nyomatékok figyelembevételével kell az átlyukadást ellenőrizni! ß számítható pontosan');
-        $blc->region1('piller0');
+        $blc->region1();
 
         if ($f3->_lc <= 2*$f3->_d + max($f3->_acol, $f3->_bcol)/2 && $f3->_beta == 1.5 && $f3->_colO == false) {
             $blc->txt('**Sarok négyszögpillér, kisebb konzol esete:**', '$l_c = '.$f3->_lc.' [m]$');
@@ -152,7 +145,7 @@ Class Slab extends \Ecc
         $blc->def('p_y', \H3::n2((1-(4/3)*$f3->_eta)*$f3->_p_Ed), 'p_y = %% [(kN)/m^2]');
         $blc->def('p_x', \H3::n2(((4/3)*$f3->_eta)*$f3->_p_Ed), 'p_x = %% [(kN)/m^2]');
         $blc->def('p_check', \H3::n2($f3->_p_x + $f3->_p_y), 'p_x + p_y = %% [(kN)/m^2]');
-        $blc->region1('r0');
+        $blc->region1();
 
         $blc->def('m_y', \H3::n2(($f3->_p_y * $f3->_l_y * $f3->_l_y)/8), 'm_y = (p_y * l_y^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
         $blc->def('m_x', \H3::n2(($f3->_p_x * $f3->_l_x * $f3->_l_x)/8), 'm_x = (p_x * l_x^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
@@ -214,6 +207,6 @@ Sarkainál felemelkedésben gátolt, kétirányban teherhordó lemezek sarkainá
 
         $blc->h3('Konzollemez, szabad lemezszél');
         $blc->img('https://structure.hu/ecc/slab0.jpg', 'Konzollemez, szabad lemezszél');
-        $blc->region1('more0');
+        $blc->region1();
     }
 }

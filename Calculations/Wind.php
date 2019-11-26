@@ -9,15 +9,9 @@ namespace Calculation;
  * https:// structure.hu
  */
 
-Class Wind extends \Ecc
+Class Wind
 {
-
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
     {
         $blc->numeric('h', ['h', 'Épület magasság'], 10, 'm');
         $blc->numeric('b', ['b', 'Épület hossz'], 20, 'm');
