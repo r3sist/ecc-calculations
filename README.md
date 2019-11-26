@@ -2,11 +2,20 @@
 
 **Native classes of Eurocode based calculations for structural design on [structure.hu](https://structure.hu)**
 
-![BV](https://structure.hu/img/bV.png)  
-![email](https://structure.hu/img/emailB.png)
+[![CodeFactor](https://www.codefactor.io/repository/github/r3sist/ecc-calculations/badge)](https://www.codefactor.io/repository/github/r3sist/ecc-calculations) 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/r3sist/ecc-calculations/?branch=master) 
 
---- 
+---
+
+## Installation
+
+```
+composer require resist/ecc-calculations
+```
+
+---
 
 # License
 
-CDDL-1.0 Copyright
+CDDL-1.0 Copyright  
+&copy; 2019 structure.hu
