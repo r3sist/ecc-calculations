@@ -1,6 +1,6 @@
 {
   "name": "resist/ecc-calculations",
-  "description": "Native Calc classes for Ecc on https://structure.hu",
+  "description": "Native classes of Eurocode based calculations for structural design on https://structure.hu",
   "homepage": "https://resist.hu",
   "license": "CDDL-1.0",
   "autoload": {
@@ -9,7 +9,7 @@
   "require": {
     "php": ">=7.2.0",
     "ext-json": "*",
-    "bcosca/fatfree-core": "3.6.*",
+    "bcosca/fatfree-core": "3.*",
     "resist/svg": "dev-master",
     "resist/v3": "dev-master",
     "resist/h3": "dev-master",
