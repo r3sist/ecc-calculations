@@ -10,7 +10,6 @@
     "php": ">=7.2.0",
     "ext-json": "*",
     "bcosca/fatfree-core": "3.*",
-    "resist/svg": "dev-master",
     "resist/v3": "dev-master",
     "resist/h3": "dev-master",
     "wixel/gump": "dev-master",
