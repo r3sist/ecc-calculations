@@ -74,5 +74,37 @@ Class Math
         $blc->def('gs', 78.5, 'gamma_(steel) = %% [(kN)/m^3]', '');
         $blc->numeric('gl', ['gamma_(liqu i d)', 'Folyadék fajsúly'], 10, 'kN/m3', '');
         $blc->def('qk', \H3::n3(($f3->_As/1000000)*$f3->_gs + ($f3->_Al/1000000)*$f3->_gl), 'q_k = A_(steel)*gamma_(sttel) + A_(liqu i d)*gamma_(liqu i d) = %% [(kN)/(fm)]');
+
+       /* $blc->h1('Teherelemzés');
+        $blc->h2('Terhek');
+        $blc->input('m', ['m', 'Teherátadási módosító tényező'], 1.15, '', 'Trapézlemez többtámaszú hatása, közbenső támasznál; 1-től 1.25-ig', 'numeric|min_numeric,1|max_numeric,2');
+
+        $blc->h3('Rétegrend');
+        $blc->numeric('glk', ['g_(l,k)', 'Rétegrend karakterisztikus felületi terhe'], 0.6, 'kN/m2');
+        $blc->math('gamma_G = ' . $f3->__GG);
+
+        $blc->h3('Hasznos teher');
+        $blc->numeric('qq', ['q_(q,k)', 'Hasznos felületi teher karakterisztikus értéke'], 5, 'kN/m2', '');
+
+        $blc->h3('Installációs és egyéb terhek');
+        $blc->numeric('qik', ['q_(i,k)', 'Installációs felületi teher karakterisztikus értéke'], 0.5, 'kN/m2');
+        $blc->math('gamma_Q = ' . $f3->__GQ);
+
+        $blc->h3('Szélnyomásból adódó teher');
+        $blc->boo('qwkcalc', '$q_p(z)$ számítása itt', false);
+        if (!$f3->_qwkcalc) {
+            $blc->numeric('qwk', ['q_(w,k)', 'Szél felületi teher karakterisztikus értéke'], 0.4, 'kN/m2', 'Torlónyomásból, belső szélnyomással, szélnyomáshoz ( **I** ) zóna');
+        } else {
+            $moduleQpz = new \Calculation\Wind($f3, $blc, $ec); // TODO DI
+            $blc->info0();
+                $moduleQpz->moduleQpz();
+            $blc->info1();
+            $blc->def('qwk', \H3::n2((abs($f3->_cm) + 0.2)*$f3->_qpz), 'q_(w,k,I+) = (abs(c_m) + 0.2)*q_p(z) = %% [(kN)/m^2]', 'Torlónyomásból, belső szélnyomással, szélnyomáshoz ( **I** ) zóna');
+        }
+
+        $blc->h3('Hó/hózug terhe');
+        $blc->numeric('qsk', ['q_(s,k)', 'Hó/hózug felületi teher karakterisztikus értéke'], 1, 'kN/m2', '');
+*/
+
     }
 }
