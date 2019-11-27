@@ -11,11 +11,22 @@ namespace Calculation;
 
 Class Wind
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public $f3;
+    private $blc;
+    private $ec;
+
+    public function __construct(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec)
     {
-        $blc->numeric('h', ['h', 'Épület magasság'], 10, 'm');
-        $blc->numeric('b', ['b', 'Épület hossz'], 20, 'm');
-        $blc->numeric('d', ['d', 'Épület szélesség'], 12, 'm');
+        $this->f3 = $f3;
+        $this->blc = $blc;
+        $this->ec = $ec;
+    }
+
+    public function moduleQpz()
+    {
+        $this->blc->numeric('h', ['h', 'Épület magasság'], 10, 'm');
+        $this->blc->numeric('b', ['b', 'Épület hossz'], 20, 'm');
+        $this->blc->numeric('d', ['d', 'Épület szélesség'], 12, 'm');
 
         $terrainCats = [
             'I. Nyílt terep' => 1,
@@ -23,52 +34,57 @@ Class Wind
             'III. Alacsony beépítés' => 3,
             'IV. Intenzív beépítés' => 4,
         ];
-        $blc->lst('terrainCat', $terrainCats, 'Terep kategória', '2');
+        $this->blc->lst('terrainCat', $terrainCats, 'Terep kategória', '2');
 
-        $blc->boo('internal', 'Belső szél figyelembevétele', '1');
+        $this->blc->boo('internal', 'Belső szél figyelembevétele', '1');
 
-        $blc->region0('more0', 'További paraméterek');
+        $this->blc->region0('more0', 'További paraméterek');
 
-        $blc->numeric('hz', ['h_z', 'Terepszint feletti magasság'], 0, 'm', 'qp(z) számításakor hozzáadódik a h magassághoz, de a zónaszélesség számításához nem. Pl. tetőfelépítmények számításához.');
+        $this->blc->numeric('hz', ['h_z', 'Terepszint feletti magasság'], 0, 'm', 'qp(z) számításakor hozzáadódik a h magassághoz, de a zónaszélesség számításához nem. Pl. tetőfelépítmények számításához.');
 
-        if ($f3->_internal) {
-            $blc->numeric('cp', ['c_(p,i+)', 'Belső szél alaki tényező belső nyomáshoz'], 0.2, '');
-            $blc->numeric('cm', ['c_(p,i-)', 'Belső szél alaki tényező belső szíváshoz'], -0.3, '');
+        if ($this->f3->_internal) {
+            $this->blc->numeric('cp', ['c_(p,i+)', 'Belső szél alaki tényező belső nyomáshoz'], 0.2, '');
+            $this->blc->numeric('cm', ['c_(p,i-)', 'Belső szél alaki tényező belső szíváshoz'], -0.3, '');
         } else {
-            $f3->set('_cp', 0);
-            $f3->set('_cm', 0);
+            $this->f3->set('_cp', 0);
+            $this->f3->set('_cm', 0);
         }
 
-        $blc->boo('flatRef', '$10 [m^2]$ referencia felület', 1, 'Egyébként $1 [m^2]$');
-        if ($f3->_flatRef == 1) {
-            $f3->set('_flatRef', '10');
+        $this->blc->boo('flatRef', '$10 [m^2]$ referencia felület', 1, 'Egyébként $1 [m^2]$');
+        if ($this->f3->_flatRef == 1) {
+            $this->f3->set('_flatRef', '10');
         } else {
-            $f3->set('_flatRef', '1');
+            $this->f3->set('_flatRef', '1');
         }
-        $blc->math('v_(b,0) = 23.6 [m/s]');
-        $blc->math('c_(dir) = 1.0');
-        $blc->math('c_(season) = 1.0');
-        $blc->math('c_(prob) = 1.0');
+        $this->blc->math('v_(b,0) = 23.6 [m/s]');
+        $this->blc->math('c_(dir) = 1.0');
+        $this->blc->math('c_(season) = 1.0');
+        $this->blc->math('c_(prob) = 1.0');
 
-        $blc->boo('NSEN', '*NS-EN 1991-1-4:2005/NA:2009* Norvég Nemzeti Melléklet alkalmazása', 0);
-        $blc->numeric('NSEN_vb0', '$v_(b, 0, NSEN)$ (!!)', '30', 'm/s');
-        $blc->numeric('NSEN_calt', '$c_(al t , NSEN)$ Altitude factor (1)', 1, '');
-        $blc->numeric('NSEN_c0z', '$c_(0, NSEN)(z)$ Domborzati tényező (!)', 1.1, '');
-        $blc->region1();
+        $this->blc->boo('NSEN', '*NS-EN 1991-1-4:2005/NA:2009* Norvég Nemzeti Melléklet alkalmazása', 0);
+        $this->blc->numeric('NSEN_vb0', '$v_(b, 0, NSEN)$ (!!)', '30', 'm/s');
+        $this->blc->numeric('NSEN_calt', '$c_(al t , NSEN)$ Altitude factor (1)', 1, '');
+        $this->blc->numeric('NSEN_c0z', '$c_(0, NSEN)(z)$ Domborzati tényező (!)', 1.1, '');
+        $this->blc->region1();
 
-        $blc->success0();
-        if ($f3->_hz > 0) {
-            $h = $f3->_h + $f3->_hz;
-            $blc->txt('$h = '.$h.' [m]$ magasság figyelembevételével:');
+        $this->blc->success0();
+        if ($this->f3->_hz > 0) {
+            $h = $this->f3->_h + $this->f3->_hz;
+            $this->blc->txt('$h = '.$h.' [m]$ magasság figyelembevételével:');
         } else {
-            $h=$f3->_h;
+            $h=$this->f3->_h;
         }
-        $blc->def('qpz', $ec->qpz($h, $f3->_terrainCat), 'q_(p)(z, cat) = %% [(kN)/m^2]', 'Torlónyomás');
-        if ($f3->_NSEN) {
-            $blc->math('v_(b, NSEN) = c_(al t, NSEN)*c_(dir)*c_(season)*c_(prob)*v_(b, 0, NSEN) = '.$f3->_NSEN_calt.'*1.0*1.0*'.$f3->_NSEN_vb0);
-            $blc->def('qpz', $ec->qpzNSEN($h, $f3->_terrainCat, $f3->_NSEN_calt, $f3->_NSEN_c0z, $f3->_NSEN_vb0), 'q_(p, NSEN)(z) = %% [(kN)/m^2]', 'Torlónyomás');
+        $this->blc->def('qpz', $this->ec->qpz($h, $this->f3->_terrainCat), 'q_(p)(z, cat) = %% [(kN)/m^2]', 'Torlónyomás');
+        if ($this->f3->_NSEN) {
+            $this->blc->math('v_(b, NSEN) = c_(al t, NSEN)*c_(dir)*c_(season)*c_(prob)*v_(b, 0, NSEN) = '.$this->f3->_NSEN_calt.'*1.0*1.0*'.$this->f3->_NSEN_vb0);
+            $this->blc->def('qpz', $this->ec->qpzNSEN($h, $this->f3->_terrainCat, $this->f3->_NSEN_calt, $this->f3->_NSEN_c0z, $this->f3->_NSEN_vb0), 'q_(p, NSEN)(z) = %% [(kN)/m^2]', 'Torlónyomás');
         }
-        $blc->success1();
+        $this->blc->success1();
+    }
+
+    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    {
+        $this->moduleQpz();
 
         // FLAT
         $blc->h1('Lapostetők');
