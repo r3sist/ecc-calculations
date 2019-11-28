@@ -100,7 +100,7 @@ Class Snow
         $blc->region1('r1');
 */
 
-        $svg = new \resist\SVG(600, 200);
+        $svg = new \resist\SVG\SVG(600, 200);
         $svg->addPolygon('10,180 210,180 210,140 110,110 10,140 10,180');
         $svg->addPolygon('220,180 420,180 420,140 320,110 220,140 220,180');
         $svg->addPolygon('490,180 590,180 590,140 490,110 490,180');
@@ -141,7 +141,7 @@ Class Snow
         );
         $blc->write('vendor/resist/ecc-calculations/canvas/snow0.jpg', $write, 'Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön');
 */
-        $svg = new \resist\SVG(600, 170);
+        $svg = new \resist\SVG\SVG(600, 170);
         $svg->setFill('#eeeeee');
         $svg->addPolygon('10,120 200,120 200,100 150,100 10,50 10,120');
         $svg->setColor('red');
@@ -192,7 +192,7 @@ Class Snow
         }
         $blc->write('vendor/resist/ecc-calculations/canvas/snow3.jpg', $write, 'Hófelhalmozódást is tartalmazó hóteher átrendeződés magasabb épülethez csatlakozó tető esetén');
 */
-        $svg = new \resist\SVG(600, 300);
+        $svg = new \resist\SVG\SVG(600, 300);
         $svg->addPolygon('10,250 450,250 450,200 210,200 210,80 110,50 10,80');
         $svg->addText(210, 230, 'Csatlakozó épület');
         $svg->addText(190, 90, 'α');

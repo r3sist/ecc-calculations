@@ -71,7 +71,7 @@ Class Baseplate
         $ph = $f3->_ba/($f3->_nc - 1); // Horizontal order
         $lever = $f3->_ha - ($f3->_nu - 1)*$f3->_ht/2 - ($f3->_nr - $f3->_nu - 1)*$f3->_ht/2;
         $lever0 = $e + (($f3->_nu - 1)*$f3->_ht)/2;
-        $svg = new \resist\SVG(600, 400);
+        $svg = new \resist\SVG\SVG(600, 400); // TODO DI
         // Column
         $svg->setFill('#eeeeee');
         $svg->addRectangle(10, 10, 60, 380);

@@ -277,7 +277,7 @@ Class Bolt
             // SVG init
             $xp = 2*$this->f3->_e2 + ($this->f3->_nc - 1)*$this->f3->_p2; // Plate dimensions
             $yp = 2*$this->f3->_e1 + ($this->f3->_nr - 1)*$this->f3->_p1; // Plate dimensions
-            $svg = new \resist\SVG(450, 450);
+            $svg = new \resist\SVG\SVG(450, 450);
             // Plate
             $svg->makeRatio(350, 350, $xp, $yp);
             $svg->setColor('blue');

@@ -395,7 +395,7 @@ Class Wind
             }
             */
 
-            $svg = new \resist\SVG(600, 350);
+            $svg = new \resist\SVG\SVG(600, 350);
             // Generate raw part:
             $svg->setColor('blue');
             $svg->addText(0, 250, '>>', false, 'font-size: 40px;');
@@ -566,7 +566,7 @@ Class Wind
                 $blc->region1('wall0');
             }
             */
-            $svg = new \resist\SVG(600, 350);
+            $svg = new \resist\SVG\SVG(600, 350);
             // Generate raw part:
             $svg->setColor('blue');
             $svg->addText(0, 250, '>>', false, 'font-size: 40px;');
@@ -718,7 +718,7 @@ Class Wind
                 $blc->txt('', 'Elrendezési kép generálás kikapcsolva.');
             }
             */
-            $svg = new \resist\SVG(600, 300);
+            $svg = new \resist\SVG\SVG(600, 300);
             // Generate raw part:
             $svg->setColor('blue');
             $svg->addText(0, 170, '>>', false, 'font-size: 40px;');
