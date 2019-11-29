@@ -7,7 +7,7 @@
     "classmap": ["Calculations/", "Ec/"]
   },
   "require": {
-    "php": ">=7.2.0",
+    "php": ">=7.4",
     "ext-json": "*",
     "bcosca/fatfree-core": "3.*",
     "resist/v3": "dev-master",
