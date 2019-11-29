@@ -1,17 +1,16 @@
 <?php
+// RC beam analysis according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * RC beam analysis according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
 
-Class Beam extends \Ecc
+Class Beam
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->note('[Lásd még](https://structure.hu/berci/section) @TB');
 
