@@ -75,6 +75,7 @@ Class Config
                     $blc->boo($calcData['cname'] . '___cexpreimental', 'experimental', $calcData['cexperimental'], '');
                     $blc->boo($calcData['cname'] . '___chidden', 'hidden', $calcData['chidden'], '');
                     $blc->boo($calcData['cname'] . '___cprivate', 'private', $calcData['cprivate'], '');
+                    $blc->boo($calcData['cname'] . '___csecondary', 'secondary', $calcData['csecondary'], '');
 
                     if (!$f3->mc->dry() && $f3->_doUpdate) {
                         $f3->mc->ctitle = $f3->get('_' . $calcData['cname'] . '___ctitle');
@@ -84,6 +85,7 @@ Class Config
                         $f3->mc->cexperimental = $f3->get('_' . $calcData['cname'] . '___cexpreimental');
                         $f3->mc->chidden = $f3->get('_' . $calcData['cname'] . '___chidden');
                         $f3->mc->cprivate = $f3->get('_' . $calcData['cname'] . '___cprivate');
+                        $f3->mc->csecondary = $f3->get('_' . $calcData['cname'] . '___csecondary');
                         $f3->mc->save();
                     }
                     $blc->region1('admin' . $calcData['cname']);
