@@ -207,6 +207,17 @@ class Ec
         $blc->wrapper2($help);
     }
 
+    public function wrapRebarDistance(string $variableNameDistance, string $variableNameRebar, array $titleArray, int $defaultValueDistance, int $defaultValueRebar = 16, string $help = ''): void
+    {
+        $blc = $this->blc;
+
+        $blc->wrapper0($titleArray);
+        $this->rebarList($variableNameRebar, $defaultValueRebar, false, false);
+        $blc->wrapper1('/');
+        $blc->numeric($variableNameDistance, false, $defaultValueDistance, 'mm', false);
+        $blc->wrapper2($help);
+    }
+
     public function rebarList(string $variableName = 'fi', int $default = 16, $title = [false, 'Vasátmérő'], string $help = ''): void
     {
         $source = [
