@@ -76,7 +76,11 @@ Class Math
         $blc->def('qk', \H3::n3(($f3->_As/1000000)*$f3->_gs + ($f3->_Al/1000000)*$f3->_gl), 'q_k = A_(steel)*gamma_(sttel) + A_(liqu i d)*gamma_(liqu i d) = %% [(kN)/(fm)]');
 
         $blc->img('https://structure.hu/ecc/piperack0.jpg', 'Erőterv/APOLLO');
-        
+
+        $blc->h1('Mean diameter');
+        $blc->note('The value of the mean diameter $d_m$ is estimated as follows. The distance across flats $s$ of the nut is given in the standard *ISO 898-2*. By approximately ignoring the corner rounding for a perfect hexagon the relation of the distance across points $s\'$ and the distance across flats $s$ is $s\' = s / cos(30°) = 1.1547*s$. Therefore the mean diameter $d_m$ is approximately: $d_m = (s + 1.1547*s)/2=1.07735*s$');
+        $blc->numeric('s', ['s', 'Szemben lévő felületek távolsága csavarfejen'], 10, 'mm', 'ISO 898-2');
+        $blc->def('dm', \H3::n1(1.07735*$f3->_s), 'd_m = %% [mm]', '');
        /* $blc->h1('Teherelemzés');
         $blc->h2('Terhek');
         $blc->input('m', ['m', 'Teherátadási módosító tényező'], 1.15, '', 'Trapézlemez többtámaszú hatása, közbenső támasznál; 1-től 1.25-ig', 'numeric|min_numeric,1|max_numeric,2');
