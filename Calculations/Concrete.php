@@ -1,20 +1,20 @@
 <?php
+// Calculation class for ECC framework
+// Concrete material related calculations according to Eurocodes
+// (c) Bence VÁNKOS | https://structure.hu
 
 namespace Calculation;
 
-/**
- * Concrete material related calculations according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
 
 Class Concrete
 {
     public function moduleAnchorageLength(int $fi, float $rfyd, float $cfbd, float $alphaa = 1.0, int $nrequ = 1, int $nprov = 1): void
     {
-        $f3 = \Base::instance();
-        $blc = \Ecc\Blc::instance();
+        $f3 = Base::instance();
+        $blc = Blc::instance();
 
         $blc->def('al_lb', ceil(($fi/4)*($rfyd/$cfbd)), 'l_b = phi_l/4*f_(yd)/(f_(bd)) = %% [mm]', 'Lehorgonyzás alapértéke');
         $blc->def('al_lbeq', ceil($alphaa*$f3->_al_lb), 'l_(b,eq) = alpha_a*l_b = %% [mm]', 'Húzásra kihasznált betonacél lehorgonyzási hossza');
@@ -23,7 +23,7 @@ Class Concrete
         $blc->success('Lehorgonyzási hossz: $'.$f3->_al_lbd.' [mm]$');
     }
 
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/material) alapján történnek.');
 
