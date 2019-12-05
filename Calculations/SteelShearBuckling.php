@@ -1,13 +1,13 @@
 <?php
+// Calculation class for ECC framework
+// Calculation of buckling of plates under shear according to Eurocodes
+// (c) Bence VÁNKOS |  https://structure.hu
 
 namespace Calculation;
 
-/**
- * Calculation of buckling of plates under shear according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
 
 Class SteelShearBuckling
 {
@@ -15,16 +15,16 @@ Class SteelShearBuckling
     protected $blc;
     protected $ec;
 
-    public function __construct(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec)
+    public function __construct(Base $f3, Blc $blc, Ec $ec)
     {
         $this->f3 = $f3;
         $this->blc = $blc;
         $this->ec = $ec;
     }
 
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
-        $blc->note('[ *Acélszerkezetek 1. Általános eljárások* (2007) 5.5.]');
+        $blc->note('[ *Acélszerkezetek 1. Általános eljárások* (2007) 5.5.], [ *Acélszerkezetek méretezése Eurocode 3 szerint - Gyakorlati útmutató* jegyzet (2009) 3.14. példa 42. o. ]');
 
         $blc->numeric('VEd', ['V_(Ed)', 'Nyíróerő'], 10, 'kN', '');
         $ec->matList('smat', 'S235', 'Lemez alapanyag', 'S');
@@ -107,8 +107,9 @@ Class SteelShearBuckling
         $blc->h1('Közbenső keresztbordák méretezése');
         $blc->numeric('b', ['b', 'Borda szélesség'], 50, 'mm');
         $blc->numeric('t', ['t', 'Borda vastagság'], 6, 'mm');
-        $blc->def('aeff', 15*$f3->_t*$f3->_epsilon, 'a_(eff) = 15*t*epsilon = %% [mm]', 'Effektív merevített hossz borda egy oldalán');
+        $blc->def('aeff', \H3::n1(15*$f3->_tw*$f3->_epsilon), 'a_(eff) = 15*t_w*epsilon = %% [mm]', 'Effektív merevített hossz borda egy oldalán');
         $blc->h2('Merevség');
+        $blc->lst('calcI', ['Egy oldali borda, eff. T km.' => 'T', 'Két oldali borda, egyszerűsített I km.' => 'I'], 'Borda kialakítás', 'I');
         function IT(float $H, float $h, float $B, float $b): float
         {
             // https://www.amesweb.info/SectionalPropertiesTabs/SectionalPropertiesTbeam.aspx
@@ -117,18 +118,26 @@ Class SteelShearBuckling
             $y = (($H + $h/2)*$h*$B + $H*$H*$b/2)/$A;
             return $b*$H*(pow($y - $H/2, 2)) + ($b*(pow($H, 3)))/12 + $h*$B*(pow($H + $h/2 - $y, 2)) + (pow($h, 3)*$B)/12;
         }
-        $blc->def('IT', \H3::n0(IT($f3->_b, $f3->_tw, 2*$f3->_aeff+$f3->_t, $f3->_t)), 'I_T = %% [mm^4]', 'Merevített km. inerciája egyoldali bordával');
-        $blc->note('[  [Forrás1](https://www.amesweb.info/SectionalPropertiesTabs/SectionalPropertiesTbeam.aspx), [Forrás2](https://calcresource.com/moment-of-inertia-tee.html) ]');
+        switch ($f3->_calcI) {
+            case 'T':
+                $blc->def('I', \H3::n0(IT($f3->_b, $f3->_tw, 2*$f3->_aeff+$f3->_t, $f3->_t)), 'I_T = %% [mm^4]', 'Merevített km. inerciája egyoldali bordával');
+                $blc->note('[  [Forrás1](https://www.amesweb.info/SectionalPropertiesTabs/SectionalPropertiesTbeam.aspx), [Forrás2](https://calcresource.com/moment-of-inertia-tee.html) ]');
+                break;
+            case 'I':
+                $blc->def('I', \H3::n0($f3->_t*pow($f3->_b*2+$f3->_tw, 3)/12), 'I = (t*(2*b+t_w)^3)/12 = %% [mm^4]', 'Merevített km. inerciája egyoldali bordával');
+                break;
+        }
         if ($f3->_a/$f3->_hw < sqrt(2)) {
             $Imin = (1.5*pow($f3->_hw, 3)*pow($f3->_tw, 3))/pow($f3->_a, 2);
         } else {
             $Imin = 0.75*$f3->_hw*pow($f3->_tw, 3);
         }
         $blc->def('Imin', $Imin, 'I_(mi n) = {((1.5*h_w^3*t_w^3)/a^2 " ha "a/h_w lt sqrt(2) ) , (0.75*h_w*t_w^3 ) :} = %% [mm^4]');
-        $blc->label($Imin/$f3->_IT, 'inercia *kihasználtság*');
+        $blc->label($Imin/$f3->_I, 'inercia *kihasználtság*');
 
         $blc->h2('Keresztmetszet kihajlása');
         $blc->def('NEd', max(0, $f3->_VEd - ((1/pow($f3->_lambdawa, 2))*(($f3->_sfy*$f3->_hw*$f3->_tw)/(sqrt(3)*$f3->__GM1)))/1000), 'N_(Ed) = V_(Ed) - 1/lambda_w^2 * (f_y*t_w*h_w)/(sqrt(3)*gamma_(M1)) = %% [kN]', 'Km. ellenőrzése nyomóerőre, $0.75*h_w$ kihajlási hossz és *c* görbe alkalmazásával');
+        $blc->txt('`Kézzel ellenőrizendő`');
 
         $blc->h1('Nyírási horpadás kölcsönhatása más tönkremeneteli módokkal');
         $blc->txt('`TODO`');
