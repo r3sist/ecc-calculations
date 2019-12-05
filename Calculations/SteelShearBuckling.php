@@ -11,24 +11,13 @@ use \Ec\Ec;
 
 Class SteelShearBuckling
 {
-    protected $f3;
-    protected $blc;
-    protected $ec;
-
-    public function __construct(Base $f3, Blc $blc, Ec $ec)
-    {
-        $this->f3 = $f3;
-        $this->blc = $blc;
-        $this->ec = $ec;
-    }
-
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->note('[ *Acélszerkezetek 1. Általános eljárások* (2007) 5.5.], [ *Acélszerkezetek méretezése Eurocode 3 szerint - Gyakorlati útmutató* jegyzet (2009) 3.14. példa 42. o. ]');
 
         $blc->numeric('VEd', ['V_(Ed)', 'Nyíróerő'], 10, 'kN', '');
         $ec->matList('smat', 'S235', 'Lemez alapanyag', 'S');
-        $ec->saveMaterialData($this->f3->_smat, 's');
+        $ec->saveMaterialData($f3->_smat, 's');
         $blc->numeric('hw', ['h_w', 'Nyírt lemez magassága'], 100, 'mm', '');
         $blc->numeric('tw', ['t_w', 'Nyírt lemez vastagsága'], 6, 'mm', '');
         $blc->note('Téglalap lemezmező vizsgálatát tárgyalja a szabvány: 10° eltérés lehet az oldalak párhuzamosságában. Lyukgyengítés 5% lehet maximum.');
