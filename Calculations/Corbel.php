@@ -1,26 +1,28 @@
 <?php
+// Calculation class for ECC framework
+// Analysis RC columns' corbels according to Eurocodes
+// (c) Bence VÁNKOS | https://structure.hu
 
 namespace Calculation;
 
 use \Calculation\Column;
-
-/**
- * Analysis RC columns' corbels according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Calculation\Concrete;
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
 
 Class Corbel
 {
-    private $column;
+    private Column $column;
+    private Concrete $concrete;
 
-    public function __construct(Column $column)
+    public function __construct(Column $column, Concrete $concrete)
     {
         $this->column = $column;
+        $this->concrete = $concrete;
     }
 
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->note('Lásd még: *EC2 6.5.: Tervezés rácsmodellek alapján.*');
 
@@ -144,6 +146,7 @@ Class Corbel
         $blc->def('Fs', max($f3->_Fs1, $f3->_Fs2), 'F_s = max{(F_(s,1)),(F_(s,2)):} = %% [kN]');
         $blc->def('Asmin', ceil(1.25*$f3->_Fs/$f3->_rfyd*1000), 'A_(s,min) = 1.25*F_s/(f_(yd)) = %% [mm^2]', '$F_s$ erő felvételéhez szükséges vasmennyiség');
         $blc->note('Az 1.25-ös növelés 80%-ra csökkenti a betonacélok nyúlását használhatósági határállapotban, ezzel csökkenti a repedéstágasságot. Rep.tág. csökkentésére konzol tövébe tett felső ferde vasak jók még.');
+        $blc->def('nrequ', ceil($f3->_Asmin/$ec->A($f3->_phiMain, 1)), 'n_(requ) = %%', 'Szükséges vasszám. Biztosított vasszám: '.$f3->_nMain*$f3->_nMainRow);
         $blc->def('Ascalc', floor($ec->A($f3->_phiMain, $f3->_nMain*$f3->_nMainRow)), 'A_(s,calc) = (phi_(mai n)^2*pi)/4 * n_(mai n)*n_(mai n,row) = %% [mm^2]', 'Alkalmazaott vasmennyiség');
         $blc->label($f3->_Asmin/$f3->_Ascalc, 'Kihasználtság húzásra');
 
@@ -171,6 +174,11 @@ Class Corbel
             $blc->def('FEd', \H3::n2($f3->_Fs/($f3->_nMain*$f3->_nMainRow)), 'F_(Ed) = F_s/(phi_(s,mai n)*phi_(s,mai n,row)) '.$f3->_Fs.'/'.($f3->_nMain*$f3->_nMainRow).'= %% [kN]');
             $blc->label($f3->_FEd/$f3->_FRd,'kihasználtság');
         }
+
+        $blc->h2('Hosszvas lehorgonyzása pillérben');
+        $blc->lst('alphaa', ['Egyenes: 1.0' => 1.0, 'Kampó, hurok, hajlítás: 0.7' => 0.7], ['alpha_a', 'Lehorgonyzás módja'], '1.0', '');
+        $blc->math('n_(requ)/n_(prov) = '.\H3::n4($f3->_nrequ/($f3->_nMain*$f3->_nMainRow)));
+        $this->concrete->moduleAnchorageLength($f3->_phiMain, $f3->_rfyd, $f3->_cfbd, $f3->_alphaa, $f3->_nrequ, $f3->_nMain*$f3->_nMainRow);
 
         $blc->h1('Kengyelezés');
         $blc->txt('A vízszintes kengyelezés nem hagyható el a nyomott rácsrúd felhasadásának megakadályozásához.');
