@@ -1,13 +1,9 @@
 <?php
+// Calculation class for ECC framework
+// Pilehead analysis according to Eurocodes -
+// (c) Bence VÁNKOS | https://structure.hu
 
 namespace Calculation;
-
-/**
- * Pilehead analysis according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
-*/
 
 Class PileHead
 {
