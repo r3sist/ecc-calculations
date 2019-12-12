@@ -1,21 +1,21 @@
 <?php
+// Calculation class for ECC framework
+// Analysis of bolts and bolted joints according to Eurocodes
+// (c) Bence VÁNKOS | https://structure.hu
 
 namespace Calculation;
 
-/**
- * Analysis of bolts and bolted joints according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
 
 Class Bolt
 {
-    protected $f3;
-    protected $blc;
-    protected $ec;
+    public Base $f3;
+    private Blc $blc;
+    private Ec $ec;
 
-    public function __construct(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec)
+    public function __construct(Base $f3, Blc $blc, Ec $ec)
     {
         $this->f3 = $f3;
         $this->blc = $blc;
