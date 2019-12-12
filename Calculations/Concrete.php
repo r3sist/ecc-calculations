@@ -11,10 +11,29 @@ use \Ec\Ec;
 
 Class Concrete
 {
+    public Base $f3;
+    private Blc $blc;
+    private Ec $ec;
+
+    public function __construct(Base $f3, Blc $blc, Ec $ec)
+    {
+        $this->f3 = $f3;
+        $this->blc = $blc;
+        $this->ec = $ec;
+    }
+
+    public function helperCheckMinC(int $fckMin)
+    {
+        if ($fckMin > $this->f3->_fck) {
+            $this->blc->label('no', 'Alacsony nyomószilárdsági osztály');
+            $this->blc->txt('$f_(ck,min) = '.$fckMin.' [N/(mm^2)]$');
+        }
+    }
+
     public function moduleAnchorageLength(int $fi, float $rfyd, float $cfbd, float $alphaa = 1.0, int $nrequ = 1, int $nprov = 1): void
     {
-        $f3 = Base::instance();
-        $blc = Blc::instance();
+        $f3 = $this->f3;
+        $blc = $this->blc;
 
         $blc->def('al_lb', ceil(($fi/4)*($rfyd/$cfbd)), 'l_b = phi_l/4*f_(yd)/(f_(bd)) = %% [mm]', 'Lehorgonyzás alapértéke');
         $blc->def('al_lbeq', ceil($alphaa*$f3->_al_lb), 'l_(b,eq) = alpha_a*l_b = %% [mm]', 'Húzásra kihasznált betonacél lehorgonyzási hossza');
@@ -41,6 +60,172 @@ Class Concrete
         $blc->lst('alphaa', ['Egyenes: 1.0' => 1.0, 'Kampó, hurok, hajlítás: 0.7' => 0.7], ['alpha_a', 'Lehorgonyzás módja'], '1.0', '');
         $blc->txt('Anyagminőségnél **'.(($f3->_fbd07)?'rossz tapadás':'jó tapadás').'** ($f_(b,d) = '.$f3->_fbd.'[N/(mm^2)]$) van beállítva');
         $this->moduleAnchorageLength($f3->_phil, $f3->_rfyd, $f3->_fbd, $f3->_alphaa, $f3->_nrequ, $f3->_nprov);
+
+        $blc->h1('Betonfedés');
+        $blc->note('[ *Vasbetonszerkezetek* (2016) 8. 68.o. ]');
+        $blc->region0('classification', 'Kitéti osztály választása');
+            $blc->img('https://structure.hu/ecc/concreteClassification0.jpg');
+        $blc->region1();
+        $XC = [
+            'X0 Száraz környezet' => 'X0',
+            'XC1 Száraz vagy tartósan nedves helyen (állandóan víz alatt)' => 'XC1',
+            'XC2 Nedves, ritkán száraz helyen (épület alapok)' => 'XC2',
+            'XC3 Mérsékelten nedves helyen' => 'XC3',
+            'XC4 Váltakozva nedves és száraz helyen' => 'XC4',
+        ];
+
+        $cmindurXC = 10;
+        $blc->lst('XC', $XC,'**XC** Karbonátosodás okozta korrózió', 'XC1', '');
+        switch ($f3->_XC) {
+            case 'X0':
+                $this->helperCheckMinC(12);
+                $blc->note('X0: Pl. Belső száraz tér');
+                break;
+            case 'XC1':
+                $this->helperCheckMinC(20);
+                $cmindurXC = 15;
+                $blc->note('XC1: Pl. Közepes légnedvesség tartalmú belső terek, víz alatti építmények');
+                break;
+            case 'XC2':
+                $this->helperCheckMinC(25);
+                $cmindurXC = 25;
+                $blc->note('XC2: Pl. Víztározók, alapozási szerkezetek illetve nyitott csarnokok, gépkocsi tárolók, magas légnedvesség tartalmú belső terek');
+                break;
+            case 'XC3':
+                $this->helperCheckMinC(30);
+                $cmindurXC = 25;
+                $blc->note('XC3: Pl. Víztározók, alapozási szerkezetek illetve nyitott csarnokok, gépkocsi tárolók, magas légnedvesség tartalmú belső terek');
+                break;
+            case 'XC4':
+                $this->helperCheckMinC(30);
+                $cmindurXC = 30;
+                $blc->note('XC3: Pl. Esőnek kitett építményrészek');
+                break;
+        }
+        $blc->def('cmindurXC', $cmindurXC, 'c_(min,dur,XC) = %% [mm]', '**XC** alapján');
+
+        $XD = [
+            'Nincs kitéve' => '-',
+            'XD1 Mérsékelten nedves helyen, levegőből származó klorid' => 'XD1',
+            'XD2 Nedves, ritkán száraz helyen, vízben lévő klorid' => 'XD2',
+            'XD3 Váltakozva nedves és szárazhelyen, klorid permet' => 'XD3',
+        ];
+        $blc->lst('XD', $XD,'**XD** Nem tengervízből származó klorid által okozott korrózió', '-', '');
+        $cmindurXD = 0;
+        switch ($f3->_XD) {
+            case '-':
+                break;
+            case 'XD1':
+                $this->helperCheckMinC(30);
+                $cmindurXD = 35;
+                break;
+            case 'XD2':
+                $this->helperCheckMinC(30);
+                $cmindurXD = 40;
+                break;
+            case 'XD3':
+                $this->helperCheckMinC(35);
+                $cmindurXD = 45;
+                break;
+        }
+        $blc->def('cmindurXD', $cmindurXD, 'c_(min,dur,XD) = %% [mm]', '**XD** alapján');
+
+        $blc->boo('XS2', '**XS2** Tengervíz állandó hatása', false);
+        $f3->_cmindurXS2 = 0;
+        if ($f3->_XS2) {
+            $blc->def('cmindurXS2', 40, 'c_(min,dur,XS2) = %% [mm]', '**XS2** alapján');
+            $this->helperCheckMinC(35);
+        }
+
+        $XF = [
+            'Nincs kitéve' => '-',
+            'XF1 Mérsékelt víztelítettségű, esőnek és fagynak kitett függőleges felület' => 'XF1',
+            'XF2 Mérsékelt víztelítettségű, fagynak és jégolvasztó sók permetének kitett függőleges felület' => 'XF2',
+            'XF3 Nagy víztelítettségű, esőnek és fagynak kitett vsz. felület' => 'XF3',
+            'XF4 Mérsékelt víztelítettségű, fagynak és jégolvasztó sóknak kitett vsz. felület' => 'XF3',
+        ];
+        $blc->lst('XF', $XF,'**XF** Fagyási/olvadási korrózió jégolvasztó anyaggal vagy anélkül', '-', '');
+        switch ($f3->_XF) {
+            case '-':
+                break;
+            case 'XF1':
+            case 'XF3':
+            case 'XF4':
+                $this->helperCheckMinC(30);
+                break;
+            case 'XF2':
+                $this->helperCheckMinC(25);
+                break;
+        }
+
+        $XA = [
+            'Nincs kitéve' => '-',
+            'XA1 Enyhén agresszív' => 'XA1',
+            'XA2 Mérsékelten agresszív' => 'XA2',
+            'XA3 Erősen agresszív' => 'XA3',
+        ];
+        $blc->lst('XA', $XA,'**XA** Kémiai környezet', '-', '');
+        switch ($f3->_XF) {
+            case '-':
+                break;
+            case 'XA1':
+            case 'XA2':
+                $this->helperCheckMinC(30);
+                break;
+            case 'XA3':
+                $this->helperCheckMinC(35);
+                break;
+        }
+
+        $ec->rebarList('fi', 20, ['phi', 'Fedendő vas']);
+        $blc->def('cmindur', max($f3->_cmindurXS2, $f3->_cmindurXD, $f3->_cmindurXC), 'c_(min,dur) = %% [mm]');
+
+        $blc->boo('y100', '50 évnél hosszabb tervezett élettartam', false);
+        if ($f3->_y100) {
+            $blc->def('cmindur', $f3->_cmindur + 10, 'c_(min,dur) + 10 [mm] = %% [mm]', '50 évnél hosszabb tervezett élettartam');
+        }
+
+        $blc->lst('erode', ['Nincs koptató hatás' => '0', 'Személyforgalom' => '5', 'Targonca' => '10', 'Teherautó' => '15'], 'Koptató hatás', '0');
+        if ($f3->_erode != '0') {
+            $erode = (int)$f3->_erode;
+            $blc->def('cmindur', $f3->_cmindur + $erode, 'c_(min,dur) + '.$erode.' [mm] = %% [mm]', 'Koptató hatás');
+            $blc->txt('**A koptatási '.$erode.' mm növekményt a lemezvastagságba a mértezésnél nem lehet figyelembe venni!**');
+        }
+
+        if ($f3->_fck > 30) {
+            $blc->boo('red30', 'Minimum C35/45 beton figyelembevétele', false);
+            if ($f3->_red30) {
+                $blc->def('cmindur', $f3->_cmindur - 5, 'c_(min,dur) - 5 [mm] = %% [mm]', 'Min. C35/45 beton figyelembevétele');
+            }
+        }
+
+        $blc->boo('redCor', 'Korrózióálló acél alkalmazása', false);
+        if ($f3->_redCor) {
+            $blc->def('cmindur', $f3->_cmindur - 5, 'c_(min,dur) - 5 [mm] = %% [mm]', 'Korrózióálló acél alkalmazása');
+        }
+
+        $blc->lst('earth', ['Nem talajra betonozás' => '0', 'Egyenetlen talajra betonozás' => '30', 'Előkészített talajra betonozás' => '5'], 'Talajra betonozás', '0');
+        if ($f3->_earth != '0') {
+            $earth = (int)$f3->_earth;
+            $blc->def('cmindur', $f3->_cmindur + $earth, 'c_(min,dur) + '.$earth.' [mm] = %% [mm]', 'Talajra betonozás');
+        }
+
+        $blc->def('cnom', 10 + max($f3->_fi, $f3->_cmindur, 10), 'c_(nom) = 10 [mm] + max{(10 [mm]),((c_(min,b) := phi)),(c_(min,dur)):} = %% [mm]');
+
+        $blc->boo('redPrecast', 'Minőségbiztosított előregyártás', false);
+        if ($f3->_redPrecast) {
+            $blc->def('cnom', $f3->_cnom - 5, 'c_(nom) - 5 [mm] = %% [mm]', 'Minőségbiztosított előregyártás');
+        }
+
+        $blc->boo('redSlabOrWall', 'Lemez- vagy falszerkezet', false);
+        if ($f3->_redSlabOrWall) {
+            $blc->def('cnom', $f3->_cnom - 5, 'c_(nom) - 5 [mm] = %% [mm]', 'Lemez- vagy falszerkezet');
+        }
+
+        $blc->success0();
+            $blc->math('c_(nom) = '.$f3->_cnom.' [mm]');
+        $blc->success1();
+
 
         $blc->h1('Beton jellemzői $t$ napos korban');
         $blc->numeric('t', ['t', 'Idő'], '10', 'nap', '');
