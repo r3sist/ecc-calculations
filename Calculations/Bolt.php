@@ -1,13 +1,14 @@
-<?php
-// Calculation class for ECC framework
-// Analysis of bolts and bolted joints according to Eurocodes
-// (c) Bence VÁNKOS | https://structure.hu
+<?php declare(strict_types = 1);
+// Analysis of bolts and bolted joints according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
 use \Base;
 use \Ecc\Blc;
 use \Ec\Ec;
+use \H3;
+use \resist\SVG\SVG;
 
 Class Bolt
 {
@@ -22,14 +23,11 @@ Class Bolt
         $this->ec = $ec;
     }
 
-    /**
-     * Module: Optimal e1, e2, p1, p2 and d sizes calculation for Shear
-     * @param string $boltMatName
-     * @param string $steelMatName
-     * @param int $tPlate
-     * @param int $d0Bolt
-     */
-    public function moduleOptimalForShear(string $boltMatName, string $steelMatName, int $tPlate, int $d0Bolt) {
+    /** Module: Optimal e1, e2, p1, p2 and d sizes calculation for Shear */
+    public function moduleOptimalForShear($boltMatName, string $steelMatName, float $tPlate, float $d0Bolt): void
+    {
+        $boltMatName = (string)$boltMatName;
+
         $deltaDb = array(
             '400' => array(
                 '360' => 3.18
@@ -71,19 +69,13 @@ Class Bolt
 
     /**
      * Module: Shear force and bearing resistance per bolt for the ultimate limit state
-     * @param int $e1
-     * @param int $e2
-     * @param int $p1
-     * @param int $p2
-     * @param string $boltName
-     * @param string $boltMaterialName
-     * @param string $steelMaterialName
-     * @param float $VEd
-     * @param int $tPlate
-     * @param int $numberOfShearPlanes
-     * @param bool $innerBolt
+     * @param float|string $boltMaterialName
      */
-    public function moduleShearAndBearingPerBolt(int $e1, int $e2, int $p1, int $p2, string $boltName, string $boltMaterialName, string $steelMaterialName, float $VEd, int $tPlate, int $numberOfShearPlanes = 1, bool $innerBolt = true) {
+    public function moduleShearAndBearingPerBolt(float $e1, float $e2, float $p1, float $p2, string $boltName, $boltMaterialName, string $steelMaterialName, float $VEd, float $tPlate, float $numberOfShearPlanes = 1, bool $innerBolt = true): void
+    {
+        $boltMaterialName = (string)$boltMaterialName;
+        $numberOfShearPlanes = (int)$numberOfShearPlanes;
+
         $ep1 = $e1;
         $ep2 = $e2;
         if ($innerBolt && $p1 != 0) {
@@ -99,14 +91,13 @@ Class Bolt
 
     /**
      * Module: Shear force per bolt for the ultimate limit state
-     * @param string $boltName
-     * @param string $boltMaterialName
-     * @param float $VEd
-     * @param int $numberOfShearPlanes
-     * @param float $betaLf
+     * @param float|string $boltMaterialName
      */
-    public function moduleShear(string $boltName, string $boltMaterialName, float $VEd, int $numberOfShearPlanes = 1, float $betaLf = 1) {
-        $this->blc->boo('useA', 'Teljes keresztmetszeti terület figyelembe vétele', false, 'Menetes rész nem kerülhet nyírt zónába!');
+    public function moduleShear(string $boltName, $boltMaterialName, float $VEd, float $numberOfShearPlanes = 1, float $betaLf = 1) {
+        $boltMaterialName = (float)$boltMaterialName;
+        $numberOfShearPlanes = (int)$numberOfShearPlanes;
+
+        $this->blc->boo('useA', ['', 'Teljes keresztmetszeti terület figyelembe vétele'], false, 'Menetes rész nem kerülhet nyírt zónába!');
         if ($this->f3->_useA) {
             $this->blc->def('F_vRd', $this->ec->FvRd($boltName, $boltMaterialName, $numberOfShearPlanes, $this->ec->boltProp($boltName, 'A')),'F_(v,Rd) = %% [kN]', 'Csavar nyírási ellenállása');
         } else {
@@ -122,17 +113,11 @@ Class Bolt
 
     /**
      * Module: Bearing force per bolt for the ultimate limit state
-     * @param string $boltName
-     * @param string $boltMaterialName
-     * @param float $VEd
-     * @param string $steelMaterialName
-     * @param int $ep1
-     * @param int $ep2
-     * @param int $tPlate
-     * @param bool $innerBolt
-     * @param float $betaLf
+     * @param float|string $boltMaterialName
      */
-    public function moduleBearing(string $boltName, string $boltMaterialName, float $VEd, string $steelMaterialName, int $ep1, int $ep2, int $tPlate, bool $innerBolt, float $betaLf = 1) {
+    public function moduleBearing(string $boltName, $boltMaterialName, float $VEd, string $steelMaterialName, float $ep1, float $ep2, float $tPlate, bool $innerBolt, float $betaLf = 1) {
+        $boltMaterialName = (float)$boltMaterialName;
+
         $this->blc->def('F_bRd', $this->ec->FbRd($boltName, $boltMaterialName, $steelMaterialName, $ep1, $ep2, $tPlate, $innerBolt),'F_(b,Rd) = %% [kN]', 'Csavar palástnyomási ellenállása');
         if ($betaLf < 1.0) {
             $this->blc->def('F_bRd', $betaLf*$this->f3->_F_bRd, 'F_(b,Rd) := beta_(lf)*F_(b,Rd) = %% [kN]', 'Hosszú kapcsolat vagy béléslemez figyelembevétele');
@@ -141,7 +126,7 @@ Class Bolt
         $this->blc->label($VEd/$this->f3->_F_bRd, 'Palástnyomási kihasználtság');
     }
 
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $this->blc->region0('r1', 'Csavar adatbázis');
         $boltDb = $this->ec->readData('bolt');
@@ -156,12 +141,12 @@ Class Bolt
         $this->blc->tbl($scheme, $rows);
         $this->blc->region1();
 
-        $this->blc->boo('group', 'Csavarkép számítás', 0);
+        $this->blc->boo('group', ['', 'Csavarkép számítás'], false);
         $this->f3->_nr = 1;
         $this->f3->_nc = 1;
         if ($this->f3->_group) {
-            $this->ec->wrapNumerics('nr', 'nc', ['n_r × n_c', 'Sorok- és oszlopok száma'], 2, 2, '', '', '×');
-            $this->blc->boo('groupLL', 'Egyik szárukon kapcsolt szögacélok ellenőrzése húzásra', 0);
+            $this->ec->wrapNumerics('nr', 'nc', '$n_r × n_c$ Sorok- és oszlopok száma', 2, 2, '', '', '×');
+            $this->blc->boo('groupLL', ['', 'Egyik szárukon kapcsolt szögacélok ellenőrzése húzásra'], false);
             if ($this->f3->_groupLL) {
                 $this->f3->_nc = 1;
                 $this->blc->txt('$n_c := 1$, csak egy csavaroszloppal számol!');
@@ -177,10 +162,10 @@ Class Bolt
         $this->blc->def('A_s', $this->ec->boltProp($this->f3->_bName, 'As'), 'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
         $this->blc->region1();
 
-        $this->ec->matList('bMat', '8.8', 'Csavar anyagminőség', 'bolt');
-        $this->ec->saveMaterialData($this->f3->_bMat, 'b');
-        $this->ec->matList('sMat', 'S235', 'Acél anyagminőség', 'steel');
-        $this->ec->saveMaterialData($this->f3->_sMat, 's');
+        $this->ec->matList('bMat', '8.8', ['', 'Csavar anyagminőség'], 'bolt');
+        $this->ec->spreadMaterialData($this->f3->_bMat, 'b');
+        $this->ec->matList('sMat', 'S235', ['', 'Acél anyagminőség'], 'steel');
+        $this->ec->spreadMaterialData($this->f3->_sMat, 's');
 
         $this->blc->numeric('t', ['t', 'Kisebbik lemez vastagság'], 10, 'mm', '');
         $this->blc->numeric('n', ['n', 'Nyírási síkok száma'], 1, '', '');
@@ -194,11 +179,11 @@ Class Bolt
         $this->blc->numeric('e1', ['e_1', 'Peremtávolság (csavarképpel párhuzamos)'], 50, 'mm', '');
         $this->blc->numeric('e2', ['e_2', 'Peremtávolság (csavarképre merőleges)'], 50, 'mm', '');
 
-        $this->f3->_inner = 0;
+        $this->f3->_inner = false;
         $this->f3->_p1 = 0;
         $this->f3->_p2 = 0;
         if ($this->f3->_group && $this->f3->_nr > 1) {
-            $this->f3->_inner = 1;
+            $this->f3->_inner = true;
             $this->blc->note('Belső csavar számítása (csavarkép és $n_r > 1$. $p_1, p_2$ figyelembevétele');
             $this->blc->numeric('p1', ['p_1', 'Csavartávolság (csavarképpel párhuzamos)'], 50, 'mm', '');
             if ($this->f3->_nc > 1 && !$this->f3->_groupLL) {
@@ -215,7 +200,7 @@ Class Bolt
         $this->blc->label($this->f3->_N / $this->f3->_B_pRd, 'Kigombolódási kihasználtság');
 
         $this->blc->h1('Egy csavar húzás és nyírás interakciója', '***AD*** osztály');
-        $this->blc->def('U_vt', \H3::n1((($this->f3->_V / $this->f3->_F_vRd) + ($this->f3->_N / (1.4 * $this->f3->_F_tRd))) * 100), 'U_(vt) = F_(v,Ed)/F_(v,Rd) + F_(t,Ed)/(1.4*F_(t,Rd)) = %% [%]', 'Interakciós kihasználtság');
+        $this->blc->def('U_vt', H3::n1((($this->f3->_V / $this->f3->_F_vRd) + ($this->f3->_N / (1.4 * $this->f3->_F_tRd))) * 100), 'U_(vt) = F_(v,Ed)/F_(v,Rd) + F_(t,Ed)/(1.4*F_(t,Rd)) = %% [%]', 'Interakciós kihasználtság');
         $this->blc->label($this->f3->_U_vt / 100, 'Interakciós kihasználtság');
 
         if ($this->f3->_bMat == '10.9') {
@@ -234,15 +219,15 @@ Class Bolt
 
             $this->blc->md('***C*** osztályú nyírt csavar:');
             $this->f3->_U_s = $this->f3->_V / $this->f3->_F_s_Rd;
-            $this->blc->math('F_(v,Ed)/F_(s,Rd) = ' . \H3::n3($this->f3->_U_s));
-            $this->blc->label(\H3::n3($this->f3->_U_s), '*C* Megcsúszási kihasználtság teherbírási határállpotban');
-            $this->blc->math('F_(v,Ed)/F_(b,Rd) = ' . \H3::n3($this->f3->_V / $this->f3->_F_bRd));
+            $this->blc->math('F_(v,Ed)/F_(s,Rd) = ' . H3::n3($this->f3->_U_s));
+            $this->blc->label(H3::n3($this->f3->_U_s), '*C* Megcsúszási kihasználtság teherbírási határállpotban');
+            $this->blc->math('F_(v,Ed)/F_(b,Rd) = ' . H3::n3($this->f3->_V / $this->f3->_F_bRd));
             $this->blc->label($this->f3->_V / $this->f3->_F_bRd, '*C* Palástnyomási kihasználtság');
 
             $this->blc->md('***CE*** osztályú húzott-nyírt csavar:');
             $this->blc->def('F_s_tv_Rd', (($this->f3->_n_s * $this->f3->_mu) / $this->f3->__GM3) * ($this->f3->_F_pC - 0.8 * $this->f3->_N), 'F_(s,tv,Rd) = (n_s*mu)/gamma_(M3)*(F_(p,C)-0.8*F_(t,Ed)) = %% [kN]', 'Interakciós ellenállás');
             $this->f3->_U_s_tv = $this->f3->_V / $this->f3->_F_s_tv_Rd;
-            $this->blc->math('F_(v,Ed)/F_(s,tv,Rd) = ' . \H3::n3($this->f3->_U_s_tv));
+            $this->blc->math('F_(v,Ed)/F_(s,tv,Rd) = ' . H3::n3($this->f3->_U_s_tv));
             $this->blc->label($this->f3->_U_s_tv, 'Interakciós kihasználtság');
             $this->blc->note('*B* osztályú csavar esetén *BE* interakció ugyanez, $F_(Ed,ser)$ alkalmazásával.');
         }
@@ -277,7 +262,7 @@ Class Bolt
             // SVG init
             $xp = 2*$this->f3->_e2 + ($this->f3->_nc - 1)*$this->f3->_p2; // Plate dimensions
             $yp = 2*$this->f3->_e1 + ($this->f3->_nr - 1)*$this->f3->_p1; // Plate dimensions
-            $svg = new \resist\SVG\SVG(450, 450);
+            $svg = new SVG(450, 450);
             // Plate
             $svg->makeRatio(350, 350, $xp, $yp);
             $svg->setColor('blue');
@@ -296,17 +281,17 @@ Class Bolt
             $svg->addDimH(0, $xp, 430, $xp, 25); // Plate horizontal
             $svg->addDimV(0, $yp, 430, $yp, 25); // Plate vertical
             $svg->addDimH(0, $this->f3->_e2, 400, $this->f3->_e2, 25); // e2
-            ($this->f3->_nc > 1)?$svg->addDimH($this->f3->_e2, $this->f3->_p2, 400, \H3::n0($this->f3->_p2), 25):false; // p2
+            ($this->f3->_nc > 1)?$svg->addDimH($this->f3->_e2, $this->f3->_p2, 400, H3::n0($this->f3->_p2), 25):false; // p2
             $svg->addDimV(0, $this->f3->_e1, 400, $this->f3->_e1, 25); // e1
-            ($this->f3->_nr > 1)?$svg->addDimV($this->f3->_e1, $this->f3->_p1, 400, \H3::n0($this->f3->_p1), 25):false; // p1
+            ($this->f3->_nr > 1)?$svg->addDimV($this->f3->_e1, $this->f3->_p1, 400, H3::n0($this->f3->_p1), 25):false; // p1
             // Texts & symbols
             $svg->setColor('black');
             $svg->addSymbol(200, 5, 'arrow-up');
             $this->blc->svg($svg);
 
             $this->blc->h2('Csavarkép nyírási teherbírása');
-            $FRd = min($this->ec->FbRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_sMat, $this->f3->_e1, $this->f3->_e2, $this->f3->_t, 0), $this->ec->FbRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_sMat, ($this->f3->_p1 != 0)?$this->f3->_p1:$this->f3->_e1, ($this->f3->_p2 != 0)?$this->f3->_p2:$this->f3->_e2, $this->f3->_t, 1), $this->ec->FvRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_n, 0)) * $nb;
-            if ($this->ec->FvRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_n, 0) >= min($this->ec->FbRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_sMat, $this->f3->_e1, $this->f3->_e2, $this->f3->_t, 0), $this->ec->FbRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_sMat, ($this->f3->_p1 != 0)?$this->f3->_p1:$this->f3->_e1, ($this->f3->_p2 != 0)?$this->f3->_p2:$this->f3->_e2, $this->f3->_t, 1))) {
+            $FRd = min($this->ec->FbRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_sMat, $this->f3->_e1, $this->f3->_e2, $this->f3->_t, false), $this->ec->FbRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_sMat, ($this->f3->_p1 != 0)?$this->f3->_p1:$this->f3->_e1, ($this->f3->_p2 != 0)?$this->f3->_p2:$this->f3->_e2, $this->f3->_t, true), $this->ec->FvRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_n, 0)) * $nb;
+            if ($this->ec->FvRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_n, 0) >= min($this->ec->FbRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_sMat, $this->f3->_e1, $this->f3->_e2, $this->f3->_t, false), $this->ec->FbRd($this->f3->_bName, $this->f3->_bMat, $this->f3->_sMat, ($this->f3->_p1 != 0)?$this->f3->_p1:$this->f3->_e1, ($this->f3->_p2 != 0)?$this->f3->_p2:$this->f3->_e2, $this->f3->_t, true))) {
                 $this->blc->txt('Minden csavar nyírási ellenállása nagyobb bármely másik csavar palástnyomási ellenállásnál, ezért a csavarkép ellenállása lehetne a csavarok palástnyomási ellenállásának összege.');
             }
             $this->blc->def('FboltEd', $this->f3->_V / $nb, 'F_(Ed, bol t) = V_(Ed)/' . $nb . ' = %% [kN]', 'Egy csvarra jutó nyíróerő centrikus kapcsolat esetén');
@@ -331,7 +316,7 @@ Class Bolt
             $this->blc->label($this->f3->_V / $this->f3->_NtRd, 'Keresztmetszet kihasználtsága húzásra');
 
             $this->blc->h2('Csoportos kiszakadás');
-            $this->blc->boo('exc', 'Excentrikus csavarkép', 0, '');
+            $this->blc->boo('exc', ['', 'Excentrikus csavarkép'], false, '');
             $exc = 1;
             if ($this->f3->_exc) {
                 $exc = 0.5;
@@ -348,7 +333,7 @@ Class Bolt
                 $this->blc->math('n_r = ' . $this->f3->_nr . ' × ' . $this->f3->_bName . '%%%(n_c = 1)', 'Függőleges csavarkép átvétele');
                 $this->ec->sectionFamilyList('sectionFamily', 'Szelvény család', 'L');
                 $this->ec->sectionList($this->f3->_sectionFamily);
-                $this->ec->saveSectionData($this->f3->_sectionName, true);
+                $this->ec->spreadSectionData($this->f3->_sectionName, true);
                 $this->blc->math('d_0 = ' . $this->f3->_d_0 . '[mm]%%%t_(w,L) = ' . $this->f3->_sectionData['tw'] * 10 . '[mm]%%%f_(u,s) = ' . $this->f3->_sfu . '[N/(mm^2)] %%% A_(n\et) = ' . $this->f3->_A_net . ' [mm^2]');
                 $this->blc->def('AnetL', $this->f3->_sectionData['Ax'] * 100 - $this->f3->_d_0 * $this->f3->_sectionData['tw'] * 10, 'A_(n et,L) = A_(x,L) - 1*d_0*t_(w,L) = %% [mm^2]');
                 $this->blc->note('Egy oszlop csavar csak!');

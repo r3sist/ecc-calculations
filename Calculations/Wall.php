@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types = 1);
+// RC wall analysis according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * RC wall analysis according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
 
 Class Wall
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->numeric('l', ['l', 'Fal hossz'], 1, 'm', '');
         $blc->numeric('t_w', ['t_w', 'Fal vastagság'], 200, 'mm', '');
@@ -21,7 +21,7 @@ Class Wall
         if ($f3->_l/($f3->_t_w/1000) < 4) {
             $f3->_wc = 1;
             $f3->_wcText = 'Faltartó';
-            $blc->math('l/t_w = '.\H3::n3($f3->_l/$f3->_t_w).'\< 4');
+            $blc->math('l/t_w = '. H3::n3($f3->_l/$f3->_t_w).'\< 4');
             $blc->label('no', $f3->_wcText);
             $blc->numeric('b', ['b', 'Faltartók támaszköze'], 4, 'm', '');
         } else {
@@ -66,7 +66,7 @@ Class Wall
         $blc->h1('Földrengés');
         $blc->h2('Duktilis falak');
         $blc->numeric('h_s', ['h_s', 'Szabad szintmagasság'], 3, 'm');
-        $blc->boo('n_s', 'Szintek száma $n_s >= 7$', 0, '');
+        $blc->boo('n_s', ['', 'Szintek száma $n_s >= 7$'], false, '');
         $ns = 1;
         if ($f3->_n_s) {
             $ns = 2;

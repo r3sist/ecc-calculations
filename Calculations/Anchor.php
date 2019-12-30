@@ -1,15 +1,17 @@
-<?php
+<?php declare(strict_types = 1);
+// Analysis of achoring of PC beams according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * Analysis of achoring of PC beams according to Eurocodes - Calculation class for ECC framework
- * @copyright 2019 Bence VÁNKOS | https://structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
 
 Class Anchor
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $ec->matList('aMat','B500', ['', 'Tüske anyagminőség'], 'steels');
         $ec->matList('cMat','C40/50', ['', 'Beton anyagminőség'], 'concrete');
@@ -41,7 +43,7 @@ Class Anchor
                 $blc->txt('Betonacél helyett menetesszár: csavar anyaggal számolva. $gamma = 1.0 $');
             }
             $blc->def('fck', $ec->matProp($f3->_cMat,'fck'), 'f_(c,k) = %% [N/(mm^2)]', 'Beton szilárdság karakterisztikus értéke');
-            $blc->def('fcd', \H3::n2($f3->_fck/$f3->__Gc), 'f_(c,d) = f_(c,k)/gamma_c = %% [N/(mm^2)]', 'Beton szilárdság tervezési értéke');
+            $blc->def('fcd', H3::n2($f3->_fck/$f3->__Gc), 'f_(c,d) = f_(c,k)/gamma_c = %% [N/(mm^2)]', 'Beton szilárdság tervezési értéke');
             $blc->def('c1', $f3->_c1t - ($f3->_D/2), 'c_1 = c_(1t) - D/2 = %% [mm]', 'Betontakarás erő irányára merőlegesen');
             $blc->def('c2', $f3->_c2t - ($f3->_D/2), 'c_2 = c_(2t) - D/2 = %% [mm]', 'Betontakarás erő irányával párhuzamosan');
             $blc->def('c1D', $f3->_c1/$f3->_D, 'c_(1D) = c_1/D = %%', '');
@@ -106,8 +108,8 @@ Class Anchor
         $blc->numeric('b', ['b', 'Tüskék távolsága'], 100, 'mm', 'Gerenda tengely irányra merőlegesen - Nyomaték erőkar');
         $blc->lst('nN', ['1' => 1, '2' => 2, '3' => 3], ['n_N', 'Tüske párok száma'], 1, 'Húzóerőt ennyi tüske veszi fel');
         $blc->def('NEd', $f3->_TEd/($f3->_b/1000), 'N_(Ed) = T_(Ed)/b = %% [kN]', 'Erőkar');
-        $blc->def('NplRd', \H3::n2($f3->_nN*(($ec->A($f3->_D)*$f3->_fyd)/($f3->__GM0*1000))), 'N_(pl,Rd) = (D^2 *pi*f_(yd) )/(4*gamma_(M0)) = %% [kN]', '1 db tüske húzűsi ellenállása folyáshatárig');
+        $blc->def('NplRd', H3::n2($f3->_nN*(($ec->A($f3->_D)*$f3->_fyd)/($f3->__GM0*1000))), 'N_(pl,Rd) = (D^2 *pi*f_(yd) )/(4*gamma_(M0)) = %% [kN]', '1 db tüske húzűsi ellenállása folyáshatárig');
         $blc->label(($f3->_NEd/$f3->_nN)/$f3->_NplRd, 'Húzási kihasználtság tüske képre');
-        $blc->txt(false, '$(N_(Ed)/n_N)/N_(pl,Rd)$');
+        $blc->txt('', '$(N_(Ed)/n_N)/N_(pl,Rd)$');
     }
 }

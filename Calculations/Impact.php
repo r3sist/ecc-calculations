@@ -1,17 +1,16 @@
-<?php
-
+<?php declare(strict_types = 1);
+// Impact and horizontal load calculations according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 namespace Calculation;
 
-/**
- * Impact and horizontal load calculations according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
 
 Class Impact
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->note('Mellvédek és elválasztó falak vízszintes hasznos terhei. Emberi használatból - *ULS* hasznos teherként:');
         $blc->note('Magasság: $1.2 [m]$. Osztályok: *A, B, C1*: $0.5$; *C2, C3, C4, D*: $1.0$; *E*: $2.0 $; *C5*, tömeg: $3.0 [(kN)/(fm)]$');
@@ -20,7 +19,7 @@ Class Impact
         $blc->note('*[MSZ EN 1991-1-7:2015 4.3.2. Ütközés felszerkezetekhez]*');
         $blc->note('*[Terhek és hatások (2017) 14.2.1 103.o.]*');
         $blc->note('*Kemény ütközés*: az energiát elsősorban az ütköző jármű nyeli el. Nincs ütközésvédelem. Nem függ az anyagtól.');
-        $blc->lst('location', ['Autópálya, főút / Teherautó, busz' => 'highway', 'Országút / Teherautó, busz' => 'road', 'Lakott területen út / Teherautó, busz' => 'city', 'Garázs, udvar / Csak autó' => 'garage0', 'Garázs, udvar / Teherautó' => 'garage1', 'Raktár, targonca' => 'storage'], 'Hely, típus', 'storage');
+        $blc->lst('location', ['Autópálya, főút / Teherautó, busz' => 'highway', 'Országút / Teherautó, busz' => 'road', 'Lakott területen út / Teherautó, busz' => 'city', 'Garázs, udvar / Csak autó' => 'garage0', 'Garázs, udvar / Teherautó' => 'garage1', 'Raktár, targonca' => 'storage'], ['', 'Hely, típus'], 'storage');
 
         $FxText = 'Ütközési irány kijelölt haladási irányban';
         $FyText = 'Ütközési irány kijelölt haladási irányra merőlegesen';
@@ -60,7 +59,7 @@ Class Impact
             case 'storage':
                 $blc->region0('fl', 'Targoncák osztályozása');
                 $blc->img('https://structure.hu/ecc/impactFl.jpg', 'Targonca osztályozás');
-                $blc->region1('fl');
+                $blc->region1();
                 $blc->numeric('W', ['W', 'Targonca bruttó súlya'], 100, 'kN', 'Önsúly + megengedett terhelés összesen');
                 $blc->def('Fdx', 5*$f3->_W, 'F_(d,x) = F_(d,y) = 5W = %% [kN]', 'Ütközési erő mindkét irányban');
                 $blc->def('h', 0.75, 'h_(fl) = %% [m]', 'Ütközési magasság');
@@ -75,7 +74,7 @@ Class Impact
             $blc->def('r', 0, 'r = %%', '$h ge 6 [m]$');
             $blc->label('yes', 'Nincs ütközés');
         } else if ($f3->_hu > 4.7 && $f3->_hu < 6) {
-            $blc->def('r', \H3::n2($ec->linterp(4.7, 1, 6, 0, $f3->_hu)), 'r = %%', '$4.7 lt h lt 6 [m]$ Lineáris interpolálással');
+            $blc->def('r', H3::n2($ec->linterp(4.7, 1, 6, 0, $f3->_hu)), 'r = %%', '$4.7 lt h lt 6 [m]$ Lineáris interpolálással');
         } else {
             $blc->def('r', 1, 'r = %%', '$h le 4.7 [m]$');
         }
@@ -90,7 +89,7 @@ Class Impact
         $blc->note('*[Terhek és hatások (2017) 7.5 57.o.]*');
         $blc->note('$sigma_b, sigma_c$ korlát és jármű alakváltozása ütközés esetén. Merev korlát esetén $sigma_b = 0$. Nincs javasolt adat ($: >= 0$)');
         $blc->txt('Ütközési szélesség: $1.5 [m]$');
-        $blc->lst('weight0', ['Kevesebb, mint 2.5 [to]' => 'lt2500', 'Több, mint 2.5 [to]' => 'gt2500'], 'Tömeg', 'lt2500');
+        $blc->lst('weight0', ['Kevesebb, mint 2.5 [to]' => 'lt2500', 'Több, mint 2.5 [to]' => 'gt2500'], ['', 'Tömeg'], 'lt2500');
         $blc->txt('Ütközési magasság: $0.375 [m]$');
         switch ($f3->_weight0) {
             case 'lt2500':
@@ -104,7 +103,7 @@ Class Impact
         $blc->math('sigma_c := 100 [mm]%%%sigma_b := 0');
         $blc->def('Fk', ceil((0.5*$f3->_m*pow($f3->_v, 2))/(100)),'F_k = (0.5mv^2)/(sigma_c+sigma_b) = %% [kN]');
         $blc->h2('Rámpák mellett');
-        $blc->boo('longRamp', '20 m-nél hosszabb rámpa', true, '');
+        $blc->boo('longRamp', ['', '20 m-nél hosszabb rámpa'], true, '');
         if ($f3->_longRamp) {
             $blc->def('Frk', 2*$f3->_Fk, 'F_(r,k) = 2*F_k = %% [kN]');
         } else {

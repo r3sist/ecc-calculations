@@ -1,13 +1,13 @@
-<?php
-// Calculation class for ECC framework
-// Concrete material related calculations according to Eurocodes
-// (c) Bence VÁNKOS | https://structure.hu
+<?php declare(strict_types = 1);
+// Concrete material related calculations according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
 use \Base;
 use \Ecc\Blc;
 use \Ec\Ec;
+use \H3;
 
 Class Concrete
 {
@@ -30,8 +30,12 @@ Class Concrete
         }
     }
 
-    public function moduleAnchorageLength(int $fi, float $rfyd, float $cfbd, float $alphaa = 1.0, int $nrequ = 1, int $nprov = 1): void
+    public function moduleAnchorageLength(float $fi, float $rfyd, float $cfbd, float $alphaa = 1.0, float $nrequ = 1, float $nprov = 1): void
     {
+        $fi = (int)$fi;
+        $nrequ = (int)$nrequ;
+        $nprov = (int)$nprov;
+
         $f3 = $this->f3;
         $blc = $this->blc;
 
@@ -46,14 +50,14 @@ Class Concrete
     {
         $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/material) alapján történnek.');
 
-        $ec->matList('concreteMaterialName', 'C25/30', 'Beton anyagminőség', 'concrete');
-        $ec->saveMaterialData($f3->_concreteMaterialName, false);
-        $blc->txt(false, 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
+        $ec->matList('concreteMaterialName', 'C25/30', ['', 'Beton anyagminőség'], 'concrete');
+        $ec->spreadMaterialData($f3->_concreteMaterialName, '');
+        $blc->txt('', 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
         $blc->note('A szilárdsági osztályhoz tartozó jellemzők a 28 napos korban meghatározott, hengeren mért nyomószilárdság fck karakterisztikus értékén alapulnak.');
 
         $blc->h1('Lehorgonyzási hossz');
-        $ec->matList('rebarMaterialName', 'B500', 'Betonvas anyagminőség', 'rebar');
-        $ec->saveMaterialData($f3->_rebarMaterialName, 'r');
+        $ec->matList('rebarMaterialName', 'B500', ['', 'Betonvas anyagminőség'], 'rebar');
+        $ec->spreadMaterialData($f3->_rebarMaterialName, 'r');
         $ec->rebarList('phil', 20, ['phi_l', 'Lehorgonyzandó vas átmérője']);
         $blc->numeric('nrequ', ['n_(requ)', 'Szükséges vas szál'], 1, '', '$A_(s,requ)$ szükséges vaskeresztmetszet helyett');
         $blc->numeric('nprov', ['n_(prov)', 'Biztosított vas szál'], 1, '', '$A_(s,prov)$ biztosított vaskeresztmetszet helyett');
@@ -75,7 +79,7 @@ Class Concrete
         ];
 
         $cmindurXC = 10;
-        $blc->lst('XC', $XC,'**XC** Karbonátosodás okozta korrózió', 'XC1', '');
+        $blc->lst('XC', $XC,['', '**XC** Karbonátosodás okozta korrózió'], 'XC1', '');
         switch ($f3->_XC) {
             case 'X0':
                 $this->helperCheckMinC(12);
@@ -110,7 +114,7 @@ Class Concrete
             'XD2 Nedves, ritkán száraz helyen, vízben lévő klorid' => 'XD2',
             'XD3 Váltakozva nedves és szárazhelyen, klorid permet' => 'XD3',
         ];
-        $blc->lst('XD', $XD,'**XD** Nem tengervízből származó klorid által okozott korrózió', '-', '');
+        $blc->lst('XD', $XD,['', '**XD** Nem tengervízből származó klorid által okozott korrózió'], '-', '');
         $cmindurXD = 0;
         switch ($f3->_XD) {
             case '-':
@@ -130,7 +134,7 @@ Class Concrete
         }
         $blc->def('cmindurXD', $cmindurXD, 'c_(min,dur,XD) = %% [mm]', '**XD** alapján');
 
-        $blc->boo('XS2', '**XS2** Tengervíz állandó hatása', false);
+        $blc->boo('XS2', ['', '**XS2** Tengervíz állandó hatása'], false);
         $f3->_cmindurXS2 = 0;
         if ($f3->_XS2) {
             $blc->def('cmindurXS2', 40, 'c_(min,dur,XS2) = %% [mm]', '**XS2** alapján');
@@ -144,7 +148,7 @@ Class Concrete
             'XF3 Nagy víztelítettségű, esőnek és fagynak kitett vsz. felület' => 'XF3',
             'XF4 Mérsékelt víztelítettségű, fagynak és jégolvasztó sóknak kitett vsz. felület' => 'XF3',
         ];
-        $blc->lst('XF', $XF,'**XF** Fagyási/olvadási korrózió jégolvasztó anyaggal vagy anélkül', '-', '');
+        $blc->lst('XF', $XF,['', '**XF** Fagyási/olvadási korrózió jégolvasztó anyaggal vagy anélkül'], '-', '');
         switch ($f3->_XF) {
             case '-':
                 break;
@@ -164,7 +168,7 @@ Class Concrete
             'XA2 Mérsékelten agresszív' => 'XA2',
             'XA3 Erősen agresszív' => 'XA3',
         ];
-        $blc->lst('XA', $XA,'**XA** Kémiai környezet', '-', '');
+        $blc->lst('XA', $XA,['', '**XA** Kémiai környezet'], '-', '');
         switch ($f3->_XF) {
             case '-':
                 break;
@@ -180,12 +184,12 @@ Class Concrete
         $ec->rebarList('fi', 20, ['phi', 'Fedendő vas']);
         $blc->def('cmindur', max($f3->_cmindurXS2, $f3->_cmindurXD, $f3->_cmindurXC), 'c_(min,dur) = %% [mm]');
 
-        $blc->boo('y100', '50 évnél hosszabb tervezett élettartam', false);
+        $blc->boo('y100', ['', '50 évnél hosszabb tervezett élettartam'], false);
         if ($f3->_y100) {
             $blc->def('cmindur', $f3->_cmindur + 10, 'c_(min,dur) + 10 [mm] = %% [mm]', '50 évnél hosszabb tervezett élettartam');
         }
 
-        $blc->lst('erode', ['Nincs koptató hatás' => '0', 'Személyforgalom' => '5', 'Targonca' => '10', 'Teherautó' => '15'], 'Koptató hatás', '0');
+        $blc->lst('erode', ['Nincs koptató hatás' => '0', 'Személyforgalom' => '5', 'Targonca' => '10', 'Teherautó' => '15'], ['', 'Koptató hatás'], '0');
         if ($f3->_erode != '0') {
             $erode = (int)$f3->_erode;
             $blc->def('cmindur', $f3->_cmindur + $erode, 'c_(min,dur) + '.$erode.' [mm] = %% [mm]', 'Koptató hatás');
@@ -193,18 +197,18 @@ Class Concrete
         }
 
         if ($f3->_fck > 30) {
-            $blc->boo('red30', 'Minimum C35/45 beton figyelembevétele', false);
+            $blc->boo('red30', ['', 'Minimum C35/45 beton figyelembevétele'], false);
             if ($f3->_red30) {
                 $blc->def('cmindur', $f3->_cmindur - 5, 'c_(min,dur) - 5 [mm] = %% [mm]', 'Min. C35/45 beton figyelembevétele');
             }
         }
 
-        $blc->boo('redCor', 'Korrózióálló acél alkalmazása', false);
+        $blc->boo('redCor', ['', 'Korrózióálló acél alkalmazása'], false);
         if ($f3->_redCor) {
             $blc->def('cmindur', $f3->_cmindur - 5, 'c_(min,dur) - 5 [mm] = %% [mm]', 'Korrózióálló acél alkalmazása');
         }
 
-        $blc->lst('earth', ['Nem talajra betonozás' => '0', 'Egyenetlen talajra betonozás' => '30', 'Előkészített talajra betonozás' => '5'], 'Talajra betonozás', '0');
+        $blc->lst('earth', ['Nem talajra betonozás' => '0', 'Egyenetlen talajra betonozás' => '30', 'Előkészített talajra betonozás' => '5'], ['', 'Talajra betonozás'], '0');
         if ($f3->_earth != '0') {
             $earth = (int)$f3->_earth;
             $blc->def('cmindur', $f3->_cmindur + $earth, 'c_(min,dur) + '.$earth.' [mm] = %% [mm]', 'Talajra betonozás');
@@ -212,12 +216,12 @@ Class Concrete
 
         $blc->def('cnom', 10 + max($f3->_fi, $f3->_cmindur, 10), 'c_(nom) = 10 [mm] + max{(10 [mm]),((c_(min,b) := phi)),(c_(min,dur)):} = %% [mm]');
 
-        $blc->boo('redPrecast', 'Minőségbiztosított előregyártás', false);
+        $blc->boo('redPrecast', ['', 'Minőségbiztosított előregyártás'], false);
         if ($f3->_redPrecast) {
             $blc->def('cnom', $f3->_cnom - 5, 'c_(nom) - 5 [mm] = %% [mm]', 'Minőségbiztosított előregyártás');
         }
 
-        $blc->boo('redSlabOrWall', 'Lemez- vagy falszerkezet', false);
+        $blc->boo('redSlabOrWall', ['', 'Lemez- vagy falszerkezet'], false);
         if ($f3->_redSlabOrWall) {
             $blc->def('cnom', $f3->_cnom - 5, 'c_(nom) - 5 [mm] = %% [mm]', 'Lemez- vagy falszerkezet');
         }
@@ -228,7 +232,7 @@ Class Concrete
 
 
         $blc->h1('Beton jellemzői $t$ napos korban');
-        $blc->numeric('t', ['t', 'Idő'], '10', 'nap', '');
+        $blc->numeric('t', ['t', 'Idő'], 10, 'nap', '');
         $cem = [
             'CEM 52,5 R' => 0.2,
             'CEM 42,5 R' => 0.2,
@@ -238,7 +242,7 @@ Class Concrete
             'CEM 32,5 N' => 0.38
         ];
         $blc->note('R: nagy kezdő szilárdság; N: normál kezdő szilárdság');
-        $blc->lst('cem', $cem, ['', 'Cement típus'], 0.25, '', false);
+        $blc->lst('cem', $cem, ['', 'Cement típus'], 0.25, '');
         $blc->def('betacc', exp($f3->_cem*(1-sqrt(28/$f3->_t))), 'beta_c = %%');
         $blc->def('fcmt', number_format($f3->_fcm*$f3->_betacc, 2), 'f_(c,m)(t) = beta_c*f_(c,m) = %% [N/(mm^2)]', 'Nyomószilárdság várható értéke');
         $y = $f3->_fck;

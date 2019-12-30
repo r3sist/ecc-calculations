@@ -1,43 +1,48 @@
-<?php
+<?php declare(strict_types = 1);
+// Analysis of RC columns according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * Analysis of RC columns according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
 
 Class Column
 {
-    public function moduleColumnData(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
-    {
-        $ec->matList('cMat', 'C30/37', 'Beton anyagminőség');
-        $ec->saveMaterialData($f3->_cMat, 'c');
-        $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
-        $ec->saveMaterialData($f3->_rMat, 'r');
+    public Base $f3;
+    private Blc $blc;
+    private Ec $ec;
 
-        $ec->wrapNumerics('a', 'b', ['a×b', 'Pillér méretek'], 400, 400, 'mm', '', '×');
-        if (max($f3->_a, $f3->_b)/min($f3->_a, $f3->_b) > 4) {
-            $blc->danger('$a/b > 4$: nem pillérként méretezendő!');
-        }
-        $blc->note('$a/b le 4$, min. oldalhosszúság fekve betonozott pillérnél 120 mm, állva betonozottnál 200 mm.');
-        $blc->def('Ac', \H3::n0($f3->_a*$f3->_b), 'A_(c) = %% [mm^2]');
-        $blc->numeric('cnom', ['c_(nom)', 'Tervezett betontakarás'], 25, 'mm', '');
+    public function __construct(Base $f3, Blc $blc, Ec $ec)
+    {
+        $this->f3 = $f3;
+        $this->blc = $blc;
+        $this->ec = $ec;
     }
 
-    /**
-     * @var $f3 \Base
-     * @var $blc \Blc
-     * @var $ec \Ec\Ec
-     * @throws \Exception
-     */
-    public function calc(object $f3, object $blc, object $ec): void
+    public function moduleColumnData(): void
+    {
+        $this->ec->matList('cMat', 'C30/37', ['', 'Beton anyagminőség']);
+        $this->ec->spreadMaterialData($this->f3->_cMat, 'c');
+        $this->ec->matList('rMat', 'B500', ['', 'Betonvas anyagminőség']);
+        $this->ec->spreadMaterialData($this->f3->_rMat, 'r');
+
+        $this->ec->wrapNumerics('a', 'b', '$a×b$ Pillér méretek', 400, 400, 'mm', '', '×');
+        if (max($this->f3->_a, $this->f3->_b)/min($this->f3->_a, $this->f3->_b) > 4) {
+            $this->blc->danger('$a/b > 4$: nem pillérként méretezendő!');
+        }
+        $this->blc->note('$a/b le 4$, min. oldalhosszúság fekve betonozott pillérnél 120 mm, állva betonozottnál 200 mm.');
+        $this->blc->def('Ac', H3::n0($this->f3->_a*$this->f3->_b), 'A_(c) = %% [mm^2]');
+        $this->blc->numeric('cnom', ['c_(nom)', 'Tervezett betontakarás'], 25, 'mm', '');
+    }
+
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->toc();
 
-        $this->moduleColumnData($f3, $blc, $ec);
+        $this->moduleColumnData();
 
 //        $blc->img('https://structure.hu/ecc/column0.jpg');
         $blc->numeric('l', ['l', 'Pillér hálózati magassága'], 3, 'm');
@@ -49,12 +54,12 @@ Class Column
         // =============================================================================================================
         $blc->h1('Közelítő méretfelvétel');
 
-        $blc->def('Acmin', \H3::n0($f3->_NEd/$f3->_cfcd*1000), 'A_(c,min) = N_(Ed)/(f_(c,d)) = %% [mm^2]', 'Szükséges beton keresztmetszet');
+        $blc->def('Acmin', H3::n0($f3->_NEd/$f3->_cfcd*1000), 'A_(c,min) = N_(Ed)/(f_(c,d)) = %% [mm^2]', 'Szükséges beton keresztmetszet');
         $blc->math('a = '.$f3->_a.' [mm]', 'Felvett egyik méret');
-        $blc->def('bmin', ceil(\H3::n0($f3->_Acmin/$f3->_a)), 'b_(min) = A_(c,min)/a = %% [mm]', 'Szükséges másik méret');
+        $blc->def('bmin', ceil(H3::n0($f3->_Acmin/$f3->_a)), 'b_(min) = A_(c,min)/a = %% [mm]', 'Szükséges másik méret');
         $blc->txt('Szükséges vasmennyiségek **'.$f3->_a.' × '.$f3->_b.'** keresztmetszethez:');
-        $blc->def('A_s_min', \H3::n0(max(0.003*$f3->_Ac, (($f3->_NEd*1000)/$f3->_rfyd)*0.1)), 'A_(s, min) = max{(0.1*N_(Ed)/f_(yd)),(0.003*A_c):} = %% [mm^2]', '');
-        $blc->def('A_s_max', \H3::n0(0.04*$f3->_Ac), 'A_(s, max) = %% [mm^2]', 'Maximális vasmennyiség: 4%');
+        $blc->def('A_s_min', H3::n0(max(0.003*$f3->_Ac, (($f3->_NEd*1000)/$f3->_rfyd)*0.1)), 'A_(s, min) = max{(0.1*N_(Ed)/f_(yd)),(0.003*A_c):} = %% [mm^2]', '');
+        $blc->def('A_s_max', H3::n0(0.04*$f3->_Ac), 'A_(s, max) = %% [mm^2]', 'Maximális vasmennyiség: 4%');
 
         // =============================================================================================================
         $blc->h1('Központosan nyomott pillérek teherbírása', 'Egyszerűsített módszer, $e_e := 0$');
@@ -70,10 +75,11 @@ Class Column
             500 => 0.84,
             600 => 0.87,
         ];
-        $phiMaxTable = [
-            '$varphi_(max)$' => $phiMaxStack
-        ];
-        $blc->table($phiMaxTable, '$a [mm]$', '$varphi_(max)$ értékei');
+        $rows = [];
+        foreach ($phiMaxStack as $key => $value) {
+            array_push($rows, [$key, $value]);
+        }
+        $blc->tbl(['$a [mm]$', '$varphi_(max)$'], $rows, 'phiMaxTable', '');
         $blc->def('phiMax', $ec->getClosest($f3->_a, $phiMaxStack, $returnType = 'floor'), 'varphi_(max) = %%', 'Keresés alsó értékhez');
 
         $blc->lst('reinforcing', ['2 sávban elhelyezett vasalás' => 2, '3 vagy több sávban elhelyezett vasalás' => 3], ['', 'Vasalás']);
@@ -88,19 +94,9 @@ Class Column
                 $sigma = 0.94;
             }
         }
-        $sigmaCol1 = 'Téglalap km. 2 sávban elhelyezett vasalás';
-        $sigmaCol2 = 'Téglalap km. 3 vagy több sávban elhelyezett vasalás';
-        $sigmaTable = [
-            'C30/37 - C20/25' => [
-                $sigmaCol1 => 0.8,
-                $sigmaCol2 => 0.94,
-            ],
-            'C50/60 - C35/45' => [
-                $sigmaCol1 => 0.94,
-                $sigmaCol2 => 0.99,
-            ],
-        ];
-        $blc->table($sigmaTable, 'Beton', '$sigma$ javasolt értékei');
+        $scheme = ['Téglalap km. 2 sávban elhelyezett vasalás', 'Téglalap km. 3 vagy több sávban elhelyezett vasalás'];
+        $rows = [[0.8, 0.94],[0.94, 0.99]];
+        $blc->tbl($scheme, $rows, 'Beton', '$sigma$ javasolt értékei');
         $blc->def('sigma', $sigma, 'sigma = %%');
         $blc->def('phi', min($f3->_phiMax, min(0.85, 1.1 - $f3->_sigma*((($f3->_l0*1000)/$f3->_a)/30))), 'varphi = min{(varphi_(max)), (min{(0.85), (1.1 - sigma*(l_0/a)/30):}):} = %%');
         if (($f3->_l0*1000)/$f3->_a > 30) {
@@ -116,7 +112,7 @@ Class Column
 
         // =============================================================================================================
         $blc->h1('Kengyelezés ellenőrzése');
-        $ec->rebarList('phiMin', 16, 'Legkisebb hosszvas átmérő');
+        $ec->rebarList('phiMin', 16, ['', 'Legkisebb hosszvas átmérő']);
         $blc->def('ssmax', floor(min(12*$f3->_phiMin, min($f3->_a, $f3->_b), 400)), 's_(s,max) = min{(12*phi_(min)),(min(a,b)),(400):} = %% [mm]', 'Maximális kengyeltávolság');
         $blc->note('$12$ szorzó MSZ és DIN szerint. EC $20$, MSZ-EN $15$');
         $blc->txt('Erőbevezetésnél, lemezcsatlakozásnál, hosszvas toldásnál: $s_(s,max,d) = 0.6*s_(s,max) = '. floor(0.6*$f3->_ssmax).'[mm]$');
@@ -134,7 +130,7 @@ Class Column
         $blc->def('Phi', $f3->_alpham*$f3->_alphan*$f3->_Phi0, 'Phi = alpha_m*alpha_n*Phi_0 = %%', 'Elfordulás oszlopszámtól függő értéke');
 //        $blc->lst('upsilon', ['Merevített szerkezet (1)' => 1, 'Kilendülő szerkezet (2)' => 2], ['upsilon', 'Oszlop kihajlási fél-hullámhossza'], 1);
         $blc->def('l0', $f3->_l*$f3->_upsilon, 'l_0 = upsilon*l = %% [m]', 'Kihajlási hossz');
-        $blc->def('e', \H3::n1($f3->_l0*1000*$f3->_Phi), 'e_(calc) = l_0*Phi = %% [mm] = l/'.\H3::n0(($f3->_l*1000)/\H3::n1($f3->_l0*1000*$f3->_Phi)), 'Egyenértékű elmozdulás');
+        $blc->def('e', H3::n1($f3->_l0*1000*$f3->_Phi), 'e_(calc) = l_0*Phi = %% [mm] = l/'. H3::n0(($f3->_l*1000)/ H3::n1($f3->_l0*1000*$f3->_Phi)), 'Egyenértékű elmozdulás');
         $blc->note('Egyszerűsítésként $l/400$ használatát engedi a szabvány');
         $blc->note('A vsz. többleterők eredője lehet szintenként egy eltolóerő, vagy ± irányból származó csavarónyomaték');
 
@@ -147,11 +143,11 @@ Class Column
         ];
         if ($f3->exists('POST._imperfections')) {
             foreach ($f3->get('POST._imperfections') as $key => $value) {
-                $f3->set("POST._imperfections.$key.H0", \H3::n2(\V3::numeric($value['N'])*$f3->_Phi));
-                $f3->set("POST._imperfections.$key.SH", \H3::n2(\V3::numeric($value['db'])*\H3::n2(\V3::numeric($value['N'])*$f3->_Phi)));
+                $f3->set("POST._imperfections.$key.H0", H3::n2((float)$value['N']*$f3->_Phi));
+                $f3->set("POST._imperfections.$key.SH", H3::n2((float)$value['db']* H3::n2((float)$value['N']*$f3->_Phi)));
             }
         }
         $blc->bulk('imperfections', $fields);
-        $blc->txt(false, 'Vízszintes erők: $H_i = N*Phi$.');
+        $blc->txt('', 'Vízszintes erők: $H_i = N*Phi$.');
     }
 }

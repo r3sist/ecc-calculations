@@ -1,39 +1,49 @@
-<?php
-// Calculation class for ECC framework
-// Pilehead analysis according to Eurocodes -
-// (c) Bence VÁNKOS | https://structure.hu
+<?php declare(strict_types = 1);
+// Pilehead analysis according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
+
 Class PileHead
 {
+    private Concrete $concrete;
 
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function __construct(Concrete $concrete)
+    {
+        $this->concrete = $concrete;
+    }
+
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->note('[Whitepaper 1](https://structure.hu/ecc/pileheadWp0.pdf) Irodalom: [1.]: *KG CÉH Excel*; [2.]: *Alapozások és földmegtámasztó szerkezetek tervezése az MSZ EN 1997 szerint (2012)*; [3.]: *Vasbeton szerkezetek korszerű vasalása III. - 169 Iparterv tervezélsi segédlet (1964)* [4.]: *MSZ EN 1992-1-1:2010*.');
 
         $blc->h1('Fejtömb kialakítás');
 //        $blc->lst('type', ['2 cölöpös cölöpfej (gerenda)' => '2piles', '3 cölöpös cölöpfej' => '3piles', '4 cölöpös cölöpfej' => '4piles', 'Sok cölöpös lemez' => 'plate'], 'Cölöpfej kialakítás', '2piles', '');
-        $blc->lst('type', ['2 cölöpös cölöpfej (gerenda)' => '2piles'], 'Cölöpfej kialakítás', '2piles', '');
+        $blc->lst('type', ['2 cölöpös cölöpfej (gerenda)' => '2piles'], ['', 'Cölöpfej kialakítás'], '2piles', '');
         $blc->numeric('Dp', ['D_p', 'Cölöp átmérő'], 800, 'mm', '');
 
         $blc->numeric('h', ['h', 'Lemezvastagság'], 800, 'mm', '');
         $ec->rebarList('fix', 25, ['phi_x', 'Alsó fő vasátmérő x fő irányban'], 'Kengyelen');
         $rowfix = 1;
-        $blc->boo('rowfix2', 'Húzott fővasak 2 sorban', false, '');
+        $blc->boo('rowfix2', ['', 'Húzott fővasak 2 sorban'], false, '');
         if ($f3->_rowfix2) {
             $rowfix = 3; // elosztó vas is
         }
-        $ec->wrapNumerics('fix0', 'sx0', ['phi_(x,0)\ \ \ s_(x,0)', 'Alsó alapháló vasátmérője és kiosztása'], 0, 200, 'mm', 'Kengyel alatti alapháló x fő irányban, ha van', '/');
+        $ec->wrapNumerics('fix0', 'sx0', '$phi_(x,0)\ \ \ s_(x,0)$ Alsó alapháló vasátmérője és kiosztása', 0, 200, 'mm', 'Kengyel alatti alapháló x fő irányban, ha van', '/');
         $ec->rebarList('fiw', 16, ['phi_w', 'Kengyel vagy felkötő vasátmérő'], '');
 
         $blc->md('Szerkezeti osztály: ***S4***; Karbonátosodás okozta korrózió: ***XC2***');
-        $blc->lst('XA', ['XA1 enyhén (XD1 XF3)' => 'XA1', 'XA2 mérsékelten (XD2 XF4)' => 'XA2', 'XA3 erősen (XD3)' => 'XA3'], 'Kémiai környezet agresszivitása', 'XA2', 'Illetve további környezeti osztály feltételek');
+        $blc->lst('XA', ['XA1 enyhén (XD1 XF3)' => 'XA1', 'XA2 mérsékelten (XD2 XF4)' => 'XA2', 'XA3 erősen (XD3)' => 'XA3'], ['', 'Kémiai környezet agresszivitása'], 'XA2', 'Illetve további környezeti osztály feltételek');
         $XAcmindur = ['XA1' => 35, 'XA2' => 40, 'XA3' => 45];
-        $ec->matList('concreteMaterialName', 'C30/37', 'Beton anyagminőség');
-        $ec->saveMaterialData($f3->_concreteMaterialName, 'c');
-        $ec->matList('rebarMaterialName', 'B500', 'Betonvas anyagminőség');
-        $ec->saveMaterialData($f3->_rebarMaterialName, 'r');
+        $ec->matList('concreteMaterialName', 'C30/37', ['', 'Beton anyagminőség']);
+        $ec->spreadMaterialData($f3->_concreteMaterialName, 'c');
+        $ec->matList('rebarMaterialName', 'B500', ['', 'Betonvas anyagminőség']);
+        $ec->spreadMaterialData($f3->_rebarMaterialName, 'r');
         $blc->def('cmindur', $XAcmindur[$f3->_XA], 'c_(min,dur) = %% [mm]', '*MSZ 4798:2016 NAD N1 táblázat* szerinti betonszerkezettől és környezettől függő minimális betonfedés, minimum *XC2* osztály feltételezésével');
         $blc->def('cminb', $f3->_fiw, 'c_(min,b) := %% [mm]', 'Kívül kengyel feltételezésével kengyel átmérő');
         $blc->def('cmin', max($f3->_cminb, $f3->_cmindur, 10), 'c_(min) = max{(c_(min,b)),(c_(min,dur)),(10):} = %% [mm]', '');
@@ -46,8 +56,8 @@ Class PileHead
         $blc->numeric('FEdz', ['F_(Ed,z)', 'Átszúródó függőleges teher pillérről'], 4000, 'kN', 'Nyíróerő tervezési értéke');
         $blc->numeric('FEdy', ['F_(Ed,y)', 'Többlet vízszintes teher pillérről'], 0, 'kN', '');
 
-        $ec->wrapNumerics('acol', 'bcol', ['a_(col)×b_(col)', 'Pillér méret'], 400, 400, 'mm', false, '×');
-        $blc->boo('sleeve', 'Bővítés kehelynyakra', false, '50 mm hézag, 250 mm fal - erőátadás fal tengelyében');
+        $ec->wrapNumerics('acol', 'bcol', '$a_(col)×b_(col)$ Pillér méret', 400, 400, 'mm', '', '×');
+        $blc->boo('sleeve', ['', 'Bővítés kehelynyakra'], false, '50 mm hézag, 250 mm fal - erőátadás fal tengelyében');
         if ($f3->_sleeve) {
             $f3->_acol = $f3->_acol + 350;
             $f3->_bcol = $f3->_bcol + 350;
@@ -58,15 +68,15 @@ Class PileHead
         $blc->def('xp', $f3->_xp0 + 2*100, 'x_p := x_(p,0) + 2*e_m = '.$f3->_xp0.' + 2*100 = %% [mm]', 'Cölöpök véletlen elmozdulásával növelt távolság');
         $blc->note('D &lt; 1000 mm cölöpátmérőig. [MSZ EN 1536:2001 7.2 23.o.]');
 
-        $blc->def('z', \H3::n0(0.9*$f3->_deff), 'z ~= 0.9*d_(eff) = %% [mm]', 'Nyomott betönöv magasságának közelítő felvétele');
-        $blc->def('xc', \H3::n0(0.2*$f3->_deff), 'x_c ~= 0.2*d_(eff) = %% [mm]', '$z = d_(eff)-x_c/2 = 0.9d_(eff)$ összefüggésből');
+        $blc->def('z', H3::n0(0.9*$f3->_deff), 'z ~= 0.9*d_(eff) = %% [mm]', 'Nyomott betönöv magasságának közelítő felvétele');
+        $blc->def('xc', H3::n0(0.2*$f3->_deff), 'x_c ~= 0.2*d_(eff) = %% [mm]', '$z = d_(eff)-x_c/2 = 0.9d_(eff)$ összefüggésből');
 
         $blc->h1('Erőjáték meghatározása', $f3->_type);
 
         switch ($f3->_type) {
             case '2piles':
                 $f3->_np = 2;
-                $blc->def('theta', \H3::n2(rad2deg(atan($f3->_z/(0.5*$f3->_xp)))), 'Theta = arctan(z/(0.5*x_p)) = %%°', 'Belső erők szöge');
+                $blc->def('theta', H3::n2(rad2deg(atan($f3->_z/(0.5*$f3->_xp)))), 'Theta = arctan(z/(0.5*x_p)) = %%°', 'Belső erők szöge');
                 ($f3->_theta < 26.0)?$blc->danger('$Theta < 26 [deg]$ (Javasolt min 30°)'):true;
                 $blc->def('NEd', ceil($f3->_FEdz/(2*sin(deg2rad($f3->_theta))) + $f3->_FEdy/(2*cos(deg2rad($f3->_theta)))), 'N_(Ed) = F_(Ed,z)/(2*sin(Theta)) + F_(Ed,y)/(2*cos(Theta)) = %% [kN]');
                 $blc->def('HEd', ceil($f3->_FEdz/(2*tan(deg2rad($f3->_theta)))), 'H_(Ed) = F_(Ed,z)/(2*tan(Theta)) = %% [kN]');
@@ -75,14 +85,14 @@ Class PileHead
         }
 
         $blc->h1('Húzott vasalás pillérsorok fölött');
-        $blc->boo('fydFactor', 'Folyáshatár csökkentése 0.7 faktorral repedéstágasság figyelembevételéhez', false);
+        $blc->boo('fydFactor', ['', 'Folyáshatár csökkentése 0.7 faktorral repedéstágasság figyelembevételéhez'], false);
         $fydFactor = 1;
         if ($f3->_fydFactor) {
             $fydFactor = 0.7;
         }
         $blc->def('As', ceil(($f3->_HEd*1000)/($f3->_rfyd*$fydFactor)), 'A_s = H_(Ed)/(f_(y,d)) = %% [mm^2]', 'Szükséges húzott vasmennyiség');
         $blc->numeric('bs', ['b_s', 'Húzott vasak kiosztási szélessége cölöp felett'], 1.0*$f3->_Dp, 'mm', 'Jellemzően cölöpszélesség');
-        $blc->boo('minusAs0', 'Ø'.$f3->_fix0.'/'.$f3->_sx0.' alapháló figyelembevétele');
+        $blc->boo('minusAs0', ['', 'Ø'.$f3->_fix0.'/'.$f3->_sx0.' alapháló figyelembevétele'], false, '');
         if ($f3->_minusAs0) {
             $blc->def('As', ceil($f3->_As - floor($f3->_bs/$f3->_sx0)*$ec->A($f3->_fix0)), 'A_s = A_s - floor(b_s/s_(x,0))*A_(phi_(x,0)) = %% [mm^2]');
         }
@@ -92,28 +102,28 @@ Class PileHead
         if ($f3->_sx < 2*$f3->_fix) {
             if ($f3->_rowfix2) {
                 $ns0 = ceil($f3->_ns/2);
-                $sx0 = \H3::n0(($f3->_bs/($ns0 - 1))/10)*10.0;
+                $sx0 = H3::n0(($f3->_bs/($ns0 - 1))/10)*10.0;
                 $ns1 = $f3->_ns - $ns0;
-                $sx1 = \H3::n0(($f3->_bs/($ns1 - 1))/10)*10.0;
+                $sx1 = H3::n0(($f3->_bs/($ns1 - 1))/10)*10.0;
                 $blc->label('yes', $ns0.'Ø'.$f3->_fix.'/'.$sx0.' és '.$ns1.'Ø'.$f3->_fix.'/'.$sx1.' 2 sorban');
                 if ($sx0 < 2*$f3->_fix || $sx1 < 2*$f3->_fix) {
                     $blc->danger('3 vagy több sorban kéne a vasakat elhelyezni.');
                 }
                 $f3->_sx = min($sx0, $sx1);
             } else {
-                $blc->label('no', $f3->_ns.'Ø'.$f3->_fix.'/'.\H3::n0($f3->_sx/10)*10.0.' - 2 sor kellene!');
+                $blc->label('no', $f3->_ns.'Ø'.$f3->_fix.'/'. H3::n0($f3->_sx/10)*10.0.' - 2 sor kellene!');
             }
             $blc->txt('', '$s_x < 2*phi_x$');
         } else {
             if ($f3->_rowfix2) {
                 $ns0 = ceil($f3->_ns/2);
-                $sx0 = \H3::n0(($f3->_bs/($ns0 - 1))/10)*10.0;
+                $sx0 = H3::n0(($f3->_bs/($ns0 - 1))/10)*10.0;
                 $ns1 = $f3->_ns - $ns0;
-                $sx1 = \H3::n0(($f3->_bs/($ns1 - 1))/10)*10.0;
+                $sx1 = H3::n0(($f3->_bs/($ns1 - 1))/10)*10.0;
                 $blc->label('no', $ns0.'Ø'.$f3->_fix.'/'.$sx0.' és '.$ns1.'Ø'.$f3->_fix.'/'.$sx1.' 2 sorban (1 elég)');
                 $f3->_sx = min($sx0, $sx1);
             } else {
-                $blc->label('yes', $f3->_ns.'Ø'.$f3->_fix.'/'.\H3::n0($f3->_sx/10)*10.0.' 1 sorban');
+                $blc->label('yes', $f3->_ns.'Ø'.$f3->_fix.'/'. H3::n0($f3->_sx/10)*10.0.' 1 sorban');
             }
         }
 
@@ -128,8 +138,8 @@ Class PileHead
         }
         $blc->txt('Anyagminőségnél **'.(($f3->_cfbd07)?'rossz tapadás':'jó tapadás').'** ($f_(b,d) = '.$f3->_cfbd.'[N/(mm^2)]$) van beállítva');
         $blc->numeric('nsPlus', ['n_(s+)', 'Többlet vas figyelembevétele: további Ø'.$f3->_fix], 0, 'db', 'Húzott acélok 100%-nál alacsonyabb kihasználtságának figyelembevételéhez');
-        $concrete = new \Calculation\Concrete();
-        $concrete->moduleAnchorageLength($f3->_fix, $f3->_rfyd, $f3->_cfbd, $alphaa, $f3->_ns, $f3->_ns + $f3->_nsPlus);
+
+        $this->concrete->moduleAnchorageLength($f3->_fix, $f3->_rfyd, $f3->_cfbd, $alphaa, $f3->_ns, $f3->_ns + $f3->_nsPlus);
 
         $blc->h1('Húzott vasalás felkötő vasai', 'Kengyelek');
         $blc->note('[3] 260.o.: Rövid gerendáknál nyírási húzóerők nem lépnek fel. Felkötő vasak húzott vas lenyomódása ellen kellenek.');
@@ -179,7 +189,7 @@ Class PileHead
         $blc->note('[4.]: 6.2.2 (6)');
         $blc->def('VRdmax', floor(0.5*$f3->_Dp*$f3->_deff*0.6*(1 - $f3->_cfck/250)*$f3->_cfcd*0.001), 'V_(Rd,max) = 0.5*D_p*d_(eff)*0.6*(1-f_(ck)/250)*f_(cd) = %% [kN]');
         $blc->label($f3->_NEd/$f3->_VRdmax, 'Kihasználtság');
-        $blc->txt(false, '$N_(Ed)/V_(Rd,max)$');
+        $blc->txt('', '$N_(Ed)/V_(Rd,max)$');
 
         $blc->h1('Nyírás és átszúródás ellenőrzése', '`TODO`');
 // ============================ old ================================

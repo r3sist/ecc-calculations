@@ -1,28 +1,28 @@
-<?php
+<?php declare(strict_types = 1);
+// RC slab analysis according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * RC slab analysis according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
 
 Class Slab
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->toc();
 
-        $ec->matList('cMat', 'C25/30', 'Beton anyagminőség');
-        $ec->saveMaterialData($f3->_cMat, 'c');
-        $ec->matList('rMat', 'B500', 'Betonvas anyagminőség');
-        $ec->saveMaterialData($f3->_rMat, 'r');
-        $blc->lst('dir', ['Egy irányban teherhordó' => 1, 'Két irányban teherhordó' => 2], 'Teherhordás módja', 2);
+        $ec->matList('cMat', 'C25/30', ['', 'Beton anyagminőség']);
+        $ec->spreadMaterialData($f3->_cMat, 'c');
+        $ec->matList('rMat', 'B500', ['', 'Betonvas anyagminőség']);
+        $ec->spreadMaterialData($f3->_rMat, 'r');
+        $blc->lst('dir', ['Egy irányban teherhordó' => 1, 'Két irányban teherhordó' => 2], ['', 'Teherhordás módja'], 2);
         $blc->numeric('h', ['h', 'Lemez vastagsága'], 250, 'mm');
-        $ec->wrapRebarCount('sx', 'fix', ['s_x \ \ phi_x', 'x irány vastávolság és átmérő'], 200, 12, '');
-        $ec->wrapRebarCount('sy', 'fiy', ['s_y \ \ phi_y', 'y irány vastávolság és átmérő'], 200, 12, '');
+        $ec->wrapRebarCount('sx', 'fix', '$s_x \ \ phi_x$ x irány vastávolság és átmérő', 200, 12, '');
+        $ec->wrapRebarCount('sy', 'fiy', '$s_y \ \ phi_y$ y irány vastávolság és átmérő', 200, 12, '');
         $blc->numeric('c', ['c', 'Alsó betonfedés'], 30, 'mm');
         $blc->def('d', $f3->_h - $f3->_c - ($f3->_fix + $f3->_fiy)/2, 'd = h - c - (phi_x + phi_y)/2 = %% [mm]', 'Hatékony magasság');
 
@@ -31,7 +31,7 @@ Class Slab
         $blc->note('[Vasbeton szerkezetek 6.8 (49.o)]');
         $blc->numeric('acol', ['a_(col)', 'Pillér méret egyik dimenziója'], 400, 'mm');
         $blc->numeric('bcol', ['b_(col)', 'Pillér méret másik dimenziója'], 400, 'mm');
-        $blc->boo('colO', 'Körpillér', false, '');
+        $blc->boo('colO', ['', 'Körpillér'], false, '');
         if ($f3->_colO) {
             $blc->txt('$phi_(col) = max(a_(col), b_(col))$');
             $f3->_acol = max($f3->_acol, $f3->_bcol);
@@ -52,7 +52,7 @@ Class Slab
             $blc->txt('**Az ellenőrzés *x* és *y* irányban is lefuttatandó!**');
             $blc->numeric('l1', ['l_1', 'Pillérköz 1'], 6000, 'mm');
             $blc->numeric('l2', ['l_2', 'Szomszédos pillérköz'], 5000, 'mm');
-            $blc->math('0.8 < (l_i/l_(i+1)='.\H3::n2($f3->_l1/$f3->_l2).') < 1.25', 'Szabvány szerinti feltétel');
+            $blc->math('0.8 < (l_i/l_(i+1)='. H3::n2($f3->_l1/$f3->_l2).') < 1.25', 'Szabvány szerinti feltétel');
             if (0.8 <= $f3->_l1/$f3->_l2 && $f3->_l1/$f3->_l2 <= 1.25) {
                 $blc->label('yes', 'ok');
             } else {
@@ -96,14 +96,14 @@ Class Slab
         switch ($f3->_beta) {
             case 1.15:
                 if ($f3->_colO == true) {
-                    $blc->def('u0', \H3::n0(2*$f3->_acol*0.5*pi()), 'u_0 = 2*(phi_(col)/2)*pi = %% [mm]');
+                    $blc->def('u0', H3::n0(2*$f3->_acol*0.5*pi()), 'u_0 = 2*(phi_(col)/2)*pi = %% [mm]');
                 } else {
-                    $blc->def('u0', \H3::n0(2*$f3->_acol + 2*$f3->_bcol), 'u_0 = 2*a_(col) + 2*b_(col) = %% [mm]');
+                    $blc->def('u0', H3::n0(2*$f3->_acol + 2*$f3->_bcol), 'u_0 = 2*a_(col) + 2*b_(col) = %% [mm]');
                 }
                 break;
             case 1.4:
                 // TODO itt tartok
-                $blc->def('u0', \H3::n0(min(1, 1)), 'u_0 = 2*a_(col) + 2*b_(col) = %% [mm]');
+                $blc->def('u0', H3::n0(min(1, 1)), 'u_0 = 2*a_(col) + 2*b_(col) = %% [mm]');
                 break;
         }
         $blc->def('vRdmax', 0.5*(0.6*(1 - $f3->_cfck/250))*$f3->_cfcd, 'v_(Rd,max) = 0.5*0.6*(1-f_(ck)/250)*f_(cd) = %% [N/(mm^2)]');
@@ -135,32 +135,27 @@ Class Slab
             '0.50' => 0.5,
         );
         $f3->_eta = 0.1;
-        $blc->lst('eta', $eta, 'Töréskép');
+        $blc->lst('eta', $eta, ['', 'Töréskép']);
         if(!$f3->_eta) {
             $f3->_eta = $etaOpt;
         }
         $blc->math('eta = '. $f3->_eta);
 
         $blc->region0('r0');
-        $blc->def('p_y', \H3::n2((1-(4/3)*$f3->_eta)*$f3->_p_Ed), 'p_y = %% [(kN)/m^2]');
-        $blc->def('p_x', \H3::n2(((4/3)*$f3->_eta)*$f3->_p_Ed), 'p_x = %% [(kN)/m^2]');
-        $blc->def('p_check', \H3::n2($f3->_p_x + $f3->_p_y), 'p_x + p_y = %% [(kN)/m^2]');
+        $blc->def('p_y', H3::n2((1-(4/3)*$f3->_eta)*$f3->_p_Ed), 'p_y = %% [(kN)/m^2]');
+        $blc->def('p_x', H3::n2(((4/3)*$f3->_eta)*$f3->_p_Ed), 'p_x = %% [(kN)/m^2]');
+        $blc->def('p_check', H3::n2($f3->_p_x + $f3->_p_y), 'p_x + p_y = %% [(kN)/m^2]');
         $blc->region1();
 
-        $blc->def('m_y', \H3::n2(($f3->_p_y * $f3->_l_y * $f3->_l_y)/8), 'm_y = (p_y * l_y^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
-        $blc->def('m_x', \H3::n2(($f3->_p_x * $f3->_l_x * $f3->_l_x)/8), 'm_x = (p_x * l_x^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
-        $blc->def('m_xyA', \H3::n2($f3->_m_y), 'm_(xyA) := %% [(kNm)/m]', 'Sarkok gátolt felemelkedéséből származó csvarónyomaték');
+        $blc->def('m_y', H3::n2(($f3->_p_y * $f3->_l_y * $f3->_l_y)/8), 'm_y = (p_y * l_y^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
+        $blc->def('m_x', H3::n2(($f3->_p_x * $f3->_l_x * $f3->_l_x)/8), 'm_x = (p_x * l_x^2)/8 = %% [(kNm)/m]', '1 m széles lemezsávra jutó nyomaték');
+        $blc->def('m_xyA', H3::n2($f3->_m_y), 'm_(xyA) := %% [(kNm)/m]', 'Sarkok gátolt felemelkedéséből származó csvarónyomaték');
 
         if ($f3->_m_y >= $f3->_m_x) {
             $blc->label('yes', '$m_y >= m_x$');
         } else {
             $blc->label('no', '$m_y < m_x$');
         }
-
-
-
-
-
 
 
         $blc->h1('Lemezekre vonatkozó szerkesztési szabályok');

@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types = 1);
+// Mechanical analysis of steel sections according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * Mechanical analysis of steel sections according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
 
 Class SteelSection
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->toc();
 
@@ -23,10 +23,10 @@ Class SteelSection
 
         $ec->sectionFamilyList();
         $ec->sectionList($f3->_sectionFamily);
-        $ec->saveSectionData($f3->_sectionName, true);
+        $ec->spreadSectionData($f3->_sectionName, true);
 
-        $ec->matList('mat', 'S235', 'Acél anyagminőség');
-        $ec->saveMaterialData($f3->_mat, false);
+        $ec->matList('mat', 'S235', ['', 'Acél anyagminőség']);
+        $ec->spreadMaterialData($f3->_mat, '');
         $blc->numeric('t', ['t', 'Lemezvastagság'], 10, 'mm');
         $blc->txt('*'.$f3->_sectionName.'* legnagyobb lemezvastagsága: $t_(max) = '. 10*max($f3->_sectionData['tf'], $f3->_sectionData['tw']).' [mm]$');
 
@@ -45,24 +45,24 @@ Class SteelSection
         $blc->region1();
 
         if ($f3->_A_v == 0) {
-            $blc->def('A_v', $f3->_sectionData['Az']*100, 'A_v = A_(z,'.$f3->_sectionName.') = %% [mm^2]', 'Nyírási keresztmetszet');
+            $blc->def('A_v', $f3->_sectionData['Az']*100, 'A_v = A_(z, '.$f3->_sectionName.') = %% [mm^2]', 'Nyírási keresztmetszet');
         }
 
         if ($f3->_A == 0) {
-            $blc->def('A', $f3->_sectionData['Ax']*100, 'A = A_(x,"'.$f3->_sectionName.'") = %% [mm^2]', 'Húzási keresztmetszet');
+            $blc->def('A', $f3->_sectionData['Ax']*100, 'A = A_(x, '.$f3->_sectionName.') = %% [mm^2]', 'Húzási keresztmetszet');
         }
 
         if ($f3->_Wpl == 0) {
-            $blc->def('Wpl', $f3->_sectionData['W1pl']*1000, 'W_(pl) = W_(1,pl,"'.$f3->_sectionName.'") = %% [mm^3]', 'Képlékeny keresztmetszeti modulus');
+            $blc->def('Wpl', $f3->_sectionData['W1pl']*1000, 'W_(pl) = W_(1, pl, '.$f3->_sectionName.') = %% [mm^3]', 'Képlékeny keresztmetszeti modulus');
         }
 
         if ($f3->_Wel == 0) {
-            $blc->def('Wel', $f3->_sectionData['W1elt']*1000, 'W_(el) = W_(1,el,t,"'.$f3->_sectionName.'") = %% [mm^3]', 'Rugalmas keresztmetszeti modulus');
+            $blc->def('Wel', $f3->_sectionData['W1elt']*1000, 'W_(el) = W_(1, el, t, '.$f3->_sectionName.') = %% [mm^3]', 'Rugalmas keresztmetszeti modulus');
         }
 
-        $blc->boo('calcAnet', 'Eltérő nettó keresztmetszet', false);
+        $blc->boo('calcAnet', ['', 'Eltérő nettó keresztmetszet'], false);
         if ($f3->_calcAnet) {
-            $blc->numeric('n', 'Csavarok száma', 0, '', 'Nettó keresztmetszet számítás csavarszámból. Nemnulla esetén $A_(n et)$ számítása innen.');
+            $blc->numeric('n', ['n', 'Csavarok száma'], 0, '', 'Nettó keresztmetszet számítás csavarszámból. Nemnulla esetén $A_(n et)$ számítása innen.');
             $ec->boltList('btName');
             $d0 = $ec->boltProp($f3->_btName, 'd0');
             if ($f3->_n != 0) {
@@ -77,7 +77,7 @@ Class SteelSection
         $blc->h1('Nyírt keresztmetszet');
         $blc->note('[Szürke 2007: 5.1.5 41.o]');
         $blc->success0();
-            $blc->def('VplRd', \H3::n2($ec->VplRd($f3->_A_v, $f3->_mat, $f3->_t)), 'V_(c,Rd) = V_(pl,Rd) = (A_v*f_y)/(sqrt(3)*gamma_(M0)) = %% [kN]', 'Nyírási ellenállás 1 és 2. kmo. esetén');
+            $blc->def('VplRd', H3::n2($ec->VplRd((float)$f3->_A_v, $f3->_mat, (float)$f3->_t)), 'V_(c,Rd) = V_(pl,Rd) = (A_v*f_y)/(sqrt(3)*gamma_(M0)) = %% [kN]', 'Nyírási ellenállás 1 és 2. kmo. esetén');
         $blc->success1();
         $blc->note('3 és 4. kmo. esetén $V_(c,Rd) = (A_w*f_y)/(sqrt(3)*gamma_(M0))$ *H* és *I* szelvénynél. Általános esetben $(I*t)/S*f_y/(sqrt(3)*gamma_(M0))$');
         $blc->label($f3->_VEd/$f3->_VplRd, 'Nyírási kihasználtság');
@@ -86,9 +86,9 @@ Class SteelSection
         $blc->h1('Hajlított keresztmetszet');
         $blc->note('[Szürke 2007: 5.1.4 41.o]');
         $blc->success0();
-            $blc->def('McRdpl', \H3::n2($ec->McRd($f3->_Wpl, $f3->_fy)), 'M_(c,Rd,pl) = (W_(pl)*f_y)/gamma_(M0) = %% [kNm]', '1 és 2. kmo. esetén');
+            $blc->def('McRdpl', H3::n2($ec->McRd($f3->_Wpl, $f3->_fy)), 'M_(c,Rd,pl) = (W_(pl)*f_y)/gamma_(M0) = %% [kNm]', '1 és 2. kmo. esetén');
         $blc->success1();
-        $blc->def('McRdel', \H3::n2($ec->McRd($f3->_Wel, $f3->_fy)), 'M_(c,Rd,el) = (W_(el)*f_y)/gamma_(M0) = %% [kNm]', '3 . kmo. esetén');
+        $blc->def('McRdel', H3::n2($ec->McRd($f3->_Wel, $f3->_fy)), 'M_(c,Rd,el) = (W_(el)*f_y)/gamma_(M0) = %% [kNm]', '3 . kmo. esetén');
         $blc->note('4. kmo. esetén $W_(eff)$ hatékony keresztmetszet rugalmas keresztmetszeti modulussal kell számolni.');
         $blc->note('Nyomott zónában a nem oválfuratos lyukgyengítést nem kell figyelembe venni. Húzott öv lyukgyengítésére vizsgálat szükséges:');
         $blc->txt('Húzott öv lyukgyengítése elhagyható, ha az alábbi feltétel teljesül:', '$A_(f,n et)$ az öv nettó keresztmetszeti területe, $A_f$ az öv bruttó keresztmetszeti területe.');
@@ -101,17 +101,17 @@ Class SteelSection
 
         $blc->h1('Hajlítás és nyírás kölcsönhatása');
         if ($f3->_VEd >= 0.5*$f3->_VplRd) {
-            $blc->math('V_(Ed) = '.$f3->_VEd.'[kN] %%% >= %%% 0.5*V_(c,Rd) = '. \H3::n2(0.5*$f3->_VplRd).' [kN]');
+            $blc->math('V_(Ed) = '.$f3->_VEd.'[kN] %%% >= %%% 0.5*V_(c,Rd) = '. H3::n2(0.5*$f3->_VplRd).' [kN]');
             $blc->txt('Ezért a kölcsönhatás figyelembe veendő!');
-            $blc->def('rho', \H3::n4(pow(((2*$f3->_VEd)/$f3->_VplRd - 1), 2)), 'rho = ((2*V_(Ed))/V_(pl,Rd) - 1)^2 = %%');
+            $blc->def('rho', H3::n4(pow(((2*$f3->_VEd)/$f3->_VplRd - 1), 2)), 'rho = ((2*V_(Ed))/V_(pl,Rd) - 1)^2 = %%');
             $blc->note('Nyomatéki teherbírás számításakor a folyáshatárt a nyírt területen $(1 - rho)$ csökkentő tényezővel kell figyelembe venni.');
             $blc->txt('1 és 2. kmo. nagy tengely körül hajlított I szelvények esetében a nyomatéki teherbírás:');
             $blc->math('A_w = A_v = '.$f3->_A_v.' [mm^2] %%% t_w = t = '.$f3->_t.' [mm]', 'Gerinc keresztmetszeti terület és gerincvastagság értékadása.');
-            $blc->def('MyVRd', \H3::n2(($f3->_Wpl - ($f3->_rho*pow($f3->_A_v, 2))/(4*$f3->_t))*($f3->_fy/($f3->__GM0*1000000))), 'M_(y,V,Rd) = (W_(pl,y) - (rho*A_w^2)/(4*t_w))*f_y/gamma_(M0) = %% [kNm]', '');
+            $blc->def('MyVRd', H3::n2(($f3->_Wpl - ($f3->_rho*pow($f3->_A_v, 2))/(4*$f3->_t))*($f3->_fy/($f3->__GM0*1000000))), 'M_(y,V,Rd) = (W_(pl,y) - (rho*A_w^2)/(4*t_w))*f_y/gamma_(M0) = %% [kNm]', '');
             $blc->txt('', 'De: $M_(y,V,Rd) < M_(c,Rd)$');
             $blc->note('Rugalmas számítás során a 3. és 4. kmo. szelvényekre a kölcsönhatást a feszültség alapú általános formulával kell meghatározni.');
         } else {
-            $blc->math('V_(Ed) = '.$f3->_VEd.'[kN] %%% le %%% 0.5*V_(c,Rd) = '. \H3::n2(0.5*$f3->_VplRd).' [kN]');
+            $blc->math('V_(Ed) = '.$f3->_VEd.'[kN] %%% le %%% 0.5*V_(c,Rd) = '. H3::n2(0.5*$f3->_VplRd).' [kN]');
             $blc->label('yes', 'Kölcsönhatás vizsgálata nem szükséges.');
         }
 

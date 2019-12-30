@@ -1,32 +1,34 @@
-<?php
+<?php declare(strict_types = 1);
+// Analysis of baseplate in RC elements according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * Analysis of baseplate in RC elements according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
+use resist\SVG\SVG;
 
 Class Baseplate
 {
-    private $concrete;
+    private Concrete $concrete;
 
-    public function __construct(\Calculation\Concrete $concrete)
+    public function __construct(Concrete $concrete)
     {
         $this->concrete = $concrete;
     }
 
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->region0('mat', 'Anyagok');
-            $ec->matList('steelMaterialName', 'S235', 'Lemez anyag', 'steel');
-            $ec->saveMaterialData($f3->_steelMaterialName, 's');
-            $ec->matList('anchorMaterialName', 'B500', 'Horgony anyag', 'steels');
-            $ec->saveMaterialData($f3->_anchorMaterialName, 'a');
-            $ec->matList('concreteMaterialName', 'C25/30', 'Beton anyag', 'concrete');
-            $ec->saveMaterialData($f3->_concreteMaterialName, 'c');
+            $ec->matList('steelMaterialName', 'S235', ['', 'Lemez anyag'], 'steel');
+            $ec->spreadMaterialData($f3->_steelMaterialName, 's');
+            $ec->matList('anchorMaterialName', 'B500', ['', 'Horgony anyag'], 'rebar');
+            // TODO make it work with other steels
+            $ec->spreadMaterialData($f3->_anchorMaterialName, 'a');
+            $ec->matList('concreteMaterialName', 'C25/30', ['', 'Beton anyag'], 'concrete');
+            $ec->spreadMaterialData($f3->_concreteMaterialName, 'c');
         $blc->region1();
 
         $blc->info0('Erők:');
@@ -41,19 +43,19 @@ Class Baseplate
             $blc->numeric('ha', ['h_a', 'Szélső lehorgonyzások közti függőleges távolság'], 250, 'mm', '');
             $blc->input('nr', ['n_r', 'Horgony sorok száma'], 2, '', '', 'numeric|min_numeric,2');
             $blc->input('nc', ['n_c', 'Horgony oszlopok száma'], 2, '', '', 'numeric|min_numeric,2');
-            $blc->input('nu', ['n_u', 'Felső, húzott lehorgonyzás sorok száma'], 1, '', 'Húzás felvételéhez', 'numeric|max_numeric,'.\H3::n0($f3->_nr - 1.0).'|min_numeric,1');
+            $blc->input('nu', ['n_u', 'Felső, húzott lehorgonyzás sorok száma'], 1, '', 'Húzás felvételéhez', 'numeric|max_numeric,'.H3::n0($f3->_nr - 1.0).'|min_numeric,1');
             $ec->rebarList('phi', 16, ['phi', 'Horgony átmérő'], '');
-            $blc->input('ht', ['h_t', 'Húzott sorok közti távolság'], 50, 'mm', '', 'numeric|max_numeric,'.\H3::n0($f3->_ha/($f3->_nr - 1)).'|min_numeric,'. 2.0*$f3->_phi);
-            $blc->boo('useShearProfile', 'Nyírószelvény alkalmazása', false);
+            $blc->input('ht', ['h_t', 'Húzott sorok közti távolság'], 50, 'mm', '', 'numeric|max_numeric,'.H3::n0($f3->_ha/($f3->_nr - 1)).'|min_numeric,'. 2.0*$f3->_phi);
+            $blc->boo('useShearProfile', ['', 'Nyírószelvény alkalmazása'], false);
             if ($f3->_useShearProfile) {
-                $blc->boo('useCustomShearA', 'Egyedi keresztmetszet megadása', false);
+                $blc->boo('useCustomShearA', ['', 'Egyedi keresztmetszet megadása'], false);
                 if ($f3->_useCustomShearA) {
                     $blc->numeric('shearProfileA', ['A_v', 'Nyírási keresztmetszet'], 0, 'mm^2');
                 } else {
                     $ec->sectionFamilyList('shearProfileFamily');
                     $ec->sectionList($f3->_shearProfileFamily, 'shearProfileName');
-                    $ec->saveSectionData($f3->_shearProfileName, true, 'shearProfileData');
-                    $blc->lst('shearProfileProp', ['Ax teljes km alkalmazása' => 'Ax', 'Az' => 'Az', 'Ay' => 'Ay'], 'Nyírási felület választása', 'Ax');
+                    $ec->spreadSectionData($f3->_shearProfileName, true, 'shearProfileData');
+                    $blc->lst('shearProfileProp', ['Ax teljes km alkalmazása' => 'Ax', 'Az' => 'Az', 'Ay' => 'Ay'], ['', 'Nyírási felület választása'], 'Ax');
                     $blc->def('shearProfileA', $f3->_shearProfileData[$f3->_shearProfileProp]*100, 'A_(v, "'.$f3->_shearProfileName.'") = %% [mm^2]; "'.$f3->_steelMaterialName.'"');
                 }
             }
@@ -61,17 +63,17 @@ Class Baseplate
 
         $blc->def('nv', ($f3->_nr - $f3->_nu)*$f3->_nc, 'n_v = %%', 'Nyíráshozhoz figyelembevett horgonyok száma');
         $blc->def('nt', $f3->_nu*$f3->_nc, 'n_t = %%', 'Húzáshoz figyelembevett horgonyok száma');
-        $blc->def('As', \H3::n0($ec->A($f3->_phi)), 'A_s = %% [mm^2]', 'Egy horgony keresztmetszete');
+        $blc->def('As', H3::n0($ec->A($f3->_phi)), 'A_s = %% [mm^2]', 'Egy horgony keresztmetszete');
 
         // SVG init
         $e = 3*$f3->_phi; // Peremtávolság
         $xp = 2*$e + $f3->_ba; // Plate dimensions
         $yp = 2*$e + $f3->_ha;
-        $pv = $f3->_ha/($f3->_nr - 1); // Vertical order
+//        $pv = $f3->_ha/($f3->_nr - 1); // Vertical order
         $ph = $f3->_ba/($f3->_nc - 1); // Horizontal order
         $lever = $f3->_ha - ($f3->_nu - 1)*$f3->_ht/2 - ($f3->_nr - $f3->_nu - 1)*$f3->_ht/2;
         $lever0 = $e + (($f3->_nu - 1)*$f3->_ht)/2;
-        $svg = new \resist\SVG\SVG(600, 400); // TODO DI
+        $svg = new SVG(600, 400); // TODO DI
         // Column
         $svg->setFill('#eeeeee');
         $svg->addRectangle(10, 10, 60, 380);
@@ -84,6 +86,7 @@ Class Baseplate
         $svg->addRectangle(0, 0, $xp, $yp, 200, 50);
         $svg->setFill('red');
         // Anchors for tension
+        $yi = 0;
         for ($row = 0; $row <= $f3->_nu - 1; $row++) {
             for ($col = 0; $col <= $f3->_nc - 1; $col++) {
                 $xi = ($e + $col*$ph);
@@ -109,8 +112,8 @@ Class Baseplate
         $svg->addDimV($e, $yp - 2*$e, 545, $yp - 2*$e, 50); // Plate inner vertical
         $svg->addDimH($e, $xp - 2*$e, 370, $xp - 2*$e, 200); // Plate inner horizontal
         $svg->addDimH(0, $e, 30, $e, 200); // e2
-        $svg->addDimH($e, $ph, 30, \H3::n0($ph), 200); // p2
-        ($f3->_nu > 1)?$svg->addDimV($e, $f3->_ht, 180, \H3::n0($f3->_ht), 50):false; // p1
+        $svg->addDimH($e, $ph, 30, H3::n0($ph), 200); // p2
+        ($f3->_nu > 1)?$svg->addDimV($e, $f3->_ht, 180, H3::n0($f3->_ht), 50):false; // p1
         $svg->addDimV(0, $e, 180, $e, 50); // e1
         $svg->addDimV($lever0, $lever, 520, $lever, 50); // vertical lever
         $svg->reset();
@@ -126,9 +129,9 @@ Class Baseplate
         $blc->svg($svg);
 
         $blc->h1('Húzott horgonyok ellenőrzése');
-        $blc->def('NRda', \H3::n2(($f3->_As*$f3->_afyd)/1000), 'N_(Rd,a) = A_s * f_(yd,a) = %% [kN]', 'Egy horgony húzási ellenállása');
+        $blc->def('NRda', H3::n2(($f3->_As*$f3->_afyd)/1000), 'N_(Rd,a) = A_s * f_(yd,a) = %% [kN]', 'Egy horgony húzási ellenállása');
         $blc->def('lever', $lever, 'l = %% [mm]', 'Nyomaték erőkarja húzott és nyomott sorok súlypontjához');
-        $blc->def('NEdM', \H3::n2($f3->_MEd/($f3->_lever/1000)), 'N_(Ed,M) = M_(Ed)/l = %% [kN]', 'Nyomatékból származó erőpár');
+        $blc->def('NEdM', H3::n2($f3->_MEd/($f3->_lever/1000)), 'N_(Ed,M) = M_(Ed)/l = %% [kN]', 'Nyomatékból származó erőpár');
         $blc->note('Húzásra csak a felső sor horgonyai vannak figyelembe véve!');
         $blc->def('NRdt', $f3->_NRda*$f3->_nt, 'N_(Rd,t) = n_t*N_(Rd,a) = %% [kN]', 'Húzott (felső) horgonyok húzási ellenállása');
         $blc->txt('Húzott (felső) horgonyok kihasználtsága:');
@@ -139,32 +142,32 @@ Class Baseplate
         $blc->h1('Nyírt horgonyok ellenőrzése');
         if ($f3->_useShearProfile) {
             $blc->info0('Nyírt csap számítása:');
-                $blc->def('VplRdp', \H3::n1(($f3->_shearProfileA*$f3->_afyd)/(sqrt(3)*$f3->__GM0*1000)), 'V_(pl,Rd,p) = %% [kN]', 'Nyírási csap ellenállása');
+                $blc->def('VplRdp', H3::n1(($f3->_shearProfileA*$f3->_afyd)/(sqrt(3)*$f3->__GM0*1000)), 'V_(pl,Rd,p) = %% [kN]', 'Nyírási csap ellenállása');
                 $f3->_VEd = $f3->_VEd - $f3->_VplRdp;
                 $blc->math('V_(Ed) := V_(Ed) - V_(pl,Rd,p) = '.$f3->_VEd.'  [kN]', 'Nyírási igénybevétel csökkentve a továbbiakban mindenhol');
             $blc->info1();
         }
         $blc->note('Nyírásra csak az alsó sor horgonyai vannak figyelembe véve!');
-        $blc->def('VplRda', \H3::n1(($ec->A($f3->_phi)*$f3->_afyd)/(sqrt(3)*$f3->__GM0*1000)), 'V_(pl,Rd,a) = %% [kN]', 'Egy horgony nyírási ellenállása');
+        $blc->def('VplRda', H3::n1(($ec->A($f3->_phi)*$f3->_afyd)/(sqrt(3)*$f3->__GM0*1000)), 'V_(pl,Rd,a) = %% [kN]', 'Egy horgony nyírási ellenállása');
         $blc->def('VplRd', $f3->_nv*$f3->_VplRda, 'V_(pl,Rd) = n_v*V_(pl,Rd,a) = %% [kN]', 'Nyírt (alsó) horgonyok nyírási ellenállása');
         $blc->txt('Nyírt (alsó) horgonyok kihasználtsága:');
         $blc->label($f3->_VEd/$f3->_VplRd,'nyírási kihasználtság');
 
         $blc->h1('Nyírás-húzás interakció összes horgonyra');
         $Uvt = $f3->_VEd/(($f3->_nt + $f3->_nv)*$f3->_VplRda) + $f3->_NEd/(1.4*($f3->_nt + $f3->_nv)*$f3->_NRda);
-        $blc->math('V_(Ed)/((n_t+n_v)*V_(pl,Rd,a)) + N_(Ed)/(1.4*(n_t+n_v)*N_(Rd,a)) = '.\H3::n1($Uvt*100.0).'[%]', '$M_(Ed)$ figyelmenkívül hagyásával');
+        $blc->math('V_(Ed)/((n_t+n_v)*V_(pl,Rd,a)) + N_(Ed)/(1.4*(n_t+n_v)*N_(Rd,a)) = '.H3::n1($Uvt*100.0).'[%]', '$M_(Ed)$ figyelmenkívül hagyásával');
         $blc->label($Uvt, 'interakciós kihaználtság');
 
         $blc->h1('Hajlított lemez ellenőrzése', 'Függőleges erőkarra, húzásból és nyomatékból');
-        $blc->boo('useRigid', 'Befogott lemez', false, '');
+        $blc->boo('useRigid', ['', 'Befogott lemez'], false, '');
         ($f3->_useRigid)?$rigidFactor = 8:$rigidFactor = 4;
         $blc->def('MEdp',$f3->_MEd/2 + ($f3->_NEd*($f3->_lever/1000))/$rigidFactor, 'M_(Ed,p) = M_(Ed)/2 + (N_(Ed)*l)/'.$rigidFactor.' = %% [kNm]','Nyomaték a lemezben');
         $blc->def('Ws',floor(($f3->_ba*pow($f3->_tb, 2))/6), 'W_s = (b_a*t_b^2)/6 = %% [mm^3]', 'Gyenge tengely körüli keresztmetszeti modulus');
-        $blc->def('sigmaEds',\H3::n1(($f3->_MEdp/$f3->_Ws)*1000000), 'sigma_(Ed,s) = M_(Ed)/W_s = %%; f_(y) = '.$f3->_sfy.' [N/(mm^2)]', 'Lemez feszültség');
+        $blc->def('sigmaEds',H3::n1(($f3->_MEdp/$f3->_Ws)*1000000), 'sigma_(Ed,s) = M_(Ed)/W_s = %%; f_(y) = '.$f3->_sfy.' [N/(mm^2)]', 'Lemez feszültség');
         $blc->label($f3->_sigmaEds/$f3->_sfy,'lemez rugalmas kihasználtság');
 
         $blc->h1('Lehorgonyzási hossz számítása');
-        $blc->boo('usenprov', 'Húzott horgony kihasználtság figyelembevétele', false, '$n_(t,req)/n_t = '.\H3::n3($f3->_ntreq/$f3->_nt).'$ alkalmazható csökkentő tényező húzás alapján');
+        $blc->boo('usenprov', ['', 'Húzott horgony kihasználtság figyelembevétele'], false, '$n_(t,req)/n_t = '.H3::n3($f3->_ntreq/$f3->_nt).'$ alkalmazható csökkentő tényező húzás alapján');
         $nprov = 1;
         $nreq = 1;
         if ($f3->_usenprov) {
@@ -178,11 +181,11 @@ Class Baseplate
 
         $blc->h1('Horgony-varrat meghatározása', '');
         $wFactor = 1;
-        $blc->boo('useDoubleWeld', 'Dupla varrat alkalmazása', true, '');
+        $blc->boo('useDoubleWeld', ['', 'Dupla varrat alkalmazása'], true, '');
         if ($f3->_useDoubleWeld) {
             $wFactor = 2;
         }
-        $blc->def('lw', \H3::n1($wFactor*$f3->_phi*pi()), 'l_w = %% [mm]', 'Egy- vagy kétszeres varrathossz horgony kerülete mentén, teljes kerület figyelembevételével');
+        $blc->def('lw', H3::n1($wFactor*$f3->_phi*pi()), 'l_w = %% [mm]', 'Egy- vagy kétszeres varrathossz horgony kerülete mentén, teljes kerület figyelembevételével');
         $blc->def('betaw', $f3->_sbetaw, 'beta_w = %%', 'Hegesztési tényező');
         $blc->def('NwEd', ($f3->_NEdsum/$f3->_nt)/$f3->_lw * 1000, 'N_(w,Ed) = N_(Ed,sum)/n_t/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel húzásból');
         $blc->def('VwEd', ($f3->_VEd/$f3->_nv)/$f3->_lw * 1000, 'V_(w,Ed) = V_(Ed)/n_v/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel nyírásból');
@@ -193,8 +196,8 @@ Class Baseplate
 
         $blc->h1('Beton pecsétnyomás ellenőrzése nyírt csapok alatt');
         $blc->note('*[Vasbeton szerkezetek (2017) 6.10. 55.o.]*. Nyíróerő átadás $3*phi$ hosszon számítva, fél hengerpalást felületre. Térbeli feszültségállapot szabadon felléphet.');
-        $blc->def('FRd', \H3::n2($f3->_phi*pi()*0.5*3*$f3->_phi*3*$f3->_cfcd/1000), 'F_(Rd) = A_(cl)*alpha*f_(cd) = (phi*pi)/2*(3*phi)*3*f_(cd) = %% [kN]');
-        $blc->def('FEd', \H3::n2($f3->_VEd/$f3->_nv), 'F_(Ed) = V_(Ed)/n_v = %% [kN]');
+        $blc->def('FRd', H3::n2($f3->_phi*pi()*0.5*3*$f3->_phi*3*$f3->_cfcd/1000), 'F_(Rd) = A_(cl)*alpha*f_(cd) = (phi*pi)/2*(3*phi)*3*f_(cd) = %% [kN]');
+        $blc->def('FEd', H3::n2($f3->_VEd/$f3->_nv), 'F_(Ed) = V_(Ed)/n_v = %% [kN]');
         $blc->label($f3->_FEd/$f3->_FRd,'kihasználtság');
 
         //TODO Egyszerűsített Csap táblázat

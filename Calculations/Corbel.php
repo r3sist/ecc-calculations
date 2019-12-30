@@ -1,15 +1,13 @@
-<?php
-// Calculation class for ECC framework
-// Analysis RC columns' corbels according to Eurocodes
-// (c) Bence VÁNKOS | https://structure.hu
+<?php declare(strict_types = 1);
+// Analysis RC columns' corbels according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-use \Calculation\Column;
-use \Calculation\Concrete;
 use \Base;
 use \Ecc\Blc;
 use \Ec\Ec;
+use \H3;
 
 Class Corbel
 {
@@ -26,7 +24,7 @@ Class Corbel
     {
         $blc->note('Lásd még: *EC2 6.5.: Tervezés rácsmodellek alapján.*');
 
-        $this->column->moduleColumnData($f3, $blc, $ec);
+        $this->column->moduleColumnData();
         $blc->txt('', '$b$ méret a rövidkonzol szélessége');
 
         $blc->region0('img', 'Elrendezési képek');
@@ -52,13 +50,13 @@ Class Corbel
         $ec->rebarList('phiwh', 10, ['phi_(s,w,h)', 'Felvett vízszintes kengyel vasátmérő'], '');
         $ec->rebarList('phiwv', 12, ['phi_(s,w,v)', 'Felvett függőleges kengyel vasátmérő'], '');
         $ec->rebarList('phiMain', 20, ['phi_(s,mai n)', 'Felvett hurkos fővas átmérő *(A)*'], '');
-        $blc->lst('mainType', ['Hurkos fővas, lehorgonyzás hagyományosan' => 'hook', 'Csapos szerelvény kialakítás' => 'custom'], 'Húzott fővas kialakítása', 'hook');
+        $blc->lst('mainType', ['Hurkos fővas, lehorgonyzás hagyományosan' => 'hook', 'Csapos szerelvény kialakítás' => 'custom'], ['', 'Húzott fővas kialakítása'], 'hook');
         if ($f3->_mainType == 'hook') {
             $blc->def('nMain', 2, 'n_(s,mai n) = %%', 'Hurkos fővasnak két szára van.');
             $blc->note('Nagyon széles konzolba beférne 2 keskeny hurkos vas egymás mellé egy sorba, de itt csak kettővel számol.');
         } else {
             $nMainMax = ($f3->_b - 2*$f3->_cnom - 2*$f3->_phiwv - 2*$f3->_phiwh + 2*$f3->_phiMain)/(3*$f3->_phiMain);
-            $blc->def('nMainMax', floor($nMainMax), 'n_(s,mai n, max) = (b-2*c_(nom) - 2*phi_(s,w,v) - 2*phi_(s,w,h) + 2*phi_(s,mai n))/(3*phi_(s,mai n)) = floor('.\H3::n2($nMainMax).') = %%', 'Fővasak $2*phi$ távolságra egymástól, vízszintes kengyelen belül');
+            $blc->def('nMainMax', floor($nMainMax), 'n_(s,mai n, max) = (b-2*c_(nom) - 2*phi_(s,w,v) - 2*phi_(s,w,h) + 2*phi_(s,mai n))/(3*phi_(s,mai n)) = floor('. H3::n2($nMainMax).') = %%', 'Fővasak $2*phi$ távolságra egymástól, vízszintes kengyelen belül');
             $blc->numeric('nMain', ['n_(s,mai n)', 'Alkalmazott $phi '.$f3->_phiMain.'$ hurkos fővasak száma egy sorban a szerelvényben'], 2);
         }
 
@@ -69,7 +67,7 @@ Class Corbel
 
         $blc->def('deltaMain', max(24 + $f3->_phiMain, 2*$f3->_phiMain), 'Delta_(s,mai n) = %% [mm]', '2 fővas sor közti távolság, $24 [mm]$ max szemcseátmérőre vagy $2 phi$-re');
         $blc->def('delta', 10, 'delta = 10 [mm]', 'Véletlen vaselmozdulás');
-        $blc->def('d', \H3::n0($f3->_hc - $f3->_cnom - $f3->_phiwv - ($f3->_nMainRow*$f3->_phiMain + ($f3->_nMainRow - 1)*$f3->_deltaMain)/2) - $f3->_delta, 'd = h_c - c_(nom) - phi_(s,w,v) - (n_(s,mai n,row)*phi_(s,mai n) + (n_(s,mai n,row) - 1)*Delta_(s,mai n))/2 - delta = %% [mm]', 'Hatékony magasság húzott vaskép tengelyében');
+        $blc->def('d', H3::n0($f3->_hc - $f3->_cnom - $f3->_phiwv - ($f3->_nMainRow*$f3->_phiMain + ($f3->_nMainRow - 1)*$f3->_deltaMain)/2) - $f3->_delta, 'd = h_c - c_(nom) - phi_(s,w,v) - (n_(s,mai n,row)*phi_(s,mai n) + (n_(s,mai n,row) - 1)*Delta_(s,mai n))/2 - delta = %% [mm]', 'Hatékony magasság húzott vaskép tengelyében');
         $blc->def('aH', ($f3->_hc - $f3->_d) + $f3->_tp, 'a_H = (h_c - d) - t_p = %% [mm]', 'Vízszintes erő hatásvonala húzott vasaktól');
 
         $blc->info0();
@@ -87,30 +85,35 @@ Class Corbel
         $blc->def('sigmaRdmax', $f3->_k1*$f3->_upsilon*$f3->_cfcd, 'sigma_(Rd,max) = k_1*upsilon*f_(cd) = %% [N/(mm^2)]', 'Helyi nyomószilárdság');
         $blc->note('*(1)* csomópont mindhárom lapján egyforma nyomófeszültségek lépnek fel, a legmeredekebb $theta$ szögnél megegyezik a fenti helyi nyomószilárdsággal.');
 
-        $blc->def('x', \H3::n2($f3->_FEd/($f3->_b*$f3->_sigmaRdmax)*1000), 'x = F_(Ed)/(b*sigma_(Rd,max)) = %% [mm]', 'Derékszögű betonék $x$ mérete függőleges vetületi egyenletből');
+        $blc->def('x', H3::n2($f3->_FEd/($f3->_b*$f3->_sigmaRdmax)*1000), 'x = F_(Ed)/(b*sigma_(Rd,max)) = %% [mm]', 'Derékszögű betonék $x$ mérete függőleges vetületi egyenletből');
         $blc->math('tan(theta) = x/y = (d - y/2)/(x/2 + a_c + alpha*a_H ) to y to theta', 'Derékszögű betonék $y$ méretének meghatározása geometriai viszonyokból');
         $qa = -0.5;
         $qb = $f3->_d;
         $qc = -1*(0.5*pow($f3->_x, 2) + $f3->_ac*$f3->_x + $f3->_alpha*$f3->_aH*$f3->_x);
-        $blc->def('y1', $ec->quadratic($qa, $qb, $qc, 'root1'), 'y1 = %%');
-        $blc->def('y2', $ec->quadratic($qa, $qb, $qc, 'root2'), 'y2 = %%');
+        $roots = $ec->quadratic($qa, $qb, $qc, 4);
+        $blc->def('y1', $roots[0], 'y1 = %%');
+        $blc->def('y2', $roots[1], 'y2 = %%');
 
-        function getValidRoot($search, $rootsArray) {
+        function getValidRoot(float $search, array $rootsArray): ?float
+        {
             $closest = null;
             foreach ($rootsArray as $item) {
-                if ($closest === null || (abs($search - $closest) > abs($item - $search) && $item > 0)) {
+                $item = (float)$item;
+                if ($closest === null || (abs($search - (float)$closest) > abs($item - $search) && $item > 0)) {
                     $closest = $item;
+                    return $closest;
                 }
             }
-            return $closest;
+            return null;
         }
 
-        $blc->def('y', \H3::n2(getValidRoot($f3->_x, [$f3->_y1, $f3->_y2])), 'y = %% [mm]', 'Fizikailag lehetséges gyök választása');
+        $blc->def('y', H3::n2(getValidRoot($f3->_x, [$f3->_y1, $f3->_y2])), 'y = %% [mm]', 'Fizikailag lehetséges gyök választása');
         $blc->def('theta', rad2deg(atan($f3->_x/$f3->_y1)), 'theta = %% [deg]', '$N_c$ nyomott rácsrúd ferdesége');
         if ($f3->_theta <= 45) {
             $blc->danger0();
-                $blc->txt('$theta = '.$f3->_theta.' [deg]$: $45$ és $68 [deg]$ között kell lennie!');
-                $blc->txt('A ferde nyomóerő túl lapos. A rövidkonzol magassága vagy szélessége növelendő. $f_(cd)$ növelése nem gazdaságos.');
+                $blc->txt('$theta = '.H3::n2($f3->_theta).' [deg]$: $45$ és $68 [deg]$ között kell lennie!');
+                $blc->txt('A ferde nyomóerő túl lapos. A rövidkonzol magassága vagy szélessége növelendő.');
+                $blc->note('$f_(cd)$ növelése nem gazdaságos.');
             $blc->danger1();
         }
         if ($f3->_theta > 68) {
@@ -118,7 +121,7 @@ Class Corbel
                 $blc->txt('$theta = '.$f3->_theta.' [deg]$, de $45$ és $68 [deg]$ között kell lennie!');
                 $blc->txt('A rövidkonzol teljes magassága nem használható ki, a betonék túl magasra kerül.');
                 $blc->def('theta', 68, 'theta := %% [deg]', '$theta$ felülírása.');
-                $blc->def('y', \H3::n2($f3->_x/2.5), 'y = x/2.5 = %% [mm]', 'Derékszögű betonék $y$ mérete');
+                $blc->def('y', H3::n2($f3->_x/2.5), 'y = x/2.5 = %% [mm]', 'Derékszögű betonék $y$ mérete');
             $blc->danger1();
         }
 
@@ -129,17 +132,17 @@ Class Corbel
             $blc->danger('$a_c > z_0$, a vasbeton konzol nem méretezhető rövidkonzolként.');
         }
 
-        $blc->def('zNc', \H3::n1(($f3->_d - $f3->_z0)*cos(deg2rad($f3->_theta))), 'z_(Nc) = (d - z_0)*cos(theta) = %% [mm]', '$N_c$ hatásvonala a rövidkonzol belső-alsó sarkától');
-        $blc->def('NRd', \H3::n1((2*$f3->_zNc*$f3->_b*$f3->_cfcd)/1000), 'N_(Rd) = 2*z_(Nc)*b*f_(cd) = %% [kN]', 'Ferde beton rácsrúd által felvehető erő');
-        $blc->def('Nc', \H3::n1($f3->_FEd/sin(deg2rad($f3->_theta))), 'N_c = F_(Ed)/sin(theta) = %% [kN]', 'Függőleges vetületi egyensúlyi egyenlet');
+        $blc->def('zNc', H3::n1(($f3->_d - $f3->_z0)*cos(deg2rad($f3->_theta))), 'z_(Nc) = (d - z_0)*cos(theta) = %% [mm]', '$N_c$ hatásvonala a rövidkonzol belső-alsó sarkától');
+        $blc->def('NRd', H3::n1((2*$f3->_zNc*$f3->_b*$f3->_cfcd)/1000), 'N_(Rd) = 2*z_(Nc)*b*f_(cd) = %% [kN]', 'Ferde beton rácsrúd által felvehető erő');
+        $blc->def('Nc', H3::n1($f3->_FEd/sin(deg2rad($f3->_theta))), 'N_c = F_(Ed)/sin(theta) = %% [kN]', 'Függőleges vetületi egyensúlyi egyenlet');
         if($f3->_Nc < $f3->_NRd) {
-            $blc->label('yes', ''.\H3::n3($f3->_Nc/$f3->_NRd)*100 .' % Kihasználtság');
+            $blc->label('yes', ''. H3::n3($f3->_Nc/$f3->_NRd)*100 .' % Kihasználtság');
         } else {
             $blc->label('no', 'Nem felel meg, konzolmagasság növelése szükséges');
         }
 
         $blc->h1('Húzott fővas ellenőrzése');
-        $blc->def('Fs1', ceil(\H3::n2($f3->_y*$f3->_b*$f3->_sigmaRdmax + $f3->_HEd*1000)/1000), 'F_(s,1) = y*b*sigma_(Rd,max) + H_(Ed) = %% [kN]', 'Vasalással felvett erő nyomott rácsrúd teherbírásához');
+        $blc->def('Fs1', ceil(H3::n2($f3->_y*$f3->_b*$f3->_sigmaRdmax + $f3->_HEd*1000)/1000), 'F_(s,1) = y*b*sigma_(Rd,max) + H_(Ed) = %% [kN]', 'Vasalással felvett erő nyomott rácsrúd teherbírásához');
         $blc->def('Fs2', ceil(($f3->_ac/$f3->_z0)*$f3->_FEd + $f3->_HEd), 'F_(s,2) = F_(Ed)*a_c/z_0 + H_(Ed) = %% [kN]', 'Vasalással felvett erő nyomott függőleges teherből');
         $Fs3 = ceil((($f3->_ac/$f3->_z0 + ($f3->_HEd/$f3->_FEd)/(($f3->_hc-$f3->_d)/$f3->_z0 + 1)))*$f3->_FEd);
         $blc->note('*[Vasbeton szerkezetek (2017) 6.9. 53.o.]:* $F_(s) = F_(Ed)*(a_c/z_0 + H_(Ed)/F_(Ed) * (a_H(=h_c-d))/z_0 + 1)) = '.$Fs3.' [kN]$');
@@ -170,14 +173,14 @@ Class Corbel
             $blc->img('https://structure.hu/ecc/corbel4.jpg');
             $blc->txt('Pecsétnyomás számítása:');
             $blc->note('*[Vasbeton szerkezetek (2017) 6.10. 55.o.]*. Nyíróerő átadás $(3*phi)^2$ felületen. Térbeli feszültségállapot nem léphet fel szabadon, mert $2*phi$ távolságra vannak a vasak és $A_(cl)$ felület nem metszhet össze: $sqrt(A_(cl)/A_(c0)) := 1$');
-            $blc->def('FRd', \H3::n2(pow((3*$f3->_phiMain),2)*1*$f3->_cfcd/1000), 'F_(Rd) = A_(c0)*alpha*f_(cd) = (3*phi)^2*min{(3),(sqrt(A_(cl)/A_(c0))):}*f_(cd) = '.pow((3*$f3->_phiMain),2).'*1*'.$f3->_cfcd/1000.0.' = %% [kN]');
-            $blc->def('FEd', \H3::n2($f3->_Fs/($f3->_nMain*$f3->_nMainRow)), 'F_(Ed) = F_s/(phi_(s,mai n)*phi_(s,mai n,row)) '.$f3->_Fs.'/'.($f3->_nMain*$f3->_nMainRow).'= %% [kN]');
+            $blc->def('FRd', H3::n2(pow((3*$f3->_phiMain),2)*1*$f3->_cfcd/1000), 'F_(Rd) = A_(c0)*alpha*f_(cd) = (3*phi)^2*min{(3),(sqrt(A_(cl)/A_(c0))):}*f_(cd) = '.pow((3*$f3->_phiMain),2).'*1*'.$f3->_cfcd/1000.0.' = %% [kN]');
+            $blc->def('FEd', H3::n2($f3->_Fs/($f3->_nMain*$f3->_nMainRow)), 'F_(Ed) = F_s/(phi_(s,mai n)*phi_(s,mai n,row)) '.$f3->_Fs.'/'.($f3->_nMain*$f3->_nMainRow).'= %% [kN]');
             $blc->label($f3->_FEd/$f3->_FRd,'kihasználtság');
         }
 
         $blc->h2('Hosszvas lehorgonyzása pillérben');
         $blc->lst('alphaa', ['Egyenes: 1.0' => 1.0, 'Kampó, hurok, hajlítás: 0.7' => 0.7], ['alpha_a', 'Lehorgonyzás módja'], '1.0', '');
-        $blc->math('n_(requ)/n_(prov) = '.\H3::n4($f3->_nrequ/($f3->_nMain*$f3->_nMainRow)));
+        $blc->math('n_(requ)/n_(prov) = '. H3::n4($f3->_nrequ/($f3->_nMain*$f3->_nMainRow)));
         $this->concrete->moduleAnchorageLength($f3->_phiMain, $f3->_rfyd, $f3->_cfbd, $f3->_alphaa, $f3->_nrequ, $f3->_nMain*$f3->_nMainRow);
 
         $blc->h1('Kengyelezés');

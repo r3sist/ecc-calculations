@@ -1,26 +1,26 @@
-<?php
+<?php declare(strict_types = 1);
+// Dead load analysis according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * Dead load analysis according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
 
 Class Layers
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->note('Ha a réteghez nincs felületi súly megadva, vastagságból és térfogatsúlyból számol, egyébként a felületi súly a mértékadó.');
         $bulkName = 'layers';
         if ($f3->exists('POST._'.$bulkName)) {
             foreach ($f3->get('POST._'.$bulkName) as $key => $value) {
                 if (is_numeric($value['p']) && $value['p'] > 0) {
-                    $f3->set("POST._$bulkName.$key.pcalc", \V3::numeric($value['p']));
+                    $f3->set("POST._$bulkName.$key.pcalc", (float)$value['p']);
                 } else if (is_numeric($value['v']) && is_numeric($value['q'])) {
-                    $f3->set("POST._$bulkName.$key.pcalc", \V3::numeric($value['v'])*\V3::numeric($value['q'])/100);
+                    $f3->set("POST._$bulkName.$key.pcalc", (float)$value['v']*(float)$value['q']/100);
                 } else {
                     $f3->set("POST._$bulkName.$key.pcalc", 0);
                 }

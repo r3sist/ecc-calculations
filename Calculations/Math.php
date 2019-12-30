@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types = 1);
+// Math routines and incubator of test calculations for structural design - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * Math routines and incubator of test calculations for structural design - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
 
 Class Math
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->toc();
 
@@ -33,17 +33,17 @@ Class Math
         $blc->numeric('slope', ['', 'Lejtés'], 3, '% / °', '');
         $slope_deg = rad2deg(atan($f3->_slope/100));
         $slope_per = tan(deg2rad($f3->_slope))*100;
-        $blc->def('slope_deg', \H3::n2($slope_deg), $f3->_slope.'% = %% [deg]', '');
-        $blc->def('slope_per', \H3::n2($slope_per), $f3->_slope.'[deg] = %% [%]', '');
+        $blc->def('slope_deg', H3::n2($slope_deg), $f3->_slope.'% = %% [deg]', '');
+        $blc->def('slope_per', H3::n2($slope_per), $f3->_slope.'[deg] = %% [%]', '');
         $blc->numeric('L', ['L', 'Hossz'], 10, 'm', '');
-        $blc->def('hdeg', \H3::n2($f3->_L*$f3->_slope*0.01), 'h_('.$f3->_slope.'%) = %% [m]', 'Emelkedés ');
-        $blc->def('hper', \H3::n2($f3->_L*$slope_per*0.01), 'h_('.\H3::n2($slope_per).'%) = %% [m]', 'Emelkedés');
+        $blc->def('hdeg', H3::n2($f3->_L*$f3->_slope*0.01), 'h_('.$f3->_slope.'%) = %% [m]', 'Emelkedés ');
+        $blc->def('hper', H3::n2($f3->_L*$slope_per*0.01), 'h_('. H3::n2($slope_per).'%) = %% [m]', 'Emelkedés');
 
         $blc->h1('Hőmérséklet rudakon');
         $blc->math('L = '.$f3->_L.'[m]', 'Rúdhossz');
         $blc->def('alpha_T_st', number_format(0.000012, 6), 'alpha_(T,steel) = %% [1/K]', '');
         $blc->numeric('DeltaT', ['Delta T', 'Hőmérséklet változás'], 40, 'deg', '');
-        $blc->def('DeltaL', number_format($f3->_alpha_T_st*($f3->_L*1000)*$f3->_DeltaT, 2), 'Delta L = %% [mm]', '');
+        $blc->def('DeltaL', H3::n2($f3->_alpha_T_st*($f3->_L*1000)*$f3->_DeltaT), 'Delta L = %% [mm]', '');
 
         $blc->h1('Lineáris interpoláció');
         $blc->numeric('x1', ['x_1', ''], 1, '', '');
@@ -73,14 +73,14 @@ Class Math
         $blc->def('Al', $ec->A($f3->_d), 'A_(liqu i d) = %% [mm^2]');
         $blc->def('gs', 78.5, 'gamma_(steel) = %% [(kN)/m^3]', '');
         $blc->numeric('gl', ['gamma_(liqu i d)', 'Folyadék fajsúly'], 10, 'kN/m3', '');
-        $blc->def('qk', \H3::n3(($f3->_As/1000000)*$f3->_gs + ($f3->_Al/1000000)*$f3->_gl), 'q_k = A_(steel)*gamma_(sttel) + A_(liqu i d)*gamma_(liqu i d) = %% [(kN)/(fm)]');
+        $blc->def('qk', H3::n3(($f3->_As/1000000)*$f3->_gs + ($f3->_Al/1000000)*$f3->_gl), 'q_k = A_(steel)*gamma_(sttel) + A_(liqu i d)*gamma_(liqu i d) = %% [(kN)/(fm)]');
 
         $blc->img('https://structure.hu/ecc/piperack0.jpg', 'Erőterv/APOLLO');
 
         $blc->h1('Mean diameter');
         $blc->note('The value of the mean diameter $d_m$ is estimated as follows. The distance across flats $s$ of the nut is given in the standard *ISO 898-2*. By approximately ignoring the corner rounding for a perfect hexagon the relation of the distance across points $s\'$ and the distance across flats $s$ is $s\' = s / cos(30°) = 1.1547*s$. Therefore the mean diameter $d_m$ is approximately: $d_m = (s + 1.1547*s)/2=1.07735*s$');
         $blc->numeric('s', ['s', 'Szemben lévő felületek távolsága csavarfejen'], 10, 'mm', 'ISO 898-2');
-        $blc->def('dm', \H3::n1(1.07735*$f3->_s), 'd_m = %% [mm]', '');
+        $blc->def('dm', H3::n1(1.07735*$f3->_s), 'd_m = %% [mm]', '');
        /* $blc->h1('Teherelemzés');
         $blc->h2('Terhek');
         $blc->input('m', ['m', 'Teherátadási módosító tényező'], 1.15, '', 'Trapézlemez többtámaszú hatása, közbenső támasznál; 1-től 1.25-ig', 'numeric|min_numeric,1|max_numeric,2');

@@ -1,17 +1,18 @@
-<?php
+<?php declare(strict_types = 1);
+// Snow load analysis according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * Snow load analysis according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
+use \resist\SVG\SVG;
 
 Class Snow
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->region0('baseData', 'Alap adatok');
             $blc->numeric('A', ['A', 'Tengerszint feletti magasság'], 400, 'm');
@@ -28,8 +29,8 @@ Class Snow
 
         // =============================================================================================================
         $blc->h1('Hóteher félnyereg-, nyereg- és összekapcsolódó nyeregtetők esetén');
-        $blc->numeric('alpha', ['alpha', 'Nyeregtető hajlása'], 0, '$[deg]$');
-        $blc->boo('bs', 'Akadályozott hólecsúszás', 0, '');
+        $blc->numeric('alpha', ['alpha', 'Nyeregtető hajlása'], 0, '°');
+        $blc->boo('bs', ['', 'Akadályozott hólecsúszás'], false, '');
 
         if($f3->_bs) {
             $_3060_mu1 = 0.8;
@@ -63,12 +64,12 @@ Class Snow
             $_find = '60-';
         }
 
-        $f3->_mu_1 = \H3::n2($_mu[$_find]['mu1']);
-        $f3->_mu_2 = \H3::n2($_mu[$_find]['mu2']);
-        $f3->_mu_3 = \H3::n2($_mu[$_find]['mu3']);
-        $f3->_s_1 = \H3::n2($f3->_mu_1*$f3->_s_k);
-        $f3->_s_2 = \H3::n2($f3->_mu_2*$f3->_s_k);
-        $f3->_s_3 = \H3::n2($f3->_mu_3*$f3->_s_k);
+        $f3->_mu_1 = H3::n2($_mu[$_find]['mu1']);
+        $f3->_mu_2 = H3::n2($_mu[$_find]['mu2']);
+        $f3->_mu_3 = H3::n2($_mu[$_find]['mu3']);
+        $f3->_s_1 = H3::n2($f3->_mu_1*$f3->_s_k);
+        $f3->_s_2 = H3::n2($f3->_mu_2*$f3->_s_k);
+        $f3->_s_3 = H3::n2($f3->_mu_3*$f3->_s_k);
 
         $blc->math('mu_1 = '.$f3->_mu_1.'%%%mu_2 = '.$f3->_mu_2.'%%%mu_3 = '.$f3->_mu_3.'', 'Alaki tényezők');
         $blc->math('s_1 = '.$f3->_s_1.'%%%s_2 = '.$f3->_s_2.'%%%s_3 = '.$f3->_s_3.'[(kN)/m^2]', 'Tető hóteher karakterisztikus értékei');
@@ -100,7 +101,7 @@ Class Snow
         $blc->region1('r1');
 */
 
-        $svg = new \resist\SVG\SVG(600, 200);
+        $svg = new SVG(600, 200);
         $svg->addPolygon('10,180 210,180 210,140 110,110 10,140 10,180');
         $svg->addPolygon('220,180 420,180 420,140 320,110 220,140 220,180');
         $svg->addPolygon('490,180 590,180 590,140 490,110 490,180');
@@ -141,7 +142,7 @@ Class Snow
         );
         $blc->write('vendor/resist/ecc-calculations/canvas/snow0.jpg', $write, 'Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön');
 */
-        $svg = new \resist\SVG\SVG(600, 170);
+        $svg = new SVG(600, 170);
         $svg->setFill('#eeeeee');
         $svg->addPolygon('10,120 200,120 200,100 150,100 10,50 10,120');
         $svg->setColor('red');
@@ -159,15 +160,15 @@ Class Snow
         $blc->input('b_1', ['b_1', 'Szomszédos épület hossza'], 20, 'm');
         $blc->input('b_2', ['b_2', 'Alacsonyabb épület hossza'], 20, 'm');
         if ($f3->_alpha > 15) {
-            $blc->def('mu_s', \H3::n2($f3->_mu_1*($f3->_b_3/$f3->_l_s)), 'mu_s = mu_1(alpha)*(b_3/l_s) = %%', 'Felső tetőszakaszról lecsúszó mennyiséghez tartozó alaki tényező');
+            $blc->def('mu_s', H3::n2($f3->_mu_1*($f3->_b_3/$f3->_l_s)), 'mu_s = mu_1(alpha)*(b_3/l_s) = %%', 'Felső tetőszakaszról lecsúszó mennyiséghez tartozó alaki tényező');
         } else {
             $blc->def('mu_s', 0, 'mu_s = %%', 'Felső tetőszakaszról lecsúszó mennyiséghez tartozó alaki tényező $(alpha < 15 [deg])$');
         }
-        $blc->def('mu_w', \H3::n2(max(min(4.0, ($f3->_b_1 + $f3->_b_2)/(2*$f3->_h), ($f3->_gamma_set*$f3->_h)/$f3->_s_k), 0.8)), 'mu_w = max{(min{(4.0), ((b_1 + b_2)/(2h)), ((gamma_(set)*h)/s_k):}), (0.8):} = %%', 'Szél átrendező hatásához tartozó alaki tényezője');
-        $blc->def('l_s2', \H3::n2(min(max(5, 2*$f3->_h), 15)), 'l_(s2) = min{(max{(5 [m]), (2*h):}), (15 [m]):} = %% [m]', 'Lecsúszó hó eloszlása');
-        $blc->def('q_plus2', \H3::n2((($f3->_mu_s + $f3->_mu_w) - 0.8)*$f3->_s_k),'q_(plus2) = %% [(kN)/m^2]', 'Megoszló terhelés többlet alap hóhoz képest');
+        $blc->def('mu_w', H3::n2(max(min(4.0, ($f3->_b_1 + $f3->_b_2)/(2*$f3->_h), ($f3->_gamma_set*$f3->_h)/$f3->_s_k), 0.8)), 'mu_w = max{(min{(4.0), ((b_1 + b_2)/(2h)), ((gamma_(set)*h)/s_k):}), (0.8):} = %%', 'Szél átrendező hatásához tartozó alaki tényezője');
+        $blc->def('l_s2', H3::n2(min(max(5, 2*$f3->_h), 15)), 'l_(s2) = min{(max{(5 [m]), (2*h):}), (15 [m]):} = %% [m]', 'Lecsúszó hó eloszlása');
+        $blc->def('q_plus2', H3::n2((($f3->_mu_s + $f3->_mu_w) - 0.8)*$f3->_s_k),'q_(plus2) = %% [(kN)/m^2]', 'Megoszló terhelés többlet alap hóhoz képest');
         $blc->success0();
-            $blc->def('q_sum2', \H3::n2(($f3->_mu_s + $f3->_mu_w)*$f3->_s_k),'q_(sum2) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
+            $blc->def('q_sum2', H3::n2(($f3->_mu_s + $f3->_mu_w)*$f3->_s_k),'q_(sum2) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
         $blc->success1();
 /*
         // Legacy write method:
@@ -192,7 +193,7 @@ Class Snow
         }
         $blc->write('vendor/resist/ecc-calculations/canvas/snow3.jpg', $write, 'Hófelhalmozódást is tartalmazó hóteher átrendeződés magasabb épülethez csatlakozó tető esetén');
 */
-        $svg = new \resist\SVG\SVG(600, 300);
+        $svg = new SVG(600, 300);
         $svg->addPolygon('10,250 450,250 450,200 210,200 210,80 110,50 10,80');
         $svg->addText(210, 230, 'Csatlakozó épület');
         $svg->addText(190, 90, 'α');
@@ -202,7 +203,7 @@ Class Snow
         $svg->setFill('#eeeeee');
         if ($f3->_b_2 < $f3->_l_s2) {
             $blc->txt('$b_2 < l_s$, ezért a tető másik szélén teher teljes értéke:');
-            $qsum22 = \H3::n2($ec->linterp(0, $f3->_q_sum2, $f3->_l_s2, $f3->_s_k*0.8, $f3->_b_2));
+            $qsum22 = H3::n2($ec->linterp(0, $f3->_q_sum2, $f3->_l_s2, $f3->_s_k*0.8, $f3->_b_2));
             $blc->txt('$q_(∑2,'.$f3->_b_2.'m) = '.$qsum22.' [(kN)/m^2]$', '$l i n t e r p(0,'.$f3->_q_sum2.','.$f3->_l_s2.','.$f3->_s_k*0.8.','.$f3->_b_2.')$');
             $svg->addPolygon('450,180 450,160 210,100 210,180');
             $svg->addLine(450, 170, 210, 130);

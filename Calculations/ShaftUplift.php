@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types = 1);
+// Analysis of RC shaft uplifting according to Eurocodes - Calculation class for ECC framework
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
 
-/**
- * Analysis of RC shaft uplifting according to Eurocodes - Calculation class for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+use \Base;
+use \Ecc\Blc;
+use \Ec\Ec;
+use \H3;
 
 Class ShaftUplift
 {
-    public function calc(\Base $f3, \Ecc\Blc $blc, \Ec\Ec $ec): void
+    public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->numeric('gammac', ['gamma_c', 'Beton fajsúly'], 24, 'kN/m3');
         $blc->def('gammav', 10, 'gamma_v = %% [(kN)/m^3]');
