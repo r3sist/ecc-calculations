@@ -24,37 +24,15 @@ Class Config
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
-        $blc->h1('Mentés feltöltése');
-        $blc->info0();
-        $blc->input('saveJson', ['', '*.ecc* fájl tartalma'], false, '', 'Kezdőoldalról letöltött *.ecc* fájl tartalmát bemásolva lehet mentést feltölteni. Ez egy JSON sztring. Más felhasználótól származó mentést is bevesz a rendszer. Hibás, hiányzó vagy azóta megváltozott paraméterek esetén alapértelmezésekkel fog számolni.', 'valid_json_string');
-        if ($f3->_saveJson) {
-            $saveDataArray = json_decode($f3->_saveJson, true);
-            $saveDataJson = json_encode($saveDataArray);
-            $blc->pre(json_encode($saveDataArray, JSON_PRETTY_PRINT));
-            $f3->ms->reset();
-            $f3->ms->load();
-            $this->vLabel->assert($saveDataArray['_project_cname']);
-            $f3->ms->cname = $saveDataArray['_project_cname'];
-            $f3->ms->sname = $saveDataArray['_project'];
-            $f3->ms->uid = $f3->uid;
-            $f3->ms->sdata = $saveDataJson;
-            $f3->ms->save();
-            $blc->toast('Mentés importálva!');
-            $blc->html('<script>window.location.replace("'.$f3->home.'calc/'.$saveDataArray['_project_cname'].'/load/'.$f3->ms->get('sid').'");</script>');
-        }
-        $blc->info1();
-
-        $blc->h1('Felhasználói beállítások');
-
-        $blc->h2('Sablonok', 'MS Word export');
-        $blc->lst('template', ['CÉH' => 'CEH', 'Structure' => 'Structure'], ['', ''], $f3->get('udata.utemplate'));
+        $blc->h1('Sablonok', 'MS Word export');
+        $blc->lst('template', ['CÉH' => 'CEH', 'Structure' => 'Structure'], ['', 'Sablon'], $f3->get('udata.utemplate'));
         $f3->u->map->load(array('uid = :uid', ':uid' => $f3->get('uid')));
         if (!$f3->u->map->dry()) {
             $f3->u->map->utemplate = $f3->_template;
             $f3->u->map->save();
         }
 
-        $blc->h2('Képletek kezelése');
+        $blc->h1('Képletek kezelése');
         $blc->boo('nativeMath', ['', 'Szerveroldali ASCIIMath konvertálás MathML formátumba'], (bool)$f3->udata['ueccnativemathml'], 'MathJax helyett szerverordali képlet generálás. Csak Firefox alatt. Rondább, de gyorsabb megjelenítés.');
         $blc->boo('svgMath', ['', 'Képletek SVG képekként'], (bool)$f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre.');
         $f3->u->map->load(array('uid = :uid', ':uid' => $f3->get('uid')));
@@ -104,7 +82,7 @@ Class Config
                 }
             }
 
-            $blc->h2('Új számítás hozzáadása');
+            $blc->h1('Új számítás hozzáadása');
             $blc->input('cnameNew', ['', 'Osztály azonosító'], '', '', 'ecc-calculation osztály azonosító (URL azonosító lesz)', 'alpha');
             $blc->txt('Composer autoloader frissítése szükséges!');
             if ($f3->_cnameNew) {
