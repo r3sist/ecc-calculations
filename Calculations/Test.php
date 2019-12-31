@@ -74,6 +74,8 @@ Class Test
         $log.=$blc->boo('b2', ['b_2', 'boo2'], false, 'default `false`');
         $blc->txt('Test b2 value: '.$f3->_b2);
 
+        $log.=$blc->boo('b3', ['', 'boo2'], true, 'default `true` without math title');
+
         $blc->h1('***lst*** tests');
         $log.=$blc->lst('L1', ['x - 1' => 1, 'y - 2' => 2, 'z - 3' => 3], ['L1', 'integer értékű lista'], 2, 'md **help**');
         $blc->txt('Test L1 value: '.$f3->_L1);
