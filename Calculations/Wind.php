@@ -24,6 +24,10 @@ Class Wind
 
     public function moduleQpz()
     {
+        if (!$this->f3->exists('_reslog')) {
+            $this->f3->_reslog = '';
+        }
+
         $this->f3->_reslog .=$this->blc->numeric('h', ['h', 'Épület magasság'], 10, 'm');
         $this->f3->_reslog .=$this->blc->numeric('b', ['b', 'Épület hossz'], 20, 'm');
         $this->f3->_reslog .=$this->blc->numeric('d', ['d', 'Épület szélesség'], 12, 'm');
