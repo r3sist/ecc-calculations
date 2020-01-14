@@ -25,17 +25,18 @@ Class Config
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->h1('Sablonok', 'MS Word export');
-        $blc->lst('template', ['CÉH' => 'CEH', 'Structure' => 'Structure'], ['', 'Sablon'], $f3->get('udata.utemplate'));
-        $f3->u->map->load(array('uid = :uid', ':uid' => $f3->get('uid')));
+
+        $blc->lst('template', [$f3->get('udata.ufirm') => $f3->get('firms')[$f3->get('udata.ufirm')], 'Structure' => 'Structure'], ['', 'Sablon'], $f3->get('udata.utemplate'));
+        $f3->u->map->load(['uid = :uid', ':uid' => $f3->get('uid')]);
         if (!$f3->u->map->dry()) {
             $f3->u->map->utemplate = $f3->_template;
             $f3->u->map->save();
         }
 
         $blc->h1('Képletek kezelése');
-        $blc->boo('nativeMath', ['', 'Szerveroldali ASCIIMath konvertálás MathML formátumba'], (bool)$f3->udata['ueccnativemathml'], 'MathJax helyett szerverordali képlet generálás. Csak Firefox alatt. Rondább, de gyorsabb megjelenítés.');
+        $blc->boo('nativeMath', ['', 'Szerveroldali ASCIIMath konvertálás MathML formátumba'], (bool)$f3->udata['ueccnativemathml'], 'Csak Firefox alatt! MathJax helyett szerverordali képlet renderelés. Rondább, de gyorsabb és ugrálás nélküli megjelenítés.');
         $blc->boo('svgMath', ['', 'Képletek SVG képekként'], (bool)$f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre.');
-        $f3->u->map->load(array('uid = :uid', ':uid' => $f3->get('uid')));
+        $f3->u->map->load(['uid = :uid', ':uid' => $f3->get('uid')]);
         if (!$f3->u->map->dry()) {
             $f3->u->map->ueccnativemathml = $f3->_nativeMath;
             $f3->u->map->ueccsvgmath = $f3->_svgMath;
