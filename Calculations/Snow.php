@@ -14,6 +14,8 @@ Class Snow
 {
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
+        $blc->math('psi = 0.5//0.2//0', 'Kombinációs tényezők');
+
         $blc->region0('baseData', 'Alap adatok');
             $blc->numeric('A', ['A', 'Tengerszint feletti magasság'], 400, 'm');
             $blc->numeric('C', ['C_e*C_t', 'Szél- és hőmérséklet összevont tényező'], 1, '', 'Védett terep esetén megfontolandó: (környező terepnél alacsonyabb fekvés): $C_e = 1.2$');
