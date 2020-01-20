@@ -5,6 +5,7 @@
 namespace Calculation;
 
 use \Base;
+use DB\SQL\Mapper;
 use \Ecc\Blc;
 use \Ec\Ec;
 use \resist\H3\Logger;
@@ -15,14 +16,13 @@ Class Config
 {
     private Logger $logger;
     private v $vLabel;
-    private Map $userMap;
+    private Mapper $userMap;
 
-    public function __construct(Logger $logger, Map $userMap)
+    public function __construct(Logger $logger, Mapper $userMap)
     {
         $this->logger = $logger;
         $this->vLabel = v::phpLabel();
         $this->userMap = $userMap;
-
     }
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void

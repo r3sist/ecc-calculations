@@ -11,6 +11,7 @@
     "ext-json": "*",
     "bcosca/fatfree-core": "3.*",
     "resist/h3": "dev-master",
+    "resist/u3": "dev-master",
     "wixel/gump": "dev-master",
     "ikkez/f3-flash": ">=1.0.0",
     "respect/validation": "1.*"
