@@ -7,19 +7,22 @@ namespace Calculation;
 use \Base;
 use \Ecc\Blc;
 use \Ec\Ec;
-use \H3;
 use \resist\H3\Logger;
+use resist\U3\Map;
 use Respect\Validation\Validator as v;
 
 Class Config
 {
     private Logger $logger;
     private v $vLabel;
+    private Map $userMap;
 
-    public function __construct(Logger $logger)
+    public function __construct(Logger $logger, Map $userMap)
     {
         $this->logger = $logger;
         $this->vLabel = v::phpLabel();
+        $this->userMap = $userMap;
+
     }
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
@@ -27,11 +30,12 @@ Class Config
         $blc->h1('Sablonok', 'MS Word export');
 
         $blc->lst('template', [$f3->get('udata.ufirm') => $f3->get('firms')[$f3->get('udata.ufirm')], 'Structure' => 'Structure'], ['', 'Sablon'], $f3->get('udata.utemplate'));
-        $f3->u->map->load(['uid = :uid', ':uid' => $f3->get('uid')]);
-        if (!$f3->u->map->dry()) {
-            $f3->u->map->utemplate = $f3->_template;
-            $f3->u->map->save();
+
+        if ($this->userMap) {
+            $this->userMap->utemplate = $f3->_template;
+            $this->userMap->save();
         }
+
 
         $blc->h1('Képletek kezelése');
         $blc->boo('nativeMath', ['', 'Szerveroldali ASCIIMath konvertálás MathML formátumba'], (bool)$f3->udata['ueccnativemathml'], 'Csak Firefox alatt! MathJax helyett szerverordali képlet renderelés. Rondább, de gyorsabb és ugrálás nélküli megjelenítés.');
