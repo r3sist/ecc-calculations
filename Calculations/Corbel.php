@@ -150,12 +150,12 @@ Class Corbel
         $blc->def('Asmin', ceil(1.25*$f3->_Fs/$f3->_rfyd*1000), 'A_(s,min) = 1.25*F_s/(f_(yd)) = %% [mm^2]', '$F_s$ erő felvételéhez szükséges vasmennyiség');
         $blc->note('Az 1.25-ös növelés 80%-ra csökkenti a betonacélok nyúlását használhatósági határállapotban, ezzel csökkenti a repedéstágasságot. Rep.tág. csökkentésére konzol tövébe tett felső ferde vasak jók még.');
         $blc->def('nrequ', ceil($f3->_Asmin/$ec->A($f3->_phiMain, 1)), 'n_(requ) = %%', 'Szükséges vasszám. Biztosított vasszám: '.$f3->_nMain*$f3->_nMainRow);
-        $blc->def('Ascalc', floor($ec->A($f3->_phiMain, $f3->_nMain*$f3->_nMainRow)), 'A_(s,calc) = (phi_(mai n)^2*pi)/4 * n_(mai n)*n_(mai n,row) = %% [mm^2]', 'Alkalmazaott vasmennyiség');
+        $blc->def('Ascalc', floor($ec->A($f3->_phiMain, $f3->_nMain*$f3->_nMainRow)), 'A_(s,calc) = (phi_(mai n)^2*pi)/4 * n_(mai n)*n_(mai n,row) = %% [mm^2]', 'Alkalmazott vasmennyiség');
         $blc->label($f3->_Asmin/$f3->_Ascalc, 'Kihasználtság húzásra');
 
         $blc->h2('Hosszvas lehorgonyzása konzolban');
         $blc->txt('Konzol szabad vég felé eső hurkos lehorgonyzáshoz $a_(min) = '.$f3->_aMin.' [mm]$ konzolmélység alkalmazása szükséges!');
-        if ($f3->_mainType == 'hook') {
+        if ($f3->_mainType === 'hook') {
             $blc->txt('Pillér felőli lehorgonyzás számítása:');
             $blc->def('rs1', ceil(3*pi()/8*$f3->_rfyd/$f3->_cfcd*$f3->_phiMain*0.5), 'r_(s1) = (3pi)/8*f_(yd)/(f_(cd))*phi_(s1) = %% [mm]', 'Kerekítési sugár');
             $blc->def('lbmin', ceil(($f3->_phiMain/4)*($f3->_rfyd/$f3->_cfbd)), 'l_(b,min) = (phi_(s,mai n))/4*f_(yd)/(f_(bd)) = %% [mm]', 'Szükséges lehorgonyzási hossz, 90°-os kampó nélkül');
