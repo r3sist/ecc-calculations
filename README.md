@@ -9,6 +9,9 @@ https://github.com/r3sist/ecc-calculations
 
 ---
 
+![promo](https://raw.githubusercontent.com/r3sist/ecc-calculations/master/promo.jpg)
+
+
 ## Installation
 
 ```
@@ -21,18 +24,3 @@ composer require resist/ecc-calculations
 
 CDDL-1.0 Copyright &copy; 2019 ![BV](https://structure.hu/img/bV.png) | structure.hu
 
-## Developer notes
-
-### Reserved variable names in Hive
-
-+ `_project`, `_project_*`
-+ `_stamp_*`
-+ `_reslog`
-
-### Result quick log
-
-$this->f3->_reslog
-
-## Thanks
-
-Ubuntu, Hestia CP, PHP, Fatfree Framework, Bootstrap, JQuery, Dice, Pandoc, Github
