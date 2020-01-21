@@ -1,5 +1,5 @@
 <?php declare(strict_types = 1);
-// User settings and system configurator of Ecc framework - Calculation class for ECC framework
+// User settings and system configurator of Ecc framework
 // (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Calculation;
@@ -10,19 +10,16 @@ use \Ecc\Blc;
 use \Ec\Ec;
 use \resist\H3\Logger;
 use resist\U3\Map;
-use Respect\Validation\Validator as v;
 
 Class Config
 {
     private Logger $logger;
-    private v $vLabel;
     private Mapper $userMap;
 
-    public function __construct(Logger $logger, Mapper $userMap)
+    public function __construct(Logger $logger, Map $userMap)
     {
         $this->logger = $logger;
-        $this->vLabel = v::phpLabel();
-        $this->userMap = $userMap;
+        $this->userMap = $userMap->get();
     }
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
@@ -40,20 +37,19 @@ Class Config
         $blc->h1('Képletek kezelése');
         $blc->boo('nativeMath', ['', 'Szerveroldali ASCIIMath konvertálás MathML formátumba'], (bool)$f3->udata['ueccnativemathml'], 'Csak Firefox alatt! MathJax helyett szerverordali képlet renderelés. Rondább, de gyorsabb és ugrálás nélküli megjelenítés.');
         $blc->boo('svgMath', ['', 'Képletek SVG képekként'], (bool)$f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre.');
-        $f3->u->map->load(['uid = :uid', ':uid' => $f3->get('uid')]);
-        if (!$f3->u->map->dry()) {
-            $f3->u->map->ueccnativemathml = $f3->_nativeMath;
-            $f3->u->map->ueccsvgmath = $f3->_svgMath;
-            $f3->u->map->save();
+        if ($this->userMap) {
+            $this->userMap->ueccnativemathml = $f3->_nativeMath;
+            $this->userMap->ueccsvgmath = $f3->_svgMath;
+            $this->userMap->save();
         }
         $blc->txt('', 'A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
 
         if ($f3->urole >= 30) {
             $blc->h1('Admin');
             $blc->boo('doUpdate', ['', 'Számítás meta adatok szerkesztése/mentése'], false, '');
-            if (!$f3->mc->dry() && $f3->_doUpdate) {
+            if ($f3->_doUpdate && !$f3->mc->dry()) {
 
-                $query = "SELECT * FROM ecc_calculations ORDER BY cname ASC";
+                $query = 'SELECT * FROM ecc_calculations ORDER BY cname ASC';
                 $calcList = $f3->get('db')->exec($query);
                 $this->logger->create('ecc', 'edit', 'Edited calcs meta');
                 foreach ($calcList as $calcData) {
@@ -72,17 +68,16 @@ Class Config
                     $blc->boo($calcData['cname'] . '___cprivate', ['', 'private'], (bool)$calcData['cprivate'], '');
                     $blc->boo($calcData['cname'] . '___csecondary', ['', 'secondary'], (bool)$calcData['csecondary'], '');
 
-                    if (!$f3->mc->dry() && $f3->_doUpdate) {
-                        $f3->mc->ctitle = $f3->get('_' . $calcData['cname'] . '___ctitle');
-                        $f3->mc->csubtitle = $f3->get('_' . $calcData['cname'] . '___csubtitle');
-                        $f3->mc->cdescription = $f3->get('_' . $calcData['cname'] . '___cdescription');
-                        $f3->mc->cgroup = $f3->get('_' . $calcData['cname'] . '___cgroup');
-                        $f3->mc->cexperimental = $f3->get('_' . $calcData['cname'] . '___cexpreimental');
-                        $f3->mc->chidden = $f3->get('_' . $calcData['cname'] . '___chidden');
-                        $f3->mc->cprivate = $f3->get('_' . $calcData['cname'] . '___cprivate');
-                        $f3->mc->csecondary = $f3->get('_' . $calcData['cname'] . '___csecondary');
-                        $f3->mc->save();
-                    }
+                    $f3->mc->ctitle = $f3->get('_' . $calcData['cname'] . '___ctitle');
+                    $f3->mc->csubtitle = $f3->get('_' . $calcData['cname'] . '___csubtitle');
+                    $f3->mc->cdescription = $f3->get('_' . $calcData['cname'] . '___cdescription');
+                    $f3->mc->cgroup = $f3->get('_' . $calcData['cname'] . '___cgroup');
+                    $f3->mc->cexperimental = $f3->get('_' . $calcData['cname'] . '___cexpreimental');
+                    $f3->mc->chidden = $f3->get('_' . $calcData['cname'] . '___chidden');
+                    $f3->mc->cprivate = $f3->get('_' . $calcData['cname'] . '___cprivate');
+                    $f3->mc->csecondary = $f3->get('_' . $calcData['cname'] . '___csecondary');
+                    $f3->mc->save();
+
                     $blc->region1();
                 }
             }
