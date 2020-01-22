@@ -129,7 +129,7 @@ Class Bolt
             $this->blc->boo('groupLL', ['', 'Egyik szárukon kapcsolt szögacélok ellenőrzése húzásra'], false);
             if ($this->f3->_groupLL) {
                 $this->f3->_nc = 1;
-                $this->blc->txt('$n_c := 1$, csak egy csavaroszloppal számol!');
+                $this->blc->info('$n_c := 1$, csak egy csavaroszloppal számol!');
             }
         }
         $this->f3->_nb = $this->f3->_nr * $this->f3->_nc;
