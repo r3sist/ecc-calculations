@@ -214,30 +214,6 @@ Class Bolt
 
         if ($this->f3->_group) {
             $this->blc->h1('Csavarkép');
-            $nb = $this->f3->_nc * $this->f3->_nr;
-            $this->blc->txt('Csavarok száma: ' . $nb);
-
-//            $x = 2 * $this->f3->_e2 + ($this->f3->_nc - 1) * $this->f3->_p2;
-//            $x1 = 200 / $x;
-//            $y = 2 * $this->f3->_e1 + ($this->f3->_nr - 1) * $this->f3->_p1;
-//            $y1 = 200 / $y;
-//            $boltPic = [
-//                ['size' => 10, 'x' => 140, 'y' => 290, 'text' => $x],
-//                ['size' => 10, 'x' => 50, 'y' => 275, 'text' => $this->f3->_e2],
-//                ['size' => 10, 'x' => 140, 'y' => 275, 'text' => ($this->f3->_nc - 1) . '×' . $this->f3->_p2],
-//                ['size' => 10, 'x' => 240, 'y' => 275, 'text' => $this->f3->_e2],
-//                ['size' => 10, 'x' => 10, 'y' => 140, 'text' => $y],
-//                ['size' => 10, 'x' => 255, 'y' => 65, 'text' => $this->f3->_e1],
-//                ['size' => 10, 'x' => 255, 'y' => 140, 'text' => ($this->f3->_nr - 1) . '×' . $this->f3->_e2],
-//                ['size' => 10, 'x' => 255, 'y' => 235, 'text' => $this->f3->_e1],
-//            ];
-//
-//            for ($j = 0; $j < $this->f3->_nr; $j++) {
-//                for ($i = 0; $i < $this->f3->_nc; $i++) {
-//                    array_push($boltPic, ['size' => 24, 'x' => 50 + $this->f3->_e2 * $x1 + $i * $this->f3->_p2 * $x1 - 12, 'y' => 50 + $this->f3->_e1 * $y1 + $j * $this->f3->_p1 * $y1 + 12, 'text' => '+']);
-//                }
-//            }
-//            $this->blc->write('vendor/resist/ecc-calculations/canvas/bolt0.jpg', $boltPic, '');
 
             // SVG init
             $xp = 2*$this->f3->_e2 + ($this->f3->_nc - 1)*$this->f3->_p2; // Plate dimensions
