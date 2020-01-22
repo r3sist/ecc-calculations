@@ -137,22 +137,22 @@ class Ec
             foreach ($matDb as $key => $value) {
                 switch ($category) {
                     case 'bolt':
-                        if ($value['0'] != 'bolt') {
+                        if ($value['0'] !== 'bolt') {
                             unset($matDb[$key]);
                         }
                         break;
                     case 'rebar':
-                        if ($value['0'] != 'rebar') {
+                        if ($value['0'] !== 'rebar') {
                             unset($matDb[$key]);
                         }
                         break;
                     case 'concrete':
-                        if ($value['0'] != 'concrete') {
+                        if ($value['0'] !== 'concrete') {
                             unset($matDb[$key]);
                         }
                         break;
                     case 'steel':
-                        if ($value['0'] != 'steel') {
+                        if ($value['0'] !== 'steel') {
                             unset($matDb[$key]);
                         }
                         break;
