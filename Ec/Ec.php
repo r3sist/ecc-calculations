@@ -430,10 +430,10 @@ class Ec
     /** @param float|string $btMat */
     public function FvRd(string $btName, $btMat, float $n, float $As = 0): float
     {
-        $btMat = (string)$btMat;
+        $btMat = (string) $btMat;
         $n = (int) $n;
 
-        if ($As === 0) {
+        if ($As === (float) 0) {
             $As = $this->boltProp($btName, 'As');
         }
         $result = (( $this->matProp($btMat, 'fu') * $As * 0.6) / (1000 * $this->f3->get('__GM2')) )*$n;
