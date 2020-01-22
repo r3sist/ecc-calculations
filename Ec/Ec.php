@@ -224,20 +224,7 @@ class Ec
     {
         $default = (int)$default;
 
-        $source = [
-            'ϕ6' => 6,
-            'ϕ8' => 8,
-            'ϕ10' => 10,
-            'ϕ12' => 12,
-            'ϕ14' => 14,
-            'ϕ16' => 16,
-            'ϕ20' => 20,
-            'ϕ25' => 25,
-            'ϕ28' => 28,
-            'ϕ32' => 32,
-            'ϕ36' => 36,
-            'ϕ40' => 40,
-        ];
+        $source = ['ϕ6' => 6, 'ϕ8' => 8, 'ϕ10' => 10, 'ϕ12' => 12, 'ϕ14' => 14, 'ϕ16' => 16, 'ϕ20' => 20, 'ϕ25' => 25, 'ϕ28' => 28, 'ϕ32' => 32, 'ϕ36' => 36, 'ϕ40' => 40,];
         $this->blc->lst($variableName, $source, $title, $default, $help);
     }
 
@@ -265,23 +252,7 @@ class Ec
 
     public function sectionFamilyList(string $variableName = 'sectionFamily', string $title = 'Szelvény család', string $default = 'HEA'): void
     {
-        $list = [
-            'HEA' => 'HEA',
-            'HEB' => 'HEB',
-            'HEM' => 'HEM',
-            'I' => 'I',
-            'IPE' => 'IPE',
-            'IPEO' => 'IPEO',
-            'IPN' => 'IPN',
-            'UPN' => 'UPN',
-            'UPE' => 'UPE',
-            'L' => 'L',
-            'O' => 'O',
-            'D' => 'D',
-            'ROR' => 'ROR',
-            'RHS' => 'RHS',
-            'C' => 'C',
-        ];
+        $list = ['HEA' => 'HEA', 'HEB' => 'HEB', 'HEM' => 'HEM', 'I' => 'I', 'IPE' => 'IPE', 'IPEO' => 'IPEO', 'IPN' => 'IPN', 'UPN' => 'UPN', 'UPE' => 'UPE', 'L' => 'L', 'O' => 'O', 'D' => 'D', 'ROR' => 'ROR', 'RHS' => 'RHS', 'C' => 'C',];
         $this->blc->lst($variableName, $list, ['', $title], $default, '');
     }
 
@@ -460,15 +431,15 @@ class Ec
     public function FvRd(string $btName, $btMat, float $n, float $As = 0): float
     {
         $btMat = (string)$btMat;
-        $n = (int)$n;
+        $n = (int) $n;
 
-        if ($As == 0) {
+        if ($As === 0) {
             $As = $this->boltProp($btName, 'As');
         }
         $result = (( $this->matProp($btMat, 'fu') * $As * 0.6) / (1000 * $this->f3->get('__GM2')) )*$n;
         $this->blc->note('$F_(v,Rd)$ nyírás általános képlet: $n*(0.6*f_(u,b)*A_s)/(gamma_(M2))$');
 
-        if ($btMat == '4.8' || $btMat == '5.8' || $btMat == '6.8' || $btMat == '10.9') {
+        if ($btMat === '4.8' || $btMat === '5.8' || $btMat === '6.8' || $btMat === '10.9') {
             $this->blc->note('$F_(v,Rd)$ nyírás: '.$btMat.' csavar anyag miatt az eredmény 80%-ra csökkentve.');
             return $result*0.8;
         }
