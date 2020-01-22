@@ -164,7 +164,7 @@ Class Bolt
         $this->f3->_p2 = 0;
         if ($this->f3->_group && $this->f3->_nr > 1) {
             $this->f3->_inner = true;
-            $this->blc->note('Belső csavar számítása (csavarkép és $n_r > 1$. $p_1, p_2$ figyelembevétele');
+            $this->blc->note('Belső csavar számítása a mértékadó, mert csavarkép eset van és $n_r > 1$. Figyelembe van véve $p_1, p_2$.');
             $this->blc->numeric('p1', ['p_1', 'Csavartávolság (csavarképpel párhuzamos)'], 50, 'mm', '');
             if ($this->f3->_nc > 1 && !$this->f3->_groupLL) {
                 $this->blc->numeric('p2', ['p_2', 'Csavartávolság (csavarképre merőleges)'], 50, 'mm', '');
