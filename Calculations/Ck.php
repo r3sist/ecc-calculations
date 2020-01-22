@@ -13,8 +13,8 @@ Class Ck
 {
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
-        $blc->numeric('hck', ['h', 'Lap vastagság'], 16, 'mm', '');
-        $blc->numeric('Lck', ['L', 'Fesztávolság'], 1300, 'mm', '');
+        $blc->numeric('hck', ['h', 'Lap vastagság'], 10, 'mm', '');
+        $blc->numeric('Lck', ['L', 'Fesztávolság'], 650, 'mm', '');
         $blc->numeric('gck', ['gamma', 'Lap fajsúly'], 14, 'kN/m3', '');
         $blc->numeric('sckk', ['sigma_k', 'Lap szilárdság'], 9, 'N/mm2', '');
         $blc->numeric('gM', ['gamma_M', 'Anyagi biztonsági tényező'], 1.2, '', '');
