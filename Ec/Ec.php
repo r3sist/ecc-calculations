@@ -659,7 +659,7 @@ class Ec
                     $floor = $this->getClosest($find, $stackArray, 'floor');
                     $ceil = $this->getClosest($find, $stackArray, 'ceil');
                     if ($floor != $ceil) {
-                        return $this->linterp(array_search($floor, $stackArray), $floor, array_search($ceil, $stackArray), $ceil, $find);
+                        return $this->linterp(array_search($floor, $stackArray, true), $floor, array_search($ceil, $stackArray, true), $ceil, $find);
                     }
                     return $ceil;
             }
