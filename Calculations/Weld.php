@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 // Welded joint analysis according to Eurocodes - Calculation class for ECC framework
 // (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
@@ -56,16 +56,17 @@ Class Weld
         $blc->success1();
     }
 
-    public function moduleWeld(float $length, float $a, float $F, string $steelMaterialName = 'S235', float $tPlate = 10, bool $weldOnBothSide = false): void
+    // DEFINES: w, l, bw, fy, fu, FwEd, FwRd, FwRdS
+    public function moduleWeld(float $length, float $a, float $force, string $steelMaterialName = 'S235', float $tPlate = 10, bool $weldOnBothSide = false): void
     {
-        $this->blc->region0('Varrat számítások');
+        $this->blc->region0('r0', 'Varrat számítások');
             $this->blc->def('w', (int)$weldOnBothSide + 1, 'w_(sarok) = %%');
             $this->blc->def('l', $length - 2 * $a, 'l = L - 2*a = %% [mm]', 'Figyelembe vett varrathossz');
             $this->blc->def('bw', $this->ec->matProp($steelMaterialName, 'betaw'), 'beta_w = %%', 'Hegesztési tényező');
             $this->blc->def('fy', $this->ec->fy($steelMaterialName, $tPlate), 'f_y=%% [N/(mm^2)]', 'Folyáshatár');
             $this->blc->def('fu', $this->ec->fu($steelMaterialName, $tPlate), 'f_u=%% [N/(mm^2)]', 'Szakítószilárdság');
-            $this->blc->math('F_(Ed) = '.$F.'[kN]');
-            $this->blc->def('FwEd', $F / $this->f3->_l * 1000, 'F_(w,Ed) = F_(Ed)/l = %% [(kN)/m]', 'Fajlagos igénybevétel');
+            $this->blc->math('F_(Ed) = '.$force.'[kN]');
+            $this->blc->def('FwEd', $force / $this->f3->_l * 1000, 'F_(w,Ed) = F_(Ed)/l = %% [(kN)/m]', 'Fajlagos igénybevétel');
         $this->blc->region1();
 
         if ($this->f3->_l <= 30) {
@@ -82,8 +83,8 @@ Class Weld
 
         $this->blc->def('FwRd', H3::n2(($this->f3->_fu * $a) / (sqrt(3) * $this->f3->_bw * $this->f3->__GM2) * ($this->f3->_w)), 'F_(w,Rd) = (f_u*a)/(sqrt(3)*beta_w*gamma_(M2))*w_(sarok)= %% [(kN)/m]', 'Fajlagos teherbírás');
         $this->blc->def('FwRdS', H3::n2(($this->f3->_FwRd * $this->f3->_l / 1000)), 'F_(w,Rd,sum) = F_(w,Rd)*l = %% [kN]', 'Varratkép teljes teherbírása');
-        $this->blc->label($F / $this->f3->_FwRdS, 'Kihasználtság');
-        $this->blc->txt('', '$(F = '.$F.'[kN])/F_(w,Rd,sum)$');
+        $this->blc->label($force / $this->f3->_FwRdS, 'Kihasználtság');
+        $this->blc->txt('', '$(F = '.$force.'[kN])/F_(w,Rd,sum)$');
     }
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
@@ -95,7 +96,7 @@ Class Weld
         $blc->numeric('F', ['F', 'Erő'], 10, 'kN');
         $blc->boo('w', ['w', 'Kétoldali sarokvarrat'], false);
 
-        $this->moduleWeldOld($f3, $blc, $ec); // TODO deprecated method
+        $this->moduleWeld($f3->_L, $f3->_a, $f3->_F, $f3->_mat, $f3->_t, (bool) $f3->_w);
 
         $blc->hr();
         $blc->img('https://structure.hu/ecc/weld0.jpg', 'CÉH Tekla hegesztési utasítás');
