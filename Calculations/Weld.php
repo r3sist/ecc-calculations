@@ -106,7 +106,7 @@ Class Weld
         $blc->input('tau_T', ['tau_(_|_)', 'Merőleges nyírófeszültség'], 100, 'N/mm2');
         $blc->input('tau_ii', ['tau_(||)', 'Párhuzamos nyírófeszültség'], 100, 'N/mm2');
         $blc->txt('Megfelelőségi feltételek $[N/(mm^2)]$:');
-        $a = sqrt(pow($f3->_sigma_T, 2) + 3*(pow($f3->_tau_ii, 2) + pow($f3->_tau_T, 2)));
+        $a = sqrt(($f3->_sigma_T ** 2) + 3*(($f3->_tau_ii ** 2) + ($f3->_tau_T ** 2)));
         $b = ($f3->_fu/($f3->_bw*$f3->__GM2));
         $blc->math("sqrt(sigma_(_|_)^2 + 3*(tau_(||)^2 + tau_(_|_)^2)) =  $a %%% < %%% f_u/(beta_w*gamma_(M2)) = $b");
         $blc->label($a/$b, 'kihasználtság');
