@@ -24,8 +24,7 @@ Class Baseplate
         $blc->region0('mat', 'Anyagok');
             $ec->matList('steelMaterialName', 'S235', ['', 'Lemez anyag'], 'steel');
             $ec->spreadMaterialData($f3->_steelMaterialName, 's');
-            $ec->matList('anchorMaterialName', 'B500', ['', 'Horgony anyag'], 'rebar');
-            // TODO make it work with other steels
+            $ec->matList('anchorMaterialName', 'B500', ['', 'Horgony anyag'], 'steels');
             $ec->spreadMaterialData($f3->_anchorMaterialName, 'a');
             $ec->matList('concreteMaterialName', 'C25/30', ['', 'Beton anyag'], 'concrete');
             $ec->spreadMaterialData($f3->_concreteMaterialName, 'c');
@@ -135,7 +134,7 @@ Class Baseplate
         $blc->note('Húzásra csak a felső sor horgonyai vannak figyelembe véve!');
         $blc->def('NRdt', $f3->_NRda*$f3->_nt, 'N_(Rd,t) = n_t*N_(Rd,a) = %% [kN]', 'Húzott (felső) horgonyok húzási ellenállása');
         $blc->txt('Húzott (felső) horgonyok kihasználtsága:');
-        $blc->def('ntreq', ceil((4/(pow($f3->_phi, 2)*pi()))*($f3->_NEd*1000/$f3->_afyd)), 'n_(t,req) = %%', 'Minimális húzott horgonyszám');
+        $blc->def('ntreq', ceil((4/(($f3->_phi ** 2) *pi()))*($f3->_NEd*1000/$f3->_afyd)), 'n_(t,req) = %%', 'Minimális húzott horgonyszám');
         $blc->def('NEdsum', $f3->_NEd + $f3->_NEdM, 'N_(Ed,sum) = N_(Ed) + N_(Ed,M) = %% [kN]');
         $blc->label($f3->_NEdsum/$f3->_NRdt, 'húzási kihasználtság');
 
