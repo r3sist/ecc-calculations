@@ -23,7 +23,7 @@ Class ColumnFire
         $this->column->moduleColumnData();
 
         $ec->rebarList('phi', 20, ['phi', 'Fő vas átmérő']);
-        $ec->rebarList('phis', 20, ['phi_s', 'Kengyel vas átmérő']);
+        $ec->rebarList('phis', 12, ['phi_s', 'Kengyel vas átmérő']);
         $blc->def('as', $f3->_cnom + $f3->_phis + 0.5*$f3->_phi, 'a_s = c_(nom) + phi_s + phi/2 = %% [mm]', 'Betontakarás fővas tengelyen. $25 < a_s < 80 [mm]$');
         if ($f3->_as < 25) {
             $blc->danger('Szükséges betontakarás: $25 [mm]$', 'Túl kicsi betontakarás');
@@ -74,19 +74,19 @@ Class ColumnFire
         $blc->def('Retafi', H3::n2(83*(1-($f3->_mufi*((1 + $f3->_omega)/((0.85/$f3->_alphacc) + $f3->_omega))))), 'R_(eta,fi) = 83*(1.00 - mu_(fi)*(1 + omega)/(0.85/alpha_(c,c) + omega)) = %%');
         $blc->def('R', H3::n0(120*pow(($f3->_Retafi + $f3->_Ra + $f3->_Rl + $f3->_Rb + $f3->_Rn)/120, 1.8)), 'R = 120*((R_(eta,fi) + R_a + R_l + R_b + R_n)/120)^1.8 = %%');
         if ($f3->_R < 30) {
-            $blc->info('R0', 'Tűzállóság');
+            $blc->danger('R0', 'Tűzállóság');
         } else if ($f3->_R < 60) {
-            $blc->info('R30', 'Tűzállóság');
+            $blc->success('R30', 'Tűzállóság');
         } else if ($f3->_R < 90) {
-            $blc->info('R60', 'Tűzállóság');
+            $blc->success('R60', 'Tűzállóság');
         } else if ($f3->_R < 120) {
-            $blc->info('R90', 'Tűzállóság');
+            $blc->success('R90', 'Tűzállóság');
         } else if ($f3->_R < 180) {
-            $blc->info('R120', 'Tűzállóság');
+            $blc->success('R120', 'Tűzállóság');
         } else if ($f3->_R < 240) {
-            $blc->info('R180', 'Tűzállóság');
+            $blc->success('R180', 'Tűzállóság');
         } else {
-            $blc->info('R240', 'Tűzállóság');
+            $blc->success('R240', 'Tűzállóság');
         }
     }
 }
