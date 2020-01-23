@@ -22,40 +22,6 @@ Class Weld
         $this->ec = $ec;
     }
 
-    /** @deprecated */
-    public function moduleWeldOld(Base $f3, Blc $blc, Ec $ec): void
-    {
-        // TODO remove, find usages: Pin only and Weld :(
-        $blc->region0('r0', 'Varrat számítások');
-        $blc->def('w', (int)$f3->_w + 1, 'w_(sarok) = %%');
-        $blc->def('l', $f3->_L - 2 * $f3->_a, 'l = L - 2*a = %% [mm]', 'Figyelembe vett varrathossz');
-        $blc->def('bw', $ec->matProp($f3->_mat, 'betaw'), 'beta_w = %%', 'Hegesztési tényező');
-        $blc->def('fy', $ec->fy($f3->_mat, $f3->_t), 'f_y=%% [N/(mm^2)]', 'Folyáshatár');
-        $blc->def('fu', $ec->fu($f3->_mat, $f3->_t), 'f_u=%% [N/(mm^2)]', 'Szakítószilárdság');
-        $blc->math('F_(Ed) = '.$f3->_F.'[kN]');
-        $blc->def('FwEd', $f3->_F / $f3->_l * 1000, 'F_(w,Ed) = F_(Ed)/l = %% [(kN)/m]', 'Fajlagos igénybevétel');
-        $blc->region1();
-
-        if ($f3->_l <= 30) {
-            $blc->danger('Varrathossz rövidebb $30 [mm]$-nél! Szabvány szerint nem figyelembe vehető.');
-        }
-
-        if ($f3->_l <= 6 * $f3->_a) {
-            $blc->danger('Varrathossz rövidebb $6*a = ' . 6 * $f3->_a . '[mm]$-nél! Szabvány szerint nem figyelembe vehető.');
-        }
-
-        if (150 * $f3->_a < $f3->_l) {
-            $blc->danger('$l >= 150*a = ' . 150 * $f3->_a . ' [mm]$, ezért indokolt a varrat teherbírásának csökkentése, nem zártszelvények esetén.');
-        }
-
-        $blc->success0();
-        $blc->def('FwRd', H3::n2(($f3->_fu * $f3->_a) / (sqrt(3) * $f3->_bw * $f3->__GM2) * ($f3->_w)), 'F_(w,Rd) = (f_u*a)/(sqrt(3)*beta_w*gamma_(M2))*w_(sarok)= %% [(kN)/m]', 'Fajlagos teherbírás');
-        $blc->def('FwRdS', H3::n2(($f3->_FwRd * $f3->_l / 1000)), 'F_(w,Rd,sum) = F_(w,Rd)*l = %% [kN]', 'Varratkép teljes teherbírása');
-        $blc->label($f3->_F / $f3->_FwRdS, 'Kihasználtság');
-        $blc->txt('', '$(F = '.$f3->_F.'[kN])/F_(w,Rd,sum)$');
-        $blc->success1();
-    }
-
     // DEFINES: w, l, bw, fy, fu, FwEd, FwRd, FwRdS
     public function moduleWeld(float $length, float $a, float $force, string $steelMaterialName = 'S235', float $tPlate = 10, bool $weldOnBothSide = false): void
     {
