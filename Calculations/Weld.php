@@ -11,10 +11,21 @@ use \H3;
 
 Class Weld
 {
+    public Base $f3;
+    private Blc $blc;
+    private Ec $ec;
+
+    public function __construct(Base $f3, Blc $blc, Ec $ec)
+    {
+        $this->f3 = $f3;
+        $this->blc = $blc;
+        $this->ec = $ec;
+    }
+
     /** @deprecated */
     public function moduleWeldOld(Base $f3, Blc $blc, Ec $ec): void
     {
-
+        // TODO remove, find usages: Pin only and Weld :(
         $blc->region0('r0', 'Varrat számítások');
         $blc->def('w', (int)$f3->_w + 1, 'w_(sarok) = %%');
         $blc->def('l', $f3->_L - 2 * $f3->_a, 'l = L - 2*a = %% [mm]', 'Figyelembe vett varrathossz');
@@ -45,40 +56,34 @@ Class Weld
         $blc->success1();
     }
 
-
     public function moduleWeld(float $length, float $a, float $F, string $steelMaterialName = 'S235', float $tPlate = 10, bool $weldOnBothSide = false): void
     {
-        $f3 = Base::instance();
-        /** @var Blc $blc */
-        $blc = Blc::instance();
-        $ec = new Ec($f3, $blc); // TODO DIC
+        $this->blc->region0('Varrat számítások');
+            $this->blc->def('w', (int)$weldOnBothSide + 1, 'w_(sarok) = %%');
+            $this->blc->def('l', $length - 2 * $a, 'l = L - 2*a = %% [mm]', 'Figyelembe vett varrathossz');
+            $this->blc->def('bw', $this->ec->matProp($steelMaterialName, 'betaw'), 'beta_w = %%', 'Hegesztési tényező');
+            $this->blc->def('fy', $this->ec->fy($steelMaterialName, $tPlate), 'f_y=%% [N/(mm^2)]', 'Folyáshatár');
+            $this->blc->def('fu', $this->ec->fu($steelMaterialName, $tPlate), 'f_u=%% [N/(mm^2)]', 'Szakítószilárdság');
+            $this->blc->math('F_(Ed) = '.$F.'[kN]');
+            $this->blc->def('FwEd', $F / $this->f3->_l * 1000, 'F_(w,Ed) = F_(Ed)/l = %% [(kN)/m]', 'Fajlagos igénybevétel');
+        $this->blc->region1();
 
-        $blc->region0('Varrat számítások');
-            $blc->def('w', (int)$weldOnBothSide + 1, 'w_(sarok) = %%');
-            $blc->def('l', $length - 2 * $a, 'l = L - 2*a = %% [mm]', 'Figyelembe vett varrathossz');
-            $blc->def('bw', $ec->matProp($steelMaterialName, 'betaw'), 'beta_w = %%', 'Hegesztési tényező');
-            $blc->def('fy', $ec->fy($steelMaterialName, $tPlate), 'f_y=%% [N/(mm^2)]', 'Folyáshatár');
-            $blc->def('fu', $ec->fu($steelMaterialName, $tPlate), 'f_u=%% [N/(mm^2)]', 'Szakítószilárdság');
-            $blc->math('F_(Ed) = '.$F.'[kN]');
-            $blc->def('FwEd', $F / $f3->_l * 1000, 'F_(w,Ed) = F_(Ed)/l = %% [(kN)/m]', 'Fajlagos igénybevétel');
-        $blc->region1();
-
-        if ($f3->_l <= 30) {
-            $blc->danger('Varrathossz rövidebb $30 [mm]$-nél! Szabvány szerint nem figyelembe vehető.');
+        if ($this->f3->_l <= 30) {
+            $this->blc->danger('Varrathossz rövidebb $30 [mm]$-nél! Szabvány szerint nem figyelembe vehető.');
         }
 
-        if ($f3->_l <= 6 * $a) {
-            $blc->danger('Varrathossz rövidebb $6*a = ' . 6 * $a . '[mm]$-nél! Szabvány szerint nem figyelembe vehető.');
+        if ($this->f3->_l <= 6 * $a) {
+            $this->blc->danger('Varrathossz rövidebb $6*a = ' . 6 * $a . '[mm]$-nél! Szabvány szerint nem figyelembe vehető.');
         }
 
-        if (150 * $a < $f3->_l) {
-            $blc->danger('$l >= 150*a = ' . 150 * $a . ' [mm]$, ezért indokolt a varrat teherbírásának csökkentése, nem zártszelvények esetén.');
+        if (150 * $a < $this->f3->_l) {
+            $this->blc->danger('$l >= 150*a = ' . 150 * $a . ' [mm]$, ezért indokolt a varrat teherbírásának csökkentése, nem zártszelvények esetén.');
         }
 
-        $blc->def('FwRd', H3::n2(($f3->_fu * $a) / (sqrt(3) * $f3->_bw * $f3->__GM2) * ($f3->_w)), 'F_(w,Rd) = (f_u*a)/(sqrt(3)*beta_w*gamma_(M2))*w_(sarok)= %% [(kN)/m]', 'Fajlagos teherbírás');
-        $blc->def('FwRdS', H3::n2(($f3->_FwRd * $f3->_l / 1000)), 'F_(w,Rd,sum) = F_(w,Rd)*l = %% [kN]', 'Varratkép teljes teherbírása');
-        $blc->label($F / $f3->_FwRdS, 'Kihasználtság');
-        $blc->txt('', '$(F = '.$F.'[kN])/F_(w,Rd,sum)$');
+        $this->blc->def('FwRd', H3::n2(($this->f3->_fu * $a) / (sqrt(3) * $this->f3->_bw * $this->f3->__GM2) * ($this->f3->_w)), 'F_(w,Rd) = (f_u*a)/(sqrt(3)*beta_w*gamma_(M2))*w_(sarok)= %% [(kN)/m]', 'Fajlagos teherbírás');
+        $this->blc->def('FwRdS', H3::n2(($this->f3->_FwRd * $this->f3->_l / 1000)), 'F_(w,Rd,sum) = F_(w,Rd)*l = %% [kN]', 'Varratkép teljes teherbírása');
+        $this->blc->label($F / $this->f3->_FwRdS, 'Kihasználtság');
+        $this->blc->txt('', '$(F = '.$F.'[kN])/F_(w,Rd,sum)$');
     }
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
