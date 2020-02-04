@@ -186,8 +186,9 @@ Class Wind
 
                 $svg = new SVG(600, 350);
                 // Raw part:
-                $svg->setColor('blue');
-                $svg->addSymbol(0, 210, 'control-shuffle');
+                $svg->setColor('green');
+//                $svg->addSymbol(0, 210, 'control-shuffle');
+                $svg->addText(20, 210, '>>>');
                 $svg->setColor('');
                 $svg->addRectangle(100, 70, 200, 50); // Building section
                 $svg->setFill('#eeeeee'); // Forces
@@ -302,8 +303,9 @@ Class Wind
 
                 $svg = new SVG(600, 350);
                 // Generate raw part:
-                $svg->setColor('blue');
-                $svg->addSymbol(0, 210, 'control-shuffle');
+//                $svg->addSymbol(20, 210, 'control-shuffle');
+                $svg->setColor('green');
+                $svg->addText(20, 210, '>>>');
                 $svg->setColor('');
                 $svg->addRectangle(100, 50, 200, 50); // Building section
                 $svg->addRectangle(100, 140, 200, 150); // Building layout
@@ -417,8 +419,9 @@ Class Wind
 
                 $svg = new SVG(600, 300);
                 // Generate raw part:
-                $svg->setColor('blue');
-                $svg->addSymbol(0, 150, 'control-shuffle');
+//                $svg->addSymbol(0, 150, 'control-shuffle');
+                $svg->setColor('green');
+                $svg->addText(20, 150, '>>>');
                 $svg->setColor('');
                 $svg->addRectangle(100, 70, 50, 200); // C1
                 $svg->addText(105, 170, 'C');
