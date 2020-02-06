@@ -12,9 +12,9 @@ use \resist\SVG\SVG;
 
 Class Wind
 {
-    public $f3;
-    private $blc;
-    private $ec;
+    public Base $f3;
+    private Blc $blc;
+    private Ec $ec;
 
     public function __construct(Base $f3, Blc $blc, Ec $ec)
     {
@@ -165,14 +165,14 @@ Class Wind
                 $wI = H3::n2($cpI*$f3->_qpz);
                 $e = min($f3->_b0, 2*$f3->_h);
                 $blc->math('e = min{(b_0),(2*h):} = '.$e.' [m]', '');
-                $aF = \H3::n1($e/4);
-                $aG = \H3::n1($f3->_b0-2*($e/4));
-                $aH = \H3::n1($f3->_b0);
-                $aI = \H3::n1(($f3->_d0 - $e/2 > 0 ? $f3->_b0 : 0));
-                $bF = \H3::n1($e/10);
-                $bG = \H3::n1($e/10);
-                $bH = \H3::n1($e/2-$e/10);
-                $bI = \H3::n1(($f3->_d0 - $e/2 > 0 ? $f3->_d0 - $e/2 : 0));
+                $aF = H3::n1($e/4);
+                $aG = H3::n1($f3->_b0-2*($e/4));
+                $aH = H3::n1($f3->_b0);
+                $aI = H3::n1(($f3->_d0 - $e/2 > 0 ? $f3->_b0 : 0));
+                $bF = H3::n1($e/10);
+                $bG = H3::n1($e/10);
+                $bH = H3::n1($e/2-$e/10);
+                $bI = H3::n1(($f3->_d0 - $e/2 > 0 ? $f3->_d0 - $e/2 : 0));
                 $blc->txt('$c_(p,i) = '.$ci.'$ többlet, belső szélből', 'Belső szél előjele domináns szélhez igazítva: külső szíváshoz belső nyomás és fordítva.');
 
                 $scheme = ['Zóna', 'Felületi erő: $w [(kN)/m^2]$', 'Alaki tényező: $c (c_p, c_i)$', 'Zóna szélesség $[m]$', 'Zóna mélység $[m]$'];
@@ -282,11 +282,11 @@ Class Wind
                 $wC = ($f3->_d0 - $e > 0 ? H3::n2($cpC*$f3->_qpz) : 0);
                 $wD = H3::n2($cpD*$f3->_qpz);
                 $wE = H3::n2($cpE*$f3->_qpz);
-                $widthA = \H3::n1($e/5);
+                $widthA = H3::n1($e/5);
                 $widthB = H3::n1(($e < $f3->_d0 ? $e - $e/5 : $f3->_d0 - $e/5));
-                $widthC = \H3::n1(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0));
-                $widthD = \H3::n1($f3->_b0);
-                $widthE = \H3::n1($f3->_b0);
+                $widthC = H3::n1(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0));
+                $widthD = H3::n1($f3->_b0);
+                $widthE = H3::n1($f3->_b0);
 
                 $blc->math('e = min{(b),(2h):} = '.$e.'', '');
                 $blc->txt('', 'Belső szél előjele domináns szélhez igazítva: külső szíváshoz belső nyomás és fordítva.');
@@ -483,10 +483,10 @@ Class Wind
             $caB = $atticDb[$atticFind]['B'];
             $caC = $atticDb[$atticFind]['C'];
             $caD = $atticDb[$atticFind]['D'];
-            $aA = \H3::n1(0.3*$f3->_h_a);
-            $aB = \H3::n1(2*$f3->_h_a - 0.3*$f3->_h_a);
-            $aC = \H3::n1(2*$f3->_h_a);
-            $aD = \H3::n1($f3->_l_a - 4*$f3->_h_a);
+            $aA = H3::n1(0.3*$f3->_h_a);
+            $aB = H3::n1(2*$f3->_h_a - 0.3*$f3->_h_a);
+            $aC = H3::n1(2*$f3->_h_a);
+            $aD = H3::n1($f3->_l_a - 4*$f3->_h_a);
             $waA = H3::n2($caA*$f3->_qpz);
             $waB = H3::n2($caB*$f3->_qpz);
             $waC = H3::n2($caC*$f3->_qpz);
