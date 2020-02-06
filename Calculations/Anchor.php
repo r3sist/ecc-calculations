@@ -20,11 +20,7 @@ Class Anchor
         $blc->numeric('c1t', ['c_(1t)', 'Tüske tengely erő irányra merőlegesen'], 100, 'mm', 'Gerenda végétől tüske tengelyig vett érték');
         $blc->numeric('c2t', ['c_(2t)', 'Tüske tengely erő irányban'], 100, 'mm', 'Gerenda hossz irányú szélétől tüske tengelyig vett legkisebb érték');
         $blc->numeric('n', ['n', 'Csapok száma'], 2, '', '');
-        $steelPlateDOF = [
-            '0' => 0,
-            '1' => 1,
-            '2' => 2
-        ];
+        $steelPlateDOF = ['0' => 0, '1' => 1, '2' => 2];
         $blc->lst('n_s', $steelPlateDOF, ['n_s', 'Acéllemez befogási tényező'], '0');
         $blc->numeric('GRd', ['gamma_(Rd)', ''], 1.3, '', '');
         $blc->numeric('FVEd', ['F_(V,Ed)', 'Mértékadó nyíróerő csap képen'], 30, 'kN', '');
@@ -35,14 +31,14 @@ Class Anchor
         $blc->lst('limit', $states, ['', 'Tervezési állapot'], 2);
 
         $blc->region0('r0', 'Számítások');
-            $blc->def('fyk', $ec->matProp($f3->_aMat,'fy'), 'f_(y,k) = %% [N/(mm^2)]', 'Csap karakterisztikus folyáshatára');
-            if ($ec->matProp($f3->_aMat,'fyd') != '0') {
-                $blc->def('fyd', $ec->matProp($f3->_aMat,'fyd'), 'f_(y,d) = %% [N/(mm^2)]', 'Csap tervezési folyáshatára');
+            $blc->def('fyk', $ec->matProp((string)$f3->_aMat,'fy'), 'f_(y,k) = %% [N/(mm^2)]', 'Csap karakterisztikus folyáshatára');
+            if ($ec->matProp((string)$f3->_aMat,'fyd') != '0') {
+                $blc->def('fyd', $ec->matProp((string)$f3->_aMat,'fyd'), 'f_(y,d) = %% [N/(mm^2)]', 'Csap tervezési folyáshatára');
             } else {
-                $blc->def('fyd', $ec->matProp($f3->_aMat,'fy'), 'f_(y,d) = f_(y,bol t) = %% [N/(mm^2)]', 'Csap tervezési folyáshatára');
+                $blc->def('fyd', $ec->matProp((string)$f3->_aMat,'fy'), 'f_(y,d) = f_(y,bol t) = %% [N/(mm^2)]', 'Csap tervezési folyáshatára');
                 $blc->txt('Betonacél helyett menetesszár: csavar anyaggal számolva. $gamma = 1.0 $');
             }
-            $blc->def('fck', $ec->matProp($f3->_cMat,'fck'), 'f_(c,k) = %% [N/(mm^2)]', 'Beton szilárdság karakterisztikus értéke');
+            $blc->def('fck', $ec->matProp((string)$f3->_cMat,'fck'), 'f_(c,k) = %% [N/(mm^2)]', 'Beton szilárdság karakterisztikus értéke');
             $blc->def('fcd', H3::n2($f3->_fck/$f3->__Gc), 'f_(c,d) = f_(c,k)/gamma_c = %% [N/(mm^2)]', 'Beton szilárdság tervezési értéke');
             $blc->def('c1', $f3->_c1t - ($f3->_D/2), 'c_1 = c_(1t) - D/2 = %% [mm]', 'Betontakarás erő irányára merőlegesen');
             $blc->def('c2', $f3->_c2t - ($f3->_D/2), 'c_2 = c_(2t) - D/2 = %% [mm]', 'Betontakarás erő irányával párhuzamosan');
@@ -85,13 +81,13 @@ Class Anchor
 
             $blc->def('alpha_0', $f3->_alpha_c/$f3->_GRd, 'alpha_0 = alpha_c/gamma_(Rd) = %%', '');
             $blc->def('epsilon', (((3*$f3->_e)/$f3->_epsilon_0)/$f3->_D)*sqrt($f3->_fck/$f3->_fyk), 'epsilon = ((3*e)/epsilon_0)/D*sqrt(f_(ck)/f_(yk)) = %%', '');
-            $blc->def('alpha_er', sqrt(pow($f3->_alpha_r, 2) + pow($f3->_epsilon*$f3->_alpha_0, 2)) - $f3->_epsilon*$f3->_alpha_0, 'alpha_(er) = sqrt(alpha_r^2 + (epsilon*alpha_0)^2) - epsilon*alpha_0 = %%', '');
+            $blc->def('alpha_er', sqrt(($f3->_alpha_r ** 2) + (($f3->_epsilon * $f3->_alpha_0) ** 2)) - $f3->_epsilon*$f3->_alpha_0, 'alpha_(er) = sqrt(alpha_r^2 + (epsilon*alpha_0)^2) - epsilon*alpha_0 = %%', '');
 
             $blc->math('l imit = '.$f3->_limit);
             $blc->def('alpha_s', (-0.35)*$f3->_limit + 1.35, 'alpha_s = -0.35*l imit + 1.35 = %%');
 
             if ($f3->_n_s == 2) {
-                $blc->def('f', $f3->_fyd*(pow($f3->_D, 3)/(6*$f3->_e)), 'f = (f_(yd)*D^3)/(6*e)) = %% [N]');
+                $blc->def('f', $f3->_fyd*(($f3->_D ** 3) /(6*$f3->_e)), 'f = (f_(yd)*D^3)/(6*e)) = %% [N]');
             } else {
                 $blc->def('f', ($f3->_D*$f3->_D*sqrt($f3->_fcd*$f3->_fyd)*$f3->_alpha_c*$f3->_alpha_er)/$f3->_GRd, 'f = (D^2*sqrt(f_(cd)*f_(yd))*alpha_c*alpha_(er))/gamma_(Rd) = %% [N]');
             }
@@ -108,7 +104,7 @@ Class Anchor
         $blc->numeric('b', ['b', 'Tüskék távolsága'], 100, 'mm', 'Gerenda tengely irányra merőlegesen - Nyomaték erőkar');
         $blc->lst('nN', ['1' => 1, '2' => 2, '3' => 3], ['n_N', 'Tüske párok száma'], 1, 'Húzóerőt ennyi tüske veszi fel');
         $blc->def('NEd', $f3->_TEd/($f3->_b/1000), 'N_(Ed) = T_(Ed)/b = %% [kN]', 'Erőkar');
-        $blc->def('NplRd', H3::n2($f3->_nN*(($ec->A($f3->_D)*$f3->_fyd)/($f3->__GM0*1000))), 'N_(pl,Rd) = (D^2 *pi*f_(yd) )/(4*gamma_(M0)) = %% [kN]', '1 db tüske húzűsi ellenállása folyáshatárig');
+        $blc->def('NplRd', H3::n2($f3->_nN*(($ec->A((float)$f3->_D)*$f3->_fyd)/($f3->__GM0*1000))), 'N_(pl,Rd) = (D^2 *pi*f_(yd) )/(4*gamma_(M0)) = %% [kN]', '1 db tüske húzűsi ellenállása folyáshatárig');
         $blc->label(($f3->_NEd/$f3->_nN)/$f3->_NplRd, 'Húzási kihasználtság tüske képre');
         $blc->txt('', '$(N_(Ed)/n_N)/N_(pl,Rd)$');
     }
