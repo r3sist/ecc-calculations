@@ -126,6 +126,9 @@ Class SteelSection
         $blc->label($f3->_NEd/$f3->_NtRd, 'Húzási kihasználtság');
         $blc->txt('', '$N_(Ed)/N_(t,Rd)$');
 
+
+        // KÖZPONTOS NYOMÁS ////////////////////////////////////////////////////////////////////////////////////////////
+
         $blc->h1('Központosan nyomott rudak rugalmas ellenállása');
         $blc->note('1, 2, 3. kmo. szelvényekre. $A = A_(eff)$ 4. kmo.-ra.');
         $blc->success0();
@@ -134,6 +137,13 @@ Class SteelSection
         $blc->math('N_(Ed) = '.$f3->_NEd.' [kN]', 'Húzó-nyomó erő');
         $blc->label($f3->_NEd/$f3->_NcRd, 'Nyomási kihasználtság');
         $blc->note('Oválfuratok esetén a furatok nem kitöltöttek, ezért nettó keresztmetszettel kell számolni.');
+
+
+        // KIHAJLÁSI ELLENÁLLÁS ////////////////////////////////////////////////////////////////////////////////////////
+
+//        $blc->h1('Központosan nyomott rudak kihajlási ellenállása');
+
+
 
         $blc->h1('Hajlítás és normálerő kölcsönhatása');
         $blc->note('Ha hajlítónyomatékkal egyidejűleg nomiálerő is hat, akkor kölcsönhatásukra tekintettel kell lemii. Ez képlékeny vizsgálat
