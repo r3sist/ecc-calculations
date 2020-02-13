@@ -65,8 +65,11 @@ Class Concrete
         $blc->txt('Anyagminőségnél **'.(($f3->_fbd07)?'rossz tapadás':'jó tapadás').'** ($f_(b,d) = '.$f3->_fbd.'[N/(mm^2)]$) van beállítva');
         $this->moduleAnchorageLength($f3->_phil, $f3->_rfyd, $f3->_fbd, $f3->_alphaa, $f3->_nrequ, $f3->_nprov);
 
+
+        // BETONFEDÉS //////////////////////////////////////////////////////////////////////////////////////////////////
+
         $blc->h1('Betonfedés');
-        $blc->note('[ *Vasbetonszerkezetek* (2016) 8. 68.o. ]');
+        $blc->note('*[Vasbetonszerkezetek (2016) 8. 68.o.]* alapján. Fontos szabvány: *MSZ EN 4798:2016 NAD N1 táblázat*. Nem **S4** szerkezeti osztály esetén $c_(min,d)$ értékeit lásd: *[Betonszerkezetek méretezése az Eurocode alapján (2008) 3M3. melléklet]*');
         $blc->region0('classification', 'Kitéti osztály választása');
             $blc->img('https://structure.hu/ecc/concreteClassification0.jpg');
         $blc->region1();
@@ -83,7 +86,7 @@ Class Concrete
         switch ($f3->_XC) {
             case 'X0':
                 $this->helperCheckMinC(12);
-                $blc->note('X0: Pl. Belső száraz tér');
+                $blc->note('X0: Pl. Belső száraz tér, max 35% relatív páratartalom');
                 break;
             case 'XC1':
                 $this->helperCheckMinC(20);
@@ -98,7 +101,7 @@ Class Concrete
             case 'XC3':
                 $this->helperCheckMinC(30);
                 $cmindurXC = 25;
-                $blc->note('XC3: Pl. Víztározók, alapozási szerkezetek illetve nyitott csarnokok, gépkocsi tárolók, magas légnedvesség tartalmú belső terek');
+                $blc->note('XC3: Pl. Víztározók, alapozási szerkezetek illetve nyitott csarnokok, gépkocsi tárolók, magas légnedvesség tartalmú belső terek, esőtől védett, szabadon álló betonszerkezetek');
                 break;
             case 'XC4':
                 $this->helperCheckMinC(30);
