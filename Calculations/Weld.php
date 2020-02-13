@@ -57,7 +57,7 @@ Class Weld
     {
         $blc->numeric('a', ['a', 'Varrat gyökméret'], 4, 'mm', '');
         $blc->numeric('L', ['L', 'Varrat egyoldali bruttó hossz'], 100, 'mm', 'Pl. lemezszélesség');
-        $ec->matList();
+        $ec->matList('mat', 'S235', ['', 'Anyagminőség'], 'steel');
         $blc->numeric('t', ['t', 'Lemezvastagság'], 10, 'mm');
         $blc->numeric('F', ['F', 'Erő'], 10, 'kN');
         $blc->boo('w', ['w', 'Kétoldali sarokvarrat'], false);
