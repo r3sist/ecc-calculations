@@ -116,7 +116,7 @@ Class Bolt
         $rows = [];
         foreach ($boltDb as $key => $value) {
             array_unshift($value, $key);
-            array_push($rows, $value);
+            $rows[] = $value;
         }
         $this->blc->tbl($scheme, $rows);
         $this->blc->region1();
@@ -156,8 +156,8 @@ Class Bolt
         $this->f3->_Vb = $this->f3->_V;
         if ($this->f3->_group) {
             $this->blc->txt('Csavarok száma: ' . $this->f3->_nb);
-            $this->blc->def('Nb', $this->f3->_N/$this->f3->_nb, 'F_(t,Ed,b) = F_(t,Ed)/'.$this->f3->_nb.' = %% [kN]', 'Egy csavarra jutó húzóerő');
-            $this->blc->def('Vb', $this->f3->_V/$this->f3->_nb, 'F_(v,Ed,b) = F_(v,Ed)/'.$this->f3->_nb.' = %% [kN]', 'Egy csavarra jutó nyíróerő');
+            $this->blc->def('Nb', \H3::n2($this->f3->_N/$this->f3->_nb), 'F_(t,Ed,b) = F_(t,Ed)/'.$this->f3->_nb.' = %% [kN]', 'Egy csavarra jutó húzóerő');
+            $this->blc->def('Vb', \H3::n2($this->f3->_V/$this->f3->_nb), 'F_(v,Ed,b) = F_(v,Ed)/'.$this->f3->_nb.' = %% [kN]', 'Egy csavarra jutó nyíróerő');
         }
 
         $this->f3->_sfy = $this->ec->fy($this->f3->_sMat, $this->f3->_t);
