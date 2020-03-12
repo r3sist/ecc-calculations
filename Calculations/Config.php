@@ -5,6 +5,7 @@
 namespace Calculation;
 
 use Base;
+use resist\Auth3\Auth3Helper;
 use DB\SQL\Mapper;
 use Ecc\Blc;
 use Ec\Ec;
@@ -44,7 +45,7 @@ Class Config
         }
         $blc->txt('', 'A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
 
-        if ($f3->urole >= 30) {
+        if (Auth3Helper::isAdmin()) {
             $blc->h1('Admin');
             $blc->boo('doUpdate', ['', 'Számítás meta adatok szerkesztése/mentése'], false, '');
             if ($f3->_doUpdate && !$f3->mc->dry()) {
