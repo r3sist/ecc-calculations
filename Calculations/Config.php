@@ -25,6 +25,10 @@ Class Config
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
+        if ($f3->uname === 'CÉH') {
+            $blc->danger('Ez a CÉH közös fiók, a módosítások mindenkinél számítanak!');
+        }
+
         $blc->h1('Sablonok', 'MS Word export');
 
         $blc->lst('template', [$f3->get('udata.ufirm') => $f3->get('firms')[$f3->get('udata.ufirm')], 'Structure' => 'Structure'], ['', 'Sablon'], $f3->get('udata.utemplate'));
