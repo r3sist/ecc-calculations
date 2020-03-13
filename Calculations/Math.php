@@ -81,7 +81,16 @@ Class Math
         $blc->note('The value of the mean diameter $d_m$ is estimated as follows. The distance across flats $s$ of the nut is given in the standard *ISO 898-2*. By approximately ignoring the corner rounding for a perfect hexagon the relation of the distance across points $s\'$ and the distance across flats $s$ is $s\' = s / cos(30°) = 1.1547*s$. Therefore the mean diameter $d_m$ is approximately: $d_m = (s + 1.1547*s)/2=1.07735*s$');
         $blc->numeric('s', ['s', 'Szemben lévő felületek távolsága csavarfejen'], 10, 'mm', 'ISO 898-2');
         $blc->def('dm', H3::n1(1.07735*$f3->_s), 'd_m = %% [mm]', '');
-       /* $blc->h1('Teherelemzés');
+
+        $blc->h1('NAGÉV tömeg');
+        $blc->lst('nagevh', [20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], ['h [mm]', 'Járórács magasság'], 30);
+        $blc->lst('nagevv', [2, 3, 4 , 5], ['v [mm]', 'Borda vastagság'], 2);
+        $blc->lst('nagevl', [11, 22, 33, 44, 55, 66], ['l [mm]', 'Borda osztásköz'], 33);
+        $blc->def('nagevn', ceil(1000/$f3->_nagevl) + 1, 'n = 1000/l + 1 = %% [db]', 'Bordák száma 1 m-en.');
+        $blc->note('Mellékbordát fél magassággal veszi figyelembe.');
+        $blc->def('nagevg', ceil($f3->_nagevn*$f3->_nagevh*1.5*$f3->_nagevv*1000/1000000000*7850), 'g = n*1.5*h*7850[(kg)/m^3] = %% [(kg)/m^2]', '');
+
+        /* $blc->h1('Teherelemzés');
         $blc->h2('Terhek');
         $blc->input('m', ['m', 'Teherátadási módosító tényező'], 1.15, '', 'Trapézlemez többtámaszú hatása, közbenső támasznál; 1-től 1.25-ig', 'numeric|min_numeric,1|max_numeric,2');
 
