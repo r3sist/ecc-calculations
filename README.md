@@ -11,11 +11,19 @@ https://github.com/r3sist/ecc-calculations
 
 ![Header](https://structure.hu/img/eccpromo/promo0.png)
 
+---
+
 ![Menu items](https://structure.hu/img/eccpromo/promo1.png)
+
+---
 
 ![SVG generation](https://structure.hu/img/eccpromo/promo2.png)
 
+---
+
 ![General calculation](https://structure.hu/img/eccpromo/promo3.png)
+
+---
 
 ![Word export](https://structure.hu/img/eccpromo/promo4.png)
 
