@@ -40,7 +40,12 @@ Class JointEndplate
 
         $blc->numeric('etaj1', ['eta_(j,1) = M_(Ed)/M_(pl,Rd)', 'Kapcsolódó elemek nyomatéki kihasználtsága'], 0.9);
 
-        
+        $blc->info0('Csatlakozó szelvény');
+            $blc->lst('sectionFamily1', ['HEA', 'HEB', 'IPE'], ['', 'Szelvény típus'], 'HEA');
+            $ec->sectionList($f3->_sectionFamily1, 'section1');
+        $blc->info1();
+
+
 
     }
 }
