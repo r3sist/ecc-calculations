@@ -290,7 +290,7 @@ class Ec
             $rows = [];
             $scheme = array_keys($result[0]);
             foreach ($result as $key => $row) {
-                array_push($rows, array_values($row));
+                $rows[] = array_values($row);
             }
 
             $this->blc->region0('sectionTable', $result[0]['name2'].' szelvény adatok');
