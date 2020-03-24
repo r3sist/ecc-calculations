@@ -16,4 +16,8 @@
     "ikkez/f3-flash": ">=1.0.0",
     "respect/validation": "1.*"
   }
+  ,
+  "require-dev": {
+    "roave/security-advisories": "dev-master"
+  }
 }
