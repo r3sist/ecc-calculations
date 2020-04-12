@@ -41,10 +41,8 @@ Class Config
 
         $blc->h1('Képletek kezelése');
         $blc->boo('nativeMath', ['', 'Szerveroldali ASCIIMath konvertálás MathML formátumba'], (bool)$f3->udata['ueccnativemathml'], 'Csak Firefox alatt! MathJax helyett szerverordali képlet renderelés. Rondább, de gyorsabb és ugrálás nélküli megjelenítés.');
-        $blc->boo('svgMath', ['', 'Képletek SVG képekként'], (bool)$f3->udata['ueccsvgmath'], 'A képletek képként kerülnek megjelenítésre.');
         if ($this->userMap) {
             $this->userMap->ueccnativemathml = $f3->_nativeMath;
-            $this->userMap->ueccsvgmath = $f3->_svgMath;
             $this->userMap->save();
         }
         $blc->txt('', 'A módosítások aktiválásához a teljes oldal újratöltése szükséges.');
