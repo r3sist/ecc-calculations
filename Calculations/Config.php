@@ -25,6 +25,8 @@ Class Config
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
+        $this->userMap->loadByUid($f3->get('uid'));
+
         if ($f3->uname === 'CÉH') {
             $blc->danger('Ez a CÉH közös fiók, a módosítások mindenkinél számítanak!');
         }
