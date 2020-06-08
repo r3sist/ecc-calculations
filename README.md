@@ -4,9 +4,6 @@
 
 https://github.com/r3sist/ecc-calculations
 
-[![CodeFactor](https://www.codefactor.io/repository/github/r3sist/ecc-calculations/badge)](https://www.codefactor.io/repository/github/r3sist/ecc-calculations) 
-[![](https://www.code-inspector.com/project/1939/status/svg)](https://www.code-inspector.com/public/project/1939/ecc-calculations/dashboard)
-
 ---
 
 ![Header](https://structure.hu/img/eccpromo/promo0.png)
