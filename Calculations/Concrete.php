@@ -233,6 +233,16 @@ Class Concrete
             $blc->math('c_(nom) = '.$f3->_cnom.' [mm]');
         $blc->success1();
 
+        $blc->h1('Pecsétnyomás és kereszt irányú húzás');
+        $blc->numeric('Tb', ['b', 'Elem szélesség'], 300, 'mm');
+        $blc->numeric('Ta', ['a', 'Felfekvés szélessége'], 200, 'mm');
+        $blc->numeric('TVEd', ['V_(Ed)', 'Bevezetett erő'], 100, 'kN');
+        $blc->note('Központos eset számítása. Külpontos esetben a felső szakaszon is keletkezik húzóerő.');
+        $blc->def('T', H3::n2(0.25*(1 - $f3->_Ta/$f3->_Tb)*$f3->_TVEd), 'T = 0.25*(1- a/b)*V_(Ed) = %% [kN]');
+        $ec->rebarList('Tfi', 10, ['', 'Vas átmérő']);
+        $blc->def('TA', ceil($f3->_T*1000/435), 'A_min = %% [mm^2]');
+        $blc->def('Tn', ceil($f3->_TA/$ec->A($f3->_Tfi)), 'n = %%');
+
 
         $blc->h1('Beton jellemzői $t$ napos korban');
         $blc->numeric('t', ['t', 'Idő'], 10, 'nap', '');
