@@ -415,7 +415,7 @@ class Ec
         $btMat = (string)$btMat;
         $result = (0.9 * $this->matProp($btMat, 'fu') * $this->boltProp($btName, 'As')) / (1000 * $this->f3->get('__GM2'));
         if ($verbose) {
-            $this->blc->note('`FtRd` húzás általános képlet: $(0.9*f_(u,b)*A_s)/(gamma_(M2))$');
+            $this->blc->note('Húzás általános képlet: $F_(t,Rd) = (0.9*f_(u,b)*A_s)/(gamma_(M2))$');
         }
         return $result;
     }
