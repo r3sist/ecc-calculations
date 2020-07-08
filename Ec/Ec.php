@@ -2,9 +2,10 @@
 
 namespace Ec;
 
-use \Base;
+use Base;
+use DB\SQL;
 use H3;
-use \Ecc\Blc;
+use Ecc\Blc;
 use Respect\Validation\Validator as v;
 
 
@@ -19,6 +20,7 @@ class Ec
 {
     public Base $f3;
     private Blc $blc;
+    private SQL $db;
 
     private v $vAlnum;
 
@@ -26,10 +28,11 @@ class Ec
      * Ec constructor.
      * Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA
      */
-    public function __construct(Base $f3, Blc $blc)
+    public function __construct(Base $f3, Blc $blc, SQL $db)
     {
         $this->f3 = $f3;
         $this->blc = $blc;
+        $this->db = $db;
 
         $this->vAlnum = v::alnum()->noWhitespace();
 
@@ -261,7 +264,7 @@ class Ec
         $this->vAlnum->assert($familyName);
 
         $query = "SELECT * FROM steelSection WHERE name2 LIKE '$familyName%'";
-        $result = $this->f3->get('db')->exec($query);
+        $result = $this->db->exec($query);
         $list = [];
         foreach ($result as $section) {
             $list[$section['name2']] = $section['name2'];
@@ -275,7 +278,7 @@ class Ec
 
         $query = "
             SELECT name2, _h, _b, _tf, _tw, _Ax, _Ay, _Az, _Ix, _Iy, _Iz, _I1, _I2, _W1elt, _W1elb, _W2elt, _W2elb, _W1pl, _W2pl FROM steelSection WHERE name2 = '$sectionName' LIMIT 1";
-        $result = $this->f3->get('db')->exec($query);
+        $result = $this->db->exec($query);
 
         // Remove underscores
         $resultCleaned = [];
