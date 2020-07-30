@@ -4,10 +4,10 @@
 
 namespace Calculation;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
-use \H3;
+use Base;
+use Ecc\Blc;
+use Ec\Ec;
+use H3;
 use resist\SVG\SVG;
 
 Class Baseplate
@@ -28,6 +28,19 @@ Class Baseplate
             $ec->spreadMaterialData($f3->_anchorMaterialName, 'a');
             $ec->matList('concreteMaterialName', 'C25/30', ['', 'Beton anyag'], 'concrete');
             $ec->spreadMaterialData($f3->_concreteMaterialName, 'c');
+        $blc->region1();
+
+        $blc->region0('quicktbl', 'Egyszerűsített táblázat bekötő karmokhoz');
+            $scheme = ['Átmérő $[mm]$', 'Keresztmetszet $[mm^2]$', 'Húzás $[kN]$', 'Nyírás $[kN]$', 'Varrat gyökméret húzáshoz $[mm]$'];
+            $rows = [
+                [12, floor($ec->A(12)), H3::n1($f3->_sfy*floor($ec->A(12))/1000), H3::n1(($f3->_sfy/sqrt(3))*floor($ec->A(12))/1000), 4],
+                [14, floor($ec->A(14)), H3::n1($f3->_sfy*floor($ec->A(14))/1000), H3::n1(($f3->_sfy/sqrt(3))*floor($ec->A(14))/1000), 5],
+                [16, floor($ec->A(16)), H3::n1($f3->_sfy*floor($ec->A(16))/1000), H3::n1(($f3->_sfy/sqrt(3))*floor($ec->A(16))/1000), 6],
+                [20, floor($ec->A(20)), H3::n1($f3->_sfy*floor($ec->A(20))/1000), H3::n1(($f3->_sfy/sqrt(3))*floor($ec->A(20))/1000), 7],
+                [25, floor($ec->A(25)), H3::n1($f3->_sfy*floor($ec->A(25))/1000), H3::n1(($f3->_sfy/sqrt(3))*floor($ec->A(25))/1000), 9],
+            ];
+            $blc->tbl($scheme, $rows, 'quicktblTbl', '$f_(yd) = '.$f3->_sfy.' [N/(mm^2)]$ Nem karom anyagával számol!');
+            $blc->note('[K.G. *MBM csomópontok*]');
         $blc->region1();
 
         $blc->info0('Erők:');
