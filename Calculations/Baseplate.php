@@ -147,7 +147,8 @@ Class Baseplate
         $blc->note('Húzásra csak a felső sor horgonyai vannak figyelembe véve!');
         $blc->def('NRdt', $f3->_NRda*$f3->_nt, 'N_(Rd,t) = n_t*N_(Rd,a) = %% [kN]', 'Húzott (felső) horgonyok húzási ellenállása');
         $blc->txt('Húzott (felső) horgonyok kihasználtsága:');
-        $blc->def('ntreq', ceil((4/(($f3->_phi ** 2) *pi()))*($f3->_NEd*1000/$f3->_afyd)), 'n_(t,req) = %%', 'Minimális húzott horgonyszám');
+        $blc->def('ntreq', ceil((4/(($f3->_phi ** 2)*M_PI))*($f3->_NEd*1000/$f3->_afyd)), 'n_(t,req) = %%', 'Minimális húzott horgonyszám');
+        /** @noinspection AdditionOperationOnArraysInspection */
         $blc->def('NEdsum', $f3->_NEd + $f3->_NEdM, 'N_(Ed,sum) = N_(Ed) + N_(Ed,M) = %% [kN]');
         $blc->label($f3->_NEdsum/$f3->_NRdt, 'húzási kihasználtság');
 
@@ -155,7 +156,7 @@ Class Baseplate
         if ($f3->_useShearProfile) {
             $blc->info0('Nyírt csap számítása:');
                 $blc->def('VplRdp', H3::n1(($f3->_shearProfileA*$f3->_afyd)/(sqrt(3)*$f3->__GM0*1000)), 'V_(pl,Rd,p) = %% [kN]', 'Nyírási csap ellenállása');
-                $f3->_VEd = $f3->_VEd - $f3->_VplRdp;
+                $f3->_VEd -= $f3->_VplRdp;
                 $blc->math('V_(Ed) := V_(Ed) - V_(pl,Rd,p) = '.$f3->_VEd.'  [kN]', 'Nyírási igénybevétel csökkentve a továbbiakban mindenhol');
             $blc->info1();
         }
@@ -166,6 +167,7 @@ Class Baseplate
         $blc->label($f3->_VEd/$f3->_VplRd,'nyírási kihasználtság');
 
         $blc->h1('Nyírás-húzás interakció összes horgonyra');
+        /** @noinspection AdditionOperationOnArraysInspection */
         $Uvt = $f3->_VEd/(($f3->_nt + $f3->_nv)*$f3->_VplRda) + $f3->_NEd/(1.4*($f3->_nt + $f3->_nv)*$f3->_NRda);
         $blc->math('V_(Ed)/((n_t+n_v)*V_(pl,Rd,a)) + N_(Ed)/(1.4*(n_t+n_v)*N_(Rd,a)) = '.H3::n1($Uvt*100.0).'[%]', '$M_(Ed)$ figyelmenkívül hagyásával');
         $blc->label($Uvt, 'interakciós kihaználtság');
@@ -174,7 +176,7 @@ Class Baseplate
         $blc->boo('useRigid', ['', 'Befogott lemez'], false, '');
         ($f3->_useRigid)?$rigidFactor = 8:$rigidFactor = 4;
         $blc->def('MEdp',$f3->_MEd/2 + ($f3->_NEd*($f3->_lever/1000))/$rigidFactor, 'M_(Ed,p) = M_(Ed)/2 + (N_(Ed)*l)/'.$rigidFactor.' = %% [kNm]','Nyomaték a lemezben');
-        $blc->def('Ws',floor(($f3->_ba*pow($f3->_tb, 2))/6), 'W_s = (b_a*t_b^2)/6 = %% [mm^3]', 'Gyenge tengely körüli keresztmetszeti modulus');
+        $blc->def('Ws',floor(($f3->_ba* ($f3->_tb ** 2))/6), 'W_s = (b_a*t_b^2)/6 = %% [mm^3]', 'Gyenge tengely körüli keresztmetszeti modulus');
         $blc->def('sigmaEds',H3::n1(($f3->_MEdp/$f3->_Ws)*1000000), 'sigma_(Ed,s) = M_(Ed)/W_s = %%; f_(y) = '.$f3->_sfy.' [N/(mm^2)]', 'Lemez feszültség');
         $blc->label($f3->_sigmaEds/$f3->_sfy,'lemez rugalmas kihasználtság');
 
@@ -197,7 +199,7 @@ Class Baseplate
         if ($f3->_useDoubleWeld) {
             $wFactor = 2;
         }
-        $blc->def('lw', H3::n1($wFactor*$f3->_phi*pi()), 'l_w = %% [mm]', 'Egy- vagy kétszeres varrathossz horgony kerülete mentén, teljes kerület figyelembevételével');
+        $blc->def('lw', H3::n1($wFactor*$f3->_phi*M_PI), 'l_w = %% [mm]', 'Egy- vagy kétszeres varrathossz horgony kerülete mentén, teljes kerület figyelembevételével');
         $blc->def('betaw', $f3->_sbetaw, 'beta_w = %%', 'Hegesztési tényező');
         $blc->def('NwEd', ($f3->_NEdsum/$f3->_nt)/$f3->_lw * 1000, 'N_(w,Ed) = N_(Ed,sum)/n_t/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel húzásból');
         $blc->def('VwEd', ($f3->_VEd/$f3->_nv)/$f3->_lw * 1000, 'V_(w,Ed) = V_(Ed)/n_v/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel nyírásból');
@@ -208,7 +210,7 @@ Class Baseplate
 
         $blc->h1('Beton pecsétnyomás ellenőrzése nyírt csapok alatt');
         $blc->note('*[Vasbeton szerkezetek (2017) 6.10. 55.o.]*. Nyíróerő átadás $3*phi$ hosszon számítva, fél hengerpalást felületre. Térbeli feszültségállapot szabadon felléphet.');
-        $blc->def('FRd', H3::n2($f3->_phi*pi()*0.5*3*$f3->_phi*3*$f3->_cfcd/1000), 'F_(Rd) = A_(cl)*alpha*f_(cd) = (phi*pi)/2*(3*phi)*3*f_(cd) = %% [kN]');
+        $blc->def('FRd', H3::n2($f3->_phi*M_PI*0.5*3*$f3->_phi*3*$f3->_cfcd/1000), 'F_(Rd) = A_(cl)*alpha*f_(cd) = (phi*pi)/2*(3*phi)*3*f_(cd) = %% [kN]');
         $blc->def('FEd', H3::n2($f3->_VEd/$f3->_nv), 'F_(Ed) = V_(Ed)/n_v = %% [kN]');
         $blc->label($f3->_FEd/$f3->_FRd,'kihasználtság');
 
