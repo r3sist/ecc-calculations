@@ -15,20 +15,6 @@ Class Math
     {
         $blc->toc();
 
-        $blc->h1('Vas keresztmetszet');
-        $f3->_As = $ec->rebarTable('AS');
-        $blc->math('A_s = '.$f3->_As.' [mm^2]');
-        $blc->region0('rebars', 'Keresztmetszetek');
-            $blc->math('phi_(8): '.floor($ec->A(8)).' [mm^2]');
-            $blc->math('phi_(10): '.floor($ec->A(10)).' [mm^2]');
-            $blc->math('phi_(12): '.floor($ec->A(12)).' [mm^2]');
-            $blc->math('phi_(16): '.floor($ec->A(16)).' [mm^2]');
-            $blc->math('phi_(20): '.floor($ec->A(20)).' [mm^2]');
-            $blc->math('phi_(25): '.floor($ec->A(25)).' [mm^2]');
-            $blc->math('phi_(28): '.floor($ec->A(25)).' [mm^2]');
-            $blc->math('phi_(32): '.floor($ec->A(32)).' [mm^2]');
-        $blc->region1();
-
         $blc->h1('Lejtés');
         $blc->numeric('slope', ['', 'Lejtés'], 3, '% / °', '');
         $slope_deg = rad2deg(atan($f3->_slope/100));
