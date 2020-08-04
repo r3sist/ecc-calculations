@@ -1,4 +1,5 @@
 <?php declare(strict_types = 1);
+// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
 
 namespace Ec;
 
@@ -10,15 +11,14 @@ use Respect\Validation\Validator as v;
 
 
 /**
- * Eurocode globals and predefined GUI elements for ECC framework
+ * Eurocode globals, helpers and predefined GUI elements for ECC framework
  *
  * (c) Bence VÁNKOS
  * https:// structure.hu
  */
-
 class Ec
 {
-    public Base $f3;
+    private Base $f3;
     private Blc $blc;
     private SQL $db;
 
@@ -53,14 +53,14 @@ class Ec
 
     /**
      * Get data record by data_id from ecc_data table
-     * @param string $dbName
-     * @return array Assoc. array of read data
+     * @param string $dataName Name of data as dataset identifier
+     * @return array Associative array of read data
      */
-    public function readData(string $dbName): array
+    public function readData(string $dataName): array
     {
-        $this->f3->get('md')->load(['dname = :dname', ':dname' => $dbName]);
+        $this->f3->get('md')->load(['dname = :dname', ':dname' => $dataName]);
         if (!$this->f3->get('md')->dry()) {
-            return json_decode($this->f3->get('md')->djson, true);
+            return json_decode($this->f3->get('md')->djson, true, 512, JSON_THROW_ON_ERROR);
         }
         return [];
     }
@@ -101,27 +101,37 @@ class Ec
         return $this->readData('mat');
     }
 
-    public function matProp(string $name, string $property): float
+    public function matProp(string $materialName, string $propertyName): float
     {
         $matDb = $this->getMaterialArray();
-        return $matDb[$name][$property];
+        return $matDb[$materialName][$propertyName];
     }
 
-    public function boltProp(string $name, string $property): float
+    public function boltProp(string $boltName, string $propertyName): float
     {
         $boltDb = $this->readData('bolt');
-        return $boltDb[$name][$property];
+        return $boltDb[$boltName][$propertyName];
     }
 
-    public function fy(string $matName, float $t): float
+    /**
+     * @param string $materialName
+     * @param float $t Thickness of relevant plate [mm]
+     * @return float Yield strength in [N/mm^2; MPa]
+     */
+    public function fy(string $materialName, float $t): float
     {
         if ($t > 40) {
             $this->blc->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:', '');
-            return $this->matProp($matName, 'fy40');
+            return $this->matProp($materialName, 'fy40');
         }
-        return $this->matProp($matName, 'fy');
+        return $this->matProp($materialName, 'fy');
     }
 
+    /**
+     * @param string $matName
+     * @param float $t Thickness of relevant plate [mm]
+     * @return float Ultimate strength in [N/mm^2; MPa]
+     */
     public function fu(string $matName, float $t): float
     {
         if ($t > 40) {
