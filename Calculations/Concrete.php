@@ -48,8 +48,21 @@ Class Concrete
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
-        $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/material) alapján történnek.');
+        $blc->h1('Vas keresztmetszet');
+            $f3->_As = $ec->rebarTable('AS');
+            $blc->math('A_s = '.$f3->_As.' [mm^2]');
+            $blc->region0('rebars', 'Keresztmetszetek');
+            $blc->math('phi_(8): '.floor($ec->A(8)).' [mm^2]');
+            $blc->math('phi_(10): '.floor($ec->A(10)).' [mm^2]');
+            $blc->math('phi_(12): '.floor($ec->A(12)).' [mm^2]');
+            $blc->math('phi_(16): '.floor($ec->A(16)).' [mm^2]');
+            $blc->math('phi_(20): '.floor($ec->A(20)).' [mm^2]');
+            $blc->math('phi_(25): '.floor($ec->A(25)).' [mm^2]');
+            $blc->math('phi_(28): '.floor($ec->A(25)).' [mm^2]');
+            $blc->math('phi_(32): '.floor($ec->A(32)).' [mm^2]');
+        $blc->region1();
 
+        $blc->h1('Beton anyagminőségek');
         $ec->matList('concreteMaterialName', 'C25/30', ['', 'Beton anyagminőség'], 'concrete');
         $ec->spreadMaterialData($f3->_concreteMaterialName, '');
         $blc->txt('', 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
@@ -245,6 +258,7 @@ Class Concrete
 
 
         $blc->h1('Beton jellemzői $t$ napos korban');
+        $blc->note('A számítások [Tóth Bertalan programja](https://structure.hu/berci/material) alapján történnek.');
         $blc->numeric('t', ['t', 'Idő'], 10, 'nap', '');
         $cem = [
             'CEM 52,5 R' => 0.2,
