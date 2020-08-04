@@ -3,7 +3,7 @@
 > General user interface "blocks" for Ecc framework  
 
 
-Auto generated public API documentation of class ***Ecc\Blc*** at 2020.07.17.
+Auto generated public API documentation of class ***Ecc\Blc*** at 2020.07.30.
 
 ## Public methods 
 
@@ -12,7 +12,7 @@ Auto generated public API documentation of class ***Ecc\Blc*** at 2020.07.17.
 > Blc constructor.  
 
 
-**__construct(** *Base* $f3 **):** ` `
+**__construct(** *Base* $f3 **):** 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
@@ -22,362 +22,362 @@ Auto generated public API documentation of class ***Ecc\Blc*** at 2020.07.17.
 > Renders checkbox field  
 
 
-**boo(** `string ` $variableName, `array ` $title, [`bool ` $defaultValue], [` ` $help] **):** `string `
+**boo(** `string`  $variableName, `array`  $title, [`bool`  $defaultValue], [ $help] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** |  |  |
-| `array ` | **$title** |  |  |
-| `bool ` | **$defaultValue** | `false` |  |
+| `string`  | **$variableName** |  |  |
+| `array`  | **$title** |  |  |
+| `bool`  | **$defaultValue** | `false` |  |
 |  | **$help** | `empty string` |  |
 ### bulk()
 
-**bulk(** `string ` $variableName, `array ` $fields **):** ` `
+**bulk(** `string`  $variableName, `array`  $fields **):** 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** |  |  |
-| `array ` | **$fields** |  |  |
+| `string`  | **$variableName** |  |  |
+| `array`  | **$fields** |  |  |
 ### danger()
 
-**danger(** `string ` $mdLight, [`string ` $title] **):** `void `
+**danger(** `string`  $mdLight, [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$mdLight** |  |  |
-| `string ` | **$title** | `empty string` |  |
+| `string`  | **$mdLight** |  |  |
+| `string`  | **$title** | `empty string` |  |
 ### danger0()
 
-**danger0(** [`string ` $title] **):** `void `
+**danger0(** [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$title** | `empty string` |  |
+| `string`  | **$title** | `empty string` |  |
 ### danger1()
 
-**danger1(**  **):** `void `
+**danger1(**  **):** `void` 
 
 ### def()
 
-**def(** `string ` $variableName, ` ` $result, [`string ` $mathExpression], [`string ` $help], [`string ` $gumpValidation] **):** `string `
+**def(** `string`  $variableName,  $result, [`string`  $mathExpression], [`string`  $help], [`string`  $gumpValidation] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** |  |  |
+| `string`  | **$variableName** |  |  |
 | @mixed  | **$result** |  |  |
-| `string ` | **$mathExpression** | "%%" |  |
-| `string ` | **$help** | `empty string` |  |
-| `string ` | **$gumpValidation** | `empty string` |  |
+| `string`  | **$mathExpression** | "%%" |  |
+| `string`  | **$help** | `empty string` |  |
+| `string`  | **$gumpValidation** | `empty string` |  |
 ### h1()
 
 > Renders first order header  
 
 
-**h1(** `string ` $headingTitle, [`string ` $subTitle] **):** `string `
+**h1(** `string`  $headingTitle, [`string`  $subTitle] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$headingTitle** |  |  |
-| `string ` | **$subTitle** | `empty string` |  |
+| `string`  | **$headingTitle** |  |  |
+| `string`  | **$subTitle** | `empty string` |  |
 ### h2()
 
 > Renders second order header  
 
 
-**h2(** `string ` $headingTitle, [`string ` $subTitle] **):** `string `
+**h2(** `string`  $headingTitle, [`string`  $subTitle] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$headingTitle** |  |  |
-| `string ` | **$subTitle** | `empty string` |  |
+| `string`  | **$headingTitle** |  |  |
+| `string`  | **$subTitle** | `empty string` |  |
 ### h3()
 
 > Renders third order header  
 
 
-**h3(** `string ` $headingTitle, [`string ` $subTitle] **):** `string `
+**h3(** `string`  $headingTitle, [`string`  $subTitle] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$headingTitle** |  |  |
-| `string ` | **$subTitle** | `empty string` |  |
+| `string`  | **$headingTitle** |  |  |
+| `string`  | **$subTitle** | `empty string` |  |
 ### h4()
 
 > Renders 4th order header  
 
 
-**h4(** `string ` $headingTitle, [`string ` $subTitle] **):** `string `
+**h4(** `string`  $headingTitle, [`string`  $subTitle] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$headingTitle** |  |  |
-| `string ` | **$subTitle** | `empty string` |  |
+| `string`  | **$headingTitle** |  |  |
+| `string`  | **$subTitle** | `empty string` |  |
 ### hr()
 
 > Renders horizontal line  
 
 
-**hr(**  **):** `void `
+**hr(**  **):** `void` 
 
 ### html()
 
 > Renders html  
 
 
-**html(** `string ` $html **):** `void `
+**html(** `string`  $html **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$html** |  |  |
+| `string`  | **$html** |  |  |
 ### img()
 
 > Renders image  
 
 
-**img(** `string ` $URLorBase64, [`string ` $caption] **):** `void `
+**img(** `string`  $URLorBase64, [`string`  $caption] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$URLorBase64** |  |  |
-| `string ` | **$caption** | `empty string` |  |
+| `string`  | **$URLorBase64** |  |  |
+| `string`  | **$caption** | `empty string` |  |
 ### info()
 
-**info(** `string ` $mdLight, [`string ` $title] **):** `void `
+**info(** `string`  $mdLight, [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$mdLight** |  |  |
-| `string ` | **$title** | `empty string` |  |
+| `string`  | **$mdLight** |  |  |
+| `string`  | **$title** | `empty string` |  |
 ### info0()
 
-**info0(** [`string ` $title] **):** `void `
+**info0(** [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$title** | `empty string` |  |
+| `string`  | **$title** | `empty string` |  |
 ### info1()
 
-**info1(**  **):** `void `
+**info1(**  **):** `void` 
 
 ### input()
 
 > Renders input field  
 
 
-**input(** `string ` $variableName, `array ` $title, [` ` $defaultValue], [`string ` $unit], [`string ` $help], [`string ` $gumpValidation] **):** `string `
+**input(** `string`  $variableName, `array`  $title, [ $defaultValue], [`string`  $unit], [`string`  $help], [`string`  $gumpValidation] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** |  |  |
-| `array ` | **$title** |  |  |
+| `string`  | **$variableName** |  |  |
+| `array`  | **$title** |  |  |
 | @mixed  | **$defaultValue** | `empty string` |  |
-| `string ` | **$unit** | `empty string` |  |
-| `string ` | **$help** | `empty string` |  |
-| `string ` | **$gumpValidation** | `empty string` |  |
+| `string`  | **$unit** | `empty string` |  |
+| `string`  | **$help** | `empty string` |  |
+| `string`  | **$gumpValidation** | `empty string` |  |
 ### instance()
 
 **DEPRECATED** This static method is used by a few template // TODO remove them
 
-**instance(**  **):** ` `
+**instance(**  **):** 
 
 ### jsx()
 
-**jsx(** `string ` $id, [`string ` $js], [`int ` $height] **):** `void `
+**jsx(** `string`  $id, [`string`  $js], [`int`  $height] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$id** |  |  |
-| `string ` | **$js** | "console.log("jsx");" |  |
-| `int ` | **$height** | 200 |  |
+| `string`  | **$id** |  |  |
+| `string`  | **$js** | "console.log("jsx");" |  |
+| `int`  | **$height** | 200 |  |
 ### jsxDriver()
 
-**jsxDriver(**  **):** `void `
+**jsxDriver(**  **):** `void` 
 
 ### label()
 
-**label(** ` ` $value, [`string ` $text] **):** `string `
+**label(**  $value, [`string`  $text] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | @mixed  | **$value** |  |  |
-| `string ` | **$text** | `empty string` |  |
+| `string`  | **$text** | `empty string` |  |
 ### lst()
 
 > Renders selection list  
 
 
-**lst(** `string ` $variableName, `array ` $source, `array ` $title, [` ` $defaultValue], [`string ` $help] **):** `string `
+**lst(** `string`  $variableName, `array`  $source, `array`  $title, [ $defaultValue], [`string`  $help] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** |  |  |
-| `array ` | **$source** |  |  |
-| `array ` | **$title** |  |  |
+| `string`  | **$variableName** |  |  |
+| `array`  | **$source** |  |  |
+| `array`  | **$title** |  |  |
 | @mixed  | **$defaultValue** | `empty string` |  |
-| `string ` | **$help** | `empty string` |  |
+| `string`  | **$help** | `empty string` |  |
 ### math()
 
 > Renders math expression  
 
 
-**math(** `string ` $mathExpression, [`string ` $help] **):** `void `
+**math(** `string`  $mathExpression, [`string`  $help] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$mathExpression** |  |  |
-| `string ` | **$help** | `empty string` |  |
+| `string`  | **$mathExpression** |  |  |
+| `string`  | **$help** | `empty string` |  |
 ### md()
 
 > Renders markdown  
 
 
-**md(** `string ` $mdLight **):** `string `
+**md(** `string`  $mdLight **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$mdLight** |  |  |
+| `string`  | **$mdLight** |  |  |
 ### note()
 
 > Renders note  
 
 
-**note(** `string ` $mdStrict **):** `void `
+**note(** `string`  $mdStrict **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$mdStrict** |  |  |
+| `string`  | **$mdStrict** |  |  |
 ### numeric()
 
 > Renders numeric input field  
 
 
-**numeric(** `string ` $variableName, `array ` $title, `float ` $defaultValue, [`string ` $unit], [`string ` $help], [`string ` $additionalGumpValidation] **):** `string `
+**numeric(** `string`  $variableName, `array`  $title, `float`  $defaultValue, [`string`  $unit], [`string`  $help], [`string`  $additionalGumpValidation] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** |  |  |
-| `array ` | **$title** |  |  |
-| `float ` | **$defaultValue** |  |  |
-| `string ` | **$unit** | `empty string` |  |
-| `string ` | **$help** | `empty string` |  |
-| `string ` | **$additionalGumpValidation** | `empty string` |  |
+| `string`  | **$variableName** |  |  |
+| `array`  | **$title** |  |  |
+| `float`  | **$defaultValue** |  |  |
+| `string`  | **$unit** | `empty string` |  |
+| `string`  | **$help** | `empty string` |  |
+| `string`  | **$additionalGumpValidation** | `empty string` |  |
 ### pre()
 
 > Renders pre text  
 
 
-**pre(** `string ` $plainText **):** `void `
+**pre(** `string`  $plainText **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$plainText** |  |  |
+| `string`  | **$plainText** |  |  |
 ### region0()
 
-**region0(** `string ` $name, [`string ` $title] **):** `void `
+**region0(** `string`  $name, [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$name** |  |  |
-| `string ` | **$title** | "Számítások" |  |
+| `string`  | **$name** |  |  |
+| `string`  | **$title** | "Számítások" |  |
 ### region1()
 
-**region1(**  **):** ` `
+**region1(**  **):** 
 
 ### success()
 
-**success(** `string ` $mdLight, [`string ` $title] **):** `void `
+**success(** `string`  $mdLight, [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$mdLight** |  |  |
-| `string ` | **$title** | `empty string` |  |
+| `string`  | **$mdLight** |  |  |
+| `string`  | **$title** | `empty string` |  |
 ### success0()
 
-**success0(** [`string ` $title] **):** `void `
+**success0(** [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$title** | `empty string` |  |
+| `string`  | **$title** | `empty string` |  |
 ### success1()
 
-**success1(**  **):** `void `
+**success1(**  **):** `void` 
 
 ### svg()
 
-**svg(** *resist\SVG\SVG* $svgObject, [`bool ` $forceJpg], [`string ` $caption] **):** `void `
+**svg(** *resist\SVG\SVG* $svgObject, [`bool`  $forceJpg], [`string`  $caption] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | *resist\SVG\SVG* | **$svgObject** |  |  |
-| `bool ` | **$forceJpg** | `false` |  |
-| `string ` | **$caption** | `empty string` |  |
+| `bool`  | **$forceJpg** | `false` |  |
+| `string`  | **$caption** | `empty string` |  |
 ### tbl()
 
 > Table rendering  
 
 
-**tbl(** `array ` $scheme, `array ` $rows, [`string ` $name], [` ` $caption] **):** `void `
+**tbl(** `array`  $scheme, `array`  $rows, [`string`  $name], [ $caption] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `array ` | **$scheme** |  | 1 dim array of header |
-| `array ` | **$rows** |  | Nested array of rows and cols |
-| `string ` | **$name** | "tbl" | Class name of tbody tag for scripting |
+| `array`  | **$scheme** |  | 1 dim array of header |
+| `array`  | **$rows** |  | Nested array of rows and cols |
+| `string`  | **$name** | "tbl" | Class name of tbody tag for scripting |
 |  | **$caption** | `empty string` |  |
 ### toast()
 
-**toast(** `string ` $textMdStrict, [`string ` $type], [`string ` $titleMdStrict] **):** ` `
+**toast(** `string`  $textMdStrict, [`string`  $type], [`string`  $titleMdStrict] **):** 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$textMdStrict** |  |  |
-| `string ` | **$type** | "info" |  |
-| `string ` | **$titleMdStrict** | `empty string` |  |
+| `string`  | **$textMdStrict** |  |  |
+| `string`  | **$type** | "info" |  |
+| `string`  | **$titleMdStrict** | `empty string` |  |
 ### toc()
 
-**toc(**  **):** `void `
+**toc(**  **):** `void` 
 
 ### txt()
 
 > Renders plain text  
 
 
-**txt(** `string ` $mdStrict, [`string ` $help] **):** `string `
+**txt(** `string`  $mdStrict, [`string`  $help] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$mdStrict** |  |  |
-| `string ` | **$help** | `empty string` |  |
+| `string`  | **$mdStrict** |  |  |
+| `string`  | **$help** | `empty string` |  |
 ### wrapper0()
 
-**wrapper0(** [`string ` $stringTitle] **):** ` `
+**wrapper0(** [`string`  $stringTitle] **):** 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$stringTitle** | `empty string` |  |
+| `string`  | **$stringTitle** | `empty string` |  |
 ### wrapper1()
 
-**wrapper1(** [`string ` $middleTextMd] **):** ` `
+**wrapper1(** [`string`  $middleTextMd] **):** 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$middleTextMd** | `empty string` |  |
+| `string`  | **$middleTextMd** | `empty string` |  |
 ### wrapper2()
 
-**wrapper2(** [`string ` $help] **):** ` `
+**wrapper2(** [`string`  $help] **):** 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$help** | `empty string` |  |
+| `string`  | **$help** | `empty string` |  |
 ### write()
 
-**write(** `string ` $imageFile, `array ` $textArray, [`string ` $caption] **):** `void `
+**write(** `string`  $imageFile, `array`  $textArray, [`string`  $caption] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$imageFile** |  |  |
-| `array ` | **$textArray** |  |  |
-| `string ` | **$caption** | `empty string` |  |
+| `string`  | **$imageFile** |  |  |
+| `array`  | **$textArray** |  |  |
+| `string`  | **$caption** | `empty string` |  |
 
 
 ---
@@ -389,7 +389,7 @@ Auto generated public API documentation of class ***Ecc\Blc*** at 2020.07.17.
 https:// structure.hu  
 
 
-Auto generated public API documentation of class ***Ec\Ec*** at 2020.07.17.
+Auto generated public API documentation of class ***Ec\Ec*** at 2020.07.30.
 
 ## Public properties 
 
@@ -400,113 +400,113 @@ Auto generated public API documentation of class ***Ec\Ec*** at 2020.07.17.
 
 ### A()
 
-**A(** `float ` $D, [`float ` $multiplicator] **):** `float `
+**A(** `float`  $D, [`float`  $multiplicator] **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float ` | **$D** |  |  |
-| `float ` | **$multiplicator** | 1 |  |
+| `float`  | **$D** |  |  |
+| `float`  | **$multiplicator** | 1 |  |
 ### BpRd()
 
-**BpRd(** `string ` $btName, `string ` $stMat, `float ` $t **):** `float `
+**BpRd(** `string`  $btName, `string`  $stMat, `float`  $t **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$btName** |  |  |
-| `string ` | **$stMat** |  |  |
-| `float ` | **$t** |  |  |
+| `string`  | **$btName** |  |  |
+| `string`  | **$stMat** |  |  |
+| `float`  | **$t** |  |  |
 ### FbRd()
 
-**FbRd(** `string ` $btName, ` ` $btMat, `string ` $stMat, `float ` $ep1, `float ` $ep2, `float ` $t, `bool ` $inner **):** `float `
+**FbRd(** `string`  $btName,  $btMat, `string`  $stMat, `float`  $ep1, `float`  $ep2, `float`  $t, `bool`  $inner **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$btName** |  |  |
+| `string`  | **$btName** |  |  |
 | @float,string  | **$btMat** |  |  |
-| `string ` | **$stMat** |  |  |
-| `float ` | **$ep1** |  |  |
-| `float ` | **$ep2** |  |  |
-| `float ` | **$t** |  |  |
-| `bool ` | **$inner** |  |  |
+| `string`  | **$stMat** |  |  |
+| `float`  | **$ep1** |  |  |
+| `float`  | **$ep2** |  |  |
+| `float`  | **$t** |  |  |
+| `bool`  | **$inner** |  |  |
 ### FtRd()
 
-**FtRd(** `string ` $btName, ` ` $btMat, [`bool ` $verbose] **):** `float `
+**FtRd(** `string`  $btName,  $btMat, [`bool`  $verbose] **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$btName** |  |  |
+| `string`  | **$btName** |  |  |
 |  | **$btMat** |  |  |
-| `bool ` | **$verbose** | `true` |  |
+| `bool`  | **$verbose** | `true` |  |
 ### FvRd()
 
-**FvRd(** `string ` $btName, ` ` $btMat, `float ` $n, [`float ` $As] **):** `float `
+**FvRd(** `string`  $btName,  $btMat, `float`  $n, [`float`  $As] **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$btName** |  |  |
+| `string`  | **$btName** |  |  |
 | @float,string  | **$btMat** |  |  |
-| `float ` | **$n** |  |  |
-| `float ` | **$As** | 0 |  |
+| `float`  | **$n** |  |  |
+| `float`  | **$As** | 0 |  |
 ### McRd()
 
-**McRd(** `float ` $W, `float ` $fy **):** `float `
+**McRd(** `float`  $W, `float`  $fy **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float ` | **$W** |  |  |
-| `float ` | **$fy** |  |  |
+| `float`  | **$W** |  |  |
+| `float`  | **$fy** |  |  |
 ### NcRd()
 
-**NcRd(** `float ` $A, `float ` $fy **):** `float `
+**NcRd(** `float`  $A, `float`  $fy **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float ` | **$A** |  |  |
-| `float ` | **$fy** |  |  |
+| `float`  | **$A** |  |  |
+| `float`  | **$fy** |  |  |
 ### NplRd()
 
-**NplRd(** ` ` $A, `string ` $matName, ` ` $t **):** `float `
+**NplRd(**  $A, `string`  $matName,  $t **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 |  | **$A** |  |  |
-| `string ` | **$matName** |  |  |
+| `string`  | **$matName** |  |  |
 |  | **$t** |  |  |
 ### NtRd()
 
-**NtRd(** ` ` $A, ` ` $Anet, `string ` $matName, ` ` $t **):** `float `
+**NtRd(**  $A,  $Anet, `string`  $matName,  $t **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 |  | **$A** |  |  |
 |  | **$Anet** |  |  |
-| `string ` | **$matName** |  |  |
+| `string`  | **$matName** |  |  |
 |  | **$t** |  |  |
 ### NuRd()
 
-**NuRd(** ` ` $Anet, `string ` $matName, ` ` $t **):** `float `
+**NuRd(**  $Anet, `string`  $matName,  $t **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 |  | **$Anet** |  |  |
-| `string ` | **$matName** |  |  |
+| `string`  | **$matName** |  |  |
 |  | **$t** |  |  |
 ### VplRd()
 
-**VplRd(** `float ` $Av, `string ` $matName, `float ` $t **):** `float `
+**VplRd(** `float`  $Av, `string`  $matName, `float`  $t **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float ` | **$Av** |  |  |
-| `string ` | **$matName** |  |  |
-| `float ` | **$t** |  |  |
+| `float`  | **$Av** |  |  |
+| `string`  | **$matName** |  |  |
+| `float`  | **$t** |  |  |
 ### __construct()
 
 > Ec constructor.  
 Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA  
 
 
-**__construct(** *Base* $f3, *Ecc\Blc* $blc, *DB\SQL* $db **):** ` `
+**__construct(** *Base* $f3, *Ecc\Blc* $blc, *DB\SQL* $db **):** 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
@@ -515,46 +515,46 @@ Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, 
 | *DB\SQL* | **$db** |  |  |
 ### boltList()
 
-**boltList(** [`string ` $variableName], [`string ` $default], [`string ` $title] **):** `void `
+**boltList(** [`string`  $variableName], [`string`  $default], [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** | "bolt" |  |
-| `string ` | **$default** | "M16" |  |
-| `string ` | **$title** | "Csavar betöltése" |  |
+| `string`  | **$variableName** | "bolt" |  |
+| `string`  | **$default** | "M16" |  |
+| `string`  | **$title** | "Csavar betöltése" |  |
 ### boltProp()
 
-**boltProp(** `string ` $name, `string ` $property **):** `float `
+**boltProp(** `string`  $name, `string`  $property **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$name** |  |  |
-| `string ` | **$property** |  |  |
+| `string`  | **$name** |  |  |
+| `string`  | **$property** |  |  |
 ### fu()
 
-**fu(** `string ` $matName, `float ` $t **):** `float `
+**fu(** `string`  $matName, `float`  $t **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$matName** |  |  |
-| `float ` | **$t** |  |  |
+| `string`  | **$matName** |  |  |
+| `float`  | **$t** |  |  |
 ### fy()
 
-**fy(** `string ` $matName, `float ` $t **):** `float `
+**fy(** `string`  $matName, `float`  $t **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$matName** |  |  |
-| `float ` | **$t** |  |  |
+| `string`  | **$matName** |  |  |
+| `float`  | **$t** |  |  |
 ### getClosest()
 
-**getClosest(** `float ` $find, `array ` $stackArray, [`string ` $returnType] **):** `float `
+**getClosest(** `float`  $find, `array`  $stackArray, [`string`  $returnType] **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float ` | **$find** |  |  |
-| `array ` | **$stackArray** |  |  |
-| `string ` | **$returnType** | "closest" |  |
+| `float`  | **$find** |  |  |
+| `array`  | **$stackArray** |  |  |
+| `string`  | **$returnType** | "closest" |  |
 ### getMaterialArray()
 
 > Get all material data as array from database  
@@ -587,166 +587,166 @@ alfat [1/Cdeg]
 Epsiloncsinf [-]  
 
 
-**getMaterialArray(**  **):** `array `
+**getMaterialArray(**  **):** `array` 
 
-Returns: `array ` Assoc. array of read material data
+Returns: `array`  Assoc. array of read material data
 
 ### linterp()
 
-**linterp(** `float ` $x1, `float ` $y1, `float ` $x2, `float ` $y2, `float ` $x **):** `float `
+**linterp(** `float`  $x1, `float`  $y1, `float`  $x2, `float`  $y2, `float`  $x **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float ` | **$x1** |  |  |
-| `float ` | **$y1** |  |  |
-| `float ` | **$x2** |  |  |
-| `float ` | **$y2** |  |  |
-| `float ` | **$x** |  |  |
+| `float`  | **$x1** |  |  |
+| `float`  | **$y1** |  |  |
+| `float`  | **$x2** |  |  |
+| `float`  | **$y2** |  |  |
+| `float`  | **$x** |  |  |
 ### matList()
 
-**matList(** [`string ` $variableName], [`string ` $default], [`array ` $title], [`string ` $category] **):** `void `
+**matList(** [`string`  $variableName], [`string`  $default], [`array`  $title], [`string`  $category] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** | "mat" |  |
-| `string ` | **$default** | "S235" |  |
-| `array ` | **$title** | ["","Anyagminőség"] |  |
-| `string ` | **$category** | `empty string` |  |
+| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$default** | "S235" |  |
+| `array`  | **$title** | ["","Anyagminőség"] |  |
+| `string`  | **$category** | `empty string` |  |
 ### matProp()
 
-**matProp(** `string ` $name, `string ` $property **):** `float `
+**matProp(** `string`  $name, `string`  $property **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$name** |  |  |
-| `string ` | **$property** |  |  |
+| `string`  | **$name** |  |  |
+| `string`  | **$property** |  |  |
 ### qpz()
 
-**qpz(** `float ` $z, `float ` $terrainCat **):** `float `
+**qpz(** `float`  $z, `float`  $terrainCat **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float ` | **$z** |  |  |
-| `float ` | **$terrainCat** |  |  |
+| `float`  | **$z** |  |  |
+| `float`  | **$terrainCat** |  |  |
 ### quadratic()
 
 > Original: https://github.com/hellofromtonya/Quadratic/blob/master/solver.php  
 
 
-**quadratic(** `float ` $a, `float ` $b, `float ` $c, [`int ` $precision] **):** `array `
+**quadratic(** `float`  $a, `float`  $b, `float`  $c, [`int`  $precision] **):** `array` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float ` | **$a** |  |  |
-| `float ` | **$b** |  |  |
-| `float ` | **$c** |  |  |
-| `int ` | **$precision** | 3 |  |
+| `float`  | **$a** |  |  |
+| `float`  | **$b** |  |  |
+| `float`  | **$c** |  |  |
+| `int`  | **$precision** | 3 |  |
 ### readData()
 
 > Get data record by data_id from ecc_data table  
 
 
-**readData(** `string ` $dbName **):** `array `
+**readData(** `string`  $dbName **):** `array` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$dbName** |  |  |
-Returns: `array ` Assoc. array of read data
+| `string`  | **$dbName** |  |  |
+Returns: `array`  Assoc. array of read data
 
 ### rebarList()
 
-**rebarList(** [`string ` $variableName], [`float ` $default], [`array ` $title], [`string ` $help] **):** `void `
+**rebarList(** [`string`  $variableName], [`float`  $default], [`array`  $title], [`string`  $help] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** | "fi" |  |
-| `float ` | **$default** | 16 |  |
-| `array ` | **$title** | ["","Vasátmérő"] |  |
-| `string ` | **$help** | `empty string` |  |
+| `string`  | **$variableName** | "fi" |  |
+| `float`  | **$default** | 16 |  |
+| `array`  | **$title** | ["","Vasátmérő"] |  |
+| `string`  | **$help** | `empty string` |  |
 ### rebarTable()
 
-**rebarTable(** [`string ` $variableNameBulk] **):** `float `
+**rebarTable(** [`string`  $variableNameBulk] **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableNameBulk** | "As" |  |
+| `string`  | **$variableNameBulk** | "As" |  |
 ### sectionFamilyList()
 
-**sectionFamilyList(** [`string ` $variableName], [`string ` $title], [`string ` $default] **):** `void `
+**sectionFamilyList(** [`string`  $variableName], [`string`  $title], [`string`  $default] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableName** | "sectionFamily" |  |
-| `string ` | **$title** | "Szelvény család" |  |
-| `string ` | **$default** | "HEA" |  |
+| `string`  | **$variableName** | "sectionFamily" |  |
+| `string`  | **$title** | "Szelvény család" |  |
+| `string`  | **$default** | "HEA" |  |
 ### sectionList()
 
-**sectionList(** [`string ` $familyName], [`string ` $variableName], [`string ` $title], [`string ` $default] **):** `void `
+**sectionList(** [`string`  $familyName], [`string`  $variableName], [`string`  $title], [`string`  $default] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$familyName** | "HEA" |  |
-| `string ` | **$variableName** | "sectionName" |  |
-| `string ` | **$title** | "Szelvény név" |  |
-| `string ` | **$default** | "HEA200" |  |
+| `string`  | **$familyName** | "HEA" |  |
+| `string`  | **$variableName** | "sectionName" |  |
+| `string`  | **$title** | "Szelvény név" |  |
+| `string`  | **$default** | "HEA200" |  |
 ### spreadMaterialData()
 
 > Saves all material properties from DB to Hive variables, with prefix. e.g.: _prefixfck, _prefixfy etc  
 
 
-**spreadMaterialData(** ` ` $matName, [`string ` $prefix] **):** `void `
+**spreadMaterialData(**  $matName, [`string`  $prefix] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | @float,string  | **$matName** |  |  |
-| `string ` | **$prefix** | `empty string` |  |
+| `string`  | **$prefix** | `empty string` |  |
 ### spreadSectionData()
 
-**spreadSectionData(** `string ` $sectionName, [`bool ` $renderTable], [`string ` $arrayName] **):** `void `
+**spreadSectionData(** `string`  $sectionName, [`bool`  $renderTable], [`string`  $arrayName] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$sectionName** |  |  |
-| `bool ` | **$renderTable** | `false` |  |
-| `string ` | **$arrayName** | "sectionData" |  |
+| `string`  | **$sectionName** |  |  |
+| `bool`  | **$renderTable** | `false` |  |
+| `string`  | **$arrayName** | "sectionData" |  |
 ### wrapNumerics()
 
-**wrapNumerics(** `string ` $variableNameA, `string ` $variableNameB, `string ` $stringTitle, ` ` $defaultValueA, ` ` $defaultValueB, [`string ` $unitAB], [`string ` $helpAB], [`string ` $middleText] **):** ` `
+**wrapNumerics(** `string`  $variableNameA, `string`  $variableNameB, `string`  $stringTitle,  $defaultValueA,  $defaultValueB, [`string`  $unitAB], [`string`  $helpAB], [`string`  $middleText] **):** 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableNameA** |  |  |
-| `string ` | **$variableNameB** |  |  |
-| `string ` | **$stringTitle** |  |  |
+| `string`  | **$variableNameA** |  |  |
+| `string`  | **$variableNameB** |  |  |
+| `string`  | **$stringTitle** |  |  |
 | @mixed  | **$defaultValueA** |  |  |
 | @mixed  | **$defaultValueB** |  |  |
-| `string ` | **$unitAB** | `empty string` |  |
-| `string ` | **$helpAB** | `empty string` |  |
-| `string ` | **$middleText** | `empty string` |  |
+| `string`  | **$unitAB** | `empty string` |  |
+| `string`  | **$helpAB** | `empty string` |  |
+| `string`  | **$middleText** | `empty string` |  |
 ### wrapRebarCount()
 
-**wrapRebarCount(** `string ` $variableNameCount, `string ` $variableNameRebar, `string ` $titleString, `float ` $defaultValueCount, [`float ` $defaultValueRebar], [`string ` $help] **):** `void `
+**wrapRebarCount(** `string`  $variableNameCount, `string`  $variableNameRebar, `string`  $titleString, `float`  $defaultValueCount, [`float`  $defaultValueRebar], [`string`  $help] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableNameCount** |  |  |
-| `string ` | **$variableNameRebar** |  |  |
-| `string ` | **$titleString** |  |  |
-| `float ` | **$defaultValueCount** |  |  |
-| `float ` | **$defaultValueRebar** | 16 |  |
-| `string ` | **$help** | `empty string` |  |
+| `string`  | **$variableNameCount** |  |  |
+| `string`  | **$variableNameRebar** |  |  |
+| `string`  | **$titleString** |  |  |
+| `float`  | **$defaultValueCount** |  |  |
+| `float`  | **$defaultValueRebar** | 16 |  |
+| `string`  | **$help** | `empty string` |  |
 ### wrapRebarDistance()
 
-**wrapRebarDistance(** `string ` $variableNameDistance, `string ` $variableNameRebar, `string ` $titleString, `int ` $defaultValueDistance, [`int ` $defaultValueRebar], [`string ` $help] **):** `void `
+**wrapRebarDistance(** `string`  $variableNameDistance, `string`  $variableNameRebar, `string`  $titleString, `int`  $defaultValueDistance, [`int`  $defaultValueRebar], [`string`  $help] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string ` | **$variableNameDistance** |  |  |
-| `string ` | **$variableNameRebar** |  |  |
-| `string ` | **$titleString** |  |  |
-| `int ` | **$defaultValueDistance** |  |  |
-| `int ` | **$defaultValueRebar** | 16 |  |
-| `string ` | **$help** | `empty string` |  |
+| `string`  | **$variableNameDistance** |  |  |
+| `string`  | **$variableNameRebar** |  |  |
+| `string`  | **$titleString** |  |  |
+| `int`  | **$defaultValueDistance** |  |  |
+| `int`  | **$defaultValueRebar** | 16 |  |
+| `string`  | **$help** | `empty string` |  |
 
 
 ---
