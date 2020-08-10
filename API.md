@@ -3,7 +3,7 @@
 > General user interface "blocks" for Ecc framework  
 
 
-Auto generated public API documentation of class ***Ecc\Blc*** at 2020.07.30.
+Auto generated public API documentation of class ***Ecc\Blc*** at 2020.08.05.
 
 ## Public methods 
 
@@ -384,18 +384,13 @@ Auto generated public API documentation of class ***Ecc\Blc*** at 2020.07.30.
 
 # Ec
 
-> Eurocode globals and predefined GUI elements for ECC framework  
+> Eurocode globals, helpers and predefined GUI elements for ECC framework  
 (c) Bence VÁNKOS  
 https:// structure.hu  
 
 
-Auto generated public API documentation of class ***Ec\Ec*** at 2020.07.30.
+Auto generated public API documentation of class ***Ec\Ec*** at 2020.08.05.
 
-## Public properties 
-
-| Type | Property name |
-| --- | --- |
-| *Base* | **$f3** |
 ## Public methods 
 
 ### A()
@@ -524,12 +519,12 @@ Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, 
 | `string`  | **$title** | "Csavar betöltése" |  |
 ### boltProp()
 
-**boltProp(** `string`  $name, `string`  $property **):** `float` 
+**boltProp(** `string`  $boltName, `string`  $propertyName **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$name** |  |  |
-| `string`  | **$property** |  |  |
+| `string`  | **$boltName** |  |  |
+| `string`  | **$propertyName** |  |  |
 ### fu()
 
 **fu(** `string`  $matName, `float`  $t **):** `float` 
@@ -537,15 +532,19 @@ Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | `string`  | **$matName** |  |  |
-| `float`  | **$t** |  |  |
+| `float`  | **$t** |  | Thickness of relevant plate [mm] |
+Returns: `float`  Ultimate strength in [N/mm^2; MPa]
+
 ### fy()
 
-**fy(** `string`  $matName, `float`  $t **):** `float` 
+**fy(** `string`  $materialName, `float`  $t **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$matName** |  |  |
-| `float`  | **$t** |  |  |
+| `string`  | **$materialName** |  |  |
+| `float`  | **$t** |  | Thickness of relevant plate [mm] |
+Returns: `float`  Yield strength in [N/mm^2; MPa]
+
 ### getClosest()
 
 **getClosest(** `float`  $find, `array`  $stackArray, [`string`  $returnType] **):** `float` 
@@ -614,12 +613,12 @@ Returns: `array`  Assoc. array of read material data
 | `string`  | **$category** | `empty string` |  |
 ### matProp()
 
-**matProp(** `string`  $name, `string`  $property **):** `float` 
+**matProp(** `string`  $materialName, `string`  $propertyName **):** `float` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$name** |  |  |
-| `string`  | **$property** |  |  |
+| `string`  | **$materialName** |  |  |
+| `string`  | **$propertyName** |  |  |
 ### qpz()
 
 **qpz(** `float`  $z, `float`  $terrainCat **):** `float` 
@@ -646,12 +645,12 @@ Returns: `array`  Assoc. array of read material data
 > Get data record by data_id from ecc_data table  
 
 
-**readData(** `string`  $dbName **):** `array` 
+**readData(** `string`  $dataName **):** `array` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$dbName** |  |  |
-Returns: `array`  Assoc. array of read data
+| `string`  | **$dataName** |  | Name of data as dataset identifier |
+Returns: `array`  Associative array of read data
 
 ### rebarList()
 
@@ -747,6 +746,300 @@ Returns: `array`  Assoc. array of read data
 | `int`  | **$defaultValueDistance** |  |  |
 | `int`  | **$defaultValueRebar** | 16 |  |
 | `string`  | **$help** | `empty string` |  |
+
+
+---
+
+# SVG
+
+
+
+Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08.05.
+
+## Public methods 
+
+### __construct()
+
+> SVG constructor  
+
+
+**__construct(** `int`  $width, `int`  $height **):** 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `int`  | **$width** |  | SVG width |
+| `int`  | **$height** |  | SVG height |
+### addBorder()
+
+> Add border to the generated figure  
+
+
+**addBorder(**  **):** `void` 
+
+### addCircle()
+
+> Add circle (use color, line, fill, ratio)  
+
+
+**addCircle(** `float`  $x, `float`  $y, `float`  $r, [`float`  $x0], [`float`  $y0] **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `float`  | **$x** |  | Coordinate X of base point - modified by $ratio[0] |
+| `float`  | **$y** |  | Coordinate Y of base point - modified by $ratio[1] |
+| `float`  | **$r** |  | Radius of circle - not modified by ratio |
+| `float`  | **$x0** | 0 | Added to coordinate X - not modified by $ratio[0] |
+| `float`  | **$y0** | 0 | Added to coordinate Y - not modified by $ratio[1] |
+### addDimH()
+
+> Add horizontal dimension line (use color, size, ratio)  
+
+
+**addDimH(** `float`  $xLeft, `float`  $length, `float`  $y,  $text, [`float`  $xLeft0] **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `float`  | **$xLeft** |  | Coordinate X of base point (left) - modified by $ratio[0] |
+| `float`  | **$length** |  | Length of dimension line - modified by $ratio[0] |
+| `float`  | **$y** |  | Coordinate Y of dimension line - NOT modified by ratio |
+| @string,int,float  | **$text** |  | Text above dim. line |
+| `float`  | **$xLeft0** | 0 | Added to $xLeft - NOT modified by $ratio[0] |
+### addDimV()
+
+> Add vertical dimension line (use color, size, ratio)  
+
+
+**addDimV(** `float`  $yTop, `float`  $length, `float`  $x,  $text, [`float`  $yTop0] **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `float`  | **$yTop** |  | Coordinate Y of base point (top) - modified by $ratio[1] |
+| `float`  | **$length** |  | Length of dimension line - modified by $ratio[1] |
+| `float`  | **$x** |  | Coordinate X of dimension line - NOT modified by ratio |
+| @string,float,int  | **$text** |  | Text next to the dim. line |
+| `float`  | **$yTop0** | 0 | Added to $yTop - NOT modified by $ratio[1] |
+### addLine()
+
+> Add simple line (use color, line, fill)  
+
+
+**addLine(** `float`  $x1, `float`  $y1, `float`  $x2, `float`  $y2 **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `float`  | **$x1** |  | Coordinate X of start point - modified by $ratio[0] |
+| `float`  | **$y1** |  | Coordinate Y of start point - modified by $ratio[1] |
+| `float`  | **$x2** |  | Coordinate X of end point - modified by $ratio[0] |
+| `float`  | **$y2** |  | Coordinate Y of end point - modified by $ratio[1] |
+### addLineRatio()
+
+> Add simple line (use color, line, fill, RATIO)  
+
+
+**addLineRatio(** `float`  $x1, `float`  $y1, `float`  $x2, `float`  $y2, [`float`  $x0], [`float`  $y0], [`bool`  $useRatio0], [`bool`  $useRatio1] **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `float`  | **$x1** |  | Coordinate X of start point - modified by $ratio[0] |
+| `float`  | **$y1** |  | Coordinate Y of start point - modified by $ratio[1] |
+| `float`  | **$x2** |  | Coordinate X of end point - modified by $ratio[0] |
+| `float`  | **$y2** |  | Coordinate Y of end point - modified by $ratio[1] |
+| `float`  | **$x0** | 0 | Added to x1 - NOT modified by $ratio[0] |
+| `float`  | **$y0** | 0 | Added to y1 - NOT modified by $ratio[1] |
+| `bool`  | **$useRatio0** | `true` | Flag for use or ignore $ratio[0] for x direction |
+| `bool`  | **$useRatio1** | `true` | Flag for use or ignore $ratio[1] for y direction |
+### addPath()
+
+> Add path (use color, line, fill)  
+
+
+**addPath(** `string`  $path **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$path** |  | Alphanumeric string of SVG path object |
+### addPolygon()
+
+> Add polygon (use color, line, fill)  
+
+
+**addPolygon(**  $points **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| @string  | **$points** |  | Alphanumeric list of points |
+### addRectangle()
+
+> Add rectangle (use color, line, fill, ratio)  
+
+
+**addRectangle(** `float`  $x, `float`  $y, `float`  $w, `float`  $h, [`float`  $x0], [`float`  $y0] **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `float`  | **$x** |  | Coordinate X of base point (top left) - modified by $ratio[0] |
+| `float`  | **$y** |  | Coordinate Y of base point (top left) - modified by $ratio[1] |
+| `float`  | **$w** |  | Width/X direction of rectangle - modified by $ratio[0] |
+| `float`  | **$h** |  | Height/Y direction of rectangle - modified by $ratio[1] |
+| `float`  | **$x0** | 0 | Added to coordinate X - not modified by $ratio[0] |
+| `float`  | **$y0** | 0 | Added to coordinate Y - not modified by $ratio[1] |
+### addSymbol()
+
+> Add simple icon font symbol by mapping (use color, size)  
+
+
+**addSymbol(** `float`  $x, `float`  $y, `string`  $symbolName **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `float`  | **$x** |  | Coordinate X of base point |
+| `float`  | **$y** |  | Coordinate Y of base point |
+| `string`  | **$symbolName** |  | Key in mapping array |
+### addText()
+
+> Add simple text (use color, size)  
+
+
+**addText(** `float`  $x, `float`  $y, `string`  $text, [`bool`  $rotate], [`string`  $style] **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `float`  | **$x** |  | Coordinate X of base point |
+| `float`  | **$y** |  | Coordinate Y of base point |
+| `string`  | **$text** |  |  |
+| `bool`  | **$rotate** | `false` | Rotate text by 270 deg if true |
+| `string`  | **$style** | `empty string` | String of style tag |
+### addTrustedRaw()
+
+> Add raw SVG content  
+Not validated against XSS - use this method with getImgJpg() or getImgSvg()  
+
+
+**addTrustedRaw(** `string`  $raw **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$raw** |  | SVG content |
+### getImgJpg()
+
+> Return img tag with base64 encoded jpg image  
+
+
+**getImgJpg(** [`string`  $title] **):** `string` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$title** | `empty string` | Title attribute of img tag |
+Returns: `string`  
+
+### getImgSvg()
+
+> Return img tag with base64 encoded SVG content  
+
+
+**getImgSvg(** [`string`  $title] **):** `string` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$title** | `empty string` |  |
+Returns: `string`  
+
+### getRatio()
+
+> Return set ratio  
+
+
+**getRatio(**  **):** `array` 
+
+### getRatioRaw()
+
+**getRatioRaw(** `int`  $canvasWidth, `int`  $canvasHeight, `float`  $x, `float`  $y **):** 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `int`  | **$canvasWidth** |  |  |
+| `int`  | **$canvasHeight** |  |  |
+| `float`  | **$x** |  |  |
+| `float`  | **$y** |  |  |
+### getSvg()
+
+> Add end tag and return SVG string  
+
+
+**getSvg(**  **):** `string` 
+
+Returns: `string`  
+
+### makeRatio()
+
+> Generae and set ratio  
+
+
+**makeRatio(** `int`  $canvasWidth, `int`  $canvasHeight, `float`  $x, `float`  $y **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `int`  | **$canvasWidth** |  | Width of canvas |
+| `int`  | **$canvasHeight** |  | Height of canvas |
+| `float`  | **$x** |  | Set ratio[0] according to this |
+| `float`  | **$y** |  | Set ratio[1] according to this |
+### reset()
+
+> Reset properties (line, color, size, fill and ratio) to default  
+
+
+**reset(**  **):** `void` 
+
+### setColor()
+
+> Set color  
+
+
+**setColor(** `string`  $color **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$color** |  |  |
+### setFill()
+
+> Set fill color  
+
+
+**setFill(** `string`  $color **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$color** |  |  |
+### setLine()
+
+> Set line-width  
+
+
+**setLine(** `int`  $line **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `int`  | **$line** |  | line-width |
+### setRatio()
+
+> Set ratio  
+
+
+**setRatio(** `array`  $ratio **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `array`  | **$ratio** |  | Array of X and Y ratio |
+### setSize()
+
+> Set size (of text)  
+
+
+**setSize(** `int`  $size **):** `void` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `int`  | **$size** |  |  |
 
 
 ---
