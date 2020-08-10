@@ -189,7 +189,7 @@ Class Wind
                 $svg->setColor('green');
 //                $svg->addSymbol(0, 210, 'control-shuffle');
                 $svg->addText(20, 210, '>>>');
-                $svg->setColor('');
+                $svg->setColor('black');
                 $svg->addRectangle(100, 70, 200, 50); // Building section
                 $svg->setFill('#eeeeee'); // Forces
                 $svg->addRectangle(100, 40, 50, 30); // FG
