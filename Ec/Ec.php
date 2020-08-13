@@ -212,15 +212,33 @@ class Ec
         $blc->wrapper2($helpAB);
     }
 
-    public function wrapRebarCount(string $variableNameCount, string $variableNameRebar, string $titleString, float $defaultValueCount, float $defaultValueRebar = 16, string $help = ''): void
+    /**
+     * Wraps a numeric (as rebar count) and a rebarList (as rebar diameter) block
+     * @param string $variableNameCount Saves rebar count with this name
+     * @param string $variableNameRebar Saves rebar diameter with this name
+     * @param string $titleString
+     * @param int $defaultValueCount
+     * @param int $defaultValueRebar
+     * @param string $help If empty, sum section area displayed
+     * @param string $variableNameA If not empty, saves sum section area with this name
+     */
+    public function wrapRebarCount(string $variableNameCount, string $variableNameRebar, string $titleString, int $defaultValueCount, int $defaultValueRebar = 16, string $help = '', string $variableNameA = ''): void
     {
-        $defaultValueCount = (int)$defaultValueCount;
-        $defaultValueRebar = (int)$defaultValueRebar;
-
         $this->blc->wrapper0($titleString);
             $this->blc->numeric($variableNameCount, [], $defaultValueCount, '', '');
-            $this->blc->wrapper1('');
+            $this->blc->wrapper1('×');
             $this->rebarList($variableNameRebar, $defaultValueRebar, [], '');
+
+            $A = floor($this->A($this->f3->get('_'.$variableNameRebar), $this->f3->get('_'.$variableNameCount)));
+
+            if ($help === '') {
+                $help = '$ = '.$A.' [mm^2]$';
+            }
+
+            if ($variableNameA !== '') {
+                $this->f3->set('_'.$variableNameA, $A);
+            }
+
         $this->blc->wrapper2($help);
     }
 
