@@ -3,7 +3,7 @@
 > General user interface "blocks" for Ecc framework  
 
 
-Auto generated public API documentation of class ***Ecc\Blc*** at 2020.08.05.
+Auto generated public API documentation of class ***Ecc\Blc*** at 2020.08.13.
 
 ## Public methods 
 
@@ -389,7 +389,7 @@ Auto generated public API documentation of class ***Ecc\Blc*** at 2020.08.05.
 https:// structure.hu  
 
 
-Auto generated public API documentation of class ***Ec\Ec*** at 2020.08.05.
+Auto generated public API documentation of class ***Ec\Ec*** at 2020.08.13.
 
 ## Public methods 
 
@@ -754,7 +754,7 @@ Returns: `array`  Associative array of read data
 
 
 
-Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08.05.
+Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08.13.
 
 ## Public methods 
 
@@ -767,11 +767,11 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `int`  | **$width** |  | SVG width |
-| `int`  | **$height** |  | SVG height |
+| `int`  | **$width** |  | SVG width (x) |
+| `int`  | **$height** |  | SVG height (y) |
 ### addBorder()
 
-> Add border to the generated figure  
+> Adds border to the generated figure  
 
 
 **addBorder(**  **):** `void` 
@@ -792,7 +792,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `float`  | **$y0** | 0 | Added to coordinate Y - not modified by $ratio[1] |
 ### addDimH()
 
-> Add horizontal dimension line (use color, size, ratio)  
+> Adds horizontal dimension line (uses color, size, ratio)  
 
 
 **addDimH(** `float`  $xLeft, `float`  $length, `float`  $y,  $text, [`float`  $xLeft0] **):** `void` 
@@ -802,11 +802,11 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `float`  | **$xLeft** |  | Coordinate X of base point (left) - modified by $ratio[0] |
 | `float`  | **$length** |  | Length of dimension line - modified by $ratio[0] |
 | `float`  | **$y** |  | Coordinate Y of dimension line - NOT modified by ratio |
-| @string,int,float  | **$text** |  | Text above dim. line |
+| @string,float  | **$text** |  | Text above dim. line |
 | `float`  | **$xLeft0** | 0 | Added to $xLeft - NOT modified by $ratio[0] |
 ### addDimV()
 
-> Add vertical dimension line (use color, size, ratio)  
+> Adds vertical dimension line (uses color, size, ratio)  
 
 
 **addDimV(** `float`  $yTop, `float`  $length, `float`  $x,  $text, [`float`  $yTop0] **):** `void` 
@@ -816,11 +816,11 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `float`  | **$yTop** |  | Coordinate Y of base point (top) - modified by $ratio[1] |
 | `float`  | **$length** |  | Length of dimension line - modified by $ratio[1] |
 | `float`  | **$x** |  | Coordinate X of dimension line - NOT modified by ratio |
-| @string,float,int  | **$text** |  | Text next to the dim. line |
+| @string,float  | **$text** |  | Text next to the dim. line |
 | `float`  | **$yTop0** | 0 | Added to $yTop - NOT modified by $ratio[1] |
 ### addLine()
 
-> Add simple line (use color, line, fill)  
+> Adds simple line (uses color, line, fill)  
 
 
 **addLine(** `float`  $x1, `float`  $y1, `float`  $x2, `float`  $y2 **):** `void` 
@@ -833,7 +833,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `float`  | **$y2** |  | Coordinate Y of end point - modified by $ratio[1] |
 ### addLineRatio()
 
-> Add simple line (use color, line, fill, RATIO)  
+> Adds simple line (use color, line, fill, RATIO)  
 
 
 **addLineRatio(** `float`  $x1, `float`  $y1, `float`  $x2, `float`  $y2, [`float`  $x0], [`float`  $y0], [`bool`  $useRatio0], [`bool`  $useRatio1] **):** `void` 
@@ -850,7 +850,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `bool`  | **$useRatio1** | `true` | Flag for use or ignore $ratio[1] for y direction |
 ### addPath()
 
-> Add path (use color, line, fill)  
+> Adds path (uses color, line, fill)  
 
 
 **addPath(** `string`  $path **):** `void` 
@@ -860,7 +860,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `string`  | **$path** |  | Alphanumeric string of SVG path object |
 ### addPolygon()
 
-> Add polygon (use color, line, fill)  
+> Adds polygon (uses color, line, fill)  
 
 
 **addPolygon(**  $points **):** `void` 
@@ -870,7 +870,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | @string  | **$points** |  | Alphanumeric list of points |
 ### addRectangle()
 
-> Add rectangle (use color, line, fill, ratio)  
+> Adds rectangle (uses color, line, fill, ratio)  
 
 
 **addRectangle(** `float`  $x, `float`  $y, `float`  $w, `float`  $h, [`float`  $x0], [`float`  $y0] **):** `void` 
@@ -885,7 +885,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `float`  | **$y0** | 0 | Added to coordinate Y - not modified by $ratio[1] |
 ### addSymbol()
 
-> Add simple icon font symbol by mapping (use color, size)  
+> Adds simple icon font symbol by mapping (uses color, size)  
 
 
 **addSymbol(** `float`  $x, `float`  $y, `string`  $symbolName **):** `void` 
@@ -897,7 +897,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `string`  | **$symbolName** |  | Key in mapping array |
 ### addText()
 
-> Add simple text (use color, size)  
+> Adds simple text (uses color, size)  
 
 
 **addText(** `float`  $x, `float`  $y, `string`  $text, [`bool`  $rotate], [`string`  $style] **):** `void` 
@@ -911,7 +911,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `string`  | **$style** | `empty string` | String of style tag |
 ### addTrustedRaw()
 
-> Add raw SVG content  
+> Adds raw SVG content  
 Not validated against XSS - use this method with getImgJpg() or getImgSvg()  
 
 
@@ -922,7 +922,7 @@ Not validated against XSS - use this method with getImgJpg() or getImgSvg()
 | `string`  | **$raw** |  | SVG content |
 ### getImgJpg()
 
-> Return img tag with base64 encoded jpg image  
+> Returns img tag with base64 encoded jpg image  
 
 
 **getImgJpg(** [`string`  $title] **):** `string` 
@@ -930,11 +930,9 @@ Not validated against XSS - use this method with getImgJpg() or getImgSvg()
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | `string`  | **$title** | `empty string` | Title attribute of img tag |
-Returns: `string`  
-
 ### getImgSvg()
 
-> Return img tag with base64 encoded SVG content  
+> Returns img tag with base64 encoded SVG content  
 
 
 **getImgSvg(** [`string`  $title] **):** `string` 
@@ -946,14 +944,17 @@ Returns: `string`
 
 ### getRatio()
 
-> Return set ratio  
+> Returns ratio  
 
 
 **getRatio(**  **):** `array` 
 
 ### getRatioRaw()
 
-**getRatioRaw(** `int`  $canvasWidth, `int`  $canvasHeight, `float`  $x, `float`  $y **):** 
+> Returns array of X and Y ratio for specific object-lengths to fit object into the canvas  
+
+
+**getRatioRaw(** `int`  $canvasWidth, `int`  $canvasHeight, `float`  $x, `float`  $y **):** `array` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
@@ -961,18 +962,18 @@ Returns: `string`
 | `int`  | **$canvasHeight** |  |  |
 | `float`  | **$x** |  |  |
 | `float`  | **$y** |  |  |
+Returns: `array`  
+
 ### getSvg()
 
-> Add end tag and return SVG string  
+> Adds end tag and return SVG string  
 
 
 **getSvg(**  **):** `string` 
 
-Returns: `string`  
-
 ### makeRatio()
 
-> Generae and set ratio  
+> Generates and sets ratio  
 
 
 **makeRatio(** `int`  $canvasWidth, `int`  $canvasHeight, `float`  $x, `float`  $y **):** `void` 
@@ -985,14 +986,14 @@ Returns: `string`
 | `float`  | **$y** |  | Set ratio[1] according to this |
 ### reset()
 
-> Reset properties (line, color, size, fill and ratio) to default  
+> Resets properties (line, color, size, fill and ratio) to default  
 
 
 **reset(**  **):** `void` 
 
 ### setColor()
 
-> Set color  
+> Sets color  
 
 
 **setColor(** `string`  $color **):** `void` 
@@ -1002,7 +1003,7 @@ Returns: `string`
 | `string`  | **$color** |  |  |
 ### setFill()
 
-> Set fill color  
+> Sets fill color  
 
 
 **setFill(** `string`  $color **):** `void` 
@@ -1012,7 +1013,7 @@ Returns: `string`
 | `string`  | **$color** |  |  |
 ### setLine()
 
-> Set line-width  
+> Sets line-width  
 
 
 **setLine(** `int`  $line **):** `void` 
@@ -1022,7 +1023,7 @@ Returns: `string`
 | `int`  | **$line** |  | line-width |
 ### setRatio()
 
-> Set ratio  
+> Sets ratio  
 
 
 **setRatio(** `array`  $ratio **):** `void` 
@@ -1032,7 +1033,7 @@ Returns: `string`
 | `array`  | **$ratio** |  | Array of X and Y ratio |
 ### setSize()
 
-> Set size (of text)  
+> Sets size (of text)  
 
 
 **setSize(** `int`  $size **):** `void` 
