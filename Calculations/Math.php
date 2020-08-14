@@ -16,7 +16,7 @@ Class Math
         $blc->toc();
 
         $blc->h1('Lejtés');
-        $blc->numeric('slope', ['', 'Lejtés'], 3, '% / °', '');
+        $blc->numeric('slope', ['', 'Lejtés'], 3, '% vagy °', '');
         $slope_deg = rad2deg(atan($f3->_slope/100));
         $slope_per = tan(deg2rad($f3->_slope))*100;
         $blc->def('slope_deg', H3::n2($slope_deg), $f3->_slope.'% = %% [deg]', '');
