@@ -216,9 +216,6 @@ class Ec
      * Wraps a numeric (as rebar count) and a rebarList (as rebar diameter) block
      * @param string $variableNameCount Saves rebar count with this name
      * @param string $variableNameRebar Saves rebar diameter with this name
-     * @param string $titleString
-     * @param int $defaultValueCount
-     * @param int $defaultValueRebar
      * @param string $help If empty, sum section area displayed
      * @param string $variableNameA If not empty, saves sum section area with this name
      */
