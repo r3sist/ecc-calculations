@@ -28,9 +28,9 @@ Class LinQ
             $f3->_x = '2,6,10,14';
         }
 
-        $blc->input('xMAX', ['x_(max)', 'Teher felület hossza'], '16', 'm', '');
-        $blc->input('qMAX', ['q_(max)', 'Megoszló teher (növekvő) maximális értéke'], '10', 'kN/m²', '');
-        $blc->input('qMIN', ['x_(min)', 'Megoszló teher minimális értéke'], '2', 'kN/m²', '');
+        $blc->numeric('xMAX', ['x_(max)', 'Teher felület hossza'], 16, 'm', '');
+        $blc->numeric('qMAX', ['q_(max)', 'Megoszló teher (növekvő) maximális értéke'], 10, 'kN/m²', '');
+        $blc->numeric('qMIN', ['x_(min)', 'Megoszló teher minimális értéke'], 2, 'kN/m²', '');
 
         $f3->set('_qd',$f3->_qMAX - $f3->_qMIN);
         $f3->set('_q1',$f3->_qd / $f3->_xMAX);
