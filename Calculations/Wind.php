@@ -4,11 +4,12 @@
 
 namespace Calculation;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
-use \H3;
-use \resist\SVG\SVG;
+use Base;
+use Ecc\Blc;
+use Ec\Ec;
+use H3;
+use resist\SVG\SVG;
+use Exception;
 
 Class Wind
 {
@@ -77,6 +78,9 @@ Class Wind
         $this->blc->success1();
     }
 
+    /**
+     * @throws Exception
+     */
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $this->f3->_reslog = '';
@@ -85,9 +89,9 @@ Class Wind
 
         $this->moduleQpz();
 
+        $blc->h1('Lapostetők');
         $blc->boo('calcFlat', ['', 'Lapostető számítása'], false);
         if ($f3->_calcFlat === true) {
-            $blc->h1('Lapostetők');
             $flatTypes = [
                 'Szögletes perem' => 'a',
                 'Attika hp/h=0.025' => 'b1',
@@ -230,9 +234,9 @@ Class Wind
             }
         }
 
+        $blc->h1('Falak');
         $blc->boo('calcWall', ['', 'Fal számítása'], false);
         if ($f3->_calcWall === true) {
-            $blc->h1('Falak');
             $wallCases = [
                 ['id' => 0, 'case' => '$b$ Hosszra merőleges szél', 'dir' => 0],
                 ['id' => 1, 'case' => '$d$ Szélességre merőleges szél', 'dir' => 1],
@@ -344,9 +348,9 @@ Class Wind
             }
         }
 
+        $blc->h1('Oldalain nyitott ferdesíkú pilletető');
         $blc->boo('calcCanopy', ['', 'Oldalain nyitott ferdesíkú pilletető számítása']);
         if ($f3->_calcCanopy === true) {
-            $blc->h1('Oldalain nyitott ferdesíkú pilletető');
             $blc->boo('phi', ['Phi', 'Torlasz'], true, '');
 
             $canopyTypes = ['0°' => '0', '5°' => '5', '10°' => '10', '15°' => '15', '20°' => '20', '25°' => '25', '30°' => '30'];
@@ -453,9 +457,9 @@ Class Wind
             $blc->txt('', '(+) szélnyomás&nbsp;&nbsp;&nbsp; (-) szélszívás');
         }
 
+        $blc->h1('Szabadon álló falak és mellvédek');
         $blc->boo('calcAttic', ['', 'Szabadon álló fal és mellvéd számítása'], false);
         if ($f3->_calcAttic === true) {
-            $blc->h1('Szabadon álló falak és mellvédek');
             $blc->numeric('h_a', ['h_a', 'Fal magasság'], 1.2, 'm');
             $blc->numeric('l_a', ['l_a', 'Fal szélesség'], 40, 'm');
             $blc->numeric('x_a', ['x_a', 'Visszaforduló falszakasz hossza'], 10, 'm');
