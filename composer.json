@@ -9,9 +9,10 @@
   "require": {
     "php": ">=7.4",
     "ext-json": "*",
+    "ext-imagick": "*",
     "bcosca/fatfree-core": "3.*",
-    "resist/h3": "dev-master",
-    "resist/auth3": "dev-master",
+    "resist/h3": "@dev",
+    "resist/auth3": "@dev",
     "wixel/gump": "dev-master",
     "ikkez/f3-flash": ">=1.0.0",
     "respect/validation": "1.*"
