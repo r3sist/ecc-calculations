@@ -1,23 +1,25 @@
 <?php declare(strict_types = 1);
-// RC beam analysis according to Eurocodes - Calculation class for ECC framework
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * RC beam analysis according to Eurocodes - Calculation class for ECC framework
+ * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+ */
 
 namespace Calculation;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
-use \H3;
+use Base;
+use Ecc\Blc;
+use Ec\Ec;
+use H3;
 
 Class Beam
 {
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
-        $blc->note('[Lásd még](https://structure.hu/berci/section) @TB');
+        $blc->note('[Lásd még](https://structure.hu/berci/section): &copy; Tóth Bertalan');
 
         $blc->info0('Igénybevételek');
-            $blc->numeric('MEd', ['M_(Ed)', 'Nyomatéki igénybevétel'], 0, 'kNm');
-            $blc->numeric('VEd', ['V_(Ed)', 'Nyíróerő igénybevétel'], 200, 'kN');
+            $blc->numeric('MEd', ['M_(Ed)', 'Nyomatéki igénybevétel'], 100, 'kNm');
+            $blc->numeric('VEd', ['V_(Ed)', 'Nyíróerő igénybevétel'], 500, 'kN');
             $blc->numeric('NEd', ['N_(Ed)', 'Normál igénybevétel'], 0, 'kN');
         $blc->info1();
 
@@ -29,7 +31,7 @@ Class Beam
         $blc->numeric('cnom', ['c_(nom)', 'Betonfedés'], 25, 'mm', '');
 
         $blc->info0('Geometria');
-            $blc->boo('sectionT', ['', 'T keresztmetszet'], false);
+            $blc->boo('sectionT', ['', 'T keresztmetszet'], true);
             $blc->numeric('h', ['h', 'Keresztmetszet teljes magassága'], 700, 'mm', '');
             $blc->numeric('b', ['b', 'Keresztmetszet alsó szélessége'], 250, 'mm', '');
             $f3->_hf = 0;
@@ -38,20 +40,19 @@ Class Beam
                 $blc->numeric('hf', ['h_f', 'Keresztmetszet felső övének magassága'], 150, 'mm', '');
                 $blc->numeric('bf', ['b_f', 'Keresztmetszet felső szélessége'], 600, 'mm', '');
             }
-            $blc->def('Ac', $f3->_hf*$f3->_bf + ($f3->_h - $f3->_hf)*$f3->_b, 'A_c = %% [mm^2]', 'Beton keresztmetszet területe');
+            $blc->def('Ac', $f3->_hf*$f3->_bf + (float)($f3->_h - $f3->_hf)*$f3->_b, 'A_c = %% [mm^2]', 'Beton keresztmetszet területe');
         $blc->info1();
 
         $blc->info0('Hossz- és nyírási vasalás');
-            $ec->wrapRebarCount('Ascdb', 'Ascfi', '$A_(sc)$ Hosszirányú nyomott felső vasalás', 2, 16, '');
-            $ec->wrapRebarCount('Astdb', 'Astfi', '$A_(st)$ Hosszirányú húzott alsó vasalás', 2, 20, '');
-            $blc->def('Ast', H3::n0($ec->A($f3->_Astfi, $f3->_Astdb)), 'A_(st) = %% [mm^2]', 'Alkalmazott húzott vasmennyiség');
-            $blc->def('Asc', H3::n0($ec->A($f3->_Ascfi, $f3->_Ascdb)), 'A_(sc) = %% [mm^2]', 'Alkalmazott nyomott vasmennyiség');
-            $blc->def('As', H3::n0($f3->_Ast + $f3->_Asc), 'A_s = %% [mm^2]', 'Alkalmazott összes vasmennyiség');
+            $ec->wrapRebarCount('Ascdb', 'Ascfi', '$A_(sc)$ Hosszirányú nyomott felső vasalás', 2, 20, '', 'Asc');
+            $ec->wrapRebarCount('Astdb', 'Astfi', '$A_(st)$ Hosszirányú húzott alsó vasalás', 2, 20, '', 'Ast');
+            $blc->def('As', H3::n0((float)$f3->_Ast + (float)$f3->_Asc), 'A_s = %% [mm^2] = '.H3::n1(((float)$f3->_Ast + (float)$f3->_Asc)/$f3->_Ac*100).' [%]', 'Alkalmazott összes vasmennyiség');
             $blc->hr();
             $ec->wrapRebarDistance('Asws1', 'Aswfi1', '$A_(sw)$ Kengyelezés vasalás kiosztása', 200, 10, '');
             $blc->input('Aswdb1', ['A_(swdb)', 'Kengyelszárak száma'], 2, '', '', 'numeric|min_numeric,1|max_numeric,10');
             $blc->def('Asw', H3::n0(($f3->_Aswdb1*($ec->A($f3->_Aswfi1)/$f3->_Asws1))*1000), 'A_(sw) = %% [(mm^2)/m]', 'Nyírási kengyel vasalás fajlagos keresztmetszeti területe');
-            // For Berci legacy bypass:
+
+            // Berci legacy bypass:
             $f3->_Aswdb2 = 2;
             $f3->_Aswfi2 = 0;
             $f3->_Asws2 = 0;
@@ -132,8 +133,8 @@ Class Beam
             $blc->def('rho1', H3::n4(min($f3->_Ast/$f3->_b/$f3->_dst, 0.02)), 'rho_1 = {(A_(st)/b/d_(st)), (0.02):} = %%', 'Húzott acélhányad értéke, felülről korlátozva');
             $blc->math('b = '.$f3->_b.' [mm]', 'Keresztmetszet alsó szélessége');
             $blc->math('f_(ck) = '.$f3->_cfck.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (□150×150×150 kocka)');
-            $VRdc = ($f3->_CRdc*$f3->_k*pow(100*$f3->_rho1*$f3->_cfck, 1/3)*$f3->_b*$f3->_dst)/1000;
-        $blc->def('VRdc', $VRdc, 'V_(Rdc) = C_(Rdc)*(100*rho_1*f_(ck))^(1/3)*b*d_(st) = %% [kN]', 'Keresztmetszet nyírási teherbírása');
+            $VRdc = ($f3->_CRdc*$f3->_k*((100*$f3->_rho1 * $f3->_cfck)**(1/3))*$f3->_b*$f3->_dst)/1000;
+            $blc->def('VRdc', $VRdc, 'V_(Rdc) = C_(Rdc)*(100*rho_1*f_(ck))^(1/3)*b*d_(st) = %% [kN]', 'Keresztmetszet nyírási teherbírása');
         $blc->region1();
         $blc->success0();
             $blc->math('V_(Rd,c) = '. H3::n2($VRdc).' [kN]', 'Keresztmetszet nyírási teherbírása');
@@ -156,10 +157,10 @@ Class Beam
         $blc->label($f3->_As/$f3->_AsMax, '-a a max vasmennyiségnek');
 
         $blc->h4('Egy sorban elhelyezhető vasak száma:');
-        $blc->def('amin', max($f3->_Astfi, 20), 'a_(min) = %% [mm]', 'Húzott betonacélok közötti min távolság');
-        $blc->def('ntmax', floor(($f3->_b - 2*$f3->_cnom - 2*max($f3->_Aswfi1, $f3->_Aswfi2) + $f3->_amin - 5)/($f3->_Astfi + $f3->_amin)), 'n_(t, max) = %%', 'Egy sorban elhelyezhető vasak száma');
+        $blc->def('amin', max($f3->_Astfi, 20), 'a_(min) = max{(phi_t = '.$f3->_Astfi.'),(20):} = %% [mm]', 'Húzott betonacélok közötti min távolság');
+        $blc->def('ntmax', floor(($f3->_b - 2*$f3->_cnom - 2*max($f3->_Aswfi1, $f3->_Aswfi2) + $f3->_amin - 5)/((float)$f3->_Astfi + $f3->_amin)), 'n_(t, max) = %%', 'Egy sorban elhelyezhető vasak száma');
         $blc->note('Kengyelgörbület miatt 5mm-rel csökkentve a hely');
-        $blc->label($f3->_Astdb/$f3->_ntmax, '-a a max vasak számának');
+        $blc->label(($f3->_Astdb <= $f3->_ntmax?'yes':'no'), 'Vas szám');
 
         $blc->h4('Nyírási acélhányad:');
         if ($f3->_h > $f3->_b) {
@@ -185,6 +186,7 @@ Class Beam
         $blc->h4('Betonacél és beton rugalmassái modulus aránya:');
 //        $blc->def('nE', \H3::n1(($f3->_rEs*1000)/($f3->_cEceff*1000)), 'n_E = %%');
         $f3->_nE = 1;
+        $blc->txt('`TODO`');
 
         $blc->h1('Nyírt keresztmetszet egyszerűsített számítása');
         $blc->note('[Vasbeton szerkezetek 6.3 (32.o)]');
