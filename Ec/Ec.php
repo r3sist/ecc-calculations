@@ -5,6 +5,7 @@ namespace Ec;
 
 use Base;
 use DB\SQL;
+use Ecc\DataMap;
 use H3;
 use Ecc\Blc;
 use Respect\Validation\Validator as v;
@@ -21,6 +22,7 @@ class Ec
     private Base $f3;
     private Blc $blc;
     private SQL $db;
+    private DataMap $dataMap;
 
     private v $vAlnum;
 
@@ -28,11 +30,12 @@ class Ec
      * Ec constructor.
      * Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA
      */
-    public function __construct(Base $f3, Blc $blc, SQL $db)
+    public function __construct(Base $f3, Blc $blc, SQL $db, DataMap $dataMap)
     {
         $this->f3 = $f3;
         $this->blc = $blc;
         $this->db = $db;
+        $this->dataMap = $dataMap;
 
         $this->vAlnum = v::alnum()->noWhitespace();
 
@@ -58,9 +61,9 @@ class Ec
      */
     public function readData(string $dataName): array
     {
-        $this->f3->get('md')->load(['dname = :dname', ':dname' => $dataName]);
-        if (!$this->f3->get('md')->dry()) {
-            return json_decode($this->f3->get('md')->djson, true, 512, JSON_THROW_ON_ERROR);
+        $this->dataMap->load(['dname = :dname', ':dname' => $dataName]);
+        if (!$this->dataMap->dry()) {
+            return json_decode($this->dataMap->djson, true, 512, JSON_THROW_ON_ERROR);
         }
         return [];
     }
