@@ -5,7 +5,7 @@ namespace Ec;
 
 use Base;
 use DB\SQL;
-use Ecc\DataMap;
+use Ecc\Map\DataMap;
 use H3;
 use Ecc\Blc;
 use Respect\Validation\Validator as v;
