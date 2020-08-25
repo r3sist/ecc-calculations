@@ -302,17 +302,18 @@ class Ec
 
     public function spreadSectionData(string $sectionName, bool $renderTable = false, string $arrayName = 'sectionData'): void
     {
-        $sectionName = $this->f3->clean($sectionName);
+        $sectionName = (string)$this->f3->clean($sectionName);
 
         $query = "
             SELECT name2, _h, _b, _tf, _tw, _Ax, _Ay, _Az, _Ix, _Iy, _Iz, _I1, _I2, _W1elt, _W1elb, _W2elt, _W2elb, _W1pl, _W2pl FROM steelSection WHERE name2 = '$sectionName' LIMIT 1";
+        /** @var array $result */
         $result = $this->db->exec($query);
 
         // Remove underscores
         $resultCleaned = [];
         foreach ($result[0] as $key => $value) {
-            if (substr($key, 0, 1) == '_') {
-                $resultCleaned[substr($key, 1, 10)] = $result[0][$key];
+            if ($key[0] === '_') {
+                $resultCleaned[(string)substr($key, 1, 10)] = $result[0][$key];
             }
         }
         $this->f3->set('_'.$arrayName, $resultCleaned);
@@ -333,6 +334,7 @@ class Ec
     /**
      * Saves all material properties from DB to Hive variables, with prefix. e.g.: _prefixfck, _prefixfy etc
      * @param float|string $matName
+     * @throws \Exception
      */
     public function spreadMaterialData($matName, string $prefix = ''): void
     {
@@ -462,7 +464,7 @@ class Ec
     public function FvRd(string $btName, $btMat, float $n, float $As = 0): float
     {
         $btMat = (string) $btMat;
-        $n = (int) $n;
+        $n = (int)$n;
 
         if ($As === (float) 0) {
             $As = $this->boltProp($btName, 'As');
