@@ -74,6 +74,7 @@ Class Beam
         $blc->def('d', $f3->_h - $f3->_cnom - max($f3->_Aswfi1, $f3->_Aswfi2) - $f3->_Astfi/2, 'd = h - c_(nom) - phi_(sw,max) - phi_(st)/2 = %% [mm]', 'Hatékony magasság');
         $blc->numeric('teta', ['theta', 'Nyomott rácsrúd dőlésszöge'], 38, '°', 'Javasolt érték $min 36[deg], 1 lt cot(theta) lt 2.5; 21.8[deg] lt theta lt 45[deg]$', 'min_numeric,21.8|max_numeric,45');
 
+        // SVG
         $xs = 600; // SVG size
         $ys = 300;
         $x0 = 50; // Margin of figure
@@ -81,10 +82,9 @@ Class Beam
         $xc = $xs-2*$x0; // Figure canvas size
         $yc = $ys-2*$y0;
         $svg = new SVG($xs, $ys);
-//        $svg->addBorder();
         $svg->makeRatio($xc, $yc, $f3->_bf, $f3->_h);
-        $bfx = $f3->_bf - $f3->_b;
         // Contour
+        $bfx = $f3->_bf - $f3->_b;
         $svg->addPolygon([
             [0, 0],
             [$f3->_bf, 0],
@@ -94,23 +94,36 @@ Class Beam
             [$bfx/2, $f3->_h],
             [$bfx/2, $f3->_hf],
             [0, $f3->_hf],
-            ], $x0, $y0);
+        ], $x0, $y0);
         // Dimensions
-        $svg->setColor('#cccccc');
+        $svg->setColor('grey');
         $svg->setSize(12);
         $svg->addDimH(0, $f3->_bf, $y0/2, $f3->_bf, $x0);
-        $svg->addDimH($bfx/2, $f3->_b, $ys-$y0/2, $f3->_b, $x0);
         $svg->addDimV(0, $f3->_h, $x0/2, $f3->_h, $y0);
-        $svg->addDimV(0, $f3->_hf, $xc+$x0*1.5, $f3->_hf, $y0);
+        if ($f3->_sectionT) {
+            $svg->addDimH($bfx/2, $f3->_b, $ys-$y0/2, $f3->_b, $x0);
+            $svg->addDimV(0, $f3->_hf, $f3->_hf + $x0*2, $f3->_hf, $y0);
+        }
         // Sirrups
         $svg->setColor('green');
-        $svg->addRectangle($bfx/2 + $f3->_cnom + $f3->_Aswfi1/2, $f3->_cnom + $f3->_Aswfi1/2, $f3->_b - 2*$f3->_cnom - $f3->_Aswfi1, $f3->_h - 2*$f3->_cnom - $f3->_Aswfi1, $x0, $y0);
+        $svg->addRectangle($bfx/2 + $f3->_cnom + $f3->_Aswfi1/2, $f3->_cnom + $f3->_Aswfi1/2, $f3->_b - 2*$f3->_cnom - $f3->_Aswfi1, $f3->_h - 2*$f3->_cnom - $f3->_Aswfi1, $x0, $y0, 2*$f3->_Aswfi1);
         if ($f3->_sectionT) {
-            $svg->addRectangle($f3->_cnom + $f3->_Aswfi1/2, $f3->_cnom + $f3->_Aswfi1/2, $f3->_bf - 2*$f3->_cnom - $f3->_Aswfi1, $f3->_hf - 2*$f3->_cnom - $f3->_Aswfi1, $x0, $y0);
+            $svg->addRectangle($f3->_cnom + $f3->_Aswfi1/2, $f3->_cnom + $f3->_Aswfi1/2, $f3->_bf - 2*$f3->_cnom - $f3->_Aswfi1, $f3->_hf - 2*$f3->_cnom - $f3->_Aswfi1, $x0, $y0, 2*$f3->_Aswfi1);
         }
         // Rebars
         $svg->setColor('blue');
-
+        $svg->setFill('blue');
+        $rebarPos = $f3->_cnom + $f3->_Aswfi1 + $f3->_Ascfi/2;
+        $topLength = $f3->_bf - 2*$rebarPos;
+        $bottomLength = $f3->_b - 2*$rebarPos;
+        $topDelta = $topLength/($f3->_Ascdb - 1);
+        $bottomDelta = $bottomLength/($f3->_Astdb - 1);
+        for ($i = 0; $i < $f3->_Ascdb; $i++) {
+            $svg->addCircle($rebarPos + $i*$topDelta, $rebarPos, $f3->_Ascfi/2, $x0, $y0);
+        }
+        for ($i = 0; $i < $f3->_Astdb; $i++) {
+            $svg->addCircle($bfx/2 + $rebarPos + $i*$bottomDelta, $f3->_h - $rebarPos, $f3->_Astfi/2, $x0, $y0);
+        }
         $blc->svg($svg);
 
 
