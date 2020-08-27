@@ -104,9 +104,9 @@ Class Snow
 */
 
         $svg = new SVG(600, 200);
-        $svg->addPolygon('10,180 210,180 210,140 110,110 10,140 10,180');
-        $svg->addPolygon('220,180 420,180 420,140 320,110 220,140 220,180');
-        $svg->addPolygon('490,180 590,180 590,140 490,110 490,180');
+        $svg->addPolygon([[10,180], [210,180], [210,140], [110,110], [10,140], [10,180]]);
+        $svg->addPolygon([[220,180], [420,180], [420,140], [320,110], [220,140], [220,180]]);
+        $svg->addPolygon([[490,180], [590,180], [590,140], [490,110], [490,180]]);
         $svg->setFill('#eeeeee');
         $svg->addRectangle(10, 80, 200, 20);
         $svg->addRectangle(220, 80, 100, 20);
@@ -146,7 +146,7 @@ Class Snow
 */
         $svg = new SVG(600, 170);
         $svg->setFill('#eeeeee');
-        $svg->addPolygon('10,120 200,120 200,100 150,100 10,50 10,120');
+        $svg->addPolygon([[10,120], [200,120], [200,100], [150,100], [10,50], [10,120]]);
         $svg->setColor('red');
         $svg->addDimH(10, 140, 150, $f3->_l_s);
         $svg->addText(10, 30, $f3->_q_sum.' kN/m²');
@@ -196,23 +196,23 @@ Class Snow
         $blc->write('vendor/resist/ecc-calculations/canvas/snow3.jpg', $write, 'Hófelhalmozódást is tartalmazó hóteher átrendeződés magasabb épülethez csatlakozó tető esetén');
 */
         $svg = new SVG(600, 300);
-        $svg->addPolygon('10,250 450,250 450,200 210,200 210,80 110,50 10,80');
+        $svg->addPolygon([[10,250], [450,250], [450,200], [210,200], [210,80], [110,50], [10,80],]);
         $svg->addText(210, 230, 'Csatlakozó épület');
         $svg->addText(190, 90, 'α');
 
         $svg->setFill('#cccccc');
-        $svg->addPolygon('210,200 450,200 450,180 210,180');
+        $svg->addPolygon([[210,200], [450,200], [450,180], [210,180],]);
         $svg->setFill('#eeeeee');
         if ($f3->_b_2 < $f3->_l_s2) {
             $blc->txt('$b_2 < l_s$, ezért a tető másik szélén teher teljes értéke:');
             $qsum22 = H3::n2($ec->linterp(0, $f3->_q_sum2, $f3->_l_s2, $f3->_s_k*0.8, $f3->_b_2));
             $blc->txt('$q_(∑2,'.$f3->_b_2.'m) = '.$qsum22.' [(kN)/m^2]$', '$l i n t e r p(0,'.$f3->_q_sum2.','.$f3->_l_s2.','.$f3->_s_k*0.8.','.$f3->_b_2.')$');
-            $svg->addPolygon('450,180 450,160 210,100 210,180');
+            $svg->addPolygon([[450,180], [450,160], [210,100], [210,180],]);
             $svg->addLine(450, 170, 210, 130);
             $svg->setColor('red');
             $svg->addText(380, 130, $qsum22.' kN/m²');
         } else {
-            $svg->addPolygon('350,180 210,100 210,180');
+            $svg->addPolygon([[350,180], [210,100], [210,180],]);
             $svg->addLine(350, 180, 210, 130);
             $svg->setColor('red');
             $svg->addText(400, 160, $f3->_s_k*0.8.' kN/m²');
