@@ -113,63 +113,6 @@ Class Beam
 
         $blc->svg($svg);
 
-        $blc->jsxDriver();
-        $js = '
-        var bf = '.$f3->_bf.';
-        var hf = '.$f3->_hf.';
-        var h = '.$f3->_h.';
-        var b = '.$f3->_b.';
-        var Astdb = '.$f3->_Astdb.';
-        var Ascdb = '.$f3->_Ascdb.';
-        var Astfi = '.$f3->_Astfi.';
-        var Ascfi = '.$f3->_Ascfi.';
-        var Aswfi1 = '.$f3->_Aswfi1.';
-        var cnom = '.$f3->_cnom.';
-        var abra = Math.max(1.5*bf/2, 1.5*h/2);
-        var board = JXG.JSXGraph.initBoard("geom", {boundingbox:[-abra,abra+h/2,abra,-abra+h/2], axis: false, grid: false,
-        keepaspectratio: true, showCopyright: false, showNavigation: false});
-        var kota1= board.create("segment", [[-bf/2-30, 0.8*abra+h/2],[bf/2+30,0.8*abra+h/2]],{withLabel:true, name:bf, strokeColor:"black", label:{offset:[-10,8]}});
-        board.create("ticks",[kota1,[30,bf+30]], {majorHeight:10, drawLabels: false});
-        var kota2= board.create("segment", [[-b/2-30, -0.85*abra+h/2],[b/2+30,-0.85*abra+h/2]],{withLabel:true, name:b, strokeColor:"black", label:{offset:[-10,8]}});
-        board.create("ticks",[kota2,[30,1*b+30]], {majorHeight:10, drawLabels: false});
-        var kota3= board.create("segment", [[0.1*abra+bf/2, -30],[0.1*abra+bf/2,1*h+30]],{withLabel:true, name:h, strokeColor:"black", label:{offset:[3,0]}});
-        board.create("ticks",[kota3,[30,1*h+30]], {majorHeight:10, drawLabels: false});
-        var kota4= board.create("segment", [[-0.1*abra-bf/2, (h-hf)-30],[-0.1*abra-bf/2,1*h+30]],{withLabel:true, name:hf, strokeColor:"black", label:{offset:[-25,0]}});
-        board.create("ticks",[kota4,[30,1*hf+30]], {majorHeight:10, drawLabels: false});
-
-        //board.renderer.container.style.backgroundColor = "#fcfcf7"; // background color board
-        //vb kontúr vonallánc:
-        var geomX = [b/2,b/2,bf/2,bf/2,-bf/2,-bf/2,-b/2,-b/2,b/2];
-        var geomY = [0,h-hf,h-hf,h,h,h-hf,h-hf,0,0];
-        board.create("curve", [geomX,geomY],{strokeColor:"black",strokeWidth:1.5, fillColor:"#CCCCCC", fillOpacity:0.5, shadow:false});
-        //alsó hosszvas ábrázolása:
-        var i; 
-        //var t=(b-2*cnom-2*Aswfi1-2*Astfi); 
-        //var t1=t/(Astdb-1);
-        for (i=0;i<Astdb;i++) 
-            { 
-            board.createElement("circle",
-                [[i*(1*b-2*cnom-2*Aswfi1-2*Astfi)/(Astdb-1)-(1*b-2*cnom-2*Aswfi1-2*Astfi)/2,1*cnom+1*Aswfi1+Astfi/2],Astfi/2],
-                {name:"",strokeWidth:1,fillColor:"blue", fillOpacity:0.5});
-            }
-        //felső hosszvas ábrázolása:
-        var i;
-        for (i=0;i<Ascdb;i++) 
-            { 
-            board.createElement("circle",
-                [[i*(1*bf-2*cnom-2*Aswfi1-2*Ascfi)/(Ascdb-1)-(1*bf-2*cnom-2*Aswfi1-2*Ascfi)/2,h-(1*cnom+1*Aswfi1+Ascfi/2)],Ascfi/2],
-                {name:"",strokeWidth:1,fillColor:"blue", fillOpacity:0.5});
-            }
-        
-        
-        //board.create("circle",[[AstX,200],Astfi/2], {name:"",strokeWidth:1,fillColor:"blue", fillOpacity:0.5});
-        //board.create("circle",[[b/2-1*cnom-1*Aswfi1-Astfi/2,1*cnom+1*Aswfi1+Astfi/2],Astfi/2], {name:"",strokeWidth:1,fillColor:"blue", fillOpacity:0.5});
-        //board.create("point",[b/2-1*cnom-1*Aswfi1-Astfi/2,1*cnom+1*Aswfi1+Astfi/2], {name:"", size:1, color:"blue"});
-        //board.create("point",[-b/2+1*cnom+1*Aswfi1+Astfi/2,1*cnom+1*Aswfi1+Astfi/2], {name:"", size:1, color:"blue"});
-        board.create("line",[[0,h-XiII],[1,h-XiII]], {strokeColor:"#00ff00",strokeWidth:1, dash:1, color:"red"});
-        board.create("line",[[0,h-XiI],[1,h-XiI]], {strokeColor:"#00ff00",strokeWidth:1, dash:2, color:"green"});
-        ';
-        $blc->jsx('geom', $js);
 
         $blc->h2('Nyírási teherbírás');
         $blc->region0('V');
