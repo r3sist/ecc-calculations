@@ -8,6 +8,8 @@ use DB\SQL;
 use Ecc\Map\DataMap;
 use H3;
 use Ecc\Blc;
+use InvalidArgumentException;
+use Exception;
 use Respect\Validation\Validator as v;
 
 
@@ -334,7 +336,7 @@ class Ec
     /**
      * Saves all material properties from DB to Hive variables, with prefix. e.g.: _prefixfck, _prefixfy etc
      * @param float|string $matName
-     * @throws \Exception
+     * @throws InvalidArgumentException|Exception
      */
     public function spreadMaterialData($matName, string $prefix = ''): void
     {
@@ -345,7 +347,10 @@ class Ec
         }
 
         $matDb = $this->getMaterialArray();
-        $matData = $matDb[$matName]; // TODO check if exists
+        if (!\array_key_exists($matName, $matDb)) {
+            throw new InvalidArgumentException('Nincs ilyen anyag az adatbázisban.');
+        }
+        $matData = $matDb[$matName];
 
         $this->blc->region0('materialData'.$prefix, 'Anyagjellemzők');
         foreach ($matData as $key => $value) {
