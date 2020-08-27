@@ -352,7 +352,7 @@ class Ec
         }
         $matData = $matDb[$matName];
 
-        $this->blc->region0('materialData'.$prefix, 'Anyagjellemzők');
+        $this->blc->region0('materialData'.$prefix, 'Anyagjellemzők ('.$matName.')');
         foreach ($matData as $key => $value) {
             if ($value != 0 && $value != '' && $key != '0') {
                 $this->f3->set('_'.$prefix.$key, $value);
