@@ -10,9 +10,14 @@ use Base;
 use Ecc\Blc;
 use Ec\Ec;
 use H3;
+use Exception;
+use resist\SVG\SVG;
 
 Class Beam
 {
+    /**
+     * @throws Exception
+     */
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->note('[Lásd még](https://structure.hu/berci/section): &copy; Tóth Bertalan');
@@ -35,7 +40,7 @@ Class Beam
             $blc->numeric('h', ['h', 'Keresztmetszet teljes magassága'], 700, 'mm', '');
             $blc->numeric('b', ['b', 'Keresztmetszet alsó szélessége'], 250, 'mm', '');
             $f3->_hf = 0;
-            $f3->_bf = 0;
+            $f3->_bf = $f3->_b;
             if ($f3->_sectionT) {
                 $blc->numeric('hf', ['h_f', 'Keresztmetszet felső övének magassága'], 150, 'mm', '');
                 $blc->numeric('bf', ['b_f', 'Keresztmetszet felső szélessége'], 600, 'mm', '');
@@ -65,7 +70,48 @@ Class Beam
         $blc->def('dst', $dst, 'd_(st) = h - c_(nom) - phi_(sw) = %% [mm]', 'Húzott vasalás hasznos magassága');
 
         $blc->h1('Vasbeton keresztmetszet teherbírási számítása');
+        $blc->note('Egy sor húzott vas figyelembe vétele.');
         $blc->def('d', $f3->_h - $f3->_cnom - max($f3->_Aswfi1, $f3->_Aswfi2) - $f3->_Astfi/2, 'd = h - c_(nom) - phi_(sw,max) - phi_(st)/2 = %% [mm]', 'Hatékony magasság');
+        $blc->numeric('teta', ['theta', 'Nyomott rácsrúd dőlésszöge'], 38, '°', 'Javasolt érték $min 36[deg], 1 lt cot(theta) lt 2.5; 21.8[deg] lt theta lt 45[deg]$', 'min_numeric,21.8|max_numeric,45');
+
+        $xs = 600; // SVG size
+        $ys = 300;
+        $x0 = 50; // Margin of figure
+        $y0 = 50;
+        $xc = $xs-2*$x0; // Figure canvas size
+        $yc = $ys-2*$y0;
+        $svg = new SVG($xs, $ys);
+//        $svg->addBorder();
+        $svg->makeRatio($xc, $yc, $f3->_bf, $f3->_h);
+        $bfx = $f3->_bf - $f3->_b;
+        // Contour
+        $svg->addPolygon([
+            [0, 0],
+            [$f3->_bf, 0],
+            [$f3->_bf, $f3->_hf],
+            [$bfx/2 + $f3->_b, $f3->_hf],
+            [$bfx/2 + $f3->_b, $f3->_h],
+            [$bfx/2, $f3->_h],
+            [$bfx/2, $f3->_hf],
+            [0, $f3->_hf],
+            ], $x0, $y0);
+        // Dimensions
+        $svg->setColor('#cccccc');
+        $svg->setSize(12);
+        $svg->addDimH(0, $f3->_bf, $y0/2, $f3->_bf, $x0);
+        $svg->addDimH($bfx/2, $f3->_b, $ys-$y0/2, $f3->_b, $x0);
+        $svg->addDimV(0, $f3->_h, $x0/2, $f3->_h, $y0);
+        $svg->addDimV(0, $f3->_hf, $xc+$x0*1.5, $f3->_hf, $y0);
+        // Sirrups
+        $svg->setColor('green');
+        $svg->addRectangle($bfx/2 + $f3->_cnom + $f3->_Aswfi1/2, $f3->_cnom + $f3->_Aswfi1/2, $f3->_b - 2*$f3->_cnom - $f3->_Aswfi1, $f3->_h - 2*$f3->_cnom - $f3->_Aswfi1, $x0, $y0);
+        if ($f3->_sectionT) {
+            $svg->addRectangle($f3->_cnom + $f3->_Aswfi1/2, $f3->_cnom + $f3->_Aswfi1/2, $f3->_bf - 2*$f3->_cnom - $f3->_Aswfi1, $f3->_hf - 2*$f3->_cnom - $f3->_Aswfi1, $x0, $y0);
+        }
+        // Rebars
+        $svg->setColor('blue');
+
+        $blc->svg($svg);
 
         $blc->jsxDriver();
         $js = '
@@ -90,7 +136,7 @@ Class Beam
         board.create("ticks",[kota3,[30,1*h+30]], {majorHeight:10, drawLabels: false});
         var kota4= board.create("segment", [[-0.1*abra-bf/2, (h-hf)-30],[-0.1*abra-bf/2,1*h+30]],{withLabel:true, name:hf, strokeColor:"black", label:{offset:[-25,0]}});
         board.create("ticks",[kota4,[30,1*hf+30]], {majorHeight:10, drawLabels: false});
-	
+
         //board.renderer.container.style.backgroundColor = "#fcfcf7"; // background color board
         //vb kontúr vonallánc:
         var geomX = [b/2,b/2,bf/2,bf/2,-bf/2,-bf/2,-b/2,-b/2,b/2];
@@ -122,7 +168,7 @@ Class Beam
         //board.create("point",[-b/2+1*cnom+1*Aswfi1+Astfi/2,1*cnom+1*Aswfi1+Astfi/2], {name:"", size:1, color:"blue"});
         board.create("line",[[0,h-XiII],[1,h-XiII]], {strokeColor:"#00ff00",strokeWidth:1, dash:1, color:"red"});
         board.create("line",[[0,h-XiI],[1,h-XiI]], {strokeColor:"#00ff00",strokeWidth:1, dash:2, color:"green"});
-	    ';
+        ';
         $blc->jsx('geom', $js);
 
         $blc->h2('Nyírási teherbírás');
