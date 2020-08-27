@@ -63,17 +63,6 @@ Class Beam
             $f3->_Asws2 = 0;
         $blc->info1();
 
-        $dst = 0;
-        if ($f3->_Astdb > 0) {
-            $dst = $f3->_h - $f3->_cnom - $f3->_Aswfi1 - $f3->_Astfi/2;
-        }
-        $blc->def('dst', $dst, 'd_(st) = h - c_(nom) - phi_(sw) = %% [mm]', 'Húzott vasalás hasznos magassága');
-
-        $blc->h1('Vasbeton keresztmetszet teherbírási számítása');
-        $blc->note('Egy sor húzott vas figyelembe vétele.');
-        $blc->def('d', $f3->_h - $f3->_cnom - max($f3->_Aswfi1, $f3->_Aswfi2) - $f3->_Astfi/2, 'd = h - c_(nom) - phi_(sw,max) - phi_(st)/2 = %% [mm]', 'Hatékony magasság');
-        $blc->numeric('teta', ['theta', 'Nyomott rácsrúd dőlésszöge'], 38, '°', 'Javasolt érték $min 36[deg], 1 lt cot(theta) lt 2.5; 21.8[deg] lt theta lt 45[deg]$', 'min_numeric,21.8|max_numeric,45');
-
         // SVG
         $xs = 600; // SVG size
         $ys = 300;
@@ -126,6 +115,14 @@ Class Beam
         }
         $blc->svg($svg);
 
+        $blc->h1('Vasbeton keresztmetszet teherbírási számítása');
+        $blc->note('Egy sor húzott vas figyelembe vétele.');
+        $dst = 0;
+        if ($f3->_Astdb > 0) {
+            $dst = $f3->_h - $f3->_cnom - $f3->_Aswfi1 - $f3->_Astfi/2;
+        }
+        $blc->def('dst', $dst, 'd_(st) = h - c_(nom) - phi_(sw) - phi_(st)/2 = %% [mm]', 'Húzott vasalás hasznos magassága');
+        $blc->numeric('teta', ['theta', 'Nyomott rácsrúd dőlésszöge'], 38, '°', 'Javasolt érték $min 36[deg], 1 lt cot(theta) lt 2.5; 21.8[deg] lt theta lt 45[deg]$', 'min_numeric,21.8|max_numeric,45');
 
         $blc->h2('Nyírási teherbírás');
         $blc->region0('V');
@@ -146,7 +143,7 @@ Class Beam
         $blc->h1('Szerkesztési szabályok ellenőrzése');
         $blc->h4('Minimális húzott vasmennyiség:');
         $blc->def('rhoMin', max(0.26*($f3->_cfctm/$f3->_rfy), 0.0015), 'rho_(min) = max{(0.26*f_(ctm)/f_(yk)),(0.0015):} = max{(0.26*'.$f3->_cfctm.'/'.$f3->_rfy.'),(0.0015):} = %%', 'Minimális húzott vashányad');
-        $blc->def('AstMin', H3::n0($f3->_rhoMin*$f3->_b*$f3->_d), 'A_(st,min) = rho_(min)*b*d = '.$f3->_rhoMin.'*'.$f3->_b.'*'.$f3->_d.' = %% [mm^2]', 'Előírt minimális húzott vasmennyiség négyszög keresztmetszet esetén');
+        $blc->def('AstMin', H3::n0($f3->_rhoMin*$f3->_b*$f3->_dst), 'A_(st,min) = rho_(min)*b*d = '.$f3->_rhoMin.'*'.$f3->_b.'*'.$f3->_dst.' = %% [mm^2]', 'Előírt minimális húzott vasmennyiség négyszög keresztmetszet esetén');
         $blc->note('T szelvény esetén, ha a fejlemez nyomott, csak a gerinc szélességét kell `b` számításnál figyelembe venni, ha a fejlemez húzott, `b` a nyomott borda szélességének kétszerese.');
         $uAsMin = 'no';
         if ($f3->_AstMin/$f3->_Ast <= 1) {
@@ -198,7 +195,7 @@ Class Beam
         $blc->note('$l_(bd)$ a lehorgonyzási hossz tervezési értéke.');
         $blc->numeric('d', ['d', 'Keresztmetszet hatékony magasság'], 200, 'mm');
         $blc->numeric('b_w', ['b_w', 'Keresztmetszet gerinc szélesség'], 200, 'mm');
-        $blc->def('rho_lcalc', H3::n2(min($f3->_A_sl/($f3->_b_w*$f3->_d), 0.02)*100), 'rho_l = min(A_(sl)/(b_w*d), 0.02) = %% %', 'Húzott vashányad');
+        $blc->def('rho_lcalc', H3::n2(min($f3->_A_sl/($f3->_b_w*$f3->_dst), 0.02)*100), 'rho_l = min(A_(sl)/(b_w*d), 0.02) = %% %', 'Húzott vashányad');
         $blc->note('A húzott vashányad a biztonság javára való közelítéssel mindig lehet 0. Támasznál általában 0.');
 
         $rhos = [
@@ -210,11 +207,11 @@ Class Beam
         ];
         $blc->lst('rho_l', $rhos, ['rho_(l,calc)', 'Húzott vashányad'], 0);
         $blc->note('$V_(Rd,c) = c*b_w*d*f_(ctd)$ képlethez $c(f_(ctd))$ értékei meghatározhtaók táblázatosan. Dulácska biztonság javára történő közelítő képletével van itt számolva a $c$. [Világos kék [19]]');
-        $c = (1.2 -  $f3->_cfck/150)*(0.15*$f3->_rho_l + 0.45/(1 + $f3->_d/1000));
+        $c = (1.2 -  $f3->_cfck/150)*(0.15*$f3->_rho_l + 0.45/(1 + $f3->_dst/1000));
         $blc->def('c', H3::n4($c), 'c = (1.2 - f_(ck)/150)*(0.15*rho_l + 0.45/(1+d/1000)) = %%');
 
         $blc->success0('VRdc');
-            $blc->def('VRdc', H3::n2($c*$f3->_b_w*$f3->_d*$f3->_cfctd/1000), 'V_(Rd,c) = c*b_w*d*f_(ctd) = %% [kN]');
+            $blc->def('VRdc', H3::n2($c*$f3->_b_w*$f3->_dst*$f3->_cfctd/1000), 'V_(Rd,c) = c*b_w*d*f_(ctd) = %% [kN]');
         $blc->success1();
     }
 }
