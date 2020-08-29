@@ -5,6 +5,8 @@
 namespace Calculation;
 
 use Base;
+use DB\SQL;
+use Ecc\Map\CalculationMap;
 use resist\Auth3\Auth3Helper;
 use DB\SQL\Mapper;
 use Ecc\Blc;
@@ -16,11 +18,15 @@ Class Config
 {
     private Logger $logger;
     private Mapper $userMap;
+    private CalculationMap $calculationMap;
+    private SQL $db;
 
-    public function __construct(Logger $logger, UserMap $userMap)
+    public function __construct(Logger $logger, UserMap $userMap, CalculationMap $calculationMap, SQL $db)
     {
         $this->logger = $logger;
         $this->userMap = $userMap;
+        $this->calculationMap = $calculationMap;
+        $this->db = $db;
     }
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
@@ -52,37 +58,36 @@ Class Config
         if (Auth3Helper::isAdmin()) {
             $blc->h1('Admin');
             $blc->boo('doUpdate', ['', 'Számítás meta adatok szerkesztése/mentése'], false, '');
-            if ($f3->_doUpdate && !$f3->mc->dry()) {
+            if ($f3->_doUpdate) {
 
                 $query = 'SELECT * FROM ecc_calculations ORDER BY cname ASC';
-                $calcList = $f3->get('db')->exec($query);
+                $calcList = $this->db->exec($query);
                 $this->logger->create('ecc', 'edit', 'Edited calcs meta');
                 foreach ($calcList as $calcData) {
-                    $f3->mc->reset();
-                    $f3->mc->load(['cname = :cname', ':cname' => $calcData['cname']]);
+                    $this->calculationMap->reset();
+                    $this->calculationMap->load(['cname = :cname', ':cname' => $calcData['cname']]);
 
                     $blc->region0('admin' . $calcData['cname'], $calcData['cname']);
-                    $blc->h2('[' . $calcData['cname'] . '](https://structure.hu/calc/' . $calcData['cname'] . ')');
+                        $blc->h2('[' . $calcData['cname'] . '](https://structure.hu/calc/' . $calcData['cname'] . ')');
 
-                    $blc->input($calcData['cname'] . '___ctitle', ['', 'title'], $calcData['ctitle'], '', '');
-                    $blc->input($calcData['cname'] . '___csubtitle', ['', 'subtitle'], $calcData['csubtitle'], '', '');
-                    $blc->input($calcData['cname'] . '___cdescription', ['', 'description'], $calcData['cdescription'], '', '');
-                    $blc->lst($calcData['cname'] . '___cgroup', ['S' => 'S', 'L' => 'L', 'G' => 'G', 'C' => 'C'], ['', 'group'], $calcData['cgroup'], '');
-                    $blc->boo($calcData['cname'] . '___cexpreimental', ['', 'experimental'], (bool)$calcData['cexperimental'], '');
-                    $blc->boo($calcData['cname'] . '___chidden', ['', 'hidden'], (bool)$calcData['chidden'], '');
-                    $blc->boo($calcData['cname'] . '___cprivate', ['', 'private'], (bool)$calcData['cprivate'], '');
-                    $blc->boo($calcData['cname'] . '___csecondary', ['', 'secondary'], (bool)$calcData['csecondary'], '');
+                        $blc->input($calcData['cname'] . '___ctitle', ['', 'title'], $calcData['ctitle'], '', '');
+                        $blc->input($calcData['cname'] . '___csubtitle', ['', 'subtitle'], $calcData['csubtitle'], '', '');
+                        $blc->input($calcData['cname'] . '___cdescription', ['', 'description'], $calcData['cdescription'], '', '');
+                        $blc->lst($calcData['cname'] . '___cgroup', ['S' => 'S', 'L' => 'L', 'G' => 'G', 'C' => 'C'], ['', 'group'], $calcData['cgroup'], '');
+                        $blc->boo($calcData['cname'] . '___cexpreimental', ['', 'experimental'], (bool)$calcData['cexperimental'], '');
+                        $blc->boo($calcData['cname'] . '___chidden', ['', 'hidden'], (bool)$calcData['chidden'], '');
+                        $blc->boo($calcData['cname'] . '___cprivate', ['', 'private'], (bool)$calcData['cprivate'], '');
+                        $blc->boo($calcData['cname'] . '___csecondary', ['', 'secondary'], (bool)$calcData['csecondary'], '');
 
-                    $f3->mc->ctitle = $f3->get('_' . $calcData['cname'] . '___ctitle');
-                    $f3->mc->csubtitle = $f3->get('_' . $calcData['cname'] . '___csubtitle');
-                    $f3->mc->cdescription = $f3->get('_' . $calcData['cname'] . '___cdescription');
-                    $f3->mc->cgroup = $f3->get('_' . $calcData['cname'] . '___cgroup');
-                    $f3->mc->cexperimental = $f3->get('_' . $calcData['cname'] . '___cexpreimental');
-                    $f3->mc->chidden = $f3->get('_' . $calcData['cname'] . '___chidden');
-                    $f3->mc->cprivate = $f3->get('_' . $calcData['cname'] . '___cprivate');
-                    $f3->mc->csecondary = $f3->get('_' . $calcData['cname'] . '___csecondary');
-                    $f3->mc->save();
-
+                        $this->calculationMap->ctitle = $f3->get('_' . $calcData['cname'] . '___ctitle');
+                        $this->calculationMap->csubtitle = $f3->get('_' . $calcData['cname'] . '___csubtitle');
+                        $this->calculationMap->cdescription = $f3->get('_' . $calcData['cname'] . '___cdescription');
+                        $this->calculationMap->cgroup = $f3->get('_' . $calcData['cname'] . '___cgroup');
+                        $this->calculationMap->cexperimental = $f3->get('_' . $calcData['cname'] . '___cexpreimental');
+                        $this->calculationMap->chidden = $f3->get('_' . $calcData['cname'] . '___chidden');
+                        $this->calculationMap->cprivate = $f3->get('_' . $calcData['cname'] . '___cprivate');
+                        $this->calculationMap->csecondary = $f3->get('_' . $calcData['cname'] . '___csecondary');
+                        $this->calculationMap->save();
                     $blc->region1();
                 }
             }
@@ -91,9 +96,9 @@ Class Config
             $blc->input('cnameNew', ['', 'Osztály azonosító'], '', '', 'ecc-calculation osztály azonosító (URL azonosító lesz)', 'alpha');
             $blc->txt('Composer autoloader frissítése szükséges!');
             if ($f3->_cnameNew) {
-                $f3->mc->reset();
-                $f3->mc->cname = ucfirst($f3->get('_cnameNew'));
-                $f3->mc->save();
+                $this->calculationMap->reset();
+                $this->calculationMap->cname = ucfirst($f3->get('_cnameNew'));
+                $this->calculationMap->save();
 
                 $blc->toast('Új osztály beszúrva', 'success', '');
                 $blc->html('<script>$("#_cname").val("");</script>');
