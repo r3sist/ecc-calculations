@@ -15,7 +15,7 @@
     "resist/auth3": "@dev",
     "wixel/gump": "dev-master",
     "ikkez/f3-flash": ">=1.0.0",
-    "respect/validation": "1.*"
+    "respect/validation": "2.*"
   }
   ,
   "require-dev": {
