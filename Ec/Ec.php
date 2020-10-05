@@ -183,7 +183,7 @@ class Ec
             }
         }
 
-        $keys =  array_keys($matDb);
+        $keys = array_keys($matDb);
         $list = [];
         foreach ($keys as $key) {
             $list[$key] = $key;
@@ -194,7 +194,7 @@ class Ec
     public function boltList(string $variableName = 'bolt', string $default = 'M16', string $title = 'Csavar betöltése'): void
     {
         $boltDb = $this->readData('bolt');
-        $keys =  array_keys($boltDb);
+        $keys = array_keys($boltDb);
         $list = [];
         foreach ($keys as $key) {
             $list[$key] = $key;
@@ -211,9 +211,9 @@ class Ec
         $blc = $this->blc;
 
         $blc->wrapper0($stringTitle);
-            $blc->numeric($variableNameA, [], (float)$defaultValueA, $unitAB, '', '');
-            $blc->wrapper1($middleText);
-            $blc->numeric($variableNameB, [], (float)$defaultValueB, $unitAB, '', '');
+        $blc->numeric($variableNameA, [], (float)$defaultValueA, $unitAB, '', '');
+        $blc->wrapper1($middleText);
+        $blc->numeric($variableNameB, [], (float)$defaultValueB, $unitAB, '', '');
         $blc->wrapper2($helpAB);
     }
 
@@ -227,19 +227,19 @@ class Ec
     public function wrapRebarCount(string $variableNameCount, string $variableNameRebar, string $titleString, int $defaultValueCount, int $defaultValueRebar = 16, string $help = '', string $variableNameA = ''): void
     {
         $this->blc->wrapper0($titleString);
-            $this->blc->numeric($variableNameCount, [], $defaultValueCount, '', '');
-            $this->blc->wrapper1('×');
-            $this->rebarList($variableNameRebar, $defaultValueRebar, [], '');
+        $this->blc->numeric($variableNameCount, [], $defaultValueCount, '', '');
+        $this->blc->wrapper1('×');
+        $this->rebarList($variableNameRebar, $defaultValueRebar, [], '');
 
-            $A = floor($this->A($this->f3->get('_'.$variableNameRebar), $this->f3->get('_'.$variableNameCount)));
+        $A = floor($this->A($this->f3->get('_' . $variableNameRebar), $this->f3->get('_' . $variableNameCount)));
 
-            if ($help === '') {
-                $help = '$ = '.$A.' [mm^2]$';
-            }
+        if ($help === '') {
+            $help = '$ = ' . $A . ' [mm^2]$';
+        }
 
-            if ($variableNameA !== '') {
-                $this->f3->set('_'.$variableNameA, $A);
-            }
+        if ($variableNameA !== '') {
+            $this->f3->set('_' . $variableNameA, $A);
+        }
 
         $this->blc->wrapper2($help);
     }
@@ -273,11 +273,11 @@ class Ec
             ['name' => 616, 'title' => 'Ø28', 'type' => 'input', 'sum' => true],
             ['name' => 804, 'title' => 'Ø32', 'type' => 'input', 'sum' => true],
         ];
-        $this->blc->bulk('bulk'.H3::slug($variableNameBulk), $fields);
+        $this->blc->bulk('bulk' . H3::slug($variableNameBulk), $fields);
         $As = 0;
         if ($this->f3->exists('sum')) {
             foreach ($this->f3->get('sum') as $key => $value) {
-                $As = $As + $value*$key;
+                $As = $As + $value * $key;
             }
         }
         return $As;
@@ -318,7 +318,7 @@ class Ec
                 $resultCleaned[(string)substr($key, 1, 10)] = $result[0][$key];
             }
         }
-        $this->f3->set('_'.$arrayName, $resultCleaned);
+        $this->f3->set('_' . $arrayName, $resultCleaned);
 
         if ($renderTable) {
             $rows = [];
@@ -327,8 +327,8 @@ class Ec
                 $rows[] = array_values($row);
             }
 
-            $this->blc->region0('sectionTable', $result[0]['name2'].' szelvény adatok');
-                $this->blc->tbl($scheme, $rows, 'tbl'.H3::slug($result[0]['name2']), 'Mértékegységek, további információk: <a href="https://structure.hu/profil">structure.hu/profil</a>');
+            $this->blc->region0('sectionTable', $result[0]['name2'] . ' szelvény adatok');
+            $this->blc->tbl($scheme, $rows, 'tbl' . H3::slug($result[0]['name2']), 'Mértékegységek, további információk: <a href="https://structure.hu/profil">structure.hu/profil</a>');
             $this->blc->region1();
         }
     }
@@ -352,95 +352,95 @@ class Ec
         }
         $matData = $matDb[$matName];
 
-        $this->blc->region0('materialData'.$prefix, 'Anyagjellemzők ('.$matName.')');
+        $this->blc->region0('materialData' . $prefix, 'Anyagjellemzők (' . $matName . ')');
         foreach ($matData as $key => $value) {
             if ($value != 0 && $value != '' && $key != '0') {
-                $this->f3->set('_'.$prefix.$key, $value);
+                $this->f3->set('_' . $prefix . $key, $value);
 
-                switch($key) {
+                switch ($key) {
                     case 'fy':
-                        $this->blc->math('f_y = '.$value.' [N/(mm^2)]', 'Folyáshatár');
+                        $this->blc->math('f_y = ' . $value . ' [N/(mm^2)]', 'Folyáshatár');
                         break;
                     case 'fu':
-                        $this->blc->math('f_u = '.$value.' [N/(mm^2)]', 'Szakító szilárdság');
+                        $this->blc->math('f_u = ' . $value . ' [N/(mm^2)]', 'Szakító szilárdság');
                         break;
                     case 'fy40':
-                        $this->blc->math('f_(y,40) = '.$value.' [N/(mm^2)]', 'Folyáshatár 40+ mm lemez esetén');
+                        $this->blc->math('f_(y,40) = ' . $value . ' [N/(mm^2)]', 'Folyáshatár 40+ mm lemez esetén');
                         break;
                     case 'fu40':
-                        $this->blc->math('f_(u,40) = '.$value.' [N/(mm^2)]', 'Szakító szilárdság 40+ mm lemez esetén');
+                        $this->blc->math('f_(u,40) = ' . $value . ' [N/(mm^2)]', 'Szakító szilárdság 40+ mm lemez esetén');
                         break;
                     case 'betaw':
-                        $this->blc->math('beta_w = '.$value.'', 'Hegesztési tényező');
+                        $this->blc->math('beta_w = ' . $value . '', 'Hegesztési tényező');
                         break;
                     case 'fyd':
-                        $this->blc->math('f_(yd) = '.$value.' [N/(mm^2)]', 'Folyáshatár tervezési értéke');
+                        $this->blc->math('f_(yd) = ' . $value . ' [N/(mm^2)]', 'Folyáshatár tervezési értéke');
                         break;
                     case 'fck':
-                        $this->blc->math('f_(ck) = '.$value.'  [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) ($phi$ 150×300 henger)');
+                        $this->blc->math('f_(ck) = ' . $value . '  [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) ($phi$ 150×300 henger)');
                         break;
                     case 'fckcube':
-                        $this->blc->math('f_(ck,cube) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (□150×150×150 kocka)');
+                        $this->blc->math('f_(ck,cube) = ' . $value . ' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (□150×150×150 kocka)');
                         break;
                     case 'fcm':
-                        $this->blc->math('f_(cm) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság várható értéke');
+                        $this->blc->math('f_(cm) = ' . $value . ' [N/(mm^2)]', 'Nyomószilárdság várható értéke');
                         $this->blc->note('`f.cm = f.ck + 8`');
                         break;
                     case 'fctm':
-                        $this->blc->math('f_(ctm) = '.$value.' [N/(mm^2)]', 'Húzószilárdság várható értéke');
+                        $this->blc->math('f_(ctm) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság várható értéke');
                         break;
                     case 'fctd':
-                        $this->blc->math('f_(ctd) = '.$value.' [N/(mm^2)]', 'Húzószilárdság tervezési értéke');
+                        $this->blc->math('f_(ctd) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság tervezési értéke');
                         break;
                     case 'fctk005':
-                        $this->blc->math('f_(ctk,0.05) = '.$value.' [N/(mm^2)]', 'Húzószilárdság karakterisztikus értéke (5% kvantilis)');
+                        $this->blc->math('f_(ctk,0.05) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság karakterisztikus értéke (5% kvantilis)');
                         break;
                     case 'fctk095':
-                        $this->blc->math('f_(ctk,0.95) = '.$value.' [N/(mm^2)]', 'Húzószilárdság karakterisztikus értéke (95% kvantilis)');
+                        $this->blc->math('f_(ctk,0.95) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság karakterisztikus értéke (95% kvantilis)');
                         break;
                     case 'Ecm':
-                        $this->blc->math('E_(cm)= '.$value.' [(kN)/(mm^2)]', 'Beton rugalmassági modulusa');
+                        $this->blc->math('E_(cm)= ' . $value . ' [(kN)/(mm^2)]', 'Beton rugalmassági modulusa');
                         $this->blc->note('`E.cm = 22(f.cm/10)^0.3`');
                         $this->blc->note('Húrmodulus `sigma.c = 0` és `sigma.c = 0.4f.cm` között.');
                         break;
                     case 'Ecu3':
-                        $this->blc->math('E_(cu3)= '.$value.' []', '');
+                        $this->blc->math('E_(cu3)= ' . $value . ' []', '');
                         break;
                     case 'Euk':
-                        $this->blc->math('E_(uk)= '.$value.' []', '');
+                        $this->blc->math('E_(uk)= ' . $value . ' []', '');
                         break;
                     case 'Es':
-                        $this->blc->math('E_s= '.$value.' [(kN)/(mm^2)]', 'Betonacél rugalmassági modulusa');
+                        $this->blc->math('E_s= ' . $value . ' [(kN)/(mm^2)]', 'Betonacél rugalmassági modulusa');
                         break;
                     case 'Fc0':
-                        $this->blc->math('F_(c0)= '.$value.' []', '');
+                        $this->blc->math('F_(c0)= ' . $value . ' []', '');
                         break;
                     case 'F_c0':
-                        $this->blc->math('F_(_c0)= '.$value.' []', '');
+                        $this->blc->math('F_(_c0)= ' . $value . ' []', '');
                         break;
                     case 'fbd':
-                        $this->blc->math('f_(bd)= '.$value.' [N/(mm^2)]', 'Beton és acél közti kapcsolati szilárdság bordás betonacéloknál, jó tapadás esetén');
-                        $this->blc->boo($prefix.'fbd07', ['', 'Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa'], true, 'Csökkentés 70%-ra');
-                        if ($this->f3->get('_'.$prefix.'fbd07')) {
-                            $this->blc->def($prefix.'fbd', $this->f3->get('_'.$prefix.'fbd')*0.7, 'f_(bd) = f_(bd,eff) = f_(bd)*0.7 = %%');
+                        $this->blc->math('f_(bd)= ' . $value . ' [N/(mm^2)]', 'Beton és acél közti kapcsolati szilárdság bordás betonacéloknál, jó tapadás esetén');
+                        $this->blc->boo($prefix . 'fbd07', ['', 'Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa'], true, 'Csökkentés 70%-ra');
+                        if ($this->f3->get('_' . $prefix . 'fbd07')) {
+                            $this->blc->def($prefix . 'fbd', $this->f3->get('_' . $prefix . 'fbd') * 0.7, 'f_(bd) = f_(bd,eff) = f_(bd)*0.7 = %%');
                         }
                         break;
                     case 'fcd':
-                        $this->blc->math('f_(cd) = '.$value.' [N/(mm^2)]', 'Nyomószilárdság tervezési értéke');
+                        $this->blc->math('f_(cd) = ' . $value . ' [N/(mm^2)]', 'Nyomószilárdság tervezési értéke');
                         $this->blc->note('`f.cd = f.ck/gamma.c`');
                         break;
                     case 'fiinf28':
-                        $this->blc->math('phi(infty,28) = '.$value.'', 'Kúszási tényező átlagos végértéke. (Állandó/tartós terhelés, 70% párat., 28 n. szil. terhelése, képlékeny konzisztencia betonozása, 100 mm egyenértékű lemezvast.)');
+                        $this->blc->math('phi(infty,28) = ' . $value . '', 'Kúszási tényező átlagos végértéke. (Állandó/tartós terhelés, 70% párat., 28 n. szil. terhelése, képlékeny konzisztencia betonozása, 100 mm egyenértékű lemezvast.)');
                         break;
                     case 'Eceff':
-                        $this->blc->math('E_(c,eff) = '.$value.' [(kN)/(mm^2)] = '.$value*100 .' [(kN)/(cm^2)]', 'Beton hatásos alakváltozási tényezője a kúszás végértékével');
+                        $this->blc->math('E_(c,eff) = ' . $value . ' [(kN)/(mm^2)] = ' . $value * 100 . ' [(kN)/(cm^2)]', 'Beton hatásos alakváltozási tényezője a kúszás végértékével');
                         $this->blc->note('`E.c.eff = E.cm/(1+fi.inf.28)`');
                         break;
                     case 'alfat':
-                        $this->blc->math('alpha_t = '.$value.' [1/K]', 'Hőtágulási együttható');
+                        $this->blc->math('alpha_t = ' . $value . ' [1/K]', 'Hőtágulási együttható');
                         break;
                     case 'Epsiloncsinf':
-                        $this->blc->math('epsilon_(cs,infty) = '.$value.'', 'Beton zsugorodásának végértéke (kúszási tényezőnél adott feltételeknél)');
+                        $this->blc->math('epsilon_(cs,infty) = ' . $value . '', 'Beton zsugorodásának végértéke (kúszási tényezőnél adott feltételeknél)');
                         break;
                 }
             }
@@ -465,39 +465,41 @@ class Ec
     }
 
     // Nyírt csavar
+
     /** @param float|string $btMat */
     public function FvRd(string $btName, $btMat, float $n, float $As = 0): float
     {
-        $btMat = (string) $btMat;
+        $btMat = (string)$btMat;
         $n = (int)$n;
 
-        if ($As === (float) 0) {
+        if ($As === (float)0) {
             $As = $this->boltProp($btName, 'As');
         }
-        $result = (( $this->matProp($btMat, 'fu') * $As * 0.6) / (1000 * $this->f3->get('__GM2')) )*$n;
+        $result = (($this->matProp($btMat, 'fu') * $As * 0.6) / (1000 * $this->f3->get('__GM2'))) * $n;
         $this->blc->note('$F_(v,Rd)$ nyírás általános képlet: $n*(0.6*f_(u,b)*A_s)/(gamma_(M2))$');
 
         if ($btMat === '4.8' || $btMat === '5.8' || $btMat === '6.8' || $btMat === '10.9') {
-            $this->blc->note('$F_(v,Rd)$ nyírás: '.$btMat.' csavar anyag miatt az eredmény 80%-ra csökkentve.');
-            return $result*0.8;
+            $this->blc->note('$F_(v,Rd)$ nyírás: ' . $btMat . ' csavar anyag miatt az eredmény 80%-ra csökkentve.');
+            return $result * 0.8;
         }
         return $result;
     }
 
     // Csavar palástnyomás
+
     /** @param float|string $btMat */
     public function FbRd(string $btName, $btMat, string $stMat, float $ep1, float $ep2, float $t, bool $inner): float
     {
         $btMat = (string)$btMat;
 
         $fust = $this->fu($stMat, $t);
-        $k1 = min(2.8*($ep2/ $this->boltProp($btName, 'd0')) - 1.7, 2.5);
-        $alphab = min(($ep1/ (3* $this->boltProp($btName, 'd0'))), $this->matProp($btMat, 'fu')/ $fust, 1);
+        $k1 = min(2.8 * ($ep2 / $this->boltProp($btName, 'd0')) - 1.7, 2.5);
+        $alphab = min(($ep1 / (3 * $this->boltProp($btName, 'd0'))), $this->matProp($btMat, 'fu') / $fust, 1);
         if ($inner) {
-            $k1 = min(1.4*($ep2/ $this->boltProp($btName, 'd0')) - 1.7, 2.5);
-            $alphab = min(($ep1/ (3* $this->boltProp($btName, 'd0'))) - 0.25, $this->matProp($btMat, 'fu')/ $this->fu($stMat, $t), 1);
+            $k1 = min(1.4 * ($ep2 / $this->boltProp($btName, 'd0')) - 1.7, 2.5);
+            $alphab = min(($ep1 / (3 * $this->boltProp($btName, 'd0'))) - 0.25, $this->matProp($btMat, 'fu') / $this->fu($stMat, $t), 1);
         }
-        $result = $k1*(($alphab*$fust* $this->boltProp($btName, 'd') * $t)/(1000 * $this->f3->get('__GM2')));
+        $result = $k1 * (($alphab * $fust * $this->boltProp($btName, 'd') * $t) / (1000 * $this->f3->get('__GM2')));
         $this->f3->set('___k1', $k1);
         $this->f3->set('___alphab', $alphab);
         if ($result <= 0) {
@@ -513,7 +515,7 @@ class Ec
         $Av = (float)$Av;
         $t = (float)$t;
         $fy = $this->fy($matName, $t);
-        return ($Av*$fy)/(sqrt(3)*$this->f3->get('__GM0')*1000);
+        return ($Av * $fy) / (sqrt(3) * $this->f3->get('__GM0') * 1000);
     }
 
     // Acél keresztmetszet húzási ellenállása: A Anet [mm2], t [mm], returns [kN]
@@ -530,7 +532,7 @@ class Ec
         $Anet = (float)$Anet;
         $t = (float)$t;
         $fu = $this->fu($matName, $t);
-        return (0.9*$Anet*$fu)/($this->f3->get('__GM2')*1000);
+        return (0.9 * $Anet * $fu) / ($this->f3->get('__GM2') * 1000);
     }
 
     public function NplRd($A, string $matName, $t): float
@@ -538,17 +540,17 @@ class Ec
         $A = (float)$A;
         $t = (float)$t;
         $fy = $this->fy($matName, $t);
-        return ($A*$fy)/($this->f3->get('__GM0')*1000);
+        return ($A * $fy) / ($this->f3->get('__GM0') * 1000);
     }
 
     public function NcRd(float $A, float $fy): float
     {
-        return ($A*$fy)/($this->f3->get('__GM0')*1000);
+        return ($A * $fy) / ($this->f3->get('__GM0') * 1000);
     }
 
     public function McRd(float $W, float $fy): float
     {
-        return ($W*$fy)/($this->f3->get('__GM0')*1000000);
+        return ($W * $fy) / ($this->f3->get('__GM0') * 1000000);
     }
 
     public function qpz(float $z, float $terrainCat): float
@@ -567,7 +569,7 @@ class Ec
         $cSeason = 1.0;
         $cAlt = 1.0;
         $cProb = 1.0;
-        $vb = $vb0*$cDir*$cSeason*$cProb*$cAlt;
+        $vb = $vb0 * $cDir * $cSeason * $cProb * $cAlt;
         $c0z = 1;
         $z0 = $terrainDb[$terrainCat]['z0'];
         $zmin = $terrainDb[$terrainCat]['zmin'];
@@ -575,34 +577,34 @@ class Ec
         if ($z < $zmin) {
             $z = $zmin;
         }
-        $crz = $kr*log($z/$z0);
-        $vmz = $crz*$c0z*$vb;
+        $crz = $kr * log($z / $z0);
+        $vmz = $crz * $c0z * $vb;
         $ki = 1;
-        $sigmaV = $kr*$ki*$vb;
-        $Ivz = $sigmaV/$vmz;
-        $qpz = H3::n3((1 + 7*$Ivz)*0.5*(1.25/1000)*($vmz*$vmz));
+        $sigmaV = $kr * $ki * $vb;
+        $Ivz = $sigmaV / $vmz;
+        $qpz = H3::n3((1 + 7 * $Ivz) * 0.5 * (1.25 / 1000) * ($vmz * $vmz));
 
         $blc = $this->blc;
-        $blc->note('$v_(b,0) = '.$vb0.'; c_(dir) = '.$cDir.'; c_(season) = '.$cSeason.'; c_(al t) = '.$cAlt.'$');
-        $blc->note('$v_b = v_(b,0)*c_(dir)*c_(season)*c_(prob)*c_(al t) = '.$vb.'$');
-        $blc->note('$c_(0,z) = '.$c0z.'; z_0 = '.$z0.'; z_(min) = '.$zmin.'; k_r = '.$kr.'; z = '.$z.'$');
-        $blc->note('$c_(r,z) = k_r*log(z/z_0) = '.$crz.'$');
-        $blc->note('$v_(m,z) = c_(r,z)*c_(0,z)*v_b = '.$vmz.'$');
-        $blc->note('$k_i = '.$ki.'; sigma_V = k_r*k_i*v_b = '.$sigmaV.'$');
-        $blc->note('$I_(v,z) = sigma_v/v_(m,z) = '.$Ivz.'$');
-        $blc->note('$q_p(z) = (1 + 7*I_(v,z))*0.5*(1.25/1000)*v_(m,z)^2 = '.$qpz.'$');
+        $blc->note('$v_(b,0) = ' . $vb0 . '; c_(dir) = ' . $cDir . '; c_(season) = ' . $cSeason . '; c_(al t) = ' . $cAlt . '$');
+        $blc->note('$v_b = v_(b,0)*c_(dir)*c_(season)*c_(prob)*c_(al t) = ' . $vb . '$');
+        $blc->note('$c_(0,z) = ' . $c0z . '; z_0 = ' . $z0 . '; z_(min) = ' . $zmin . '; k_r = ' . $kr . '; z = ' . $z . '$');
+        $blc->note('$c_(r,z) = k_r*log(z/z_0) = ' . $crz . '$');
+        $blc->note('$v_(m,z) = c_(r,z)*c_(0,z)*v_b = ' . $vmz . '$');
+        $blc->note('$k_i = ' . $ki . '; sigma_V = k_r*k_i*v_b = ' . $sigmaV . '$');
+        $blc->note('$I_(v,z) = sigma_v/v_(m,z) = ' . $Ivz . '$');
+        $blc->note('$q_p(z) = (1 + 7*I_(v,z))*0.5*(1.25/1000)*v_(m,z)^2 = ' . $qpz . '$');
 
         return $qpz;
     }
 
     public function linterp(float $x1, float $y1, float $x2, float $y2, float $x): float
     {
-        return (($x - $x1)*($y2 - $y1)/($x2 - $x1)) + $y1;
+        return (($x - $x1) * ($y2 - $y1) / ($x2 - $x1)) + $y1;
     }
 
     public function A(float $D, float $multiplicator = 1): float
     {
-        return $D*$D*pi()*0.25*$multiplicator;
+        return $D * $D * pi() * 0.25 * $multiplicator;
     }
 
     /**
