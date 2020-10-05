@@ -79,13 +79,13 @@ Class Bolt
 
         $this->blc->boo('useA', ['', 'Teljes keresztmetszeti terület figyelembe vétele'], false, 'Menetes rész nem kerülhet nyírt zónába!');
         if ($this->f3->_useA) {
-            $this->blc->def('F_vRd', $this->ec->FvRd($boltName, $boltMaterialName, $numberOfShearPlanes, $this->ec->boltProp($boltName, 'A')),'F_(v,Rd) = %% [kN]', 'Csavar nyírási ellenállása');
+            $this->blc->def('F_vRd', H3::n2($this->ec->FvRd($boltName, $boltMaterialName, $numberOfShearPlanes, $this->ec->boltProp($boltName, 'A'))), 'F_(v,Rd) = %% [kN]', 'Csavar nyírási ellenállása');
         } else {
-            $this->blc->def('F_vRd', $this->ec->FvRd($boltName, $boltMaterialName, $numberOfShearPlanes),'F_(v,Rd) = %% [kN]', 'Csavar nyírási ellenállása');
+            $this->blc->def('F_vRd', H3::n2($this->ec->FvRd($boltName, $boltMaterialName, $numberOfShearPlanes)), 'F_(v,Rd) = %% [kN]', 'Csavar nyírási ellenállása');
         }
 
         if ($betaLf < 1.0) {
-            $this->blc->def('F_vRd', $betaLf*$this->f3->_F_vRd, 'F_(v,Rd) := beta_(lf)*F_(v,Rd) = %% [kN]', 'Hosszú kapcsolat vagy béléslemez figyelembe vétele');
+            $this->blc->def('F_vRd', H3::n2($betaLf*$this->f3->_F_vRd), 'F_(v,Rd) := beta_(lf)*F_(v,Rd) = %% [kN]', 'Hosszú kapcsolat vagy béléslemez figyelembe vétele');
         }
 
         $this->blc->label($VEd/$this->f3->_F_vRd, 'Nyírási kihasználtság');
@@ -98,9 +98,9 @@ Class Bolt
     public function moduleBearing(string $boltName, $boltMaterialName, float $VEd, string $steelMaterialName, float $ep1, float $ep2, float $tPlate, bool $innerBolt, float $betaLf = 1) {
         $boltMaterialName = (float)$boltMaterialName;
 
-        $this->blc->def('F_bRd', $this->ec->FbRd($boltName, $boltMaterialName, $steelMaterialName, $ep1, $ep2, $tPlate, $innerBolt),'F_(b,Rd) = %% [kN]', 'Csavar palástnyomási ellenállása');
+        $this->blc->def('F_bRd', H3::n2($this->ec->FbRd($boltName, $boltMaterialName, $steelMaterialName, $ep1, $ep2, $tPlate, $innerBolt)), 'F_(b,Rd) = %% [kN]', 'Csavar palástnyomási ellenállása');
         if ($betaLf < 1.0) {
-            $this->blc->def('F_bRd', $betaLf*$this->f3->_F_bRd, 'F_(b,Rd) := beta_(lf)*F_(b,Rd) = %% [kN]', 'Hosszú kapcsolat vagy béléslemez figyelembevétele');
+            $this->blc->def('F_bRd', H3::n2($betaLf*$this->f3->_F_bRd), 'F_(b,Rd) := beta_(lf)*F_(b,Rd) = %% [kN]', 'Hosszú kapcsolat vagy béléslemez figyelembevétele');
         }
         $this->blc->note('$k_1 = '.$this->f3->___k1.'; alpha_b = '.$this->f3->___alphab.'$');
         $this->blc->label($VEd/$this->f3->_F_bRd, 'Palástnyomási kihasználtság');
@@ -183,9 +183,9 @@ Class Bolt
         $this->moduleShearAndBearingPerBolt($this->f3->_e1, $this->f3->_e2, $this->f3->_p1, $this->f3->_p2, $this->f3->_bName, $this->f3->_bMat, $this->f3->_sMat, $this->f3->_Vb, $this->f3->_t, $this->f3->_n, $this->f3->_inner);
 
         $this->blc->h1('Egy csavar húzási- és kigombolódási ellenállása', '***D*** nem feszített, húzott és ***E*** feszített, húzott csavarok');
-        $this->blc->def('F_tRd', $this->ec->FtRd($this->f3->_bName, $this->f3->_bMat), 'F_(t,Rd) = %% [kN]', 'Csavar húzási ellenállása');
+        $this->blc->def('F_tRd', H3::n2($this->ec->FtRd($this->f3->_bName, $this->f3->_bMat)), 'F_(t,Rd) = %% [kN]', 'Csavar húzási ellenállása');
         $this->blc->label($this->f3->_Nb / $this->f3->_F_tRd, 'Húzási kihasználtság');
-        $this->blc->def('B_pRd', $this->ec->BpRd($this->f3->_bName, $this->f3->_sMat, $this->f3->_t), 'B_(p,Rd) = %% [kN]', 'Csavar kigombolódási ellenállása');
+        $this->blc->def('B_pRd', H3::n2($this->ec->BpRd($this->f3->_bName, $this->f3->_sMat, $this->f3->_t)), 'B_(p,Rd) = %% [kN]', 'Csavar kigombolódási ellenállása');
         $this->blc->label($this->f3->_Nb / $this->f3->_B_pRd, 'Kigombolódási kihasználtság');
 
         $this->blc->h1('Egy csavar húzás és nyírás interakciója', '***AD*** osztály');
