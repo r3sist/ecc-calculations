@@ -158,7 +158,27 @@ Class Beam
         $blc->success1();
 
         $blc->h1('Hajlítási teherbírás');
+        $blc->def('nE', H3::n1(($f3->_rEs*1000)/($f3->_cEceff*1000)), 'n_E = E_s/E_(c,Eff) = %%', 'Betonacél és beton rugalmassái modulus aránya');
         $blc->h2('I. repedés mentes feszültség állapot');
+        $blc->def('AiI', $f3->_b*$f3->_h + ($f3->_bf-$f3->_b)*$f3->_hf + ($f3->_nE-1)*$f3->_Ast + ($f3->_nE-1)*$f3->_Asc, 'A_(i,I) = %% [mm^2]', 'Ideális keresztmetszeti terület');
+        $blc->def('SiI', $f3->_b*$f3->_h*$f3->_h/2 + ($f3->_bf-$f3->_b)*$f3->_hf*$f3->_hf/2 + ($f3->_nE-1)*$f3->_Asc*$f3->_dsc + ($f3->_nE-1)*$f3->_Ast*$f3->_dst, 'S_(i,I) = %% [mm^2]', 'Statikai nyomaték a felső (nyomott) szélső szálra');
+        $blc->def('XiI', H3::n2($f3->_SiI/$f3->_AiI), 'X_(i,I) = S_(i,I)/A_(i,I) = %% [mm]', 'Semleges tengely távolsága a felső (nyomott) szélső száltól');
+        $blc->def('IiI', $f3->_b* ($f3->_h ** 3) /12 + $f3->_b*$f3->_h* (($f3->_h / 2 - $f3->_XiI) ** 2) + ($f3->_bf-$f3->_b)* ($f3->_hf ** 3) /12 + ($f3->_bf-$f3->_b)*$f3->_hf* (($f3->_XiI - $f3->_hf / 2) ** 2) + ($f3->_nE-1)*$f3->_Ast* (($f3->_dst - $f3->_XiI) ** 2) + ($f3->_nE-1)*$f3->_Asc* (($f3->_XiI - $f3->_dsc) ** 2), 'I_(i,I) = %% [mm^4]', 'Tehetetlenségi inercia a semleges tengelyre');
+        $blc->def('Mcr', H3::n2($f3->_cfctm*$f3->_IiI/($f3->_h-$f3->_XiI)/1000000), 'M_(cr) = f_(ctm)*I_(i,I)/(h-X_(i,I)) = %% [kNm]', 'Repesztő nyomaték értéke $f_(ctm)$-hez');
+        $blc->def('sigmaccI', H3::n2(min(($f3->_Mcr*1000000)/$f3->_IiI*$f3->_XiI, $f3->_cfcd)), 'sigma_(c,c,I) = min{(M_(cr)/(I_(i,I)*X_(i,I))), (f_(cd)):} = %% [N/(mm^2)]', 'Beton nyomófeszültség a felső szélső szálban repesztőnyomatékból');
+        $blc->def('sigmactI', (($f3->_MEd*1000000)/$f3->_IiI*($f3->_h - $f3->_XiI) <= 1.1*$f3->_cfctm ? H3::n2(($f3->_MEd*1000000)/$f3->_IiI*($f3->_h-$f3->_XiI)) : 0), 'sigma_(c,t,I) = {(M_(Ed)/I_(i,I)*(h-X_(i,I)) le 1.1 f_(ctm) rarr M_(Ed)/I_(i,I)*(h-X_(i,I))), (0):} = %% [N/(mm^2)]', 'Beton húzófeszültség a felső szélső szálban repesztőnyomatékból');
+        $blc->def('sigmastI', H3::n2($f3->_nE*($f3->_Mcr*1000000)/$f3->_IiI*($f3->_dst - $f3->_XiI)), 'sigma_(s,t,I) = n_E*M_(cr)/I_(i,I)*(d_(s,t) - X_(i,I)) = %% [N/(mm^2)]', 'Feszültség az alsó húzott betonacélban repesztőnyomatékból');
+
+        $blc->h2('II. berepedt (rugalmas) feszültség állapot');
+        $blc->def('aII', $f3->_b/2, 'a_(II) = b/2 = %%', 'Másodfokú megoldó képlet elemei');
+        $blc->def('bII', ($f3->_bf-$f3->_b)*$f3->_hf + ($f3->_nE-1)*$f3->_Asc + $f3->_nE*$f3->_Ast, 'b_(II) = (b_f-b)*h_f + (n_E-1)*A_(sc) + n_E*A_(st) = %%');
+        $blc->def('cII', (-1)*($f3->_bf-$f3->_b)*($f3->_hf**2)/2 - $f3->_nE*$f3->_Asc*$f3->_dsc - $f3->_nE*$f3->_Ast*$f3->_dst, 'c_(II) = - (b_f-b)*(h_f^2)/2 - n_E*A_(sc)*d_(sc) - n_E*A_(st)*d_(st) = %%');
+//        $blc->def('XiII', ((-1)*$f3->_bII + sqrt(($f3->_bII**2) - 4*$f3->_aII*$f3->_cII))/(2*$f3->_aII), '%%', 'Semleges tengely távolsága a felső (nyomott) szélső száltól'); // Berci féle megoldás
+        $blc->def('XiII', $ec->chooseRoot($f3->_XiI, $ec->quadratic($f3->_aII, $f3->_bII, $f3->_cII, 2)), 'X_(i,II) = %% [mm]', 'Semleges tengely távolsága a felső (nyomott) szélső száltól');
+        $blc->def('IiII', $f3->_b*$f3->_XiII**3/3 + ($f3->_bf - $f3->b)*$f3->_hf**3/12 + ($f3->_bf-$f3->_b)*$f3->_hf*($f3->_XiII-$f3->_hf/2)**2 + $f3->_nE*$f3->_Ast*($f3->_dst-$f3->_XiII)**2 + ($f3->_nE-1)*$f3->_Asc*($f3->_XiII-$f3->_dsc)**2, 'I_(i,II) = %% [mm^4]', 'Tehetetlenségi inercia  asmeleges tengelyre');
+        $blc->def('kappaIIc', $f3->_epscy/$f3->_XiII, '%%', 'Görbület a II. feszültség állapot határhelyzetében a nyomott beton megfolyásának pillanatában');
+        $blc->def('kappaIIs', $f3->_epssy/($f3->_dst-$f3->_XiII), '%%', 'Görbület a II. feszültség állapot határhelyzetében a húzott acél megfolyásának pillanatában');
+
 
         $blc->h1('Szerkesztési szabályok ellenőrzése');
         $blc->h4('Minimális húzott vasmennyiség:');
@@ -171,14 +191,6 @@ Class Beam
         $blc->def('AsMax', 0.04*$f3->_Ac, 'A_(s,max) = 0.04*A_c = %% [mm^2]', 'Összes hosszvasalás megengedett legnagyobb mennyisége');
         $blc->label(($f3->_As/$f3->_AsMax>=1?'no':'yes'), $f3->_As.' mm² = '. H3::n1(($f3->_As/$f3->_AsMax)*100) .' %');
 
-        $blc->h4('Egy sorban elhelyezhető vasak száma:');
-        $blc->def('amin', max($f3->_Dt, 20), 'a_(min) = max{(phi_t = '.$f3->_Dt.'),(20):} = %% [mm]', 'Húzott betonacélok közötti min távolság');
-        $blc->def('ntmax', floor(($f3->_b - 2*$f3->_cnom - 2*$f3->_Dw + $f3->_amin - 5)/((float)$f3->_Dt + $f3->_amin)), 'n_(t, max) = (b-2*c_(nom)-2*phi_w+a_(min)-5)/(phi_t + a_(min)) = %%', 'Egy sorban elhelyezhető vasak száma');
-        $blc->note('Kengyelgörbület miatt 5mm-rel csökkentve a hely');
-        if ($f3->_nt > $f3->_ntmax) {
-            $blc->label('no', 'Túl nagy húzott vas szám');
-        }
-
         $blc->h4('Nyírási acélhányad:');
         if ($f3->_h > $f3->_b) {
             $blc->def('rhowmin', max(0.08*sqrt($f3->_cfck)/$f3->_rfy, 0.001), 'rho_(w,min) = %%', 'Nyírási acélhányad minimális értéke');
@@ -190,21 +202,20 @@ Class Beam
         if ($f3->_rhowmin/$f3->_rhow <= 1) {
             $uRhowMin = 'yes';
         }
-        $blc->label($uRhowMin, H3::n0($f3->_rhow/$f3->_rhowmin*100).'%-a a min vashányadnak');
+        $blc->label($uRhowMin, H3::n0($f3->_rhow/$f3->_rhowmin*100).'%-a a min. vashányadnak');
+
+        $blc->h4('Egy sorban elhelyezhető vasak száma:');
+        $blc->def('amin', max($f3->_Dt, 20), 'a_(min) = max{(phi_t = '.$f3->_Dt.'),(20):} = %% [mm]', 'Húzott betonacélok közötti min távolság');
+        $blc->def('ntmax', floor(($f3->_b - 2*$f3->_cnom - 2*$f3->_Dw + $f3->_amin - 5)/((float)$f3->_Dt + $f3->_amin)), 'n_(t, max) = (b-2*c_(nom)-2*phi_w+a_(min)-5)/(phi_t + a_(min)) = %%', 'Egy sorban elhelyezhető vasak száma');
+        $blc->note('Kengyelgörbület miatt 5mm-rel csökkentve a hely');
+        if ($f3->_nt > $f3->_ntmax) {
+            $blc->label('no', 'Túl nagy húzott vas szám');
+        }
 
         $blc->h4('Nyírási kengyelek maximális távolsága:');
         $blc->def('s1max', min(0.5*$f3->_dst,1.5*$f3->_b,300), 's_(1,max) = %% [mm]');
         if ($f3->_sw >= $f3->_s1max) {
-            $blc->label('no', $f3->_sw.' &lt; '.$f3->_s1max);
-        } else {
-            $blc->label('yes', $f3->_sw.' &gt; '.$f3->_s1max);
+            $blc->label('no', $f3->_sw.'mm &lt; '.$f3->_s1max.' mm');
         }
-
-        $blc->h4('Betonacél és beton rugalmassái modulus aránya:');
-//        $blc->def('nE', \H3::n1(($f3->_rEs*1000)/($f3->_cEceff*1000)), 'n_E = %%');
-        $f3->_nE = 1;
-        $blc->txt('`TODO`');
-
-        
     }
 }
