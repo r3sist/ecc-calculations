@@ -605,34 +605,59 @@ class Ec
         return $D*$D*pi()*0.25*$multiplicator;
     }
 
-    /** Original: https://github.com/hellofromtonya/Quadratic/blob/master/solver.php */
-    // TODO tests
+    /**
+     * Original: https://github.com/hellofromtonya/Quadratic/blob/master/solver.php
+     * @return string[]|float[] may contain 'i'
+     */
     public function quadratic(float $a, float $b, float $c, int $precision = 3): array
     {
         $bsmfac = $b * $b - 4 * $a * $c;
-        if ( $bsmfac < 0 ) { // Accounts for complex roots.
+
+        if ($bsmfac < 0) { // Accounts for complex roots.
             $plusminusone = ' + ';
             $plusminustwo = ' - ';
-            $bsmfac *= - 1;
-            $complex = (sqrt( $bsmfac ) / (2 * $a));
-            if ( $a < 0 ) { // If negative imaginary term, tidies appearance.
+            $bsmfac *= -1;
+            $complex = (sqrt($bsmfac) / (2 * $a));
+            if ($a < 0) { // If negative imaginary term, tidies appearance.
                 $plusminustwo = ' + ';
                 $plusminusone = ' - ';
-                $complex *= - 1;
+                $complex *= -1;
             }
-            $lambdaone = round( -$b / (2 * $a), $precision ) . $plusminusone . round( $complex, $precision ) . 'i';
-            $lambdatwo = round( -$b / (2 * $a), $precision ) . $plusminustwo . round( $complex, $precision ) . 'i';
-        } else if ( $bsmfac == 0 ) { // Simplifies if b^2 = 4ac (real roots).
-            $lambdaone = round( -$b / (2 * $a), $precision );
-            $lambdatwo = round( -$b / (2 * $a), $precision );
-        } else { // Finds real roots when b^2 != 4ac.
-            $lambdaone = (-$b + sqrt( $bsmfac )) / (2 * $a);
-            $lambdaone = round( $lambdaone, $precision );
-            $lambdatwo = (-$b - sqrt( $bsmfac )) / (2 * $a);
-            $lambdatwo = round( $lambdatwo, $precision );
+            $lambdaone = round(-$b / (2 * $a), $precision) . $plusminusone . round($complex, $precision) . 'i';
+            $lambdatwo = round(-$b / (2 * $a), $precision) . $plusminustwo . round($complex, $precision) . 'i';
+
+            return [$lambdaone, $lambdatwo];
         }
 
+        // Simplifies if b^2 = 4ac (real roots).
+        if ($bsmfac === 0) {
+            $lambdaone = round(-$b / (2 * $a), $precision);
+            $lambdatwo = round(-$b / (2 * $a), $precision);
+
+            return [$lambdaone, $lambdatwo];
+        }
+
+        // Finds real roots when b^2 != 4ac.
+        $lambdaone = (-$b + sqrt($bsmfac)) / (2 * $a);
+        $lambdaone = round($lambdaone, $precision);
+        $lambdatwo = (-$b - sqrt($bsmfac)) / (2 * $a);
+        $lambdatwo = round($lambdatwo, $precision);
+
         return [$lambdaone, $lambdatwo];
+    }
+
+    /**
+     * @param float[] $roots
+     */
+    public function chooseRoot(float $estimation, array $roots): float
+    {
+        $validRoot = $roots[0];
+
+        if ((abs($estimation - $validRoot) > abs($roots[1] - $estimation))) {
+            $validRoot = $roots[1];
+        }
+
+        return $validRoot;
     }
 
     public function getClosest(float $find, array $stackArray, string $returnType = 'closest'): float
@@ -655,7 +680,7 @@ class Ec
         foreach ($pointerArray as $pointer => $valueArray) {
             $key = $valueArray['k'];
             $value = $valueArray['v'];
-            
+
             switch ($returnType) {
                 case 'closest':
                     if ($key == $find) {
