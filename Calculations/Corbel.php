@@ -94,20 +94,9 @@ Class Corbel
         $blc->def('y1', $roots[0], 'y1 = %%');
         $blc->def('y2', $roots[1], 'y2 = %%');
 
-        function getValidRoot(float $search, array $rootsArray): ?float
-        {
-            $closest = null;
-            foreach ($rootsArray as $item) {
-                $item = (float)$item;
-                if ($closest === null || (abs($search - (float)$closest) > abs($item - $search) && $item > 0)) {
-                    $closest = $item;
-                    return $closest;
-                }
-            }
-            return null;
-        }
 
-        $blc->def('y', H3::n2(getValidRoot($f3->_x, [$f3->_y1, $f3->_y2])), 'y = %% [mm]', 'Fizikailag lehetséges gyök választása');
+
+        $blc->def('y', H3::n2($ec->chooseRoot($f3->_x, [$f3->_y1, $f3->_y2])), 'y = %% [mm]', 'Fizikailag lehetséges gyök választása');
         $blc->def('theta', rad2deg(atan($f3->_x/$f3->_y1)), 'theta = %% [deg]', '$N_c$ nyomott rácsrúd ferdesége');
         if ($f3->_theta <= 45) {
             $blc->danger0();
