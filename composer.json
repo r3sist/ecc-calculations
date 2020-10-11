@@ -10,9 +10,9 @@
     "php": ">=7.4",
     "ext-json": "*",
     "ext-imagick": "*",
-    "bcosca/fatfree-core": "3.*",
-    "resist/h3": "@dev",
-    "resist/auth3": "@dev",
+    "bcosca/fatfree-core": "^3.7.2",
+    "resist/h3": "dev-master",
+    "resist/auth3": "^1.1.0",
     "wixel/gump": "^1.12",
     "ikkez/f3-flash": ">=1.0.0",
     "respect/validation": "2.*"
