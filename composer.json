@@ -13,7 +13,7 @@
     "bcosca/fatfree-core": "3.*",
     "resist/h3": "@dev",
     "resist/auth3": "@dev",
-    "wixel/gump": "dev-master",
+    "wixel/gump": "^1.12",
     "ikkez/f3-flash": ">=1.0.0",
     "respect/validation": "2.*"
   }
