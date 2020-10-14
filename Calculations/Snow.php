@@ -172,29 +172,7 @@ Class Snow
         $blc->success0();
             $blc->def('q_sum2', H3::n2(($f3->_mu_s + $f3->_mu_w)*$f3->_s_k),'q_(sum2) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
         $blc->success1();
-/*
-        // Legacy write method:
-        $write = array(
-            array('size' => 14, 'x' => 390, 'y' => 175, 'text' => $f3->_l_s2.'m'),
-            array('size' => 14, 'x' => 130, 'y' => 230, 'text' => $f3->_mu_s.''),
-            array('size' => 14, 'x' => 130, 'y' => 270, 'text' => $f3->_mu_w.''),
-            array('size' => 14, 'x' => 130, 'y' => 325, 'text' => 0.8 .''),
-            array('size' => 12, 'x' => 245, 'y' => 45, 'text' => $f3->_b_3.'m'),
-            array('size' => 12, 'x' => 570, 'y' => 230, 'text' => $f3->_h.'m'),
-            array('size' => 12, 'x' => 170, 'y' => 500, 'text' => $f3->_b_1.'m'),
-            array('size' => 12, 'x' => 470, 'y' => 500, 'text' => $f3->_b_2.'m'),
-            array('size' => 14, 'x' => 305, 'y' => 210, 'text' => '∑:'.$f3->_q_sum2.'kN/m²'),
-            array('size' => 14, 'x' => 550, 'y' => 280, 'text' => $f3->_s_k*0.8.'kN/m²'),
-        );
-        if ($f3->_b_2 < $f3->_l_s2) {
-            $blc->txt('$b_2 < l_s$, ezért a tető másik szélén teher teljes értéke:');
-            $qsum22 = $ec->linterp(0, $f3->_q_sum2, $f3->_l_s2, $f3->_s_k*0.8, $f3->_b_2);
-            $blc->txt('$q_(∑2,'.$f3->_b_2.'[m]) = '.$qsum22.' [(kN)/m^2]$', '$l i n t e r p(0,'.$f3->_q_sum2.','.$f3->_l_s2.','.$f3->_s_k*0.8.','.$f3->_b_2.')$');
-            array_push($write, array('size' => 14, 'x' => 440, 'y' => 260, 'text' => "3m-nél:\n".$qsum22.'kN/m²'));
-            $write[0] = array('size' => 14, 'x' => 390, 'y' => 175, 'text' => $f3->_l_s2.'m -> '.$f3->_b_2.'m');
-        }
-        $blc->write('vendor/resist/ecc-calculations/canvas/snow3.jpg', $write, 'Hófelhalmozódást is tartalmazó hóteher átrendeződés magasabb épülethez csatlakozó tető esetén');
-*/
+
         $svg = new SVG(600, 300);
         $svg->addPolygon([[10,250], [450,250], [450,200], [210,200], [210,80], [110,50], [10,80],]);
         $svg->addText(210, 230, 'Csatlakozó épület');
