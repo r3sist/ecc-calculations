@@ -135,15 +135,7 @@ Class Snow
         $blc->def('l_s', min(15, max(5, 2*$f3->_h)),'l_s = %% [m]', 'Hózug szélessége');
         $blc->def('q_sum', $f3->_mu_w2*$f3->_s_k,'q_(sum) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
         $blc->def('q_plus', ($f3->_mu_w2 - 0.8)*$f3->_s_k,'q_(plus) = %% [(kN)/m^2]', 'Megoszló terhelés többlet alap hóhoz képest');
-
-/*
-         // Legacy write method
-        $write = array(
-            array('size' => 14, 'x' => 10, 'y' => 35, 'text' => $f3->_q_sum.'kN/m²'),
-            array('size' => 14, 'x' => 40, 'y' => 120, 'text' => $f3->_l_s.'m')
-        );
-        $blc->write('vendor/resist/ecc-calculations/canvas/snow0.jpg', $write, 'Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön');
-*/
+        
         $svg = new SVG(600, 170);
         $svg->setFill('#eeeeee');
         $svg->addPolygon([[10,120], [200,120], [200,100], [150,100], [10,50], [10,120]]);
