@@ -14,7 +14,7 @@ Class Snow
 {
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
-        $blc->math('psi = 0.5//0.2//0', 'Kombinációs tényezők');
+        $blc->math('psi_i = 0.5//0.2//0', 'Kombinációs tényezők');
 
         $blc->region0('baseData', 'Alap adatok');
             $blc->numeric('A', ['A', 'Tengerszint feletti magasság'], 400, 'm');
@@ -26,7 +26,6 @@ Class Snow
                 $f3->_s_k = 1.25 + ($f3->_A - 400)/400;
             }
             $blc->math('s_k = '.$f3->_s_k*$f3->_C.'[(kN)/m^2]', 'Felszíni hó karakterisztikus értéke');
-            $blc->math('psi_0 = 0.5 %%%psi_1 = 0.2 %%%psi_2 = 0', 'Kombinációs tényezők');
         $blc->region1();
 
         // =============================================================================================================
