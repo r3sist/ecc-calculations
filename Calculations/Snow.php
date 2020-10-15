@@ -192,7 +192,9 @@ Class Snow
             $svg->addText(380, 130, $qsum22.' kN/m²');
         } else {
             $svg->addPolygon([[350,180], [210,100], [210,180],]);
-            $svg->addLine(350, 180, 210, 130);
+            if ($f3->_mu_s) {
+                $svg->addLine(350, 180, 210, 130); // mu_s-mu_w osztó
+            }
             $svg->setColor('red');
             $svg->addText(400, 160, $f3->_s_k*0.8.' kN/m²');
             $svg->addDimH(210, 140, 20, 'ls='.$f3->_l_s2);
