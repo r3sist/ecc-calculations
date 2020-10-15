@@ -40,23 +40,23 @@ Class Snow
             $_3060_mu1 = 0.8*(2 - ($f3->_alpha / 30));
         }
 
-        $_mu = array(
-            '-30' => array(
+        $_mu = [
+            '-30' => [
                 'mu1' => 0.8,
                 'mu2' => 0.8,
                 'mu3' => 0.8*(1 + ($f3->_alpha / 30))
-            ),
-            '30-60' => array(
+            ],
+            '30-60' => [
                 'mu1' => $_3060_mu1,
                 'mu2' => $_3060_mu1,
                 'mu3' => 1.6
-            ),
-            '60-' => array(
+            ],
+            '60-' => [
                 'mu1' => 0,
                 'mu2' => 0.8,
                 'mu3' => false
-            ),
-        );
+            ],
+        ];
 
         if($f3->_alpha <= 30) {
             $_find = '-30';
@@ -108,7 +108,7 @@ Class Snow
         $blc->def('l_s', min(15, max(5, 2*$f3->_h)),'l_s = %% [m]', 'Hózug szélessége');
         $blc->def('q_sum', $f3->_mu_w2*$f3->_s_k,'q_(sum) = %% [(kN)/m^2]', 'Teljes megoszló terhelés sarokban');
         $blc->def('q_plus', ($f3->_mu_w2 - 0.8)*$f3->_s_k,'q_(plus) = %% [(kN)/m^2]', 'Megoszló terhelés többlet alap hóhoz képest');
-        
+
         $svg = new SVG(600, 170);
         $svg->setFill('#eeeeee');
         $svg->addPolygon([[10,120], [200,120], [200,100], [150,100], [10,50], [10,120]]);
