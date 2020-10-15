@@ -76,33 +76,6 @@ Class Snow
         $blc->math('mu_1 = '.$f3->_mu_1.'%%%mu_2 = '.$f3->_mu_2.'%%%mu_3 = '.$f3->_mu_3.'', 'Alaki tényezők');
         $blc->math('s_1 = '.$f3->_s_1.'%%%s_2 = '.$f3->_s_2.'%%%s_3 = '.$f3->_s_3.'[(kN)/m^2]', 'Tető hóteher karakterisztikus értékei');
 
-/*
-        // Legacy write method:
-        $blc->region0('r0','Félnyeregtető teherelrendezése és alaki tényezője');
-        $write = array(
-            array('size' => 14, 'x' => 125, 'y' => 135, 'text' => $f3->_alpha.'°'),
-            array('size' => 14, 'x' => 285, 'y' => 35, 'text' => $f3->_mu_1.''),
-            array('size' => 14, 'x' => 220, 'y' => 90, 'text' => $f3->_s_1.'[kN/m²]')
-        );
-        $blc->write('vendor/resist/ecc-calculations/canvas/snow1.jpg', $write, 'Félnyeregtető teherelrendezése és alaki tényezője');
-
-        $blc->region1('r0');
-
-        $blc->region0('r1','Nyeregtető teherelrendezése és alaki tényezője');
-        $write = array(
-            array('size' => 14, 'x' => 135, 'y' => 135, 'text' => $f3->_alpha.'°'),
-            array('size' => 14, 'x' => 135, 'y' => 35, 'text' => 'μ₂='.$f3->_mu_2.''),
-            array('size' => 14, 'x' => 135, 'y' => 90, 'text' => $f3->_s_2.'[kN/m²]'),
-            array('size' => 14, 'x' => 425, 'y' => 35, 'text' => 'μ₂='.$f3->_mu_2.''),
-            array('size' => 14, 'x' => 425, 'y' => 90, 'text' => $f3->_s_2.'[kN/m²]'),
-            array('size' => 14, 'x' => 625, 'y' => 35, 'text' => '0.5×μ₂='. 0.5*$f3->_mu_2.''),
-            array('size' => 14, 'x' => 625, 'y' => 90, 'text' => 0.5*$f3->_s_2.'[kN/m²]')
-        );
-        $blc->write('vendor/resist/ecc-calculations/canvas/snow2.jpg', $write, 'Nyeregtető teherelrendezése és alaki tényezője');
-
-        $blc->region1('r1');
-*/
-
         $svg = new SVG(600, 200);
         $svg->addPolygon([[10,180], [210,180], [210,140], [110,110], [10,140], [10,180]]);
         $svg->addPolygon([[220,180], [420,180], [420,140], [320,110], [220,140], [220,180]]);
