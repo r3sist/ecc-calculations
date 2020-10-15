@@ -731,4 +731,9 @@ class Ec
         }
         return $find;
     }
+
+    public function proportion(float $x0, float $y0, float $x1): float
+    {
+        return ($x1*$y0)/$x0;
+    }
 }
