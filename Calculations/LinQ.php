@@ -21,7 +21,7 @@ Class LinQ
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
-        $blc->note('Számítás apropója, hogy gerenda irányra merőlegesen, egyenletesen változó megoszló felületi teher (pl. hózug teher) szétosztást a Consteel nem tud kezelni. A felületi teher vonalmenti teherré alakítható a lenti számítás alapján.');
+        $blc->note('Számítás apropója, hogy gerenda irányra merőlegesen, egyenletesen változó megoszló felületi teher (pl. hózug teher) szétosztást a Consteel nem tudott régen kezelni. A felületi teher vonalmenti teherré alakítható a lenti számítás alapján.');
         $blc->input('x', ['x_i,x_j,..', 'Gerenda koordináták'], '2,6,10,14', 'm', 'Gerenda $x$ pozíciói (koordinátái), vesszővel elválasztva, $0[m]$-től számítva.');
         if ($this->validator->isAlphanumericList($f3->_x) === false) {
             $blc->danger('Hibás lista formátum. (Futtatás `2,6,10,14` értékkel.)');
