@@ -21,23 +21,33 @@ Class Fem
 
         $listPattern = '~(?:^|[=\s])\K\d{4}(?=\s|$)~mi';
         $spans = preg_replace($listPattern, '', $f3->_spans);
+        $spansArray = explode(' ', $spans);
 
         $blc->input('constraints', ['', 'Támasz definíciók'], 'oo', '', '**`x` merev befogás, `o` csukló, `-` szabad csomópont.** Eggyel több elemű lista, mint a tartó szakaszok listája.');
         $f3->_constraints = preg_replace('/\s+/', '', $f3->_constraints); // Remove white space
 
         $constraints = '';
+        $constraintOnPlot = '';
+        $spanCounter = 0;
+        $x = 0;
         foreach (str_split($f3->_constraints) as $character) {
             switch ($character) {
                 case 'o':
                     $constraints .= ' -1 0';
+                    $pointType = '8';
                     break;
                 case '-':
                     $constraints .= ' 0 0';
+                    $pointType = '1';
                     break;
                 case 'x':
                     $constraints .= ' -1 -1';
+                    $pointType = '4';
                     break;
             }
+            $constraintOnPlot .= "\n".'set label at '.$x.', 0, 0 "" point pointtype '.$pointType.' pointsize 3 lt rgb "grey"';
+            $x = $x + $spansArray[$spanCounter];
+            $spanCounter++;
         }
 
         $blc->txt('Terhek definiálása:');
@@ -85,6 +95,8 @@ Class Fem
             set xlabel "Gerenda pozíció [m]"
             #set offset graph 0.01, graph 0.01, graph 0.01, graph 0.01
             
+            '.$constraintOnPlot.'
+            
             plot "'.$pathTemp.$f3->uid.'_results.txt" using 1:($2*(-1)) title "M" with lines lt rgb "red", \
                  "'.$pathTemp.$f3->uid.'_results.txt" using 1:($3*(-1)) notitle with lines lt rgb "red", \
                  "'.$pathTemp.$f3->uid.'_results.txt" using 1:4 title "V" with lines lt rgb "blue", \
@@ -94,6 +106,8 @@ Class Fem
             #plot "'.$pathTemp.$f3->uid.'_results.txt" using 1:($6*(-1000000)) title "Lehajlás" with lines lt rgb "green", \
             #     "'.$pathTemp.$f3->uid.'_results.txt" using 1:($7*(-1000000)) notitle with lines lt rgb "green", \
             #     0 notitle with line lw 5 lt rgb "black"
+            
+            
             
         ';
 
