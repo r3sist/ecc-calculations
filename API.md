@@ -1,16 +1,14 @@
 # Blc
 
-> General user interface "blocks" for Ecc framework  
+**Ecc\Blc** 
 
+> General user interface "blocks" for Ecc framework - renders and handles blocks.  
+Contains wrapper methods only for \Ecc\Block\*Block() classes that extend BlcHandler().  
 
-Auto generated public API documentation of class ***Ecc\Blc*** at 2020.08.13.
 
 ## Public methods 
 
 ### __construct()
-
-> Blc constructor.  
-
 
 **__construct(** *Base* $f3 **):** 
 
@@ -19,251 +17,285 @@ Auto generated public API documentation of class ***Ecc\Blc*** at 2020.08.13.
 | *Base* | **$f3** |  | Fatfree Framework Base class |
 ### boo()
 
-> Renders checkbox field  
+> Builds checkbox field  
 
 
 **boo(** `string`  $variableName, `array`  $title, [`bool`  $defaultValue], [ $help] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** |  |  |
-| `array`  | **$title** |  |  |
-| `bool`  | **$defaultValue** | `false` |  |
-|  | **$help** | `empty string` |  |
+| `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
+| `array`  | **$title** |  | Header of block: [(string) ASCIIMath expression or empty string, (string) title text] |
+| `bool`  | **$defaultValue** | `false` | Input default value |
+| @string  | **$help** | "" | Markdown help text. Can contain $$ math. |
 ### bulk()
 
-**bulk(** `string`  $variableName, `array`  $fields **):** 
+> Builds multi-input table as dynamic block.  
+
+
+**bulk(** `string`  $variableName, `array`  $fields, [ $defaultRow] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** |  |  |
-| `array`  | **$fields** |  |  |
+| `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
+| `array`  | **$fields** |  | Source data of table. Sub arrays keys: "name" => string, "title" => string, "type" => string: "value" "input", "key" => string: for value types, "sum" => bool |
+|  | **$defaultRow** | [] |  |
 ### danger()
+
+> Builds danger block.  
+
 
 **danger(** `string`  $mdLight, [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$mdLight** |  |  |
+| `string`  | **$mdLight** |  | Multi-line markdown text as content. Can contain $$ math expression. |
 | `string`  | **$title** | `empty string` |  |
 ### danger0()
+
+> Builds danger region INITIAL block. Call danger1() method for closing.  
+
 
 **danger0(** [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$title** | `empty string` |  |
+| `string`  | **$title** | `empty string` | Title of region. |
 ### danger1()
+
+> Closes danger0() block.  
+
 
 **danger1(**  **):** `void` 
 
 ### def()
 
+> Builds definition block, stores given value to named variable and renders math block with custom text.  
+
+
 **def(** `string`  $variableName,  $result, [`string`  $mathExpression], [`string`  $help], [`string`  $gumpValidation] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** |  |  |
-| @mixed  | **$result** |  |  |
-| `string`  | **$mathExpression** | "%%" |  |
-| `string`  | **$help** | `empty string` |  |
-| `string`  | **$gumpValidation** | `empty string` |  |
+| `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
+| @mixed  | **$result** |  | Stores this as data |
+| `string`  | **$mathExpression** | "%%" | ASCIIMath expression without $ delimiters. Use "%%" to substitute result. |
+| `string`  | **$help** | `empty string` | Markdown help text |
+| `string`  | **$gumpValidation** | `empty string` | GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators |
 ### h1()
 
-> Renders first order header  
+> Builds first order header block.  
 
 
 **h1(** `string`  $headingTitle, [`string`  $subTitle] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$headingTitle** |  |  |
-| `string`  | **$subTitle** | `empty string` |  |
+| `string`  | **$headingTitle** |  | Text of header |
+| `string`  | **$subTitle** | `empty string` | Markdown text of sub-header |
 ### h2()
 
-> Renders second order header  
+> Builds second order header block.  
 
 
 **h2(** `string`  $headingTitle, [`string`  $subTitle] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$headingTitle** |  |  |
-| `string`  | **$subTitle** | `empty string` |  |
+| `string`  | **$headingTitle** |  | Text of header |
+| `string`  | **$subTitle** | `empty string` | Markdown text of sub-header |
 ### h3()
 
-> Renders third order header  
+> Builds third order header block.  
 
 
 **h3(** `string`  $headingTitle, [`string`  $subTitle] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$headingTitle** |  |  |
-| `string`  | **$subTitle** | `empty string` |  |
+| `string`  | **$headingTitle** |  | Text of header |
+| `string`  | **$subTitle** | `empty string` | Markdown text of sub-header |
 ### h4()
 
-> Renders 4th order header  
+> Builds fourth order header block.  
 
 
 **h4(** `string`  $headingTitle, [`string`  $subTitle] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$headingTitle** |  |  |
-| `string`  | **$subTitle** | `empty string` |  |
+| `string`  | **$headingTitle** |  | Text of header |
+| `string`  | **$subTitle** | `empty string` | Markdown text of sub-header |
 ### hr()
 
-> Renders horizontal line  
+> Builds horizontal line (hr HTML tag) block.  
 
 
 **hr(**  **):** `void` 
 
 ### html()
 
-> Renders html  
+> Builds html block.  
 
 
 **html(** `string`  $html **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$html** |  |  |
+| `string`  | **$html** |  | HTML content |
 ### img()
 
-> Renders image  
+> Builds image block.  
 
 
 **img(** `string`  $URLorBase64, [`string`  $caption] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$URLorBase64** |  |  |
+| `string`  | **$URLorBase64** |  | Valid HTTP URL or Base64 image content. Base64 is PNG only, without "data:image/png;base64," |
 | `string`  | **$caption** | `empty string` |  |
 ### info()
+
+> Builds info block.  
+
 
 **info(** `string`  $mdLight, [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$mdLight** |  |  |
+| `string`  | **$mdLight** |  | Multi-line markdown text as content. Can contain $$ math expression. |
 | `string`  | **$title** | `empty string` |  |
 ### info0()
+
+> Builds info region INITIAL block. Call info1() method for closing.  
+
 
 **info0(** [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$title** | `empty string` |  |
+| `string`  | **$title** | `empty string` | Title of region. |
 ### info1()
+
+> Closes info0() block.  
+
 
 **info1(**  **):** `void` 
 
 ### input()
 
-> Renders input field  
+> Builds general input field  
 
 
 **input(** `string`  $variableName, `array`  $title, [ $defaultValue], [`string`  $unit], [`string`  $help], [`string`  $gumpValidation] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** |  |  |
-| `array`  | **$title** |  |  |
-| @mixed  | **$defaultValue** | `empty string` |  |
-| `string`  | **$unit** | `empty string` |  |
-| `string`  | **$help** | `empty string` |  |
-| `string`  | **$gumpValidation** | `empty string` |  |
-### instance()
+| `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
+| `array`  | **$title** |  | Header of block: [(string) ASCIIMath expression or empty string, (string) title text] |
+| @string  | **$defaultValue** | "" | Input default value |
+| `string`  | **$unit** | `empty string` | Input group extension, UI only. |
+| `string`  | **$help** | `empty string` | Markdown help text. Can contain $$ math. |
+| `string`  | **$gumpValidation** | `empty string` | GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators |
+### ::instance()
 
-**DEPRECATED** This static method is used by a few template // TODO remove them
+**DEPRECATED** This static method is used by a few template
 
 **instance(**  **):** 
 
 ### jsx()
 
+> Builds html block with JSXGraph content. Load driver() first.  
+
+
 **jsx(** `string`  $id, [`string`  $js], [`int`  $height] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$id** |  |  |
-| `string`  | **$js** | "console.log("jsx");" |  |
-| `int`  | **$height** | 200 |  |
+| `string`  | **$id** |  | Block ID |
+| `string`  | **$js** | "console.log("jsx");" | JSXGraph JS content |
+| `int`  | **$height** | 200 | Height of rendered block |
 ### jsxDriver()
+
+> Injects JSXGraph library to calculation.  
+
 
 **jsxDriver(**  **):** `void` 
 
 ### label()
 
+> Build label block.  
+
+
 **label(**  $value, [`string`  $text] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| @mixed  | **$value** |  |  |
-| `string`  | **$text** | `empty string` |  |
+| @float,int,string  | **$value** |  | Can be "yes" for green, "no" for red or numeric converted to %. If $value < 1 then label is green. |
+| `string`  | **$text** | `empty string` | Additional text in label |
 ### lst()
 
-> Renders selection list  
+> Builds selection list  
 
 
 **lst(** `string`  $variableName, `array`  $source, `array`  $title, [ $defaultValue], [`string`  $help] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** |  |  |
-| `array`  | **$source** |  |  |
-| `array`  | **$title** |  |  |
-| @mixed  | **$defaultValue** | `empty string` |  |
-| `string`  | **$help** | `empty string` |  |
+| `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
+| `array`  | **$source** |  | List items. Items: (int|float|string) name => (int|float|string) value |
+| `array`  | **$title** |  | Header of block: [(string) ASCIIMath expression or empty string, (string) title text] |
+| @float,int,string  | **$defaultValue** | "" | Input default value |
+| `string`  | **$help** | `empty string` | Markdown help text. Can contain $$ math. |
 ### math()
 
-> Renders math expression  
+> Builds math expression block.  
 
 
 **math(** `string`  $mathExpression, [`string`  $help] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$mathExpression** |  |  |
-| `string`  | **$help** | `empty string` |  |
+| `string`  | **$mathExpression** |  | ASCIIMath expression without $ delimiters. Use "%%%" to substitute horizontal separator. |
+| `string`  | **$help** | `empty string` | Markdown help text |
 ### md()
 
-> Renders markdown  
+> Builds markdown block.  
 
 
 **md(** `string`  $mdLight **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$mdLight** |  |  |
+| `string`  | **$mdLight** |  | Multi-line markdown text |
 ### note()
 
-> Renders note  
+> Builds note block.  
 
 
 **note(** `string`  $mdStrict **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$mdStrict** |  |  |
+| `string`  | **$mdStrict** |  | Markdown text |
 ### numeric()
 
-> Renders numeric input field  
+> Builds numeric input field. (General HTML input tag with numeric validation). Accepts and converts math expression strings in "=2+3" format  
 
 
 **numeric(** `string`  $variableName, `array`  $title, `float`  $defaultValue, [`string`  $unit], [`string`  $help], [`string`  $additionalGumpValidation] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** |  |  |
-| `array`  | **$title** |  |  |
-| `float`  | **$defaultValue** |  |  |
-| `string`  | **$unit** | `empty string` |  |
-| `string`  | **$help** | `empty string` |  |
-| `string`  | **$additionalGumpValidation** | `empty string` |  |
+| `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
+| `array`  | **$title** |  | Header of block: [(string) ASCIIMath expression or empty string, (string) title text] |
+| `float`  | **$defaultValue** |  | Input default value |
+| `string`  | **$unit** | `empty string` | Input group extension, UI only. |
+| `string`  | **$help** | `empty string` | Markdown help text. Can contain $$ math. |
+| `string`  | **$additionalGumpValidation** | `empty string` | GUMP validator string ("numeric" is set always): https://github.com/Wixel/GUMP#star-available-validators |
 ### pre()
 
-> Renders pre text  
+> Builds block contains pre HTML tag  
 
 
 **pre(** `string`  $plainText **):** `void` 
@@ -273,123 +305,162 @@ Auto generated public API documentation of class ***Ecc\Blc*** at 2020.08.13.
 | `string`  | **$plainText** |  |  |
 ### region0()
 
+> Builds collapsible region INITIAL block. Call region1() method for closing.  
+
+
 **region0(** `string`  $name, [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$name** |  |  |
-| `string`  | **$title** | "Számítások" |  |
+| `string`  | **$name** |  | Block ID |
+| `string`  | **$title** | "Számítások" | Title of region |
 ### region1()
 
-**region1(**  **):** 
+> Closes region0() block.  
+
+
+**region1(**  **):** `void` 
 
 ### success()
+
+> Builds success block.  
+
 
 **success(** `string`  $mdLight, [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$mdLight** |  |  |
+| `string`  | **$mdLight** |  | Multi-line markdown text as content. Can contain $$ math expression. |
 | `string`  | **$title** | `empty string` |  |
 ### success0()
+
+> Builds success region INITIAL block. Call success1() method for closing.  
+
 
 **success0(** [`string`  $title] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$title** | `empty string` |  |
+| `string`  | **$title** | `empty string` | Title of region. |
 ### success1()
+
+> Closes success0() block.  
+
 
 **success1(**  **):** `void` 
 
 ### svg()
 
+> Builds SVG content block.  
+
+
 **svg(** *resist\SVG\SVG* $svgObject, [`bool`  $forceJpg], [`string`  $caption] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| *resist\SVG\SVG* | **$svgObject** |  |  |
-| `bool`  | **$forceJpg** | `false` |  |
-| `string`  | **$caption** | `empty string` |  |
+| *resist\SVG\SVG* | **$svgObject** |  | SVG object generated by resist\SVG\SVG |
+| `bool`  | **$forceJpg** | `false` | Renders SVG as JPG if true |
+| `string`  | **$caption** | `empty string` | Help text of block |
 ### tbl()
 
-> Table rendering  
+> Builds table block from array.  
 
 
-**tbl(** `array`  $scheme, `array`  $rows, [`string`  $name], [ $caption] **):** `void` 
+**tbl(** `array`  $scheme, `array`  $rows, [`string`  $name], [`string`  $caption] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `array`  | **$scheme** |  | 1 dim array of header |
-| `array`  | **$rows** |  | Nested array of rows and cols |
-| `string`  | **$name** | "tbl" | Class name of tbody tag for scripting |
-|  | **$caption** | `empty string` |  |
+| `array`  | **$scheme** |  | 1 dimensional array of header columns |
+| `array`  | **$rows** |  | Array of rows' content array |
+| `string`  | **$name** | "tbl" | Block ID - Class name of tbody tag for scripting |
+| `string`  | **$caption** | `empty string` | Help text of table |
 ### toast()
 
-**toast(** `string`  $textMdStrict, [`string`  $type], [`string`  $titleMdStrict] **):** 
+> Builds toaster block.  
+
+
+**toast(** `string`  $textMdStrict, [`string`  $type], [`string`  $titleMdStrict] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$textMdStrict** |  |  |
-| `string`  | **$type** | "info" |  |
-| `string`  | **$titleMdStrict** | `empty string` |  |
+| `string`  | **$textMdStrict** |  | One-line markdown string |
+| `string`  | **$type** | "info" | Toaster type (color and icon) |
+| `string`  | **$titleMdStrict** | `empty string` | One-line markdown string for toaster heading |
 ### toc()
+
+> Builds table of content block.  
+
 
 **toc(**  **):** `void` 
 
 ### txt()
 
-> Renders plain text  
+> Builds plain text block.  
 
 
 **txt(** `string`  $mdStrict, [`string`  $help] **):** `string` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$mdStrict** |  |  |
-| `string`  | **$help** | `empty string` |  |
+| `string`  | **$mdStrict** |  | Markdown text, can contain $$ math expression |
+| `string`  | **$help** | `empty string` | Markdown help text, can contain $$ math expression |
 ### wrapper0()
 
-**wrapper0(** [`string`  $stringTitle] **):** 
+> Builds wrapped blocks. STARTER block.  
+
+
+**wrapper0(** [`string`  $stringTitle] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$stringTitle** | `empty string` |  |
+| `string`  | **$stringTitle** | `empty string` | Title line of whole wrapped blocks |
 ### wrapper1()
 
-**wrapper1(** [`string`  $middleTextMd] **):** 
+> Builds wrapped blocks. SEPARATOR block.  
+
+
+**wrapper1(** [`string`  $middleTextMd] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$middleTextMd** | `empty string` |  |
+| `string`  | **$middleTextMd** | `empty string` | Separator text between wrapped blocks |
 ### wrapper2()
 
-**wrapper2(** [`string`  $help] **):** 
+**wrapper2(** [`string`  $help] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$help** | `empty string` |  |
+| `string`  | **$help** | `empty string` | Help text below wrapped blocks |
 ### write()
+
+> Builds and handles write blocks - Generates new image with text on base image; Renders img block  
+["text" => (string),  
+"x" => (int) position,  
+"y" => (int) position,  
+"size" => (int) text size]  
+
 
 **write(** `string`  $imageFile, `array`  $textArray, [`string`  $caption] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$imageFile** |  |  |
-| `array`  | **$textArray** |  |  |
-| `string`  | **$caption** | `empty string` |  |
+| `string`  | **$imageFile** |  | Base image as canvas relative to codebase home, e.g.: "vendor/resist/ecc-calculations/canvas/linQ0.jpg" |
+| `array`  | **$textArray** |  | Array of texts. Sub array keys: |
+| `string`  | **$caption** | `empty string` | Help text of block |
+Auto generated public API documentation at 2020.10.17.
+
 
 
 ---
 
 # Ec
 
+**Ec\Ec** 
+
 > Eurocode globals, helpers and predefined GUI elements for ECC framework  
 (c) Bence VÁNKOS  
 https:// structure.hu  
 
-
-Auto generated public API documentation of class ***Ec\Ec*** at 2020.08.13.
 
 ## Public methods 
 
@@ -501,13 +572,14 @@ Auto generated public API documentation of class ***Ec\Ec*** at 2020.08.13.
 Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA  
 
 
-**__construct(** *Base* $f3, *Ecc\Blc* $blc, *DB\SQL* $db **):** 
+**__construct(** *Base* $f3, *Ecc\Blc* $blc, *DB\SQL* $db, *Ecc\Map\DataMap* $dataMap **):** 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | *Base* | **$f3** |  |  |
 | *Ecc\Blc* | **$blc** |  |  |
 | *DB\SQL* | **$db** |  |  |
+| *Ecc\Map\DataMap* | **$dataMap** |  |  |
 ### boltList()
 
 **boltList(** [`string`  $variableName], [`string`  $default], [`string`  $title] **):** `void` 
@@ -525,6 +597,14 @@ Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, 
 | --- | --- | --- | --- |
 | `string`  | **$boltName** |  |  |
 | `string`  | **$propertyName** |  |  |
+### chooseRoot()
+
+**chooseRoot(** `float`  $estimation, `array`  $roots **):** `float` 
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `float`  | **$estimation** |  |  |
+| `array`  | **$roots** |  |  |
 ### fu()
 
 **fu(** `string`  $matName, `float`  $t **):** `float` 
@@ -640,6 +720,8 @@ Returns: `array`  Assoc. array of read material data
 | `float`  | **$b** |  |  |
 | `float`  | **$c** |  |  |
 | `int`  | **$precision** | 3 |  |
+Returns: `array`  may contain 'i'
+
 ### readData()
 
 > Get data record by data_id from ecc_data table  
@@ -724,16 +806,20 @@ Returns: `array`  Associative array of read data
 | `string`  | **$middleText** | `empty string` |  |
 ### wrapRebarCount()
 
-**wrapRebarCount(** `string`  $variableNameCount, `string`  $variableNameRebar, `string`  $titleString, `float`  $defaultValueCount, [`float`  $defaultValueRebar], [`string`  $help] **):** `void` 
+> Wraps a numeric (as rebar count) and a rebarList (as rebar diameter) block  
+
+
+**wrapRebarCount(** `string`  $variableNameCount, `string`  $variableNameRebar, `string`  $titleString, `int`  $defaultValueCount, [`int`  $defaultValueRebar], [`string`  $help], [`string`  $variableNameA] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableNameCount** |  |  |
-| `string`  | **$variableNameRebar** |  |  |
+| `string`  | **$variableNameCount** |  | Saves rebar count with this name |
+| `string`  | **$variableNameRebar** |  | Saves rebar diameter with this name |
 | `string`  | **$titleString** |  |  |
-| `float`  | **$defaultValueCount** |  |  |
-| `float`  | **$defaultValueRebar** | 16 |  |
-| `string`  | **$help** | `empty string` |  |
+| `int`  | **$defaultValueCount** |  |  |
+| `int`  | **$defaultValueRebar** | 16 |  |
+| `string`  | **$help** | `empty string` | If empty, sum section area displayed |
+| `string`  | **$variableNameA** | `empty string` | If not empty, saves sum section area with this name |
 ### wrapRebarDistance()
 
 **wrapRebarDistance(** `string`  $variableNameDistance, `string`  $variableNameRebar, `string`  $titleString, `int`  $defaultValueDistance, [`int`  $defaultValueRebar], [`string`  $help] **):** `void` 
@@ -746,15 +832,17 @@ Returns: `array`  Associative array of read data
 | `int`  | **$defaultValueDistance** |  |  |
 | `int`  | **$defaultValueRebar** | 16 |  |
 | `string`  | **$help** | `empty string` |  |
+Auto generated public API documentation at 2020.10.17.
+
 
 
 ---
 
 # SVG
 
+**resist\SVG\SVG** 
 
 
-Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08.13.
 
 ## Public methods 
 
@@ -863,17 +951,19 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 > Adds polygon (uses color, line, fill)  
 
 
-**addPolygon(**  $points **):** `void` 
+**addPolygon(** `array`  $points, [`float`  $x0], [`float`  $y0] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| @string  | **$points** |  | Alphanumeric list of points |
+| `array`  | **$points** |  | Nested array of integers of point coordinates: e.g.: [ [10, 20], [100, 200]]. MOdified by $ratio[] |
+| `float`  | **$x0** | 0 | Added to coordinate X - not modified by $ratio[0] |
+| `float`  | **$y0** | 0 | Added to coordinate Y - not modified by $ratio[1] |
 ### addRectangle()
 
 > Adds rectangle (uses color, line, fill, ratio)  
 
 
-**addRectangle(** `float`  $x, `float`  $y, `float`  $w, `float`  $h, [`float`  $x0], [`float`  $y0] **):** `void` 
+**addRectangle(** `float`  $x, `float`  $y, `float`  $w, `float`  $h, [`float`  $x0], [`float`  $y0], [`float`  $rx] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
@@ -883,6 +973,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `float`  | **$h** |  | Height/Y direction of rectangle - modified by $ratio[1] |
 | `float`  | **$x0** | 0 | Added to coordinate X - not modified by $ratio[0] |
 | `float`  | **$y0** | 0 | Added to coordinate Y - not modified by $ratio[1] |
+| `float`  | **$rx** | 0 | Radius of corners |
 ### addSymbol()
 
 > Adds simple icon font symbol by mapping (uses color, size)  
@@ -900,7 +991,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 > Adds simple text (uses color, size)  
 
 
-**addText(** `float`  $x, `float`  $y, `string`  $text, [`bool`  $rotate], [`string`  $style] **):** `void` 
+**addText(** `float`  $x, `float`  $y, `string`  $text, [`bool`  $rotate], [`string`  $style], [`bool`  $center] **):** `void` 
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
@@ -909,6 +1000,7 @@ Auto generated public API documentation of class ***resist\SVG\SVG*** at 2020.08
 | `string`  | **$text** |  |  |
 | `bool`  | **$rotate** | `false` | Rotate text by 270 deg if true |
 | `string`  | **$style** | `empty string` | String of style tag |
+| `bool`  | **$center** | `false` |  |
 ### addTrustedRaw()
 
 > Adds raw SVG content  
@@ -1041,6 +1133,8 @@ Returns: `array`
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | `int`  | **$size** |  |  |
+Auto generated public API documentation at 2020.10.17.
+
 
 
 ---
