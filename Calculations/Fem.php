@@ -16,6 +16,10 @@ Class Fem
         $blc->note('Elsőrendű numerikus gerenda megoldó');
 
         $pathTemp = PATH.$f3->TEMP.'cba/';
+        $gnuplotScriptFileName = $pathTemp.$f3->uid.'_gnuplot.txt';
+        $gnuplotFigureFileName = $pathTemp.$f3->uid.'_figure.svg';
+        $cbaResultsFileName = $pathTemp.$f3->uid.'_results.txt';
+        $cbaInputFileName = $pathTemp.$f3->uid.'_input.txt';
 
         $blc->input('spans', ['', 'Tartó szakaszok hossza'], '5', 'm', 'Szóközzel elválasztott listája a fesztávolságoknak');
 
@@ -88,7 +92,7 @@ Class Fem
 
         $gnuplotScript = '
             set terminal svg size 800,300
-            set output "'.$pathTemp.$f3->uid.'_figure.svg"
+            set output "'.$gnuplotFigureFileName.'"
             set grid back lc rgb "#808080" lt 0 lw 1
             set lmargin 10
             set tmargin 1
@@ -97,56 +101,74 @@ Class Fem
             
             '.$constraintOnPlot.'
             
-            plot "'.$pathTemp.$f3->uid.'_results.txt" using 1:($2*(-1)) title "M" with lines lt rgb "red", \
-                 "'.$pathTemp.$f3->uid.'_results.txt" using 1:($3*(-1)) notitle with lines lt rgb "red", \
-                 "'.$pathTemp.$f3->uid.'_results.txt" using 1:4 title "V" with lines lt rgb "blue", \
-                 "'.$pathTemp.$f3->uid.'_results.txt" using 1:5 notitle with lines lt rgb "blue", \
+            plot "'.$cbaResultsFileName.'" using 1:($2*(-1)) title "M" with lines lt rgb "red", \
+                 "'.$cbaResultsFileName.'" using 1:($3*(-1)) notitle with lines lt rgb "red", \
+                 "'.$cbaResultsFileName.'" using 1:4 title "V" with lines lt rgb "blue", \
+                 "'.$cbaResultsFileName.'" using 1:5 notitle with lines lt rgb "blue", \
                  0 notitle with line lw 5 lt rgb "black"
                  
-            #plot "'.$pathTemp.$f3->uid.'_results.txt" using 1:($6*(-1000000)) title "Lehajlás" with lines lt rgb "green", \
-            #     "'.$pathTemp.$f3->uid.'_results.txt" using 1:($7*(-1000000)) notitle with lines lt rgb "green", \
+            #plot "'.$cbaResultsFileName.'" using 1:($6*(-1000000)) title "Lehajlás" with lines lt rgb "green", \
+            #     "'.$cbaResultsFileName.'" using 1:($7*(-1000000)) notitle with lines lt rgb "green", \
             #     0 notitle with line lw 5 lt rgb "black"
-            
-            
-            
         ';
 
         // Generate cba input file
-        $cbaInputFile = fopen($pathTemp.$f3->uid.'_input.txt', 'wb');
+        $cbaInputFile = fopen($cbaInputFileName, 'wb');
         $bytes = fwrite($cbaInputFile,$cbaInput);
         fclose($cbaInputFile);
 
         // Run cba
-        $resultsFileName = $pathTemp.$f3->uid.'_results.txt';
-        $cbaCommand = 'cba -i '.$pathTemp.$f3->uid.'_input.txt -p '.$resultsFileName;
-        $cbaResult = shell_exec($cbaCommand);
+        $cbaCommand = 'cba -i '.$pathTemp.$f3->uid.'_input.txt -p '.$cbaResultsFileName;
+        $cbaCliOutput = shell_exec($cbaCommand);
 
         // Generate Gnuplot script file
-        $gnuplotScriptFile = fopen($pathTemp.$f3->uid.'_gnuplot.txt', 'wb');
+        $gnuplotScriptFile = fopen($gnuplotScriptFileName, 'wb');
         $bytes = fwrite($gnuplotScriptFile,$gnuplotScript);
         fclose($gnuplotScriptFile);
 
         // Run Gnuplot
-        $gnuplotCommand = 'gnuplot < '.$pathTemp.$f3->uid.'_gnuplot.txt';
+        $gnuplotCommand = 'gnuplot < '.$gnuplotScriptFileName;
         $gnuplotResult = shell_exec($gnuplotCommand);
 
         // Show figure and clean tmp folder
-        $figureName = $pathTemp.$f3->uid.'_figure.svg';
-        if (is_file($figureName) && is_file($resultsFileName)) {
-            $blc->html(file_get_contents($figureName));
-            unlink($figureName);
-            unlink($resultsFileName);
+        if (is_file($gnuplotFigureFileName) && is_file($cbaResultsFileName)) {
+            $blc->html(file_get_contents($gnuplotFigureFileName));
+            $cbaResults = file_get_contents($cbaResultsFileName);
+            unlink($gnuplotFigureFileName);
+            unlink($cbaResultsFileName);
         }
 
         // Error checking
-        if (strncmp($cbaResult, 'continuous beam', 15) !==0 ) {
-            $blc->danger('VEM hiba: '.$cbaResult);
+        if (strncmp($cbaCliOutput, 'continuous beam', 15) !==0 ) {
+            $blc->danger('VEM hiba: '.$cbaCliOutput);
         }
 
         $blc->region0('results', 'Eredmények');
             $blc->pre($cbaInput);
-            $blc->pre($cbaResult);
+            $blc->pre($cbaCliOutput);
+            $blc->pre($cbaResults);
         $blc->region1();
+
+//        $cbaResultsArray = [];
+//        foreach(explode(PHP_EOL, $cbaResults) as $line) {
+//            if ($line !== '' && $line[0] !== '#') {
+//                $cbaResultsArray[$line] = explode("\t", $line);
+//            }
+//        }
+
+//        $M = [];
+//        foreach($cbaResultsArray as $row) {
+//            if (abs((float)$row[1]) > abs((float)$row[2])) {
+//                $M[(string)$row[0]] = (float)$row[1];
+//            } else {
+//                $M[(string)$row[0]] = (float)$row[2];
+//            }
+//        }
+
+//        $blc->numeric('x', ['x', 'Lekérdezés pozícióban'], 2, 'm', 'Gerenda szakaszok összevonásával értelmezett pozíció balról');
+//        $closestX = $ec->getClosest((float)$f3->_x, $M, 'closest');
+//        \H3::dump($M);
+//        $blc->math('M(x = '.$f3->_x.') = '.$closestX.' [kNm]');
     }
 
 }
