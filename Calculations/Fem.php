@@ -7,6 +7,7 @@ namespace Calculation;
 use \Base;
 use \Ecc\Blc;
 use \Ec\Ec;
+use H3;
 
 Class Fem
 {
@@ -149,26 +150,29 @@ Class Fem
             $blc->pre($cbaResults);
         $blc->region1();
 
-//        $cbaResultsArray = [];
-//        foreach(explode(PHP_EOL, $cbaResults) as $line) {
-//            if ($line !== '' && $line[0] !== '#') {
-//                $cbaResultsArray[$line] = explode("\t", $line);
-//            }
-//        }
+        $cbaResultsArray = [];
+        foreach(explode(PHP_EOL, $cbaResults) as $line) {
+            if ($line !== '' && $line[0] !== '#') {
+                $lineArray = (array)explode("\t", $line);
+                array_map('\floatval', $lineArray);
+                $cbaResultsArray[$lineArray[0]] = $lineArray;
+            }
+        }
 
-//        $M = [];
-//        foreach($cbaResultsArray as $row) {
-//            if (abs((float)$row[1]) > abs((float)$row[2])) {
-//                $M[(string)$row[0]] = (float)$row[1];
-//            } else {
-//                $M[(string)$row[0]] = (float)$row[2];
-//            }
-//        }
-
-//        $blc->numeric('x', ['x', 'Lekérdezés pozícióban'], 2, 'm', 'Gerenda szakaszok összevonásával értelmezett pozíció balról');
-//        $closestX = $ec->getClosest((float)$f3->_x, $M, 'closest');
-//        \H3::dump($M);
-//        $blc->math('M(x = '.$f3->_x.') = '.$closestX.' [kNm]');
+        $blc->numeric('x', ['x', 'Lekérdezés pozícióban'], 2, 'm', 'Gerenda szakaszok összevonásával értelmezett pozíció balról');
+        $closestFloorX = (float)$ec->getFloorClosest(array_column($cbaResultsArray, 0), (string)$f3->_x);
+        $closestCeilX = (float)$ec->getCeilClosest(array_column($cbaResultsArray, 0), (string)$f3->_x);
+        $Mfloor = ($cbaResultsArray[(string)$closestFloorX][1] + $cbaResultsArray[(string)$closestFloorX][2]);
+        $Mceil = ($cbaResultsArray[(string)$closestCeilX][1] + $cbaResultsArray[(string)$closestCeilX][2]);
+        $Vfloor = ($cbaResultsArray[(string)$closestFloorX][3] + $cbaResultsArray[(string)$closestFloorX][4]);
+        $Vceil = ($cbaResultsArray[(string)$closestCeilX][3] + $cbaResultsArray[(string)$closestCeilX][4]);
+        $blc->note('$M('.$closestFloorX.') = '.$Mfloor.'$');
+        $blc->note('$M('.$closestCeilX.') = '.$Mceil.'$');
+        $blc->note('$V('.$closestFloorX.') = '.$Vfloor.'$');
+        $blc->note('$V('.$closestCeilX.') = '.$Vceil.'$');
+        $blc->note('Numerikus értékek között lineáris interpolációval számol.');
+        $blc->math('M = '.H3::n2($ec->linterp($closestFloorX, $Mfloor, $closestCeilX, $Mceil, $f3->_x)).' [kNm]');
+        $blc->math('V = '.H3::n2($ec->linterp($closestFloorX, $Vfloor, $closestCeilX, $Vceil, $f3->_x)).' [kNm]');
     }
 
 }
