@@ -433,7 +433,7 @@ class Ec
                         $this->blc->math('phi(infty,28) = ' . $value . '', 'Kúszási tényező átlagos végértéke. (Állandó/tartós terhelés, 70% párat., 28 n. szil. terhelése, képlékeny konzisztencia betonozása, 100 mm egyenértékű lemezvast.)');
                         break;
                     case 'Eceff':
-                        $this->blc->math('E_(c,eff) = ' . $value . ' [(kN)/(mm^2)] = ' . $value * 100 . ' [(kN)/(cm^2)]', 'Beton hatásos alakváltozási tényezője a kúszás végértékével');
+                        $this->blc->math('E_(c,eff) = ' . $value . ' [(kN)/(mm^2)] = ' . $value * 100 . ' [(kN)/(cm^2)] = '.$value * 1000 . ' [N/(mm^2)]', 'Beton hatásos alakváltozási tényezője a kúszás végértékével');
                         $this->blc->note('`E.c.eff = E.cm/(1+fi.inf.28)`');
                         break;
                     case 'alfat':
