@@ -56,6 +56,7 @@ Class Layers
             $rows = [
                 ['Esztrich', 18],
                 ['Greslap', 24],
+                ['Csempe', 17],
             ];
             $blc->tbl($scheme, $rows);
         $blc->region1();
