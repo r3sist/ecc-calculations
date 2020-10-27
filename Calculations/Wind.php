@@ -259,41 +259,43 @@ Class Wind
                     $f3->set('_d0', $f3->get('_b'));
                 }
 
-                $blc->def('wallRow', H3::n2($f3->_h/$f3->_d0), 'h/d = %%', '');
+                $blc->region0('wallCalculations');
+                    $blc->def('wallRow', H3::n2($f3->_h/$f3->_d0), 'h/d = %%', '');
 
-                if ($f3->_wallRow >= 5) {
-                    $find = 'a';
-                } elseif ($f3->_wallRow <= 0.25) {
-                    $find = 'c';
-                } else {
-                    $find = 'b';
-                }
-                $blc->md('Táblázat: *'.$find.'* sor');
+                    if ($f3->_wallRow >= 5) {
+                        $find = 'a';
+                    } elseif ($f3->_wallRow <= 0.25) {
+                        $find = 'c';
+                    } else {
+                        $find = 'b';
+                    }
+                    $blc->md('Táblázat: *'.$find.'* sor');
 
-                $e = min($f3->_b0, 2*$f3->_h);
-                $cpA0 = $wallDb[$find]['A'.$f3->_flatRef];
-                $cpA = $cpA0 - $f3->_cp;
-                $cpB0 = $wallDb[$find]['B'.$f3->_flatRef];
-                $cpB = $cpB0 - $f3->_cp;
-                $cpC0 = $wallDb[$find]['C'.$f3->_flatRef];
-                $cpC = $cpC0 - $f3->_cp;
-                $cpD0 = $wallDb[$find]['D'.$f3->_flatRef];
-                $cpD = $cpD0 - $f3->_cm;
-                $cpE0 = $wallDb[$find]['E'.$f3->_flatRef];
-                $cpE = $cpE0 - $f3->_cp;
-                $wA = H3::n2($cpA*$f3->_qpz);
-                $wB = H3::n2($cpB*$f3->_qpz);
-                $wC = ($f3->_d0 - $e > 0 ? H3::n2($cpC*$f3->_qpz) : 0);
-                $wD = H3::n2($cpD*$f3->_qpz);
-                $wE = H3::n2($cpE*$f3->_qpz);
-                $widthA = H3::n1($e/5);
-                $widthB = H3::n1(($e < $f3->_d0 ? $e - $e/5 : $f3->_d0 - $e/5));
-                $widthC = H3::n1(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0));
-                $widthD = H3::n1($f3->_b0);
-                $widthE = H3::n1($f3->_b0);
+                    $e = min($f3->_b0, 2*$f3->_h);
+                    $cpA0 = $wallDb[$find]['A'.$f3->_flatRef];
+                    $cpA = $cpA0 - $f3->_cp;
+                    $cpB0 = $wallDb[$find]['B'.$f3->_flatRef];
+                    $cpB = $cpB0 - $f3->_cp;
+                    $cpC0 = $wallDb[$find]['C'.$f3->_flatRef];
+                    $cpC = $cpC0 - $f3->_cp;
+                    $cpD0 = $wallDb[$find]['D'.$f3->_flatRef];
+                    $cpD = $cpD0 - $f3->_cm;
+                    $cpE0 = $wallDb[$find]['E'.$f3->_flatRef];
+                    $cpE = $cpE0 - $f3->_cp;
+                    $wA = H3::n2($cpA*$f3->_qpz);
+                    $wB = H3::n2($cpB*$f3->_qpz);
+                    $wC = ($f3->_d0 - $e > 0 ? H3::n2($cpC*$f3->_qpz) : 0);
+                    $wD = H3::n2($cpD*$f3->_qpz);
+                    $wE = H3::n2($cpE*$f3->_qpz);
+                    $widthA = H3::n1($e/5);
+                    $widthB = H3::n1(($e < $f3->_d0 ? $e - $e/5 : $f3->_d0 - $e/5));
+                    $widthC = H3::n1(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0));
+                    $widthD = H3::n1($f3->_b0);
+                    $widthE = H3::n1($f3->_b0);
 
-                $blc->math('e = min{(b),(2h):} = '.$e.'', '');
-                $blc->txt('', 'Belső szél előjele domináns szélhez igazítva: külső szíváshoz belső nyomás és fordítva.');
+                    $blc->math('e = min{(b),(2h):} = '.$e.'', '');
+                    $blc->txt('', 'Belső szél előjele domináns szélhez igazítva: külső szíváshoz belső nyomás és fordítva.');
+                $blc->region1();
 
                 $scheme = ['Zóna', 'Felületi erő: $w [(kN)/m^2]$', 'Alaki tényező: $c (c_p, c_i)$', 'Zóna szélesség $[m]$'];
                 $tbl = [
@@ -305,13 +307,10 @@ Class Wind
                 ];
                 $blc->tbl($scheme, $tbl);
 
-                $svg = new SVG(600, 350);
-                // Generate raw part:
-//                $svg->addSymbol(20, 210, 'control-shuffle');
+                $svg = new SVG(400, 400);
                 $svg->setColor('green');
                 $svg->addText(20, 210, '>>>');
                 $svg->setColor('black');
-                $svg->addRectangle(100, 50, 200, 50); // Building section
                 $svg->addRectangle(100, 140, 200, 150); // Building layout
                 $svg->setFill('#eeeeee'); // Forces
                 $svg->addRectangle(100, 110, 50, 30); // A
