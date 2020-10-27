@@ -599,6 +599,10 @@ class Ec
 
     public function linterp(float $x1, float $y1, float $x2, float $y2, float $x): float
     {
+        if ($x1 === $x2 && $y1 === $y2) {
+            return $y2;
+        }
+
         return (($x - $x1) * ($y2 - $y1) / ($x2 - $x1)) + $y1;
     }
 
