@@ -666,6 +666,7 @@ class Ec
         return $validRoot;
     }
 
+    /** @deprecated  */
     public function getClosest(float $find, array $stackArray, string $returnType = 'closest'): float
     {
         // returnTypes: closest, ceil, floor, linterp
@@ -676,9 +677,9 @@ class Ec
         $pointerArray = [];
 
         foreach ($stackArray as $key => $value) {
-            array_push($pointerArray, ['k' => $key, 'v' => $value]);
+            $pointerArray[] = ['k' => (float)$key, 'v' => $value];
         }
-        $keys = array_keys($stackArray);
+        $keys = array_column($pointerArray, 'k');
         $values = array_values($stackArray);
         $lowestKey = min($keys);
         $highestKey = max($keys);
@@ -694,6 +695,7 @@ class Ec
                     }
                     if ($returnKey === null || (abs($find - $returnKey) > abs($key - $find))) {
                         $returnKey = $key;
+                        \H3::dump($returnKey);
                         return $value;
                     }
                     break;
@@ -731,6 +733,7 @@ class Ec
                         return $this->linterp(array_search($floor, $stackArray, true), $floor, array_search($ceil, $stackArray, true), $ceil, $find);
                     }
                     return $ceil;
+                    break;
             }
         }
         return $find;
@@ -740,4 +743,60 @@ class Ec
     {
         return ($x1*$y0)/$x0;
     }
+
+    /**
+     * Returns closest floor number from series of keys. Note that array keys can not be floats, that's why there are string types.
+     * @param string[] $array One dimensional array of keys
+     * @param string $find Compare array keys to this
+     * @return string Floor key as string
+     */
+    public function getFloorClosest(array $array, string $find): string
+    {
+        $match = null;
+
+        sort($array);
+
+        foreach ($array as $value) {
+            $value = (float)$value;
+
+            if ($value === null) {
+                $match = $value;
+            }
+
+            if ($value <= $find && abs($value - $find) <= abs($value - $match)) {
+                $match = $value;
+            }
+        }
+
+        return (string)$match;
+    }
+
+    /**
+     * Returns closest ceil number from series of keys. Note that array keys can not be floats, that's why there are string types.
+     * @param string[] $array One dimensional array of keys
+     * @param string $find Compare array keys to this
+     * @return string Floor key as string
+     */
+    public function getCeilClosest(array $array, string $find): string
+    {
+        $match = null;
+
+        sort($array);
+
+        foreach ($array as $value) {
+            $value = (float)$value;
+
+            if ($value === null) {
+                $match = $value;
+            }
+
+            if ($value >= $find && abs($value - $find) < abs($value - $match)) {
+                $match = $value;
+            }
+        }
+
+        return (string)$match;
+    }
+
+
 }
