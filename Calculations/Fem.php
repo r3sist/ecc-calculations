@@ -26,7 +26,7 @@ Class Fem
 
         $listPattern = '~(?:^|[=\s])\K\d{4}(?=\s|$)~mi';
         $spans = preg_replace($listPattern, '', $f3->_spans);
-        $spansArray = explode(' ', $spans);
+        $spansArray = (array)explode(' ', $spans);
 
         $blc->input('constraints', ['', 'Támasz definíciók'], 'oo', '', '**`x` merev befogás, `o` csukló, `-` szabad csomópont.** Eggyel több elemű lista, mint a tartó szakaszok listája.');
         $f3->_constraints = preg_replace('/\s+/', '', $f3->_constraints); // Remove white space
@@ -51,11 +51,10 @@ Class Fem
                     break;
             }
             $constraintOnPlot .= "\n".'set label at '.$x.', 0, 0 "" point pointtype '.$pointType.' pointsize 3 lt rgb "grey"';
-            $x = $x + $spansArray[$spanCounter];
+            $x += $spansArray[$spanCounter];
             $spanCounter++;
         }
 
-        $blc->txt('Terhek definiálása:');
         $blc->note('`q`: Teljes tartó szakaszon egyenletesen megoszló teher. `F` és `M`: Adott tartó szakaszon `x` pozícióban koncentrált erő/nyomaték.');
         $fields = [
             ['name' => 'span', 'title' => 'Szakasz száma', 'type' => 'input'],
