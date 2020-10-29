@@ -112,17 +112,19 @@ Archivált mentések nem listázódnak a számítást vezérlő menüben.
 
 > Menü *Forrás*
 
-A számítási dokumentumok nyílt forráskódúak: [GitHub repository](https://github.com/r3sist/ecc-calculations)
+A számítási dokumentumok nyílt forráskódúak: [GitHub repository](https://github.com/r3sist/ecc-calculations) - bárki által fejleszthetők Githubon keresztül vagy hagyományos [Git verziókezelő munkafolyamatokkal](https://rogerdudler.github.io/git-guide/).
 
-Röviden: minden számítás egy [PHP](https://hu.wikipedia.org/wiki/PHP) [osztály](https://hu.wikipedia.org/wiki/Objektumorient%C3%A1lt_programoz%C3%A1s). Van [*dependency injection container*](https://hu.wikipedia.org/wiki/A_f%C3%BCgg%C5%91s%C3%A9g_befecskendez%C3%A9se), ezért ha a `calc()` metódus implementálva van, a számítási osztály a továbbiakban keretrendszer független. (Az alap kinézethez és funkciókhoz azonban legegyszerűbb használni a belső *blokk építő* segéd metódusokat.)
+Röviden: minden számítás egy [PHP](https://hu.wikipedia.org/wiki/PHP) [osztály](https://hu.wikipedia.org/wiki/Objektumorient%C3%A1lt_programoz%C3%A1s). 
+[DI](https://hu.wikipedia.org/wiki/A_f%C3%BCgg%C5%91s%C3%A9g_befecskendez%C3%A9se) miatt, ha a `calc()` metódus implementálva van, 
+a számítási osztály a továbbiakban keretrendszer független. 
+(Az alap kinézethez és funkciókhoz azonban legegyszerűbb használni a belső *blokk építő* segéd metódusokat.)
+Kiindulásnak egy egyszerű számítás a belső keretrendszer felhasználásával: [CK lap teherbírása](https://github.com/r3sist/ecc-calculations/blob/master/Calculations/Ck.php).
 
 A `calc(Base $f3, Blc $blc, Ec $ec)` metódus a paramétereit megkapja, melyek rendre:
 
-+ [Fat-Free Framework](https://fatfreeframework.com) külső osztály, globális változó tároláshoz
-+ [Blokk kezelő belső osztály](https://github.com/r3sist/ecc-calculations/blob/master/API.md#Blc): tulajdonképpen ennek a segítségével kérhetők az egyes számítási és megjelenítési blokkok - ez adja a számítási dokumentum absztarkt logikáját
-+ [Eurocode belső osztály](https://github.com/r3sist/ecc-calculations/blob/master/API.md#Ec) a statika vonatkozású funkciókhoz
-
-Kiindulásnak egy egyszerű számítás a belső keretrendszer felhasználásával: [CK lap teherbírása](https://github.com/r3sist/ecc-calculations/blob/master/Calculations/Ck.php)
++ [Fat-Free Framework](https://fatfreeframework.com) külső `Base` osztály, globális változó tároláshoz
++ [Blokk kezelő belső `Blc` osztály](https://github.com/r3sist/ecc-calculations/blob/master/API.md#Blc): tulajdonképpen ennek a segítségével kérhetők az egyes számítási és megjelenítési blokkok - ez adja a számítási dokumentum absztarkt logikáját
++ [Eurocode belső `Ec` osztály](https://github.com/r3sist/ecc-calculations/blob/master/API.md#Ec) a statika vonatkozású funkciókhoz
 
 A számításokhoz használt további belső könyvtárak:
 
