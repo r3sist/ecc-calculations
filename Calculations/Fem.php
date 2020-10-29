@@ -145,7 +145,7 @@ Class Fem
         }
 
         $blc->region0('results', 'Eredmények');
-            $blc->pre($cbaInput);
+//            $blc->pre($cbaInput);
             $blc->pre($cbaCliOutput);
             $blc->pre($cbaResults);
         $blc->region1();
