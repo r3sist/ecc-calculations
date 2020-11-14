@@ -15,6 +15,11 @@ Class Math
     {
         $blc->toc();
 
+        $blc->h1('ASCIIMath 2 docx');
+        $blc->input('ASCIIMath', ['', 'ASCIIMath bemenet'], 'x_2', '', 'Tetszőleges [ASCIIMath](http://asciimath.org) szöveg mutatása');
+        $blc->math($f3->_ASCIIMath, 'MathJAX kimenet');
+        $blc->img('https://structure.hu/ecc/mathASCIIMath.jpg', 'Jobb egérgombbal másolt MathML kód beilleszthető MS Wordbe');
+
         $blc->h1('Lejtés');
         $blc->numeric('slope', ['', 'Lejtés'], 3, '% vagy °', '');
         $slope_deg = rad2deg(atan($f3->_slope/100));
@@ -105,7 +110,6 @@ Class Math
 
         $blc->h3('Hó/hózug terhe');
         $blc->numeric('qsk', ['q_(s,k)', 'Hó/hózug felületi teher karakterisztikus értéke'], 1, 'kN/m2', '');
-*/
-
+        */
     }
 }
