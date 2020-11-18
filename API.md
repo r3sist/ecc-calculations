@@ -447,7 +447,7 @@ Contains wrapper methods only for \Ecc\Block\*Block() classes that extend BlcHan
 | `string`  | **$imageFile** |  | Base image as canvas relative to codebase home, e.g.: "vendor/resist/ecc-calculations/canvas/linQ0.jpg" |
 | `array`  | **$textArray** |  | Array of texts. Sub array keys: |
 | `string`  | **$caption** | `empty string` | Help text of block |
-Auto generated public API documentation at 2020.10.29.
+Auto generated public API documentation at 2020.11.15.
 
 
 
@@ -832,7 +832,7 @@ Returns: `array`  Associative array of read data
 | `int`  | **$defaultValueDistance** |  |  |
 | `int`  | **$defaultValueRebar** | 16 |  |
 | `string`  | **$help** | `empty string` |  |
-Auto generated public API documentation at 2020.10.29.
+Auto generated public API documentation at 2020.11.15.
 
 
 
@@ -1133,7 +1133,7 @@ Returns: `array`  Array of ratios of X and Y
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | `int`  | **$size** |  |  |
-Auto generated public API documentation at 2020.10.29.
+Auto generated public API documentation at 2020.11.15.
 
 
 
