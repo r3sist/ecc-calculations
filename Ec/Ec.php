@@ -21,9 +21,12 @@ use Respect\Validation\Validator as v;
  */
 class Ec
 {
+    private const TABLE_PROFILES = 'steel_profiles';
+
     private Base $f3;
     private Blc $blc;
     private SQL $db;
+
     private DataMap $dataMap;
 
     private v $vAlnum;
@@ -293,11 +296,11 @@ class Ec
     {
         $this->vAlnum->assert($familyName);
 
-        $query = "SELECT * FROM steelSection WHERE name2 LIKE '$familyName%'";
+        $query = "SELECT * FROM ".self::TABLE_PROFILES." WHERE name LIKE '$familyName%'";
         $result = $this->db->exec($query);
         $list = [];
         foreach ($result as $section) {
-            $list[$section['name2']] = $section['name2'];
+            $list[$section['name']] = $section['name'];
         }
         $this->blc->lst($variableName, $list, ['', $title], $default, '');
     }
@@ -307,7 +310,7 @@ class Ec
         $sectionName = (string)$this->f3->clean($sectionName);
 
         $query = "
-            SELECT name2, _h, _b, _tf, _tw, _Ax, _Ay, _Az, _Ix, _Iy, _Iz, _I1, _I2, _W1elt, _W1elb, _W2elt, _W2elb, _W1pl, _W2pl FROM steelSection WHERE name2 = '$sectionName' LIMIT 1";
+            SELECT name, _h, _b, _tf, _tw, _Ax, _Ay, _Az, _Ix, _Iy, _Iz, _I1, _I2, _W1elt, _W1elb, _W2elt, _W2elb, _W1pl, _W2pl FROM ".self::TABLE_PROFILES." WHERE name = '$sectionName' LIMIT 1";
         /** @var array $result */
         $result = $this->db->exec($query);
 
@@ -327,8 +330,8 @@ class Ec
                 $rows[] = array_values($row);
             }
 
-            $this->blc->region0('sectionTable', $result[0]['name2'] . ' szelvény adatok');
-            $this->blc->tbl($scheme, $rows, 'tbl' . H3::slug($result[0]['name2']), 'Mértékegységek, további információk: <a href="https://structure.hu/profil">structure.hu/profil</a>');
+            $this->blc->region0('sectionTable', $result[0]['name'] . ' szelvény adatok');
+            $this->blc->tbl($scheme, $rows, 'tbl' . H3::slug($result[0]['name']), 'Mértékegységek, további információk: <a href="https://structure.hu/profil">structure.hu/profil</a>');
             $this->blc->region1();
         }
     }
