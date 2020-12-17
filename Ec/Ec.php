@@ -21,7 +21,7 @@ use Respect\Validation\Validator as v;
  */
 class Ec
 {
-    private const TABLE_PROFILES = 'steel_profiles';
+    private const TABLE_PROFILES = 'steel_sections';
 
     private Base $f3;
     private Blc $blc;
