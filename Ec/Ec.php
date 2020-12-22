@@ -8,6 +8,10 @@ namespace Ec;
 
 use Base;
 use DB\SQL;
+use Ecc\Bolt\BoltFactory;
+use Ecc\Material\InvalidMaterialNameException;
+use Ecc\Material\MaterialDTO;
+use Ecc\Material\MaterialFactory;
 use Ecc\Map\DataMap;
 use H3;
 use Ecc\Blc;
@@ -40,6 +44,9 @@ class Ec
      */
     private DataMap $dataMap; // Structure app
 
+    private MaterialFactory $materialFactory;
+    private BoltFactory $boltFactory;
+
     private v $vAlnum;
 
     public const GG =  1.35;
@@ -60,12 +67,14 @@ class Ec
      * Ec constructor.
      * Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA
      */
-    public function __construct(Base $f3, Blc $blc, SQL $db, DataMap $dataMap)
+    public function __construct(Base $f3, Blc $blc, SQL $db, DataMap $dataMap, MaterialFactory $materialFactory, BoltFactory $boltFactory)
     {
         $this->f3 = $f3;
         $this->blc = $blc;
         $this->db = $db;
         $this->dataMap = $dataMap;
+        $this->materialFactory = $materialFactory;
+        $this->boltFactory = $boltFactory;
 
         $this->vAlnum = v::alnum()->noWhitespace();
 
@@ -85,9 +94,20 @@ class Ec
     }
 
     /**
+     * Returns Material DTO by material name
+     * @param string $materialName Name of material like 'S235', '8.8', 'C25/30', 'B500'
+     * @throws InvalidMaterialNameException
+     */
+    public function getMaterial(string $materialName): MaterialDTO
+    {
+        return $this->materialFactory->getMaterialByName($materialName);
+    }
+
+    /**
      * Get data record by data_id from ecc_data table
      * @param string $dataName Name of data as dataset identifier
      * @return array Associative array of read data
+     * @deprecated use dedicated methods instead
      */
     public function readData(string $dataName): array
     {
@@ -128,14 +148,17 @@ class Ec
      * alfat [1/Cdeg]
      * Epsiloncsinf [-]
      * @return array Assoc. array of read material data
+     * @deprecated
      */
     public function getMaterialArray(): array
     {
         return $this->readData('mat');
     }
 
+    /** @deprecated */
     public function matProp(string $materialName, string $propertyName): float
     {
+//        return $this->materialFactory->getMaterialByName($materialName)->{$propertyName};
         $matDb = $this->getMaterialArray();
         return $matDb[$materialName][$propertyName];
     }
