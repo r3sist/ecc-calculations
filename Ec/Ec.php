@@ -106,21 +106,6 @@ class Ec
     }
 
     /**
-     * Get data record by data_id from ecc_data table
-     * @param string $dataName Name of data as dataset identifier
-     * @return array Associative array of read data
-     * @deprecated use dedicated methods instead
-     */
-    public function readData(string $dataName): array
-    {
-        $this->dataMap->load(['dname = :dname', ':dname' => $dataName]);
-        if (!$this->dataMap->dry()) {
-            return json_decode($this->dataMap->djson, true, 512, JSON_THROW_ON_ERROR);
-        }
-        return [];
-    }
-
-    /**
      * Returns Bolt DTO by bolt name
      * @param string $boltName Name of bolt like 'M12' or 'M16'
      * @throws InvalidBoltNameException

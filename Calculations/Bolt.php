@@ -7,6 +7,7 @@ namespace Calculation;
 use \Base;
 use \Ecc\Blc;
 use \Ec\Ec;
+use Ecc\Bolt\BoltFactory;
 use \H3;
 use \resist\SVG\SVG;
 
@@ -15,12 +16,14 @@ Class Bolt
     public Base $f3;
     private Blc $blc;
     private Ec $ec;
+    private BoltFactory $boltFactory;
 
-    public function __construct(Base $f3, Blc $blc, Ec $ec)
+    public function __construct(Base $f3, Blc $blc, Ec $ec, BoltFactory $boltFactory)
     {
         $this->f3 = $f3;
         $this->blc = $blc;
         $this->ec = $ec;
+        $this->boltFactory = $boltFactory;
     }
 
     /** Module: Optimal e1, e2, p1, p2 and d sizes calculation for Shear */
@@ -110,7 +113,9 @@ Class Bolt
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $this->blc->region0('r1', 'Csavar adatbázis');
-        $boltDb = $this->ec->readData('bolt');
+
+        $boltDb = $this->boltFactory::BOLTS;
+
         // Generate multidimensional array for tbl() scheme:
         $scheme = array_keys($boltDb['M12']);
         array_unshift($scheme, 'Csavar');
