@@ -19,13 +19,26 @@ use Respect\Validation\Validator as v;
 /** Eurocode globals, helpers and predefined GUI elements for ECC framework */
 class Ec
 {
+    /**
+     * @var string TABLE_PROFILES
+     * @deprecated
+     */
     private const TABLE_PROFILES = 'steel_sections';
 
     private Base $f3;
     private Blc $blc;
+
+    /**
+     * @var SQL $db
+     * @deprecated
+     */
     private SQL $db;
 
-    private DataMap $dataMap;
+    /**
+     * @var DataMap $dataMap
+     * @deprecated
+     */
+    private DataMap $dataMap; // Structure app
 
     private v $vAlnum;
 
