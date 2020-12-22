@@ -1,5 +1,8 @@
 <?php declare(strict_types = 1);
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * (c) Bence VÁNKOS | https:// structure.hu | https://github.com/r3sist/ecc-calculations
+ * Structure app - Ecc: Eurocode based calculations for structural design
+ */
 
 namespace Ec;
 
@@ -13,12 +16,7 @@ use Exception;
 use Respect\Validation\Validator as v;
 
 
-/**
- * Eurocode globals, helpers and predefined GUI elements for ECC framework
- *
- * (c) Bence VÁNKOS
- * https:// structure.hu
- */
+/** Eurocode globals, helpers and predefined GUI elements for ECC framework */
 class Ec
 {
     private const TABLE_PROFILES = 'steel_sections';
@@ -30,6 +28,20 @@ class Ec
     private DataMap $dataMap;
 
     private v $vAlnum;
+
+    public const GG =  1.35;
+    public const GQ =  1.5;
+    public const GM0 =  1.0;
+    public const GM1 =  1.0;
+    public const GM2 =  1.25;
+    public const GM3 =  1.25;
+    public const GM3ser =  1.1;
+    public const GM6ser =  1.0;
+    public const Gc =  1.5;
+    public const Gs =  1.15;
+    public const GS =  1.15;
+    public const GcA =  1.2;
+    public const GSA =  1.0;
 
     /**
      * Ec constructor.
@@ -44,19 +56,19 @@ class Ec
 
         $this->vAlnum = v::alnum()->noWhitespace();
 
-        $this->f3->set('__GG', 1.35);
-        $this->f3->set('__GQ', 1.5);
-        $this->f3->set('__GM0', 1.0);
-        $this->f3->set('__GM1', 1.0);
-        $this->f3->set('__GM2', 1.25);
-        $this->f3->set('__GM3', 1.25);
-        $this->f3->set('__GM3ser', 1.1);
-        $this->f3->set('__GM6ser', 1.0);
-        $this->f3->set('__Gc', 1.5);
-        $this->f3->set('__Gs', 1.15);
-        $this->f3->set('__GS', 1.15);
-        $this->f3->set('__GcA', 1.2);
-        $this->f3->set('__GSA', 1.0);
+        $this->f3->set('__GG', self::GG);
+        $this->f3->set('__GQ', self::GQ);
+        $this->f3->set('__GM0', self::GM0);
+        $this->f3->set('__GM1', self::GM1);
+        $this->f3->set('__GM2', self::GM2);
+        $this->f3->set('__GM3', self::GM3);
+        $this->f3->set('__GM3ser', self::GM3ser);
+        $this->f3->set('__GM6ser', self::GM6ser);
+        $this->f3->set('__Gc', self::Gc);
+        $this->f3->set('__Gs', self::GS);
+        $this->f3->set('__GS', self::GS);
+        $this->f3->set('__GcA', self::GcA);
+        $this->f3->set('__GSA', self::GSA);
     }
 
     /**
