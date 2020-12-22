@@ -64,7 +64,7 @@ Class SteelSection
         if ($f3->_calcAnet) {
             $blc->numeric('n', ['n', 'Csavarok száma'], 0, '', 'Nettó keresztmetszet számítás csavarszámból. Nemnulla esetén $A_(n et)$ számítása innen.');
             $ec->boltListBlock('btName');
-            $d0 = $ec->boltProp($f3->_btName, 'd0');
+            $d0 = $ec->getBolt($f3->_btName)->d0;
             if ($f3->_n != 0) {
                 $blc->def('A_net', $f3->_A - $f3->_n*$d0*$f3->_t, 'A_(n et) = A - n*d_0*t = %% [mm^2]', 'Számított nettó keresztmetszet');
             } else {

@@ -80,7 +80,7 @@ Class Bolt
 
         $this->blc->boo('useA', ['', 'Teljes keresztmetszeti terület figyelembe vétele'], false, 'Menetes rész nem kerülhet nyírt zónába!');
         if ($this->f3->_useA) {
-            $this->blc->def('F_vRd', H3::n2($this->ec->FvRd($boltName, $boltMaterialName, $numberOfShearPlanes, $this->ec->boltProp($boltName, 'A'))), 'F_(v,Rd) = %% [kN]', 'Csavar nyírási ellenállása');
+            $this->blc->def('F_vRd', H3::n2($this->ec->FvRd($boltName, $boltMaterialName, $numberOfShearPlanes, $this->ec->getBolt($boltName)->A)), 'F_(v,Rd) = %% [kN]', 'Csavar nyírási ellenállása');
         } else {
             $this->blc->def('F_vRd', H3::n2($this->ec->FvRd($boltName, $boltMaterialName, $numberOfShearPlanes)), 'F_(v,Rd) = %% [kN]', 'Csavar nyírási ellenállása');
         }
@@ -137,10 +137,10 @@ Class Bolt
 
         $this->ec->boltListBlock('bName');
         $this->blc->region0('r0', 'Csavar jellemzők');
-        $this->blc->def('d_0', $this->ec->boltProp($this->f3->_bName, 'd0'), 'd_0 = %% [mm]', 'Lyuk átmérő');
-        $this->f3->_d = $this->ec->boltProp($this->f3->_bName, 'd');
-        $this->blc->def('A', $this->ec->boltProp($this->f3->_bName, 'A'), 'A = %% [mm^2]', 'Csavar keresztmetszeti terület');
-        $this->blc->def('A_s', $this->ec->boltProp($this->f3->_bName, 'As'), 'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
+        $this->blc->def('d_0', $this->ec->getBolt($this->f3->_bName)->d0, 'd_0 = %% [mm]', 'Lyuk átmérő');
+        $this->f3->_d = $this->ec->getBolt($this->f3->_bName)->d;
+        $this->blc->def('A', $this->ec->getBolt($this->f3->_bName)->A, 'A = %% [mm^2]', 'Csavar keresztmetszeti terület');
+        $this->blc->def('A_s', $this->ec->getBolt($this->f3->_bName)->As, 'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
         $this->blc->region1();
 
 //        $this->ec->matList('bMat', '8.8', ['', 'Csavar anyagminőség'], 'bolt');

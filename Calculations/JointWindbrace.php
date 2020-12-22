@@ -59,9 +59,9 @@ Class JointWindbrace
 //                $ec->matList('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
                 $ec->boltMaterialListBlock('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
                 $ec->spreadMaterialData($f3->_boltMaterialName, 'b');
-                $blc->def('d0', $ec->boltProp($f3->_boltName, 'd0'),'d_0 = %% [mm]', 'Lyuk átmérő');
-                $f3->_d = $ec->boltProp($f3->_boltName, 'd');
-                $f3->_As = $ec->boltProp($f3->_boltName, 'As');
+                $blc->def('d0', $ec->getBolt($f3->_boltName)->d0,'d_0 = %% [mm]', 'Lyuk átmérő');
+                $f3->_d = $ec->getBolt($f3->_boltName)->d;
+                $f3->_As = $ec->getBolt($f3->_boltName)->As;
 
                 $this->bolt->moduleOptimalForShear($f3->_boltMaterialName, $f3->_steelMaterialName, min($f3->_t1, $f3->_t2), $f3->_d0);
 

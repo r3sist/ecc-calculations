@@ -51,9 +51,9 @@ Class JointEndplate
         $ec->boltMaterialListBlock('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
         $ec->spreadMaterialData($f3->_boltMaterialName, 'b');
         $ec->boltListBlock('boltName', 'M12');
-        $blc->def('As', $ec->boltProp($f3->_boltName, 'As'), 'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
-        $f3->_d = $ec->boltProp($f3->_boltName, 'd');
-        $blc->def('dm', $ec->boltProp($f3->_boltName, 'dm'), 'd_m = %% [mm]', 'Kigombolódási átmérő.');
+        $blc->def('As', $ec->getBolt($f3->_boltName)->As, 'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
+        $f3->_d = $ec->getBolt($f3->_boltName)->d;
+        $blc->def('dm', $ec->getBolt($f3->_boltName)->dm, 'd_m = %% [mm]', 'Kigombolódási átmérő.');
         $blc->note('Kigombolódási átmérő számítható $1.6*d = '.$f3->_d*1.6.' [mm]$ képlettel is.');
 
         $blc->numeric('nrt', ['n_(r,t)', 'Huzott csavarsorok száma'], 1, '', '');
@@ -64,7 +64,7 @@ Class JointEndplate
 
         $blc->def('FtRd', \H3::n2($ec->FtRd($f3->_boltName, $f3->_boltMaterialName, true)), 'F_(t,Rd) = %% [kN]', 'Egy csavar húzási ellenállása');
         $blc->info0();
-            $blc->def('tpminm', ceil(0.175*$ec->boltProp($f3->_boltName, 'd')*($f3->_bfu/$f3->_sfy)), 't_(p,min,m) ge 0.175*d*(f_(ub)/f_y) = %% [mm]', 'Homloklemezek javasolt vastagsága kigombolódás kizáráshoz');
+            $blc->def('tpminm', ceil(0.175*$ec->getBolt($f3->_boltName)->d*($f3->_bfu/$f3->_sfy)), 't_(p,min,m) ge 0.175*d*(f_(ub)/f_y) = %% [mm]', 'Homloklemezek javasolt vastagsága kigombolódás kizáráshoz');
         $blc->info1();
 
         $blc->numeric('etaj1', ['eta_(j,1) = M_(Ed)/M_(pl,Rd)', 'Kapcsolódó elemek nyomatéki kihasználtsága'], 0.9);

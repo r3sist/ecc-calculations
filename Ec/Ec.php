@@ -8,7 +8,9 @@ namespace Ec;
 
 use Base;
 use DB\SQL;
+use Ecc\Bolt\BoltDTO;
 use Ecc\Bolt\BoltFactory;
+use Ecc\Bolt\InvalidBoltNameException;
 use Ecc\Material\InvalidMaterialNameException;
 use Ecc\Material\MaterialDTO;
 use Ecc\Material\MaterialFactory;
@@ -118,10 +120,14 @@ class Ec
         return [];
     }
 
-    public function boltProp(string $boltName, string $propertyName): float
+    /**
+     * Returns Bolt DTO by bolt name
+     * @param string $boltName Name of bolt like 'M12' or 'M16'
+     * @throws InvalidBoltNameException
+     */
+    public function getBolt(string $boltName): BoltDTO
     {
-        $boltDb = $this->readData('bolt');
-        return $boltDb[$boltName][$propertyName];
+        return $this->boltFactory->getBoltByName($boltName);
     }
 
     /**
@@ -488,7 +494,7 @@ class Ec
     public function FtRd(string $btName, $btMat, bool $verbose = true): float
     {
         $btMat = (string)$btMat;
-        $result = (0.9 * $this->getMaterial($btMat)->fu * $this->boltProp($btName, 'As')) / (1000 * $this->f3->get('__GM2'));
+        $result = (0.9 * $this->getMaterial($btMat)->fu * $this->getBolt($btName)->As) / (1000 * $this->f3->get('__GM2'));
         if ($verbose) {
             $this->blc->note('Húzás általános képlet: $F_(t,Rd) = (0.9*f_(u,b)*A_s)/(gamma_(M2))$');
         }
@@ -498,7 +504,7 @@ class Ec
     public function BpRd(string $btName, string $stMat, float $t): float
     {
         $this->blc->note('`BpRd` kigombolódás általános képlet: $(0.6* pi *d_m*f_(u,s)*t)/(gamma_(M2))$');
-        return (0.6 * pi() * $this->boltProp($btName, 'dm') * $this->fu($stMat, $t) * $t) / (1000 * $this->f3->get('__GM2'));
+        return (0.6 * pi() * $this->getBolt($btName)->dm * $this->fu($stMat, $t) * $t) / (1000 * $this->f3->get('__GM2'));
     }
 
     // Nyírt csavar
@@ -510,7 +516,7 @@ class Ec
         $n = (int)$n;
 
         if ($As === (float)0) {
-            $As = $this->boltProp($btName, 'As');
+            $As = $this->getBolt($btName)->As;
         }
         $result = (($this->getMaterial($btMat)->fu * $As * 0.6) / (1000 * $this->f3->get('__GM2'))) * $n;
         $this->blc->note('$F_(v,Rd)$ nyírás általános képlet: $n*(0.6*f_(u,b)*A_s)/(gamma_(M2))$');
@@ -533,13 +539,13 @@ class Ec
         $btMat = (string)$btMat;
 
         $fust = $this->fu($stMat, $t);
-        $k1 = min(2.8 * ($ep2 / $this->boltProp($btName, 'd0')) - 1.7, 2.5);
-        $alphab = min(($ep1 / (3 * $this->boltProp($btName, 'd0'))), $this->getMaterial($btMat)->fu / $fust, 1);
+        $k1 = min(2.8 * ($ep2 / $this->getBolt($btName)->d0) - 1.7, 2.5);
+        $alphab = min(($ep1 / (3 * $this->getBolt($btName)->d0)), $this->getMaterial($btMat)->fu / $fust, 1);
         if ($inner) {
-            $k1 = min(1.4 * ($ep2 / $this->boltProp($btName, 'd0')) - 1.7, 2.5);
-            $alphab = min(($ep1 / (3 * $this->boltProp($btName, 'd0'))) - 0.25, $this->getMaterial($btMat)->fu / $this->fu($stMat, $t), 1);
+            $k1 = min(1.4 * ($ep2 / $this->getBolt($btName)->d0) - 1.7, 2.5);
+            $alphab = min(($ep1 / (3 * $this->getBolt($btName)->d0)) - 0.25, $this->getMaterial($btMat)->fu / $this->fu($stMat, $t), 1);
         }
-        $result = $k1 * (($alphab * $fust * $this->boltProp($btName, 'd') * $t) / (1000 * $this->f3->get('__GM2')));
+        $result = $k1 * (($alphab * $fust * $this->getBolt($btName)->d * $t) / (1000 * $this->f3->get('__GM2')));
         $this->f3->set('___k1', $k1);
         $this->f3->set('___alphab', $alphab);
         if ($result <= 0) {
