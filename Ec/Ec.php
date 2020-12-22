@@ -225,15 +225,15 @@ class Ec
         $this->blc->lst($variableName, $source, $title, $default);
     }
 
-    public function boltList(string $variableName = 'bolt', string $default = 'M16', string $title = 'Csavar betöltése'): void
+    /**
+     * @throws Exception
+     */
+    public function boltListBlock(string $variableName = 'bolt', string $default = 'M16', array $title = ['', 'Csavar név']): void
     {
-        $boltDb = $this->readData('bolt');
-        $keys = array_keys($boltDb);
-        $list = [];
-        foreach ($keys as $key) {
-            $list[$key] = $key;
-        }
-        $this->blc->lst($variableName, $list, ['', $title], $default, '');
+        $list = $this->boltFactory->getBoltNames();
+        $source = array_combine($list, $list);
+
+        $this->blc->lst($variableName, $source, $title, $default);
     }
 
     /**
@@ -287,6 +287,9 @@ class Ec
         $this->blc->wrapper2($help);
     }
 
+    /**
+     * @deprecated
+     */
     public function rebarList(string $variableName = 'fi', float $default = 16, array $title = ['', 'Vasátmérő'], string $help = ''): void
     {
         $default = (int)$default;

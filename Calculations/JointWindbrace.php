@@ -55,7 +55,7 @@ Class JointWindbrace
         switch ($f3->_connectionType) {
             case 'b':
                 $blc->h1('Csavarkép ellenőrzése');
-                $ec->boltList('boltName');
+                $ec->boltListBlock('boltName');
 //                $ec->matList('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
                 $ec->boltMaterialListBlock('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
                 $ec->spreadMaterialData($f3->_boltMaterialName, 'b');

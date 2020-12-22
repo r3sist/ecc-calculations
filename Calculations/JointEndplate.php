@@ -50,7 +50,7 @@ Class JointEndplate
 //        $ec->matList('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége'], 'bolt');
         $ec->boltMaterialListBlock('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
         $ec->spreadMaterialData($f3->_boltMaterialName, 'b');
-        $ec->boltList('boltName', 'M12', 'Csavar átmérő választása');
+        $ec->boltListBlock('boltName', 'M12');
         $blc->def('As', $ec->boltProp($f3->_boltName, 'As'), 'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
         $f3->_d = $ec->boltProp($f3->_boltName, 'd');
         $blc->def('dm', $ec->boltProp($f3->_boltName, 'dm'), 'd_m = %% [mm]', 'Kigombolódási átmérő.');

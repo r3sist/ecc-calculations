@@ -135,7 +135,7 @@ Class Bolt
         }
         $this->f3->_nb = $this->f3->_nr * $this->f3->_nc;
 
-        $this->ec->boltList('bName');
+        $this->ec->boltListBlock('bName');
         $this->blc->region0('r0', 'Csavar jellemzők');
         $this->blc->def('d_0', $this->ec->boltProp($this->f3->_bName, 'd0'), 'd_0 = %% [mm]', 'Lyuk átmérő');
         $this->f3->_d = $this->ec->boltProp($this->f3->_bName, 'd');
