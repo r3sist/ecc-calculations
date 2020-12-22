@@ -14,7 +14,6 @@ use Ecc\Bolt\InvalidBoltNameException;
 use Ecc\Material\InvalidMaterialNameException;
 use Ecc\Material\MaterialDTO;
 use Ecc\Material\MaterialFactory;
-use Ecc\Map\DataMap;
 use H3;
 use Ecc\Blc;
 use InvalidArgumentException;
@@ -40,12 +39,6 @@ class Ec
      */
     private SQL $db;
 
-    /**
-     * @var DataMap $dataMap
-     * @deprecated
-     */
-    private DataMap $dataMap; // Structure app
-
     private MaterialFactory $materialFactory;
     private BoltFactory $boltFactory;
 
@@ -69,12 +62,11 @@ class Ec
      * Ec constructor.
      * Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA
      */
-    public function __construct(Base $f3, Blc $blc, SQL $db, DataMap $dataMap, MaterialFactory $materialFactory, BoltFactory $boltFactory)
+    public function __construct(Base $f3, Blc $blc, SQL $db, MaterialFactory $materialFactory, BoltFactory $boltFactory)
     {
         $this->f3 = $f3;
         $this->blc = $blc;
         $this->db = $db;
-        $this->dataMap = $dataMap;
         $this->materialFactory = $materialFactory;
         $this->boltFactory = $boltFactory;
 
