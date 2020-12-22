@@ -43,10 +43,12 @@ Class JointEndplate
 
         $blc->note('A nyomóerő a keresztmetszeti ellenállás 5%-át nem haladhatja meg!');
         
-        $ec->matList('steelMaterialName', 'S235', ['', 'Szelvények, lemezek anyagminősége'], 'steel');
+//        $ec->matList('steelMaterialName', 'S235', ['', 'Szelvények, lemezek anyagminősége'], 'steel');
+        $ec->structuralSteelMaterialListBlock('steelMaterialName', 'S235', ['', 'Szelvények, lemezek anyagminősége']);
         $ec->spreadMaterialData($f3->_steelMaterialName, 's');
 
-        $ec->matList('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége'], 'bolt');
+//        $ec->matList('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége'], 'bolt');
+        $ec->boltMaterialListBlock('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
         $ec->spreadMaterialData($f3->_boltMaterialName, 'b');
         $ec->boltList('boltName', 'M12', 'Csavar átmérő választása');
         $blc->def('As', $ec->boltProp($f3->_boltName, 'As'), 'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');

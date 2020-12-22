@@ -40,9 +40,11 @@ Class PileHead
         $blc->md('Szerkezeti osztály: ***S4***; Karbonátosodás okozta korrózió: ***XC2***');
         $blc->lst('XA', ['XA1 enyhén (XD1 XF3)' => 'XA1', 'XA2 mérsékelten (XD2 XF4)' => 'XA2', 'XA3 erősen (XD3)' => 'XA3'], ['', 'Kémiai környezet agresszivitása'], 'XA2', 'Illetve további környezeti osztály feltételek');
         $XAcmindur = ['XA1' => 35, 'XA2' => 40, 'XA3' => 45];
-        $ec->matList('concreteMaterialName', 'C30/37', ['', 'Beton anyagminőség']);
+//        $ec->matList('concreteMaterialName', 'C30/37', ['', 'Beton anyagminőség']);
+        $ec->concreteMaterialListBlock('concreteMaterialName', 'C30/37');
         $ec->spreadMaterialData($f3->_concreteMaterialName, 'c');
-        $ec->matList('rebarMaterialName', 'B500', ['', 'Betonvas anyagminőség']);
+//        $ec->matList('rebarMaterialName', 'B500', ['', 'Betonvas anyagminőség']);
+        $ec->rebarMaterialListBlock('rebarMaterialName');
         $ec->spreadMaterialData($f3->_rebarMaterialName, 'r');
         $blc->def('cmindur', $XAcmindur[$f3->_XA], 'c_(min,dur) = %% [mm]', '*MSZ 4798:2016 NAD N1 táblázat* szerinti betonszerkezettől és környezettől függő minimális betonfedés, minimum *XC2* osztály feltételezésével');
         $blc->def('cminb', $f3->_fiw, 'c_(min,b) := %% [mm]', 'Kívül kengyel feltételezésével kengyel átmérő');

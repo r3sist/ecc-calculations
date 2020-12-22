@@ -20,6 +20,16 @@ Class JointWeldedTruss
 
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
+        $blc->note('[Acélszerkezetek - 2. Speciális eljárások: 3. fejezet alapján] [EC3-1-8 7.]');
 
+        $types = [
+            'T' => 'T',
+            'K' => 'K',
+            'KT' => 'KT',
+            'X' => 'X',
+            'N' => 'N',
+            'Y' => 'Y',
+        ];
+        $blc->lst('type', $types, ['', 'Csomópont típus'], 'T');
     }
 }

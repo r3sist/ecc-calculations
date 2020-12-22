@@ -24,7 +24,8 @@ Class JointWindbrace
     {
         $blc->img('https://structure.hu/ecc/JointWindbrace0.jpg');
 
-        $ec->matList('steelMaterialName', 'S235', ['', 'Szelvények, lemezek anyagminősége']);
+//        $ec->matList('steelMaterialName', 'S235', ['', 'Szelvények, lemezek anyagminősége']);
+        $ec->structuralSteelMaterialListBlock('steelMaterialName', 'S235', ['', 'Szelvények, lemezek anyagminősége']);
         $ec->spreadMaterialData($f3->_steelMaterialName, 's');
         $blc->lst('forceSource', ['Bekötés szelvény húzásra' => 'huzas', 'Bekötés erőre' => 'ero'], ['', 'Erő megadása'], 'ero', '');
 
@@ -55,7 +56,8 @@ Class JointWindbrace
             case 'b':
                 $blc->h1('Csavarkép ellenőrzése');
                 $ec->boltList('boltName');
-                $ec->matList('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
+//                $ec->matList('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
+                $ec->boltMaterialListBlock('boltMaterialName', '8.8', ['', 'Csavarok anyagminősége']);
                 $ec->spreadMaterialData($f3->_boltMaterialName, 'b');
                 $blc->def('d0', $ec->boltProp($f3->_boltName, 'd0'),'d_0 = %% [mm]', 'Lyuk átmérő');
                 $f3->_d = $ec->boltProp($f3->_boltName, 'd');

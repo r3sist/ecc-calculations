@@ -22,11 +22,14 @@ Class Baseplate
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
         $blc->region0('mat', 'Anyagok');
-            $ec->matList('steelMaterialName', 'S235', ['', 'Lemez anyag'], 'steel');
+//            $ec->matList('steelMaterialName', 'S235', ['', 'Lemez anyag'], 'steel');
+            $ec->structuralSteelMaterialListBlock('steelMaterialName', 'S235', ['', 'Lemez anyagminőség']);
             $ec->spreadMaterialData($f3->_steelMaterialName, 's');
-            $ec->matList('anchorMaterialName', 'B500', ['', 'Horgony anyag'], 'steels');
+//            $ec->matList('anchorMaterialName', 'B500', ['', 'Horgony anyag'], 'steels');
+            $ec->steelMaterialListBlock('anchorMaterialName', 'B500', ['', 'Horgony anyagminőség']);
             $ec->spreadMaterialData($f3->_anchorMaterialName, 'a');
-            $ec->matList('concreteMaterialName', 'C25/30', ['', 'Beton anyag'], 'concrete');
+//            $ec->matList('concreteMaterialName', 'C25/30', ['', 'Beton anyag'], 'concrete');
+            $ec->concreteMaterialListBlock('concreteMaterialName');
             $ec->spreadMaterialData($f3->_concreteMaterialName, 'c');
         $blc->region1();
 

@@ -16,10 +16,12 @@ Class Girder
     {
         $blc->note('KG számításai alapján.');
         $blc->region0('mat', 'Anyagminőségek');
-            $ec->matList('cmat', 'C40/50', ['', 'Beton']);
+//            $ec->matList('cmat', 'C40/50', ['', 'Beton']);
+            $ec->concreteMaterialListBlock('cmat', 'C40/50');
             $ec->spreadMaterialData($f3->_cmat, 'c');
             $blc->def('gamma', 25, 'gamma := %% [(kN)/m^3]', 'Beton térfogatsúlya');
-            $ec->matList('rmat', 'B500', ['', 'Lágyvas']);
+//            $ec->matList('rmat', 'B500', ['', 'Lágyvas']);
+            $ec->rebarMaterialListBlock('rmat', 'B500', ['', 'Lágyvas']);
             $ec->spreadMaterialData($f3->_rmat, 'r');
             $blc->input('pmat', ['', 'Feszítőbetét jele'], 'Fp100-R2', '', '');
         $blc->region1();

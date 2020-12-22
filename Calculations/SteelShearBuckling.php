@@ -16,7 +16,8 @@ Class SteelShearBuckling
         $blc->note('[ *Acélszerkezetek 1. Általános eljárások* (2007) 5.5.], [ *Acélszerkezetek méretezése Eurocode 3 szerint - Gyakorlati útmutató* jegyzet (2009) 3.14. példa 42. o. ]');
 
         $blc->numeric('VEd', ['V_(Ed)', 'Nyíróerő'], 10, 'kN', '');
-        $ec->matList('smat', 'S235', ['', 'Lemez alapanyag'], 'S');
+//        $ec->matList('smat', 'S235', ['', 'Lemez alapanyag'], 'S');
+        $ec->structuralSteelMaterialListBlock('smat', 'S235', ['', 'Lemez alapanyag']);
         $ec->spreadMaterialData($f3->_smat, 's');
         $blc->numeric('hw', ['h_w', 'Nyírt lemez magassága'], 100, 'mm', '');
         $blc->numeric('tw', ['t_w', 'Nyírt lemez vastagsága'], 6, 'mm', '');

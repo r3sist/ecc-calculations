@@ -24,9 +24,11 @@ Class Column
 
     public function moduleColumnData(): void
     {
-        $this->ec->matList('cMat', 'C30/37', ['', 'Beton anyagminőség']);
+//        $this->ec->matList('cMat', 'C30/37', ['', 'Beton anyagminőség']);
+        $this->ec->concreteMaterialListBlock('cMat', 'C30/37');
         $this->ec->spreadMaterialData($this->f3->_cMat, 'c');
-        $this->ec->matList('rMat', 'B500', ['', 'Betonvas anyagminőség']);
+//        $this->ec->matList('rMat', 'B500', ['', 'Betonvas anyagminőség']);
+        $this->ec->rebarMaterialListBlock('rMat');
         $this->ec->spreadMaterialData($this->f3->_rMat, 'r');
 
         $this->ec->wrapNumerics('a', 'b', '$a×b$ Pillér méretek', 400, 400, 'mm', '', '×');

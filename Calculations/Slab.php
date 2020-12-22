@@ -15,9 +15,11 @@ Class Slab
     {
         $blc->toc();
 
-        $ec->matList('cMat', 'C25/30', ['', 'Beton anyagminőség']);
+//        $ec->matList('cMat', 'C25/30', ['', 'Beton anyagminőség']);
+        $ec->concreteMaterialListBlock('cMat');
         $ec->spreadMaterialData($f3->_cMat, 'c');
-        $ec->matList('rMat', 'B500', ['', 'Betonvas anyagminőség']);
+//        $ec->matList('rMat', 'B500', ['', 'Betonvas anyagminőség']);
+        $ec->rebarMaterialListBlock('rMat');
         $ec->spreadMaterialData($f3->_rMat, 'r');
         $blc->lst('dir', ['Egy irányban teherhordó' => 1, 'Két irányban teherhordó' => 2], ['', 'Teherhordás módja'], 2);
         $blc->numeric('h', ['h', 'Lemez vastagsága'], 250, 'mm');

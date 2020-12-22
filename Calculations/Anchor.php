@@ -13,8 +13,10 @@ Class Anchor
 {
     public function calc(Base $f3, Blc $blc, Ec $ec): void
     {
-        $ec->matList('aMat','B500', ['', 'Tüske anyagminőség'], 'steels');
-        $ec->matList('cMat','C40/50', ['', 'Beton anyagminőség'], 'concrete');
+//        $ec->matList('aMat','B500', ['', 'Tüske anyagminőség'], 'steels');
+        $ec->steelMaterialListBlock('aMat','B500', ['', 'Tüske anyagminőség']);
+//        $ec->matList('cMat','C40/50', ['', 'Beton anyagminőség'], 'concrete');
+        $ec->concreteMaterialListBlock('cMat','C40/50');
         $ec->rebarList('D', 20, ['D', 'Csapátmérő'], '');
         $blc->numeric('e', ['e', 'Beton felületek közti hézag'], 10, 'mm', '');
         $blc->numeric('c1t', ['c_(1t)', 'Tüske tengely erő irányra merőlegesen'], 100, 'mm', 'Gerenda végétől tüske tengelyig vett érték');

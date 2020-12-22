@@ -35,7 +35,8 @@ Class Pin
         $blc->info1();
 
         $blc->h1('Csap kialakítás', 'Csavar osztály: ***A*** - tengelyre merőlegesen terhelt, nem feszített');
-        $ec->matList('btMat', '6.8', ['', 'Csap anyagminőség']);
+//        $ec->matList('btMat', '6.8', ['', 'Csap anyagminőség']);
+        $ec->steelMaterialListBlock('btMat', '6.8', ['', 'Csap anyagminőség']);
         $ec->spreadMaterialData($f3->_btMat, 'b');
         $blc->success0();
             $blc->def('d_y', ceil(sqrt((4*$f3->_REd*1000)/(pi()*$f3->_bfy))), 'd_(y) = sqrt((4*R_(Ed))/(pi*f_(y,b))) = %% [mm]', 'Csavar folyás alapján felvett átmérő');
@@ -51,7 +52,8 @@ Class Pin
         $blc->numeric('t1', ['t_1', 'Szélső talp lemezvastagság'], 25, 'mm', 'Közrefogó lemezek');
         $blc->numeric('t2', ['t_2', 'Belső hídlemez lemezvastagság'], 40, 'mm', 'Belső lemez');
         $blc->def('c', 2, 'c = 2 [mm]', 'Lemezek közti hézag');
-        $ec->matList('stMat', 'S355', ['', 'Lemez anyagminőség']);
+//        $ec->matList('stMat', 'S355', ['', 'Lemez anyagminőség']);
+        $ec->structuralSteelMaterialListBlock('stMat', 'S355', ['', 'Lemez anyagminőség']);
         $ec->spreadMaterialData($f3->_stMat, 's');
         if (max($f3->_t1, $f3->_t2) >= 40) {
             $blc->def('sfy', $ec->fy($f3->_stMat, max($f3->_t1, $f3->_t2)), 'f_(y,b)(t_(max)) = %% [N/(mm^2)]', 'Lemezvastagság miatt csökkentett folyáshatár');

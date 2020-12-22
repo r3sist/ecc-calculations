@@ -143,9 +143,11 @@ Class Bolt
         $this->blc->def('A_s', $this->ec->boltProp($this->f3->_bName, 'As'), 'A_s = %% [mm^2]', 'Csavar húzási keresztmetszet');
         $this->blc->region1();
 
-        $this->ec->matList('bMat', '8.8', ['', 'Csavar anyagminőség'], 'bolt');
+//        $this->ec->matList('bMat', '8.8', ['', 'Csavar anyagminőség'], 'bolt');
+        $this->ec->boltMaterialListBlock('bMat');
         $this->ec->spreadMaterialData($this->f3->_bMat, 'b');
-        $this->ec->matList('sMat', 'S235', ['', 'Acél anyagminőség'], 'steel');
+//        $this->ec->matList('sMat', 'S235', ['', 'Acél anyagminőség'], 'steel');
+        $this->ec->structuralSteelMaterialListBlock('sMat');
         $this->ec->spreadMaterialData($this->f3->_sMat, 's');
 
         $this->blc->numeric('t', ['t', 'Kisebbik lemez vastagság'], 10, 'mm', '');

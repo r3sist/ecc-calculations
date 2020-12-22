@@ -25,7 +25,7 @@ Class SteelSection
         $ec->sectionList($f3->_sectionFamily);
         $ec->spreadSectionData($f3->_sectionName, true);
 
-        $ec->matList('mat', 'S235', ['', 'Acél anyagminőség']);
+        $ec->structuralSteelMaterialListBlock('mat', 'S235');
         $ec->spreadMaterialData($f3->_mat, '');
         $blc->numeric('t', ['t', 'Lemezvastagság'], 10, 'mm');
         $blc->txt('*'.$f3->_sectionName.'* legnagyobb lemezvastagsága: $t_(max) = '. 10*max($f3->_sectionData['tf'], $f3->_sectionData['tw']).' [mm]$');

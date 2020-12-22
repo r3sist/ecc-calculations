@@ -28,9 +28,11 @@ Class Beam
             $blc->numeric('NEd', ['N_(Ed)', 'Normál igénybevétel'], 0, 'kN');
         $blc->info1();
 
-        $ec->matList('cMat', 'C30/37', ['', 'Beton anyagminőség']);
+//        $ec->matList('cMat', 'C30/37', ['', 'Beton anyagminőség']);
+        $ec->concreteMaterialListBlock('cMat', 'C30/37');
         $ec->spreadMaterialData($f3->_cMat, 'c');
-        $ec->matList('rMat', 'B500', ['', 'Betonvas anyagminőség']);
+//        $ec->matList('rMat', 'B500', ['', 'Betonvas anyagminőség']);
+        $ec->rebarMaterialListBlock('rMat');
         $ec->spreadMaterialData($f3->_rMat, 'r');
 
         $blc->numeric('cnom', ['c_(nom)', 'Betonfedés'], 25, 'mm', '');

@@ -63,13 +63,15 @@ Class Concrete
         $blc->region1();
 
         $blc->h1('Beton anyagminőségek');
-        $ec->matList('concreteMaterialName', 'C25/30', ['', 'Beton anyagminőség'], 'concrete');
+//        $ec->matList('concreteMaterialName', 'C25/30', ['', 'Beton anyagminőség'], 'concrete');
+        $ec->concreteMaterialListBlock('concreteMaterialName');
         $ec->spreadMaterialData($f3->_concreteMaterialName, '');
         $blc->txt('', 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
         $blc->note('A szilárdsági osztályhoz tartozó jellemzők a 28 napos korban meghatározott, hengeren mért nyomószilárdság fck karakterisztikus értékén alapulnak.');
 
         $blc->h1('Lehorgonyzási hossz');
-        $ec->matList('rebarMaterialName', 'B500', ['', 'Betonvas anyagminőség'], 'rebar');
+//        $ec->matList('rebarMaterialName', 'B500', ['', 'Betonvas anyagminőség'], 'rebar');
+        $ec->rebarMaterialListBlock('rebarMaterialName');
         $ec->spreadMaterialData($f3->_rebarMaterialName, 'r');
         $ec->rebarList('phil', 20, ['phi_l', 'Lehorgonyzandó vas átmérője']);
         $blc->numeric('nrequ', ['n_(requ)', 'Szükséges vas szál'], 1, '', '$A_(s,requ)$ szükséges vaskeresztmetszet helyett');
@@ -291,31 +293,31 @@ Class Concrete
 
 var board = JXG.JSXGraph.initBoard("concrete", {boundingbox: [-3,70,40,-8], axis:true, showCopyright:false, keepaspectratio: false, showNavigation: true});
 
-							var x = '.$f3->_fck.';
-							var s = '.$f3->_cem.';
-							//var t = '.$f3->_t.';
-							fcmt=board.create("functiongraph", [function f(t){return Math.exp(s*(1-Math.sqrt(28/t)))*(1*x+8);},2], {withLabel: true, name:"fcm(t)", strokeColor:"grey"});
-							fckt=board.create("functiongraph", [function f(t){ var y; if (t<28) { return y=(Math.exp(s*(1-Math.sqrt(28/t)))*(1*x+8)-8);} else {return y=x;}},2], {withLabel: true, name:"fck(t)", strokeColor:"blue"});
-							q = board.create("glider", [28, 1*x, fckt], {name: "t; fck", withLabel: true});
-							
-							//board.create(\'text\', [
-							//		  function(){ return q.X()+1; },
-							//		  function(){ return q.Y()-5; },
-							//		  function(){ return "(" + q.X().toFixed(1) + " , " + q.Y().toFixed(1) + ")"; }
-							//	  ], 
-							//	  {fontSize:12});
-//							//p1=board.create("point", [[28,function() {return fckt.Y(28);}]],{name:"", color:"yellow", size:1});	
-//							//p2=board.create("point", [28,0],{name:"", color:"yellow", size:1});
-//							//p3=board.create("point", [[3,function() {return fckt.Y(3);}]],{name:"", size:1});
-//							//p4=board.create("point", [3,0],{name:"", size:1});
-							//p5=board.create(\'point\', [0,function() {return q.Y();}],{name:"", size:0.5});
-							//p6=board.create(\'point\', [function() {return q.X();},0],{name:"", size:0.5});
-							//board.create("line", [p1,p2],{strokeColor:"red", strokeWidth:0.2, dash:1});
-							//board.create("line", [p3,p4],{strokeColor:"red", strokeWidth:0.2, dash:1});
-							
-							//board.create(\'line\', [p5,q],{strokeColor:"red", strokeWidth:2, dash:1});
-							//board.create(\'line\', [q,p6],{strokeColor:"red", strokeWidth:2, dash:1});
-						
+                            var x = '.$f3->_fck.';
+                            var s = '.$f3->_cem.';
+                            //var t = '.$f3->_t.';
+                            fcmt=board.create("functiongraph", [function f(t){return Math.exp(s*(1-Math.sqrt(28/t)))*(1*x+8);},2], {withLabel: true, name:"fcm(t)", strokeColor:"grey"});
+                            fckt=board.create("functiongraph", [function f(t){ var y; if (t<28) { return y=(Math.exp(s*(1-Math.sqrt(28/t)))*(1*x+8)-8);} else {return y=x;}},2], {withLabel: true, name:"fck(t)", strokeColor:"blue"});
+                            q = board.create("glider", [28, 1*x, fckt], {name: "t; fck", withLabel: true});
+                            
+                            //board.create(\'text\', [
+                            //          function(){ return q.X()+1; },
+                            //          function(){ return q.Y()-5; },
+                            //          function(){ return "(" + q.X().toFixed(1) + " , " + q.Y().toFixed(1) + ")"; }
+                            //      ], 
+                            //      {fontSize:12});
+//                            //p1=board.create("point", [[28,function() {return fckt.Y(28);}]],{name:"", color:"yellow", size:1});    
+//                            //p2=board.create("point", [28,0],{name:"", color:"yellow", size:1});
+//                            //p3=board.create("point", [[3,function() {return fckt.Y(3);}]],{name:"", size:1});
+//                            //p4=board.create("point", [3,0],{name:"", size:1});
+                            //p5=board.create(\'point\', [0,function() {return q.Y();}],{name:"", size:0.5});
+                            //p6=board.create(\'point\', [function() {return q.X();},0],{name:"", size:0.5});
+                            //board.create("line", [p1,p2],{strokeColor:"red", strokeWidth:0.2, dash:1});
+                            //board.create("line", [p3,p4],{strokeColor:"red", strokeWidth:0.2, dash:1});
+                            
+                            //board.create(\'line\', [p5,q],{strokeColor:"red", strokeWidth:2, dash:1});
+                            //board.create(\'line\', [q,p6],{strokeColor:"red", strokeWidth:2, dash:1});
+                        
 ';
         $blc->jsx('concrete', $js);
     }

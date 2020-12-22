@@ -153,6 +153,7 @@ class Ec
     public function getMaterialArray(): array
     {
         return $this->readData('mat');
+//        return $this->materialFactory::MATERIALS; // TODO ez nem működik, úgyhogy törölni kell majd az egész metódust
     }
 
     public function boltProp(string $boltName, string $propertyName): float
@@ -177,7 +178,6 @@ class Ec
     }
 
     /**
-     * @param string $matName
      * @param float $t Thickness of relevant plate [mm]
      * @return float Ultimate strength in [N/mm^2; MPa]
      * @throws InvalidMaterialNameException
@@ -191,49 +191,76 @@ class Ec
         return $this->getMaterial($matName)->fu;
     }
 
-    public function matList(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Anyagminőség'], string $category = ''): void
+    /**
+     * @param string[] $title
+     * @throws Exception
+     */
+    public function materialListBlock(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Anyagminőség']): void
     {
-        $blc = $this->blc;
-        $matDb = $this->getMaterialArray();
+        $list = $this->materialFactory->getMaterialNames();
+        $source = array_combine($list, $list);
 
-        if ($category != false) {
-            foreach ($matDb as $key => $value) {
-                switch ($category) {
-                    case 'bolt':
-                        if ($value['0'] !== 'bolt') {
-                            unset($matDb[$key]);
-                        }
-                        break;
-                    case 'rebar':
-                        if ($value['0'] !== 'rebar') {
-                            unset($matDb[$key]);
-                        }
-                        break;
-                    case 'concrete':
-                        if ($value['0'] !== 'concrete') {
-                            unset($matDb[$key]);
-                        }
-                        break;
-                    case 'steel':
-                        if ($value['0'] !== 'steel') {
-                            unset($matDb[$key]);
-                        }
-                        break;
-                    case 'steels':
-                        if (!in_array($value['0'], ['steel', 'bolt', 'rebar'])) {
-                            unset($matDb[$key]);
-                        }
-                        break;
-                }
-            }
-        }
+        $this->blc->lst($variableName, $source, $title, $default);
+    }
 
-        $keys = array_keys($matDb);
-        $list = [];
-        foreach ($keys as $key) {
-            $list[$key] = $key;
-        }
-        $blc->lst($variableName, $list, $title, $default, '');
+    /**
+     * @param string[] $title
+     * @throws Exception
+     */
+    public function structuralSteelMaterialListBlock(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Szerkezeti acél anyagminőség']): void
+    {
+        $list = $this->materialFactory->getStructuralSteelNames();
+        $source = array_combine($list, $list);
+
+        $this->blc->lst($variableName, $source, $title, $default);
+    }
+
+    /**
+     * @param string[] $title
+     * @throws Exception
+     */
+    public function rebarMaterialListBlock(string $variableName = 'mat', string $default = 'B500', array $title = ['', 'Betonacél anyagminőség']): void
+    {
+        $list = $this->materialFactory->getRebarNames();
+        $source = array_combine($list, $list);
+
+        $this->blc->lst($variableName, $source, $title, $default);
+    }
+
+    /**
+     * @param string[] $title
+     * @throws Exception
+     */
+    public function boltMaterialListBlock(string $variableName = 'mat', string $default = '8.8', array $title = ['', 'Csavar anyagminőség']): void
+    {
+        $list = $this->materialFactory->getBoltNames();
+        $source = array_combine($list, $list);
+
+        $this->blc->lst($variableName, $source, $title, $default);
+    }
+
+    /**
+     * @param string[] $title
+     * @throws Exception
+     */
+    public function concreteMaterialListBlock(string $variableName = 'mat', string $default = 'C25/30', array $title = ['', 'Beton anyagminőség']): void
+    {
+        $list = $this->materialFactory->getConcreteNames();
+        $source = array_combine($list, $list);
+
+        $this->blc->lst($variableName, $source, $title, $default);
+    }
+
+    /**
+     * @param string[] $title
+     * @throws Exception
+     */
+    public function steelMaterialListBlock(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Acél anyagminőség']): void
+    {
+        $list = $this->materialFactory->getSteelNames();
+        $source = array_combine($list, $list);
+
+        $this->blc->lst($variableName, $source, $title, $default);
     }
 
     public function boltList(string $variableName = 'bolt', string $default = 'M16', string $title = 'Csavar betöltése'): void
@@ -382,6 +409,7 @@ class Ec
      * Saves all material properties from DB to Hive variables, with prefix. e.g.: _prefixfck, _prefixfy etc
      * @param float|string $matName
      * @throws InvalidArgumentException|Exception
+     * @deprecated
      */
     public function spreadMaterialData($matName, string $prefix = ''): void
     {
