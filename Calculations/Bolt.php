@@ -35,7 +35,8 @@ Class Bolt
             '800' => ['360' => 1.59, '430' => 1.90, '510' => 2.26, '530' => 2.34],
             '1000' => ['360' => 1.27, '430' => 1.52, '510' => 1.80, '530' => 1.82],
         ];
-        $delta = $deltaDb[$this->ec->matProp($boltMatName, 'fu')][$this->ec->matProp($steelMatName, 'fu')];
+//        $delta = $deltaDb[$this->ec->matProp($boltMatName, 'fu')][$this->ec->matProp($steelMatName, 'fu')];
+        $delta = $deltaDb[(string)$this->ec->getMaterial($boltMatName)->fu][$this->ec->getMaterial($steelMatName)->fu];
         $this->blc->info0('Javasolt átmérő és peremtávolságok:');
             $this->blc->def('delta', $delta, 'delta = %%', '');
             $this->blc->note('*[Acélszerkezetek - 1. Általános eljárások (2007) 6.3. táblázat]*');

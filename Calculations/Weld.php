@@ -28,7 +28,8 @@ Class Weld
         $this->blc->region0('r0', 'Varrat számítások');
             $this->blc->def('w', (int)$weldOnBothSide + 1, 'w_(sarok) = %%');
             $this->blc->def('l', $length - 2 * $a, 'l = L - 2*a = %% [mm]', 'Figyelembe vett varrathossz');
-            $this->blc->def('bw', $this->ec->matProp($steelMaterialName, 'betaw'), 'beta_w = %%', 'Hegesztési tényező');
+//            $this->blc->def('bw', $this->ec->matProp($steelMaterialName, 'betaw'), 'beta_w = %%', 'Hegesztési tényező');
+            $this->blc->def('bw', $this->ec->getMaterial($steelMaterialName)->betaw, 'beta_w = %%', 'Hegesztési tényező');
             $this->blc->def('fy', $this->ec->fy($steelMaterialName, $tPlate), 'f_y=%% [N/(mm^2)]', 'Folyáshatár');
             $this->blc->def('fu', $this->ec->fu($steelMaterialName, $tPlate), 'f_u=%% [N/(mm^2)]', 'Szakítószilárdság');
             $this->blc->math('F_(Ed) = '.$force.'[kN]');

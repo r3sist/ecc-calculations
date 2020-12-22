@@ -30,15 +30,19 @@ Class Anchor
         ];
         $blc->lst('limit', $states, ['', 'Tervezési állapot'], 2);
 
-        $blc->region0('r0', 'Számítások');
-            $blc->def('fyk', $ec->matProp((string)$f3->_aMat,'fy'), 'f_(y,k) = %% [N/(mm^2)]', 'Csap karakterisztikus folyáshatára');
-            if ($ec->matProp((string)$f3->_aMat,'fyd') != '0') {
-                $blc->def('fyd', $ec->matProp((string)$f3->_aMat,'fyd'), 'f_(y,d) = %% [N/(mm^2)]', 'Csap tervezési folyáshatára');
+        $blc->region0('r0');
+//            $blc->def('fyk', $ec->matProp((string)$f3->_aMat,'fy'), 'f_(y,k) = %% [N/(mm^2)]', 'Csap karakterisztikus folyáshatára');
+            $blc->def('fyk', $ec->getMaterial((string)$f3->_aMat)->fy, 'f_(y,k) = %% [N/(mm^2)]', 'Csap karakterisztikus folyáshatára');
+//            if ($ec->matProp((string)$f3->_aMat,'fyd') != '0') {
+            if ($ec->getMaterial((string)$f3->_aMat)->fyd != '0') {
+                $blc->def('fyd', $ec->getMaterial((string)$f3->_aMat)->fyd, 'f_(y,d) = %% [N/(mm^2)]', 'Csap tervezési folyáshatára');
             } else {
-                $blc->def('fyd', $ec->matProp((string)$f3->_aMat,'fy'), 'f_(y,d) = f_(y,bol t) = %% [N/(mm^2)]', 'Csap tervezési folyáshatára');
+//                $blc->def('fyd', $ec->matProp((string)$f3->_aMat,'fy'), 'f_(y,d) = f_(y,bol t) = %% [N/(mm^2)]', 'Csap tervezési folyáshatára');
+                $blc->def('fyd', $ec->getMaterial((string)$f3->_aMat)->fy, 'f_(y,d) = f_(y,bol t) = %% [N/(mm^2)]', 'Csap tervezési folyáshatára');
                 $blc->txt('Betonacél helyett menetesszár: csavar anyaggal számolva. $gamma = 1.0 $');
             }
-            $blc->def('fck', $ec->matProp((string)$f3->_cMat,'fck'), 'f_(c,k) = %% [N/(mm^2)]', 'Beton szilárdság karakterisztikus értéke');
+            // TODO check materials! fy fyd fyk for differenet material groups
+            $blc->def('fck', $ec->getMaterial((string)$f3->_cMat)->fck, 'f_(c,k) = %% [N/(mm^2)]', 'Beton szilárdság karakterisztikus értéke');
             $blc->def('fcd', H3::n2($f3->_fck/$f3->__Gc), 'f_(c,d) = f_(c,k)/gamma_c = %% [N/(mm^2)]', 'Beton szilárdság tervezési értéke');
             $blc->def('c1', $f3->_c1t - ($f3->_D/2), 'c_1 = c_(1t) - D/2 = %% [mm]', 'Betontakarás erő irányára merőlegesen');
             $blc->def('c2', $f3->_c2t - ($f3->_D/2), 'c_2 = c_(2t) - D/2 = %% [mm]', 'Betontakarás erő irányával párhuzamosan');

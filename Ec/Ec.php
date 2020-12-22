@@ -155,14 +155,6 @@ class Ec
         return $this->readData('mat');
     }
 
-    /** @deprecated */
-    public function matProp(string $materialName, string $propertyName): float
-    {
-//        return $this->materialFactory->getMaterialByName($materialName)->{$propertyName};
-        $matDb = $this->getMaterialArray();
-        return $matDb[$materialName][$propertyName];
-    }
-
     public function boltProp(string $boltName, string $propertyName): float
     {
         $boltDb = $this->readData('bolt');
@@ -173,28 +165,30 @@ class Ec
      * @param string $materialName
      * @param float $t Thickness of relevant plate [mm]
      * @return float Yield strength in [N/mm^2; MPa]
+     * @throws InvalidMaterialNameException
      */
     public function fy(string $materialName, float $t): float
     {
         if ($t > 40) {
             $this->blc->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:', '');
-            return $this->matProp($materialName, 'fy40');
+            return $this->getMaterial($materialName)->fy40;
         }
-        return $this->matProp($materialName, 'fy');
+        return $this->getMaterial($materialName)->fy;
     }
 
     /**
      * @param string $matName
      * @param float $t Thickness of relevant plate [mm]
      * @return float Ultimate strength in [N/mm^2; MPa]
+     * @throws InvalidMaterialNameException
      */
     public function fu(string $matName, float $t): float
     {
         if ($t > 40) {
             $this->blc->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:', '');
-            return $this->matProp($matName, 'fu40');
+            return $this->getMaterial($matName)->fu40;
         }
-        return $this->matProp($matName, 'fu');
+        return $this->getMaterial($matName)->fu;
     }
 
     public function matList(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Anyagminőség'], string $category = ''): void
@@ -499,10 +493,13 @@ class Ec
         $this->blc->region1();
     }
 
+    /**
+     * @throws InvalidMaterialNameException
+     */
     public function FtRd(string $btName, $btMat, bool $verbose = true): float
     {
         $btMat = (string)$btMat;
-        $result = (0.9 * $this->matProp($btMat, 'fu') * $this->boltProp($btName, 'As')) / (1000 * $this->f3->get('__GM2'));
+        $result = (0.9 * $this->getMaterial($btMat)->fu * $this->boltProp($btName, 'As')) / (1000 * $this->f3->get('__GM2'));
         if ($verbose) {
             $this->blc->note('Húzás általános képlet: $F_(t,Rd) = (0.9*f_(u,b)*A_s)/(gamma_(M2))$');
         }
@@ -526,7 +523,7 @@ class Ec
         if ($As === (float)0) {
             $As = $this->boltProp($btName, 'As');
         }
-        $result = (($this->matProp($btMat, 'fu') * $As * 0.6) / (1000 * $this->f3->get('__GM2'))) * $n;
+        $result = (($this->getMaterial($btMat)->fu * $As * 0.6) / (1000 * $this->f3->get('__GM2'))) * $n;
         $this->blc->note('$F_(v,Rd)$ nyírás általános képlet: $n*(0.6*f_(u,b)*A_s)/(gamma_(M2))$');
 
         if ($btMat === '4.8' || $btMat === '5.8' || $btMat === '6.8' || $btMat === '10.9') {
@@ -538,17 +535,20 @@ class Ec
 
     // Csavar palástnyomás
 
-    /** @param float|string $btMat */
+    /**
+     * @param float|string $btMat
+     * @throws InvalidMaterialNameException
+     */
     public function FbRd(string $btName, $btMat, string $stMat, float $ep1, float $ep2, float $t, bool $inner): float
     {
         $btMat = (string)$btMat;
 
         $fust = $this->fu($stMat, $t);
         $k1 = min(2.8 * ($ep2 / $this->boltProp($btName, 'd0')) - 1.7, 2.5);
-        $alphab = min(($ep1 / (3 * $this->boltProp($btName, 'd0'))), $this->matProp($btMat, 'fu') / $fust, 1);
+        $alphab = min(($ep1 / (3 * $this->boltProp($btName, 'd0'))), $this->getMaterial($btMat)->fu / $fust, 1);
         if ($inner) {
             $k1 = min(1.4 * ($ep2 / $this->boltProp($btName, 'd0')) - 1.7, 2.5);
-            $alphab = min(($ep1 / (3 * $this->boltProp($btName, 'd0'))) - 0.25, $this->matProp($btMat, 'fu') / $this->fu($stMat, $t), 1);
+            $alphab = min(($ep1 / (3 * $this->boltProp($btName, 'd0'))) - 0.25, $this->getMaterial($btMat)->fu / $this->fu($stMat, $t), 1);
         }
         $result = $k1 * (($alphab * $fust * $this->boltProp($btName, 'd') * $t) / (1000 * $this->f3->get('__GM2')));
         $this->f3->set('___k1', $k1);
