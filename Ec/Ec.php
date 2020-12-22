@@ -118,44 +118,6 @@ class Ec
         return [];
     }
 
-    /**
-     * Get all material data as array from database
-     * Units in database:
-     * ﻿0 [-]
-     * fy [Mpa]
-     * fu [Mpa]
-     * fy40 [Mpa]
-     * fu40 [Mpa]
-     * betaw [-]
-     * fyd [Mpa]
-     * fck [Mpa]
-     * fckcube [Mpa]
-     * fcm [Mpa]
-     * fctm [Mpa]
-     * fctk005 [Mpa]
-     * fctk095 [Mpa]
-     * Ecm color(teal)( GPa)
-     * Ecu3 [-]
-     * Euk [-]
-     * Es [Gpa]
-     * Fc0 [-]
-     * F_c0 [-]
-     * fbd [Mpa]
-     * fcd [Mpa]
-     * fctd [Mpa]
-     * fiinf28 [-]
-     * Eceff [Gpa]
-     * alfat [1/Cdeg]
-     * Epsiloncsinf [-]
-     * @return array Assoc. array of read material data
-     * @deprecated
-     */
-    public function getMaterialArray(): array
-    {
-        return $this->readData('mat');
-//        return $this->materialFactory::MATERIALS; // TODO ez nem működik, úgyhogy törölni kell majd az egész metódust
-    }
-
     public function boltProp(string $boltName, string $propertyName): float
     {
         $boltDb = $this->readData('bolt');
@@ -407,28 +369,24 @@ class Ec
 
     /**
      * Saves all material properties from DB to Hive variables, with prefix. e.g.: _prefixfck, _prefixfy etc
-     * @param float|string $matName
+     * @param float|string $materialName
      * @throws InvalidArgumentException|Exception
      * @deprecated
      */
-    public function spreadMaterialData($matName, string $prefix = ''): void
+    public function spreadMaterialData($materialName, string $prefixForHive = ''): void
     {
-        $matName = (string)$matName;
+        $materialName = (string)$materialName;
 
-        if ($prefix !== '') {
-            $this->vAlnum->assert($prefix);
+        if ($prefixForHive !== '') {
+            $this->vAlnum->assert($prefixForHive);
         }
 
-        $matDb = $this->getMaterialArray();
-        if (!\array_key_exists($matName, $matDb)) {
-            throw new InvalidArgumentException('Nincs ilyen anyag az adatbázisban.');
-        }
-        $matData = $matDb[$matName];
+        $matData = $this->materialFactory->getMaterialByName($materialName)->toArray();
 
-        $this->blc->region0('materialData' . $prefix, 'Anyagjellemzők (' . $matName . ')');
+        $this->blc->region0('materialData' . $prefixForHive, 'Anyagjellemzők (' . $materialName . ')');
         foreach ($matData as $key => $value) {
-            if ($value != 0 && $value != '' && $key != '0') {
-                $this->f3->set('_' . $prefix . $key, $value);
+            if ($value != 0) {
+                $this->f3->set('_' . $prefixForHive . $key, $value);
 
                 switch ($key) {
                     case 'fy':
@@ -493,9 +451,9 @@ class Ec
                         break;
                     case 'fbd':
                         $this->blc->math('f_(bd)= ' . $value . ' [N/(mm^2)]', 'Beton és acél közti kapcsolati szilárdság bordás betonacéloknál, jó tapadás esetén');
-                        $this->blc->boo($prefix . 'fbd07', ['', 'Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa'], true, 'Csökkentés 70%-ra');
-                        if ($this->f3->get('_' . $prefix . 'fbd07')) {
-                            $this->blc->def($prefix . 'fbd', $this->f3->get('_' . $prefix . 'fbd') * 0.7, 'f_(bd) = f_(bd,eff) = f_(bd)*0.7 = %%');
+                        $this->blc->boo($prefixForHive . 'fbd07', ['', 'Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa'], true, 'Csökkentés 70%-ra');
+                        if ($this->f3->get('_' . $prefixForHive . 'fbd07')) {
+                            $this->blc->def($prefixForHive . 'fbd', $this->f3->get('_' . $prefixForHive . 'fbd') * 0.7, 'f_(bd) = f_(bd,eff) = f_(bd)*0.7 = %%');
                         }
                         break;
                     case 'fcd':
