@@ -495,6 +495,7 @@ class Ec
 
     /**
      * @throws InvalidMaterialNameException
+     * @todo move to Bolt()
      */
     public function FtRd(string $btName, $btMat, bool $verbose = true): float
     {
@@ -506,6 +507,7 @@ class Ec
         return $result;
     }
 
+    /** @todo Move to Bolt() */
     public function BpRd(string $btName, string $stMat, float $t): float
     {
         $this->blc->note('`BpRd` kigombolódás általános képlet: $(0.6* pi *d_m*f_(u,s)*t)/(gamma_(M2))$');
@@ -514,7 +516,10 @@ class Ec
 
     // Nyírt csavar
 
-    /** @param float|string $btMat */
+    /**
+     * @param float|string $btMat
+     * @todo Move to Bolt()
+     */
     public function FvRd(string $btName, $btMat, float $n, float $As = 0): float
     {
         $btMat = (string)$btMat;
@@ -538,6 +543,7 @@ class Ec
     /**
      * @param float|string $btMat
      * @throws InvalidMaterialNameException
+     * @todo Move to Bolt()
      */
     public function FbRd(string $btName, $btMat, string $stMat, float $ep1, float $ep2, float $t, bool $inner): float
     {
@@ -561,6 +567,7 @@ class Ec
     }
 
     // Acél keresztmetszet nyírási ellenállása: Av [mm2], t [mm], returns [kN]
+    /** @todo Move to SteelSection() */
     public function VplRd(float $Av, string $matName, float $t): float
     {
         $Av = (float)$Av;
@@ -570,6 +577,7 @@ class Ec
     }
 
     // Acél keresztmetszet húzási ellenállása: A Anet [mm2], t [mm], returns [kN]
+    /** @todo Move to SteelSection() */
     public function NtRd($A, $Anet, string $matName, $t): float
     {
         $A = (float)$A;
@@ -578,6 +586,7 @@ class Ec
         return min($this->NuRd($Anet, $matName, $t), $this->NplRd($A, $matName, $t));
     }
 
+    /** @todo Move to SteelSection() */
     public function NuRd($Anet, string $matName, $t): float
     {
         $Anet = (float)$Anet;
@@ -586,6 +595,7 @@ class Ec
         return (0.9 * $Anet * $fu) / ($this->f3->get('__GM2') * 1000);
     }
 
+    /** @todo Move to SteelSection() */
     public function NplRd($A, string $matName, $t): float
     {
         $A = (float)$A;
@@ -594,16 +604,19 @@ class Ec
         return ($A * $fy) / ($this->f3->get('__GM0') * 1000);
     }
 
+    /** @todo Move to SteelSection() */
     public function NcRd(float $A, float $fy): float
     {
         return ($A * $fy) / ($this->f3->get('__GM0') * 1000);
     }
 
+    /** @todo Move to SteelSection() */
     public function McRd(float $W, float $fy): float
     {
         return ($W * $fy) / ($this->f3->get('__GM0') * 1000000);
     }
 
+    /** @todo Move to Wind() */
     public function qpz(float $z, float $terrainCat): float
     {
         $terrainCat = (int)$terrainCat;
@@ -848,6 +861,4 @@ class Ec
 
         return (string)$match;
     }
-
-
 }
