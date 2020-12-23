@@ -31,8 +31,8 @@ Class JointWindbrace
 
         switch ($f3->_forceSource) {
             case 'huzas':
-                $ec->sectionFamilyList('sectionFamily', 'Szelvény család', 'O');
-                $ec->sectionList($f3->_sectionFamily, 'sectionName', 'Szelvény', 'D20');
+                $ec->sectionFamilyListBlock('sectionFamily', ['', 'Szelvény család'], 'O');
+                $ec->sectionListBlock($f3->_sectionFamily, 'sectionName', ['', 'Szelvény'], 'D20');
                 $ec->spreadSectionData($f3->_sectionName, true, 'section');
                 $blc->def('FEd', $ec->NplRd($f3->_section['Ax']*100, $f3->_steelMaterialName, max($f3->_section['tw']/10, $f3->_section['tf']/10)), 'F_(Ed) := N_(pl,Rd) = (A*f_y)/gamma_(M,0) = %% [kN]', 'Teljes km. folyási ellenállása');
                 break;

@@ -26,7 +26,7 @@ Class JointEndplate
 
         $blc->info0('Fogadó szelvény');
             $blc->lst('sectionFamily0', ['HEA', 'HEB', 'IPE'], ['', 'Szelvény típus'], 'HEA');
-            $ec->sectionList($f3->_sectionFamily0, 'section0');
+            $ec->sectionListBlock($f3->_sectionFamily0, 'section0');
             $ec->spreadSectionData($f3->_section0, true, 'section0Data');
             $blc->def('t0f', $f3->_section0Data['tf']*10, 't_(0,f) = %% [mm]', 'Fogadó szelvény övvastagsága');
             $blc->def('W0pl', $f3->_section0Data['W1pl']*1000, 'W_(0,pl) = %% [mm^3]', 'Fogadó szelvény képlékeny fő keresztmetszeti modulusa');
@@ -34,7 +34,7 @@ Class JointEndplate
 
         $blc->info0('Csatlakozó szelvény');
             $blc->lst('sectionFamily1', ['HEA', 'HEB', 'IPE'], ['', 'Szelvény típus'], 'HEA');
-            $ec->sectionList($f3->_sectionFamily1, 'section1');
+            $ec->sectionListBlock($f3->_sectionFamily1, 'section1');
             $ec->spreadSectionData($f3->_section1, true, 'section1Data');
             $blc->def('t1w', $f3->_section1Data['tw']*10, 't_(1,w) = %% [mm]', 'Csatlakozó szelvény gerincvastagsága');
         $blc->info1();

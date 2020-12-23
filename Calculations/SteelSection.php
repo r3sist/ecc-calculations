@@ -21,8 +21,8 @@ Class SteelSection
         $blc->numeric('NEd', ['N_(Ed)', 'Húzóerő'], 200, 'kN');
         $blc->info1();
 
-        $ec->sectionFamilyList();
-        $ec->sectionList($f3->_sectionFamily);
+        $ec->sectionFamilyListBlock();
+        $ec->sectionListBlock($f3->_sectionFamily);
         $ec->spreadSectionData($f3->_sectionName, true);
 
         $ec->structuralSteelMaterialListBlock('mat', 'S235');

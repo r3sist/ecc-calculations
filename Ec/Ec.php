@@ -18,7 +18,12 @@ use H3;
 use Ecc\Blc;
 use InvalidArgumentException;
 use Exception;
+use Profil\Exceptions\InvalidSectionNameException;
+use Profil\ProfilService;
+use Profil\Section\Section;
+use Profil\Section\SectionDTO;
 use Respect\Validation\Validator as v;
+use function in_array;
 
 
 /** Eurocode globals, helpers and predefined GUI elements for ECC framework */
@@ -41,6 +46,7 @@ class Ec
 
     private MaterialFactory $materialFactory;
     private BoltFactory $boltFactory;
+    private ProfilService $profilService;
 
     private v $vAlnum;
 
@@ -62,13 +68,14 @@ class Ec
      * Ec constructor.
      * Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA
      */
-    public function __construct(Base $f3, Blc $blc, SQL $db, MaterialFactory $materialFactory, BoltFactory $boltFactory)
+    public function __construct(Base $f3, Blc $blc, SQL $db, MaterialFactory $materialFactory, BoltFactory $boltFactory, ProfilService $profilService)
     {
         $this->f3 = $f3;
         $this->blc = $blc;
         $this->db = $db;
         $this->materialFactory = $materialFactory;
         $this->boltFactory = $boltFactory;
+        $this->profilService = $profilService;
 
         $this->vAlnum = v::alnum()->noWhitespace();
 
@@ -209,6 +216,7 @@ class Ec
     }
 
     /**
+     * Renders bolt selector block
      * @throws Exception
      */
     public function boltListBlock(string $variableName = 'bolt', string $default = 'M16', array $title = ['', 'Csavar név']): void
@@ -303,54 +311,74 @@ class Ec
         return $As;
     }
 
-    public function sectionFamilyList(string $variableName = 'sectionFamily', string $title = 'Szelvény család', string $default = 'HEA'): void
+    /**
+     * Renders steel section family selector block
+     * @param string $variableName
+     * @param string[] $title
+     * @param string $default
+     * @throws Exception
+     */
+    public function sectionFamilyListBlock(string $variableName = 'sectionFamily', array $title =['', 'Szelvény család'], string $default = 'HEA'): void
     {
-        $list = ['HEA' => 'HEA', 'HEB' => 'HEB', 'HEM' => 'HEM', 'I' => 'I', 'IPE' => 'IPE', 'IPEO' => 'IPEO', 'IPN' => 'IPN', 'UPN' => 'UPN', 'UPE' => 'UPE', 'L' => 'L', 'O' => 'O', 'D' => 'D', 'ROR' => 'ROR', 'RHS' => 'RHS', 'C' => 'C',];
-        $this->blc->lst($variableName, $list, ['', $title], $default, '');
+        $list = $this->profilService->getSectionFamilies();
+        $source = array_combine($list, $list);
+        $this->blc->lst($variableName, $source, $title, $default, '');
     }
 
-    public function sectionList(string $familyName = 'HEA', string $variableName = 'sectionName', string $title = 'Szelvény név', string $default = 'HEA200'): void
+    /**
+     * @throws InvalidSectionNameException
+     */
+    public function sectionListBlock(string $familyName = 'HEA', string $variableName = 'sectionName', array $title = ['', 'Szelvény név'], string $default = 'HEA200'): void
     {
-        $this->vAlnum->assert($familyName);
+        if (!in_array($familyName, $this->profilService->getSectionFamilies())) {
+            throw new InvalidSectionNameException('Nincs ilyen szelvény család az adatbázisban.');
+        }
 
-        $query = "SELECT * FROM ".self::TABLE_PROFILES." WHERE name LIKE '$familyName%'";
-        $result = $this->db->exec($query);
+        $results = $this->profilService->readSectionsForSearch('family', 'e', $familyName, 'name', 'e', '');
+
         $list = [];
-        foreach ($result as $section) {
+        foreach ($results as $section) {
             $list[$section['name']] = $section['name'];
         }
-        $this->blc->lst($variableName, $list, ['', $title], $default, '');
+
+        $this->blc->lst($variableName, $list, $title, $default);
     }
 
+    /**
+     * @throws Exception
+     * @deprecated Use getSection() instead
+     */
     public function spreadSectionData(string $sectionName, bool $renderTable = false, string $arrayName = 'sectionData'): void
     {
-        $sectionName = (string)$this->f3->clean($sectionName);
-
-        $query = "
-            SELECT name, _h, _b, _tf, _tw, _Ax, _Ay, _Az, _Ix, _Iy, _Iz, _I1, _I2, _W1elt, _W1elb, _W2elt, _W2elb, _W1pl, _W2pl FROM ".self::TABLE_PROFILES." WHERE name = '$sectionName' LIMIT 1";
-        /** @var array $result */
-        $result = $this->db->exec($query);
+        $sectionData = $this->profilService->getSection($sectionName)->toArray();
 
         // Remove underscores
-        $resultCleaned = [];
-        foreach ($result[0] as $key => $value) {
+        $cleanedSectionData = [];
+        foreach ($sectionData as $key => $value) {
             if ($key[0] === '_') {
-                $resultCleaned[(string)substr($key, 1, 10)] = $result[0][$key];
+                $cleanedSectionData[(string)substr($key, 1, 10)] = $sectionData[$key];
             }
         }
-        $this->f3->set('_' . $arrayName, $resultCleaned);
+        $this->f3->set('_' . $arrayName, $cleanedSectionData);
 
         if ($renderTable) {
             $rows = [];
-            $scheme = array_keys($result[0]);
-            foreach ($result as $key => $row) {
-                $rows[] = array_values($row);
-            }
+            $scheme = array_keys($cleanedSectionData);
+            $rows[] = array_values($cleanedSectionData);
 
-            $this->blc->region0('sectionTable', $result[0]['name'] . ' szelvény adatok');
-            $this->blc->tbl($scheme, $rows, 'tbl' . H3::slug($result[0]['name']), 'Mértékegységek, további információk: <a href="https://structure.hu/profil">structure.hu/profil</a>');
+            $this->blc->region0('sectionTable', $cleanedSectionData['name'] . ' szelvény adatok');
+            $this->blc->tbl($scheme, $rows, 'tbl' . H3::slug($cleanedSectionData['name']), 'Mértékegységek, további információk: [structure.hu/profil](https://structure.hu/profil)'); // TODO check markdown why does not work
             $this->blc->region1();
         }
+    }
+
+    /**
+     * Returns Section data transfer object by section name
+     * @throws InvalidSectionNameException
+     */
+    public function getSection($sectionName): SectionDTO
+    {
+        return $this->profilService->getSection($sectionName);
     }
 
     /**

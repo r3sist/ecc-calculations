@@ -67,8 +67,8 @@ Class Baseplate
                 if ($f3->_useCustomShearA) {
                     $blc->numeric('shearProfileA', ['A_v', 'Nyírási keresztmetszet'], 0, 'mm^2');
                 } else {
-                    $ec->sectionFamilyList('shearProfileFamily');
-                    $ec->sectionList($f3->_shearProfileFamily, 'shearProfileName');
+                    $ec->sectionFamilyListBlock('shearProfileFamily');
+                    $ec->sectionListBlock($f3->_shearProfileFamily, 'shearProfileName');
                     $ec->spreadSectionData($f3->_shearProfileName, true, 'shearProfileData');
                     $blc->lst('shearProfileProp', ['Ax teljes km alkalmazása' => 'Ax', 'Az' => 'Az', 'Ay' => 'Ay'], ['', 'Nyírási felület választása'], 'Ax');
                     $blc->def('shearProfileA', $f3->_shearProfileData[$f3->_shearProfileProp]*100, 'A_(v, "'.$f3->_shearProfileName.'") = %% [mm^2]; "'.$f3->_steelMaterialName.'"');

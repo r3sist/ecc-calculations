@@ -308,8 +308,8 @@ Class Bolt
                 $this->blc->h1('Egyik szárukon kapcsolt szögacélok húzásra');
                 $this->blc->note('Külpontosság elhanyagolható.');
                 $this->blc->math('n_r = ' . $this->f3->_nr . ' × ' . $this->f3->_bName . '%%%(n_c = 1)', 'Függőleges csavarkép átvétele');
-                $this->ec->sectionFamilyList('sectionFamily', 'Szelvény család', 'L');
-                $this->ec->sectionList($this->f3->_sectionFamily);
+                $this->ec->sectionFamilyListBlock('sectionFamily', ['', 'Szelvény család'], 'L');
+                $this->ec->sectionListBlock($this->f3->_sectionFamily);
                 $this->ec->spreadSectionData($this->f3->_sectionName, true);
                 $this->blc->math('d_0 = ' . $this->f3->_d_0 . '[mm]%%%t_(w,L) = ' . $this->f3->_sectionData['tw'] * 10 . '[mm]%%%f_(u,s) = ' . $this->f3->_sfu . '[N/(mm^2)] %%% A_(n\et) = ' . $this->f3->_A_net . ' [mm^2]');
                 $this->blc->def('AnetL', $this->f3->_sectionData['Ax'] * 100 - $this->f3->_d_0 * $this->f3->_sectionData['tw'] * 10, 'A_(n et,L) = A_(x,L) - 1*d_0*t_(w,L) = %% [mm^2]');
