@@ -359,6 +359,7 @@ class Ec
     /**
      * Returns Section data transfer object by section name
      * @throws InvalidSectionNameException
+     * @todo test
      */
     public function getSection($sectionName): SectionDTO
     {
@@ -480,6 +481,7 @@ class Ec
     /**
      * @throws InvalidMaterialNameException
      * @todo move to Bolt()
+     * @todo test
      */
     public function FtRd(string $btName, $btMat, bool $verbose = true): float
     {
@@ -491,7 +493,10 @@ class Ec
         return $result;
     }
 
-    /** @todo Move to Bolt() */
+    /**
+     * @todo Move to Bolt()
+     * @todo test
+     */
     public function BpRd(string $btName, string $stMat, float $t): float
     {
         $this->blc->note('`BpRd` kigombolódás általános képlet: $(0.6* pi *d_m*f_(u,s)*t)/(gamma_(M2))$');
@@ -503,6 +508,7 @@ class Ec
     /**
      * @param float|string $btMat
      * @todo Move to Bolt()
+     * @todo test
      */
     public function FvRd(string $btName, $btMat, float $n, float $As = 0): float
     {
@@ -528,6 +534,7 @@ class Ec
      * @param float|string $btMat
      * @throws InvalidMaterialNameException
      * @todo Move to Bolt()
+     * @todo test
      */
     public function FbRd(string $btName, $btMat, string $stMat, float $ep1, float $ep2, float $t, bool $inner): float
     {
@@ -551,7 +558,10 @@ class Ec
     }
 
     // Acél keresztmetszet nyírási ellenállása: Av [mm2], t [mm], returns [kN]
-    /** @todo Move to SteelSection() */
+    /**
+     * @todo Move to SteelSection()
+     * @todo test
+     */
     public function VplRd(float $Av, string $matName, float $t): float
     {
         $Av = (float)$Av;
@@ -561,7 +571,10 @@ class Ec
     }
 
     // Acél keresztmetszet húzási ellenállása: A Anet [mm2], t [mm], returns [kN]
-    /** @todo Move to SteelSection() */
+    /**
+     * @todo Move to SteelSection()
+     * @todo test
+     */
     public function NtRd($A, $Anet, string $matName, $t): float
     {
         $A = (float)$A;
@@ -570,7 +583,10 @@ class Ec
         return min($this->NuRd($Anet, $matName, $t), $this->NplRd($A, $matName, $t));
     }
 
-    /** @todo Move to SteelSection() */
+    /**
+     * @todo Move to SteelSection()
+     * @todo test
+     */
     public function NuRd($Anet, string $matName, $t): float
     {
         $Anet = (float)$Anet;
@@ -579,7 +595,10 @@ class Ec
         return (0.9 * $Anet * $fu) / ($this->f3->get('__GM2') * 1000);
     }
 
-    /** @todo Move to SteelSection() */
+    /**
+     * @todo Move to SteelSection()
+     * @todo test
+     */
     public function NplRd($A, string $matName, $t): float
     {
         $A = (float)$A;
@@ -588,19 +607,28 @@ class Ec
         return ($A * $fy) / ($this->f3->get('__GM0') * 1000);
     }
 
-    /** @todo Move to SteelSection() */
+    /**
+     * @todo Move to SteelSection()
+     * @todo test
+     */
     public function NcRd(float $A, float $fy): float
     {
         return ($A * $fy) / ($this->f3->get('__GM0') * 1000);
     }
 
-    /** @todo Move to SteelSection() */
+    /**
+     * @todo Move to SteelSection()
+     * @todo test
+     */
     public function McRd(float $W, float $fy): float
     {
         return ($W * $fy) / ($this->f3->get('__GM0') * 1000000);
     }
 
-    /** @todo Move to Wind() */
+    /**
+     * @todo Move to Wind()
+     * @todo test
+     */
     public function qpz(float $z, float $terrainCat): float
     {
         $terrainCat = (int)$terrainCat;
@@ -645,6 +673,15 @@ class Ec
         return $qpz;
     }
 
+    /**
+     * @param float $x1
+     * @param float $y1
+     * @param float $x2
+     * @param float $y2
+     * @param float $x
+     * @return float
+     * @todo test
+     */
     public function linterp(float $x1, float $y1, float $x2, float $y2, float $x): float
     {
         if ($x1 === $x2 && $y1 === $y2) {
@@ -654,6 +691,12 @@ class Ec
         return (($x - $x1) * ($y2 - $y1) / ($x2 - $x1)) + $y1;
     }
 
+    /**
+     * @param float $D
+     * @param float|int $multiplicator
+     * @return float
+     * @todo test
+     */
     public function A(float $D, float $multiplicator = 1): float
     {
         return $D * $D * pi() * 0.25 * $multiplicator;
@@ -662,6 +705,7 @@ class Ec
     /**
      * Original: https://github.com/hellofromtonya/Quadratic/blob/master/solver.php
      * @return string[]|float[] may contain 'i'
+     * @todo test
      */
     public function quadratic(float $a, float $b, float $c, int $precision = 3): array
     {
@@ -702,6 +746,7 @@ class Ec
 
     /**
      * @param float[] $roots
+     * @todo test
      */
     public function chooseRoot(float $estimation, array $roots): float
     {
@@ -714,7 +759,10 @@ class Ec
         return $validRoot;
     }
 
-    /** @deprecated  */
+    /**
+     * @deprecated
+     * @todo test
+     */
     public function getClosest(float $find, array $stackArray, string $returnType = 'closest'): float
     {
         // returnTypes: closest, ceil, floor, linterp
@@ -787,6 +835,7 @@ class Ec
         return $find;
     }
 
+    /** @todo test */
     public function proportion(float $x0, float $y0, float $x1): float
     {
         return ($x1*$y0)/$x0;
@@ -797,6 +846,7 @@ class Ec
      * @param string[] $array One dimensional array of keys
      * @param string $find Compare array keys to this
      * @return string Floor key as string
+     * @todo test
      */
     public function getFloorClosest(array $array, string $find): string
     {
@@ -824,6 +874,7 @@ class Ec
      * @param string[] $array One dimensional array of keys
      * @param string $find Compare array keys to this
      * @return string Floor key as string
+     * @todo test
      */
     public function getCeilClosest(array $array, string $find): string
     {
