@@ -7,7 +7,6 @@
 namespace Ec;
 
 use Base;
-use DB\SQL;
 use Ecc\Bolt\BoltDTO;
 use Ecc\Bolt\BoltFactory;
 use Ecc\Bolt\InvalidBoltNameException;
@@ -20,7 +19,6 @@ use InvalidArgumentException;
 use Exception;
 use Profil\Exceptions\InvalidSectionNameException;
 use Profil\ProfilService;
-use Profil\Section\Section;
 use Profil\Section\SectionDTO;
 use Respect\Validation\Validator as v;
 use function in_array;
@@ -29,21 +27,8 @@ use function in_array;
 /** Eurocode globals, helpers and predefined GUI elements for ECC framework */
 class Ec
 {
-    /**
-     * @var string TABLE_PROFILES
-     * @deprecated
-     */
-    private const TABLE_PROFILES = 'steel_sections';
-
     private Base $f3;
     private Blc $blc;
-
-    /**
-     * @var SQL $db
-     * @deprecated
-     */
-    private SQL $db;
-
     private MaterialFactory $materialFactory;
     private BoltFactory $boltFactory;
     private ProfilService $profilService;
@@ -68,11 +53,10 @@ class Ec
      * Ec constructor.
      * Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA
      */
-    public function __construct(Base $f3, Blc $blc, SQL $db, MaterialFactory $materialFactory, BoltFactory $boltFactory, ProfilService $profilService)
+    public function __construct(Base $f3, Blc $blc, MaterialFactory $materialFactory, BoltFactory $boltFactory, ProfilService $profilService)
     {
         $this->f3 = $f3;
         $this->blc = $blc;
-        $this->db = $db;
         $this->materialFactory = $materialFactory;
         $this->boltFactory = $boltFactory;
         $this->profilService = $profilService;
