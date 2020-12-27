@@ -107,9 +107,11 @@ class Ec
     public function fy(string $materialName, float $t): float
     {
         if ($t > 40) {
-            $this->blc->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:', '');
+            $this->blc->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:');
+
             return $this->getMaterial($materialName)->fy40;
         }
+
         return $this->getMaterial($materialName)->fy;
     }
 
@@ -121,9 +123,11 @@ class Ec
     public function fu(string $matName, float $t): float
     {
         if ($t > 40) {
-            $this->blc->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:', '');
+            $this->blc->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:');
+
             return $this->getMaterial($matName)->fu40;
         }
+
         return $this->getMaterial($matName)->fu;
     }
 
