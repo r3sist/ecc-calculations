@@ -4,7 +4,7 @@
   "homepage": "https://resist.hu",
   "license": "CDDL-1.0",
   "autoload": {
-    "classmap": ["Calculations/", "Ec/"]
+    "classmap": ["Calculations/", "Ec/", "Statika/"]
   },
   "require": {
     "php": ">=7.4",
