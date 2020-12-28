@@ -22,9 +22,8 @@ interface BlocksInterface
      * @param string $unit Input group extension, UI only.
      * @param string $help Markdown help text. Can contain $$ math.
      * @param string $gumpValidation GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators
-     * @return string Text representation for log
      */
-    public function input(string $variableName, array $title, $defaultValue = null, string $unit = '', string $help = '', string $gumpValidation = ''): string;
+    public function input(string $variableName, array $title, $defaultValue = null, string $unit = '', string $descriptionValue = '', string $gumpValidation = ''): void;
 
     /**
      * Renders numeric input field. (General HTML input tag with numeric validation). Accepts and converts math expression strings in "=2+3" format
@@ -32,11 +31,10 @@ interface BlocksInterface
      * @param string[] $title Header of block: [(string) ASCIIMath expression or empty string, (string) title text]
      * @param float $defaultValue Input default value
      * @param string $unit Input group extension, UI only.
-     * @param string $help Markdown help text. Can contain $$ math.
+     * @param string $description Allowed: Basic markdown, math expression between $..$
      * @param string $additionalGumpValidation GUMP validator string ("numeric" is set always): https://github.com/Wixel/GUMP#star-available-validators
-     * @return string Text representation for log
      */
-    public function numeric(string $variableName, array $title, float $defaultValue, string $unit = '', string $help = '', string $additionalGumpValidation = ''): string;
+    public function numeric(string $variableName, array $title, float $defaultValue, string $unit = '', string $description = '', string $additionalGumpValidation = ''): void;
 
     /**
      * Renders checkbox field
@@ -44,9 +42,8 @@ interface BlocksInterface
      * @param string[] $title Header of block: [(string) ASCIIMath expression or empty string, (string) title text]
      * @param bool $defaultValue Input default value
      * @param string $help Markdown help text. Can contain $$ math.
-     * @return string Text representation for log
      */
-    public function boo(string $variableName, array $title, bool $defaultValue = false, $help = null): string;
+    public function boo(string $variableName, array $title, bool $defaultValue = false, $help = null): void;
 
     /**
      * Renders selection list
@@ -55,9 +52,8 @@ interface BlocksInterface
      * @param string[] $title Header of block: [(string) ASCIIMath expression or empty string, (string) title text]
      * @param float|int|string $defaultValue Input default value
      * @param string $help Markdown help text. Can contain $$ math.
-     * @return string Text representation for log
      */
-    public function lst(string $variableName, array $source, array $title, $defaultValue = null, string $help = ''): string;
+    public function lst(string $variableName, array $source, array $title, $defaultValue = null, string $help = ''): void;
 
     /**
      * Renders definition block, stores given value to named variable and renders math block with custom text.
@@ -66,9 +62,8 @@ interface BlocksInterface
      * @param string $mathExpression ASCIIMath expression without $ delimiters. Use "%%" to substitute result.
      * @param string $help Markdown help text
      * @param string $gumpValidation GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators
-     * @return string Text representation for log
      */
-    public function def(string $variableName, $result, string $mathExpression = '%%', string $help = '', string $gumpValidation = ''): string;
+    public function def(string $variableName, $result, string $mathExpression = '%%', string $help = '', string $gumpValidation = ''): void;
 
     /**
      * Renders toaster notification block.
@@ -88,8 +83,8 @@ interface BlocksInterface
 
     /**
      * Renders plain text block.
-     * @param string $mdStrict Allowed: Basic markdown, math expression
-     * @param string $description Allowed: Basic markdown, math expression
+     * @param string $mdStrict Allowed: Basic markdown, math expression between $..$
+     * @param string $description Allowed: Basic markdown, math expression between $..$
      */
     public function txt(string $mdStrict, string $description = ''): void;
 
@@ -102,32 +97,29 @@ interface BlocksInterface
      * Renders first order header block.
      * @param string $headingTitle Text of header
      * @param string $subTitle Markdown text of sub-header
-     * @return string Text representation for log
      */
-    public function h1(string $headingTitle, string $subTitle = ''): string;
+    public function h1(string $headingTitle, string $subTitle = ''): void;
 
     /**
      * Renders second order header block.
      * @param string $headingTitle Text of header
      * @param string $subTitle Markdown text of sub-header
      */
-    public function h2(string $headingTitle, string $subTitle = ''): string;
+    public function h2(string $headingTitle, string $subTitle = ''): void;
 
     /**
      * Renders third order header block.
      * @param string $headingTitle Text of header
      * @param string $subTitle Markdown text of sub-header
-     * @return string Text representation for log
      */
-    public function h3(string $headingTitle, string $subTitle = ''): string;
+    public function h3(string $headingTitle, string $subTitle = ''): void;
 
     /**
      * Renders fourth order header block.
      * @param string $headingTitle Text of header
      * @param string $subTitle Markdown text of sub-header
-     * @return string Text representation for log
      */
-    public function h4(string $headingTitle, string $subTitle = ''): string;
+    public function h4(string $headingTitle, string $subTitle = ''): void;
 
     /**
      * Renders math expression block.
@@ -145,9 +137,8 @@ interface BlocksInterface
     /**
      * Builds markdown block.
      * @param string $mdLight Multi-line markdown text
-     * @return string Text representation for log
      */
-    public function md(string $mdLight): string;
+    public function md(string $mdLight): void;
 
     /**
      * Renders calculation note block.
@@ -172,9 +163,8 @@ interface BlocksInterface
      * Renders label block.
      * @param float|int|string $value Can be "yes" for green, "no" for red or numeric converted to %. If $value < 1 then label is green.
      * @param string $text Additional text in label
-     * @return string Text representation for log
      */
-    public function label($value, string $text = ''): string;
+    public function label($value, string $text = ''): void;
 
     /**
      * Renders collapsible region INITIAL block. Call region1() method for closing.
