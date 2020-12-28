@@ -10,6 +10,7 @@ use resist\SVG\SVG;
 
 /**
  * General "blocks" for Statika framework - renders and handles UI blocks and their data.
+ * @todo document interface in README
  */
 interface BlocksInterface
 {
@@ -87,9 +88,10 @@ interface BlocksInterface
 
     /**
      * Renders plain text block.
-     * @param string $mdStrict Markdown text, can contain $$ math expression
+     * @param string $mdStrict Allowed: Basic markdown, math expression
+     * @param string $description Allowed: Basic markdown, math expression
      */
-    public function txt(string $mdStrict, string $help = ''): void;
+    public function txt(string $mdStrict, string $description = ''): void;
 
     /**
      * Renders horizontal line (hr HTML tag) block.
