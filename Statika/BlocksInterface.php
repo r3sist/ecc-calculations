@@ -164,7 +164,7 @@ interface BlocksInterface
      * @param float|int|string $value Can be "yes" for green, "no" for red or numeric converted to %. If $value < 1 then label is green.
      * @param string $text Additional text in label
      */
-    public function label($value, string $text = '', $description = ''): void;
+    public function label($value, string $text = '', string $description = ''): void;
 
     /**
      * Renders collapsible region INITIAL block. Call region1() method for closing.
