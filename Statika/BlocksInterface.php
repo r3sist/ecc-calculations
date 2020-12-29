@@ -154,7 +154,7 @@ interface BlocksInterface
 
     /**
      * Renders image block.
-     * @param string $URLorBase64 Valid HTTP URL or Base64 image content. Base64 is PNG only, with "data:image/png;base64,"
+     * @param string $URLorBase64 Valid HTTP URL or Base64 image content. Base64 is PNG only, without "data:image/png;base64,"
      * @param string $caption
      */
     public function img(string $URLorBase64, string $caption = ''): void;
