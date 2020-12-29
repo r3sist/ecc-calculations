@@ -279,4 +279,8 @@ interface BlocksInterface
      * @param string $help Help text below wrapped blocks
      */
     public function wrapper2(string $help = ''): void;
+
+    public function set(string $key, $value): void;
+
+    public function get(string $key);
 }
