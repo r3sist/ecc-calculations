@@ -241,18 +241,6 @@ interface BlocksInterface
     public function svg(SVG $svgObject, bool $forceJpg = false, string $caption = ''): void;
 
     /**
-     * Renders and handles write blocks - Generates new image with text on base image; Renders img block
-     * @param string $imageFile Base image as canvas relative to codebase home, e.g.: "vendor/resist/ecc-calculations/canvas/linQ0.jpg"
-     * @param array[] $textArray Array of texts. Sub array keys:
-     *      ["text" => (string),
-     *      "x" => (int) position,
-     *      "y" => (int) position,
-     *      "size" => (int) text size]
-     * @param string $caption Help text of block
-     */
-    public function write(string $imageFile, array $textArray, string $caption = ''): void;
-
-    /**
      * Injects JSXGraph library to calculation.
      */
     public function jsxDriver(): void;
