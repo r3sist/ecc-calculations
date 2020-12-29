@@ -41,9 +41,9 @@ interface BlocksInterface
      * @param string $variableName Stores data in F3-Hive with a name of _ prefix and this ID
      * @param string[] $title Header of block: [(string) ASCIIMath expression or empty string, (string) title text]
      * @param bool $defaultValue Input default value
-     * @param string $help Markdown help text. Can contain $$ math.
+     * @param string $description Markdown help text. Can contain $$ math.
      */
-    public function boo(string $variableName, array $title, bool $defaultValue = false, $help = null): void;
+    public function boo(string $variableName, array $title, bool $defaultValue = false, $description = ''): void;
 
     /**
      * Renders selection list
@@ -51,9 +51,9 @@ interface BlocksInterface
      * @param array $source List items. Items: (int|float|string) name => (int|float|string) value
      * @param string[] $title Header of block: [(string) ASCIIMath expression or empty string, (string) title text]
      * @param float|int|string $defaultValue Input default value
-     * @param string $help Markdown help text. Can contain $$ math.
+     * @param string $description Markdown help text. Can contain $$ math.
      */
-    public function lst(string $variableName, array $source, array $title, $defaultValue = null, string $help = ''): void;
+    public function lst(string $variableName, array $source, array $title, $defaultValue = '', string $description = ''): void;
 
     /**
      * Renders definition block, stores given value to named variable and renders math block with custom text.
@@ -63,7 +63,7 @@ interface BlocksInterface
      * @param string $help Markdown help text
      * @param string $gumpValidation GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators
      */
-    public function def(string $variableName, $result, string $mathExpression = '%%', string $help = '', string $gumpValidation = ''): void;
+    public function def(string $variableName, $result, string $mathExpression = '%%', string $description = '', string $gumpValidation = ''): void;
 
     /**
      * Renders toaster notification block.
@@ -164,7 +164,7 @@ interface BlocksInterface
      * @param float|int|string $value Can be "yes" for green, "no" for red or numeric converted to %. If $value < 1 then label is green.
      * @param string $text Additional text in label
      */
-    public function label($value, string $text = ''): void;
+    public function label($value, string $text = '', $description = ''): void;
 
     /**
      * Renders collapsible region INITIAL block. Call region1() method for closing.
