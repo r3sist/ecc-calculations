@@ -136,9 +136,9 @@ interface BlocksInterface
 
     /**
      * Builds markdown block.
-     * @param string $mdLight Multi-line markdown text
+     * @param string $markdownWithoutHtml Multi-line markdown text
      */
-    public function md(string $mdLight): void;
+    public function md(string $markdownWithoutHtml): void;
 
     /**
      * Renders calculation note block.
