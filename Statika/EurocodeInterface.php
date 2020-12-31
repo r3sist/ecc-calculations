@@ -6,11 +6,17 @@
 
 namespace Statika;
 
+use Base;
+use Profil\ProfilService;
+use Statika\Block\BlockService;
+use Statika\Bolt\BoltFactory;
+use Statika\Material\MaterialFactory;
+
 /**
  * Extension of BlocksInterface of Statika framework - renders and handles Eurocode related UI blocks and their data.
  * @todo document interface in README
  */
 interface EurocodeInterface extends BlocksInterface
 {
-    public function __construct();
+    public function __construct(Base $f3, BlockService $blockService, MaterialFactory $materialFactory, BoltFactory $boltFactory, ProfilService $profilService);
 }
