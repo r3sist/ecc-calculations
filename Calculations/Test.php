@@ -224,12 +224,14 @@ Class Test
 
 
 //
-//        $blc->hr();
-//        $blc->h4('img tests', '');
-//        $blc->img('https://structure.hu/img/ceh.svg', '***md caption*** [SVG source](https://structure.hu/img/ceh.svg)');
-//        $blc->img('https://sorfi.org/assets/img/brands/webextensions.png', '[PNG source](https://sorfi.org/assets/img/brands/webextensions.png)');
+        $blc->hr();
+        $blc->h4('img tests', '');
+        $blc->img('iVBORw0KGgoAAAANSUhEUgAAAHAAAAAQAQMAAAD02mlSAAAABlBMVEX///8AAABVwtN+AAAAbUlEQVQImZXPIQ6AMAyF4QaNaFAIQgjHWCpenphAICZQVTsH4ewUMoOkadL/kxX5M5hE4+jbseuXm5xRZ6Mfpk5TuolTaqFWUlmjKSxQEEpEP7TG6+XeNeJhXTggc8jAyCw+W49kfYKNTL8+uAGbtBj5c5IqYwAAAABJRU5ErkJggg==', 'base64 encoded PNG');
+
+        $blc->img('https://structure.hu/img/firms/CEH.svg', '***md caption*** [SVG source](https://structure.hu/img/ceh.svg)');
+        $blc->img('https://sorfi.org/assets/img/brands/webextensions.png', '[PNG source](https://sorfi.org/assets/img/brands/webextensions.png)');
 //        $blc->write('vendor/resist/ecc-calculations/canvas/snow3.jpg', [['size' => 14, 'x' => 90, 'y' => 35, 'text' => 'test']], '***write/md test***');
-//        $blc->hr();
+        $blc->hr();
 //
 //        $blc->hr();
 //        $blc->h4('label tests', '');
