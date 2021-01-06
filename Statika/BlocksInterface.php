@@ -66,15 +66,6 @@ interface BlocksInterface
     public function def(string $variableName, $result, string $mathExpression = '%%', string $description = '', string $gumpValidation = ''): void;
 
     /**
-     * Renders toaster notification block.
-     * @param string $textMdStrict One-line markdown string
-     * @param string $type Toaster type (color and icon)
-     * @options=["info", "warning", "error", "success"]
-     * @param string $titleMdStrict One-line markdown string for toaster heading
-     */
-    public function toast(string $textMdStrict, string $type = 'info', string $titleMdStrict = ''): void;
-
-    /**
      * Renders multi-input table as dynamic block.
      * @param string $variableName Stores data in F3-Hive with a name of _ prefix and this ID
      * @param array[] $fields Source data of table. Sub arrays keys: "name" => string, "title" => string, "type" => string: "value" "input", "key" => string: for value types, "sum" => bool
