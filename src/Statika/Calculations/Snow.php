@@ -130,17 +130,17 @@ Class Snow
             $svg->setFill('#eeeeee');
             if ($ec->b_2 < $ec->l_s) {
                 $svg->addPolygon([[10,120], [200,120], [200,90], [10,50], [10,120]]);
-                $svg->setColor('red');
+                $svg->setColor('cyan');
                 $svg->addText(150, 75, $ec->q_sum - $ec->proportion($ec->l_s, $ec->q_plus, $ec->b_2).' kN/m²');
             } else {
                 $svg->addPolygon([[10,120], [200,120], [200,100], [150,100], [10,50], [10,120]]);
-                $svg->setColor('red');
+                $svg->setColor('cyan');
                 $svg->addDimH(10, 140, 140, $ec->l_s);
                 $svg->addText(150, 75, 0.8*$ec->s_k.' kN/m²');
             }
             $svg->addText(10, 30, $ec->q_sum.' kN/m²');
 
-            $svg->setColor('black');
+            $svg->setColor('gray');
             $svg->addDimH(10, 190, 160, 'b2='.$ec->b_2);
             $ec->svg($svg, false, 'Hófelhalmozódás kiálló részek mellett, vízszinteshez közeli tetőkön');
             unset($svg);
@@ -193,28 +193,28 @@ Class Snow
             if ($ec->mu_s) {
                 $svg->addLine(450, 170, 210, 130); // mu_s-mu_w osztó
             }
-            $svg->setColor('red');
+            $svg->setColor('cyan');
             $svg->addText(380, 130, $qsum22.' kN/m²');
         } else {
             $svg->addPolygon([[350,180], [210,100], [210,180],]);
             if ($ec->mu_s) {
                 $svg->addLine(350, 180, 210, 130); // mu_s-mu_w osztó
             }
-            $svg->setColor('red');
+            $svg->setColor('cyan');
             $svg->addText(400, 160, $ec->s_k*0.8.' kN/m²');
             $svg->addDimH(210, 140, 20, 'ls='.$ec->l_s2);
         }
         $svg->addText(220, 90, $ec->q_sum2.' kN/m²');
 
         $svg->setFill('none');
-        $svg->setColor('blue');
+        $svg->setColor('gray');
         $svg->addDimH(10, 200, 280, 'b1='.$ec->b_1);
         $svg->addDimH(210, 240, 280, 'b2='.$ec->b_2);
         $svg->addDimH(110, 100, 20, 'b3='.$ec->b_3);
         $svg->addText(120, 40, 'Lecsúszó hó');
         $svg->addDimV(80, 120, 480, 'h='.$ec->h);
 
-        $svg->setColor('red');
+        $svg->setColor('cyan');
         $svg->addText(140, 195, 'μ1='.$ec->mu_1);
         $svg->addText(140, 160, 'μw='.$ec->mu_w);
         $svg->addText(140, 120, 'μs='.$ec->mu_s);
