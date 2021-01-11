@@ -8,6 +8,7 @@ namespace Statika\Calculations;
 
 use Statika\Calculations\Column;
 use \H3;
+use Statika\Ec;
 use Statika\EurocodeInterface;
 
 Class ColumnFire

@@ -8,6 +8,7 @@ namespace Statika\Calculations;
 
 use \H3;
 use resist\H3\Validator;
+use Statika\Ec;
 use Statika\EurocodeInterface;
 
 Class LinQ

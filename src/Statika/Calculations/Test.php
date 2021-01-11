@@ -8,6 +8,7 @@ namespace Statika\Calculations;
 
 use Exception;
 use resist\SVG\SVG;
+use Statika\Ec;
 use Statika\EurocodeInterface;
 
 Class Test

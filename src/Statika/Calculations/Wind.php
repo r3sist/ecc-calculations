@@ -9,6 +9,7 @@ namespace Statika\Calculations;
 use H3;
 use resist\SVG\SVG;
 use Exception;
+use Statika\Ec;
 use Statika\EurocodeInterface;
 
 Class Wind

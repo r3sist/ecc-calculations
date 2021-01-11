@@ -9,6 +9,7 @@ namespace Statika\Calculations;
 use H3;
 use Exception;
 use resist\SVG\SVG;
+use Statika\Ec;
 use Statika\EurocodeInterface;
 
 Class Beam

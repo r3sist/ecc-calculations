@@ -6,6 +6,7 @@
 
 namespace Statika\Calculations;
 
+use Statika\Ec;
 use Statika\EurocodeInterface;
 
 Class ShaftUplift

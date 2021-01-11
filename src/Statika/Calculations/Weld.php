@@ -9,6 +9,7 @@ namespace Statika\Calculations;
 use \Base;
 use \Statika\Blc;
 use \H3;
+use Statika\Ec;
 use Statika\EurocodeInterface;
 
 Class Weld

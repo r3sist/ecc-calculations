@@ -8,6 +8,7 @@ namespace Statika\Calculations;
 
 use H3;
 use resist\SVG\SVG;
+use Statika\Ec;
 use Statika\EurocodeInterface;
 
 Class Baseplate

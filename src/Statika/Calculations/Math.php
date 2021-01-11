@@ -8,6 +8,7 @@ namespace Statika\Calculations;
 
 use ASCIIMath2MathML\ASCIIMathPHP;
 use \H3;
+use Statika\Ec;
 use Statika\EurocodeInterface;
 
 Class Math

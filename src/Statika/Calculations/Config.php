@@ -9,6 +9,7 @@ namespace Statika\Calculations;
 use Base;
 use Psr\Log\LoggerInterface;
 use Statika\Calculation\CalculationMapper;
+use Statika\Ec;
 use User\AuthHelper;
 use User\UserdataMapper;
 use Statika\EurocodeInterface;

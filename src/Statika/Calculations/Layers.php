@@ -11,7 +11,7 @@ use Statika\EurocodeInterface;
 Class Layers
 {
     /**
-     * @param \Statika\Calculations\Ec $ec
+     * @param \Statika\Ec $ec
      */
     public function calc(EurocodeInterface $ec): void
     {

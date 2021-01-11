@@ -7,6 +7,7 @@
 namespace Statika\Calculations;
 
 use H3;
+use Statika\Ec;
 use Statika\EurocodeInterface;
 use Symfony\Component\Yaml\Yaml;
 use function array_key_exists;

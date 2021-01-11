@@ -86,7 +86,7 @@ Class SteelSection
     }
 
     /**
-     * @param \Statika\Calculations\Ec $s
+     * @param \Statika\Ec $s
      * @throws \Profil\Exceptions\InvalidSectionNameException
      */
     public function calc(EurocodeInterface $s): void

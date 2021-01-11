@@ -11,6 +11,7 @@ use \Statika\Blc;
 use Statika\BlocksInterface;
 use Statika\Bolt\BoltFactory;
 use Statika\Bolt\InvalidBoltNameException;
+use Statika\Ec;
 use Statika\Material\InvalidMaterialNameException;
 use \H3;
 use Profil\Exceptions\InvalidSectionNameException;
@@ -196,7 +197,7 @@ Class Bolt
     }
 
     /**
-     * @param \Statika\Calculations\Ec $ec
+     * @param \Statika\Ec $ec
      * @throws InvalidBoltNameException
      * @throws InvalidMaterialNameException
      * @throws InvalidSectionNameException
