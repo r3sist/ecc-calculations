@@ -1,13 +1,12 @@
 <?php declare(strict_types = 1);
-// Analysis of joints of welded steel truss according to Eurocodes - Calculation class for ECC framework
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * Analysis of joints of welded steel truss according to Eurocodes - Calculation class for Statika framework
+ * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+ */
 
-namespace Calculation;
+namespace Statika\Calculations;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
-use \H3;
+use Statika\EurocodeInterface;
 
 Class JointWeldedTruss
 {
@@ -18,9 +17,12 @@ Class JointWeldedTruss
         $this->weld = $weld;
     }
 
-    public function calc(Base $f3, Blc $blc, Ec $ec): void
+    /**
+     * @param Ec $ec
+     */
+    public function calc(EurocodeInterface $ec): void
     {
-        $blc->note('[Acélszerkezetek - 2. Speciális eljárások: 3. fejezet alapján] [EC3-1-8 7.]');
+        $ec->note('[Acélszerkezetek - 2. Speciális eljárások: 3. fejezet alapján] [EC3-1-8 7.]');
 
         $types = [
             'T' => 'T',
@@ -30,6 +32,6 @@ Class JointWeldedTruss
             'N' => 'N',
             'Y' => 'Y',
         ];
-        $blc->lst('type', $types, ['', 'Csomópont típus'], 'T');
+        $ec->lst('type', $types, ['', 'Csomópont típus'], 'T');
     }
 }

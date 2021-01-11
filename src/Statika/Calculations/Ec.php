@@ -4,17 +4,19 @@
  * Structure app - Ecc: Eurocode based calculations for structural design
  */
 
-namespace Ec;
+namespace Statika\Calculations;
 
 use Base;
-use Ecc\Bolt\BoltDTO;
-use Ecc\Bolt\BoltFactory;
-use Ecc\Bolt\InvalidBoltNameException;
-use Ecc\Material\InvalidMaterialNameException;
-use Ecc\Material\MaterialDTO;
-use Ecc\Material\MaterialFactory;
+use Statika\Block\BlockService;
+use Statika\Bolt\BoltDTO;
+use Statika\Bolt\BoltFactory;
+use Statika\Bolt\InvalidBoltNameException;
+use Statika\EurocodeInterface;
+use Statika\Material\InvalidMaterialNameException;
+use Statika\Material\MaterialDTO;
+use Statika\Material\MaterialFactory;
 use H3;
-use Ecc\Blc;
+use Statika\Blc;
 use InvalidArgumentException;
 use Exception;
 use Profil\Exceptions\InvalidSectionNameException;
@@ -25,10 +27,8 @@ use function in_array;
 
 
 /** Eurocode globals, helpers and predefined GUI elements for ECC framework */
-class Ec
+class Ec extends Blc implements EurocodeInterface
 {
-    private Base $f3;
-    private Blc $blc;
     private MaterialFactory $materialFactory;
     private BoltFactory $boltFactory;
     private ProfilService $profilService;
@@ -53,61 +53,37 @@ class Ec
      * Ec constructor.
      * Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA
      */
-    public function __construct(Base $f3, Blc $blc, MaterialFactory $materialFactory, BoltFactory $boltFactory, ProfilService $profilService)
+    public function __construct(Base $f3, BlockService $blockService, MaterialFactory $materialFactory, BoltFactory $boltFactory, ProfilService $profilService)
     {
-        $this->f3 = $f3;
-        $this->blc = $blc;
+        parent::__construct($f3, $blockService);
+
         $this->materialFactory = $materialFactory;
         $this->boltFactory = $boltFactory;
         $this->profilService = $profilService;
 
-        $this->vAlnum = v::alnum()->noWhitespace();
 
-        $this->f3->set('__GG', self::GG);
-        $this->f3->set('__GQ', self::GQ);
-        $this->f3->set('__GM0', self::GM0);
-        $this->f3->set('__GM1', self::GM1);
-        $this->f3->set('__GM2', self::GM2);
-        $this->f3->set('__GM3', self::GM3);
-        $this->f3->set('__GM3ser', self::GM3ser);
-        $this->f3->set('__GM6ser', self::GM6ser);
-        $this->f3->set('__Gc', self::Gc);
-        $this->f3->set('__Gs', self::GS);
-        $this->f3->set('__GS', self::GS);
-        $this->f3->set('__GcA', self::GcA);
-        $this->f3->set('__GSA', self::GSA);
+        $this->vAlnum = v::alnum()->noWhitespace();
     }
 
     /**
-     * Returns Material DTO by material name
-     * @param string $materialName Name of material like 'S235', '8.8', 'C25/30', 'B500'
+     * @param string|float $materialName
+     * @return MaterialDTO
      * @throws InvalidMaterialNameException
      */
-    public function getMaterial(string $materialName): MaterialDTO
+    public function getMaterial($materialName): MaterialDTO
     {
-        return $this->materialFactory->getMaterialByName($materialName);
+        return $this->materialFactory->getMaterialByName((string) $materialName);
     }
 
-    /**
-     * Returns Bolt DTO by bolt name
-     * @param string $boltName Name of bolt like 'M12' or 'M16'
-     * @throws InvalidBoltNameException
-     */
     public function getBolt(string $boltName): BoltDTO
     {
         return $this->boltFactory->getBoltByName($boltName);
     }
 
-    /**
-     * @param string $materialName
-     * @param float $t Thickness of relevant plate [mm]
-     * @return float Yield strength in [N/mm^2; MPa]
-     * @throws InvalidMaterialNameException
-     */
     public function fy(string $materialName, float $t): float
     {
         if ($t > 40) {
-            $this->blc->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:');
+            $this->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:');
 
             return $this->getMaterial($materialName)->fy40;
         }
@@ -115,15 +91,10 @@ class Ec
         return $this->getMaterial($materialName)->fy;
     }
 
-    /**
-     * @param float $t Thickness of relevant plate [mm]
-     * @return float Ultimate strength in [N/mm^2; MPa]
-     * @throws InvalidMaterialNameException
-     */
     public function fu(string $matName, float $t): float
     {
         if ($t > 40) {
-            $this->blc->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:');
+            $this->txt('Lemezvastagság miatt csökkentett szilárdság figyelembe véve:');
 
             return $this->getMaterial($matName)->fu40;
         }
@@ -131,28 +102,20 @@ class Ec
         return $this->getMaterial($matName)->fu;
     }
 
-    /**
-     * @param string[] $title
-     * @throws Exception
-     */
     public function materialListBlock(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Anyagminőség']): void
     {
         $list = $this->materialFactory->getMaterialNames();
         $source = array_combine($list, $list);
 
-        $this->blc->lst($variableName, $source, $title, $default);
+        $this->lst($variableName, $source, $title, $default);
     }
 
-    /**
-     * @param string[] $title
-     * @throws Exception
-     */
     public function structuralSteelMaterialListBlock(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Szerkezeti acél anyagminőség']): void
     {
         $list = $this->materialFactory->getStructuralSteelNames();
         $source = array_combine($list, $list);
 
-        $this->blc->lst($variableName, $source, $title, $default);
+        $this->lst($variableName, $source, $title, $default);
     }
 
     /**
@@ -164,7 +127,7 @@ class Ec
         $list = $this->materialFactory->getRebarNames();
         $source = array_combine($list, $list);
 
-        $this->blc->lst($variableName, $source, $title, $default);
+        $this->lst($variableName, $source, $title, $default);
     }
 
     /**
@@ -176,7 +139,7 @@ class Ec
         $list = $this->materialFactory->getBoltNames();
         $source = array_combine($list, $list);
 
-        $this->blc->lst($variableName, $source, $title, $default);
+        $this->lst($variableName, $source, $title, $default);
     }
 
     /**
@@ -188,7 +151,7 @@ class Ec
         $list = $this->materialFactory->getConcreteNames();
         $source = array_combine($list, $list);
 
-        $this->blc->lst($variableName, $source, $title, $default);
+        $this->lst($variableName, $source, $title, $default);
     }
 
     /**
@@ -200,7 +163,7 @@ class Ec
         $list = $this->materialFactory->getSteelNames();
         $source = array_combine($list, $list);
 
-        $this->blc->lst($variableName, $source, $title, $default);
+        $this->lst($variableName, $source, $title, $default);
     }
 
     /**
@@ -212,22 +175,16 @@ class Ec
         $list = $this->boltFactory->getBoltNames();
         $source = array_combine($list, $list);
 
-        $this->blc->lst($variableName, $source, $title, $default);
+        $this->lst($variableName, $source, $title, $default);
     }
 
-    /**
-     * @param mixed $defaultValueA
-     * @param mixed $defaultValueB
-     */
     public function wrapNumerics(string $variableNameA, string $variableNameB, string $stringTitle, $defaultValueA, $defaultValueB, string $unitAB = '', string $helpAB = '', string $middleText = '')
     {
-        $blc = $this->blc;
-
-        $blc->wrapper0($stringTitle);
-        $blc->numeric($variableNameA, [], (float)$defaultValueA, $unitAB, '', '');
-        $blc->wrapper1($middleText);
-        $blc->numeric($variableNameB, [], (float)$defaultValueB, $unitAB, '', '');
-        $blc->wrapper2($helpAB);
+         $this->wrapper0($stringTitle);
+            $this->numeric($variableNameA, ['', ''], (float)$defaultValueA, $unitAB, '', '');
+        $this->wrapper1($middleText);
+            $this->numeric($variableNameB, ['', ''], (float)$defaultValueB, $unitAB, '', '');
+        $this->wrapper2($helpAB);
     }
 
     /**
@@ -239,45 +196,46 @@ class Ec
      */
     public function wrapRebarCount(string $variableNameCount, string $variableNameRebar, string $titleString, int $defaultValueCount, int $defaultValueRebar = 16, string $help = '', string $variableNameA = ''): void
     {
-        $this->blc->wrapper0($titleString);
-        $this->blc->numeric($variableNameCount, [], $defaultValueCount, '', '');
-        $this->blc->wrapper1('×');
-        $this->rebarList($variableNameRebar, $defaultValueRebar, [], '');
+        $this->wrapper0($titleString);
+            $this->numeric($variableNameCount, ['', ''], $defaultValueCount, '', '');
+        $this->wrapper1('×');
+            $this->rebarList($variableNameRebar, $defaultValueRebar, ['', ''], '');
 
-        $A = floor($this->A($this->f3->get('_' . $variableNameRebar), $this->f3->get('_' . $variableNameCount)));
+        $A = floor($this->A($this->get($variableNameRebar), $this->get($variableNameCount)));
 
         if ($help === '') {
             $help = '$ = ' . $A . ' [mm^2]$';
         }
 
         if ($variableNameA !== '') {
-            $this->f3->set('_' . $variableNameA, $A);
+            $this->set($variableNameA, $A);
         }
 
-        $this->blc->wrapper2($help);
+        $this->wrapper2($help);
     }
 
     public function wrapRebarDistance(string $variableNameDistance, string $variableNameRebar, string $titleString, int $defaultValueDistance, int $defaultValueRebar = 16, string $help = ''): void
     {
-        $this->blc->wrapper0($titleString);
-        $this->rebarList($variableNameRebar, $defaultValueRebar, [], '');
-        $this->blc->wrapper1('/');
-        $this->blc->numeric($variableNameDistance, [], $defaultValueDistance, 'mm', '');
-        $this->blc->wrapper2($help);
+        $this->wrapper0($titleString);
+            $this->rebarList($variableNameRebar, $defaultValueRebar, ['', ''], '');
+        $this->wrapper1('/');
+            $this->numeric($variableNameDistance, ['', ''], $defaultValueDistance, 'mm', '');
+        $this->wrapper2($help);
     }
 
-    /**
-     * @deprecated
-     */
     public function rebarList(string $variableName = 'fi', float $default = 16, array $title = ['', 'Vasátmérő'], string $help = ''): void
     {
         $default = (int)$default;
 
         $source = ['ϕ6' => 6, 'ϕ8' => 8, 'ϕ10' => 10, 'ϕ12' => 12, 'ϕ14' => 14, 'ϕ16' => 16, 'ϕ20' => 20, 'ϕ25' => 25, 'ϕ28' => 28, 'ϕ32' => 32, 'ϕ36' => 36, 'ϕ40' => 40,];
-        $this->blc->lst($variableName, $source, $title, $default, $help);
+        $this->lst($variableName, $source, $title, $default, $help);
     }
 
-    public function rebarTable(string $variableNameBulk = 'As'): float
+    /**
+     * @param string $bulkName
+     * @return float
+     */
+    public function rebarTable(string $bulkName = 'As_bulk'): float
     {
         $fields = [
             ['name' => 50, 'title' => 'Ø8', 'type' => 'input', 'sum' => true],
@@ -289,10 +247,10 @@ class Ec
             ['name' => 616, 'title' => 'Ø28', 'type' => 'input', 'sum' => true],
             ['name' => 804, 'title' => 'Ø32', 'type' => 'input', 'sum' => true],
         ];
-        $this->blc->bulk('bulk' . H3::slug($variableNameBulk), $fields);
+        $this->bulk($bulkName, $fields);
         $As = 0;
-        if ($this->f3->exists('sum')) {
-            foreach ($this->f3->get('sum') as $key => $value) {
+        if ($this->__isset($bulkName.'_sum')) {
+            foreach ($this->__get($bulkName.'_sum') as $key => $value) {
                 $As = $As + $value * $key;
             }
         }
@@ -310,7 +268,7 @@ class Ec
     {
         $list = $this->profilService->getSectionFamilies();
         $source = array_combine($list, $list);
-        $this->blc->lst($variableName, $source, $title, $default, '');
+        $this->lst($variableName, $source, $title, $default, '');
     }
 
     /**
@@ -329,7 +287,7 @@ class Ec
             $list[$section['name']] = $section['name'];
         }
 
-        $this->blc->lst($variableName, $list, $title, $default);
+        $this->lst($variableName, $list, $title, $default);
     }
 
     /**
@@ -354,9 +312,9 @@ class Ec
             $scheme = array_keys($cleanedSectionData);
             $rows[] = array_values($cleanedSectionData);
 
-            $this->blc->region0('sectionTable', $cleanedSectionData['name'] . ' szelvény adatok');
-            $this->blc->tbl($scheme, $rows, 'tbl' . H3::slug($cleanedSectionData['name']), 'Mértékegységek, további információk: [structure.hu/profil](https://structure.hu/profil)'); // TODO check markdown why does not work
-            $this->blc->region1();
+            $this->region0('sectionTable', $cleanedSectionData['name'] . ' szelvény adatok');
+            $this->tbl($scheme, $rows, 'tbl' . H3::slug($cleanedSectionData['name']), 'Mértékegységek, további információk: [structure.hu/profil](https://structure.hu/profil)'); // TODO check markdown why does not work
+            $this->region1();
         }
     }
 
@@ -386,247 +344,100 @@ class Ec
 
         $matData = $this->materialFactory->getMaterialByName($materialName)->toArray();
 
-        $this->blc->region0('materialData' . $prefixForHive, 'Anyagjellemzők (' . $materialName . ')');
+        $this->region0('materialData' . $prefixForHive, 'Anyagjellemzők (' . $materialName . ')');
         foreach ($matData as $key => $value) {
             if ($value != 0) {
                 $this->f3->set('_' . $prefixForHive . $key, $value);
 
                 switch ($key) {
                     case 'fy':
-                        $this->blc->math('f_y = ' . $value . ' [N/(mm^2)]', 'Folyáshatár');
+                        $this->math('f_y = ' . $value . ' [N/(mm^2)]', 'Folyáshatár');
                         break;
                     case 'fu':
-                        $this->blc->math('f_u = ' . $value . ' [N/(mm^2)]', 'Szakító szilárdság');
+                        $this->math('f_u = ' . $value . ' [N/(mm^2)]', 'Szakító szilárdság');
                         break;
                     case 'fy40':
-                        $this->blc->math('f_(y,40) = ' . $value . ' [N/(mm^2)]', 'Folyáshatár 40+ mm lemez esetén');
+                        $this->math('f_(y,40) = ' . $value . ' [N/(mm^2)]', 'Folyáshatár 40+ mm lemez esetén');
                         break;
                     case 'fu40':
-                        $this->blc->math('f_(u,40) = ' . $value . ' [N/(mm^2)]', 'Szakító szilárdság 40+ mm lemez esetén');
+                        $this->math('f_(u,40) = ' . $value . ' [N/(mm^2)]', 'Szakító szilárdság 40+ mm lemez esetén');
                         break;
                     case 'betaw':
-                        $this->blc->math('beta_w = ' . $value . '', 'Hegesztési tényező');
+                        $this->math('beta_w = ' . $value . '', 'Hegesztési tényező');
                         break;
                     case 'fyd':
-                        $this->blc->math('f_(yd) = ' . $value . ' [N/(mm^2)]', 'Folyáshatár tervezési értéke');
+                        $this->math('f_(yd) = ' . $value . ' [N/(mm^2)]', 'Folyáshatár tervezési értéke');
                         break;
                     case 'fck':
-                        $this->blc->math('f_(ck) = ' . $value . '  [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) ($phi$ 150×300 henger)');
+                        $this->math('f_(ck) = ' . $value . '  [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) ($phi$ 150×300 henger)');
                         break;
                     case 'fckcube':
-                        $this->blc->math('f_(ck,cube) = ' . $value . ' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (□150×150×150 kocka)');
+                        $this->math('f_(ck,cube) = ' . $value . ' [N/(mm^2)]', 'Nyomószilárdság karakterisztikus értéke (5% kvantilis) (□150×150×150 kocka)');
                         break;
                     case 'fcm':
-                        $this->blc->math('f_(cm) = ' . $value . ' [N/(mm^2)]', 'Nyomószilárdság várható értéke');
-                        $this->blc->note('`f.cm = f.ck + 8`');
+                        $this->math('f_(cm) = ' . $value . ' [N/(mm^2)]', 'Nyomószilárdság várható értéke');
+                        $this->note('`f.cm = f.ck + 8`');
                         break;
                     case 'fctm':
-                        $this->blc->math('f_(ctm) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság várható értéke');
+                        $this->math('f_(ctm) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság várható értéke');
                         break;
                     case 'fctd':
-                        $this->blc->math('f_(ctd) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság tervezési értéke');
+                        $this->math('f_(ctd) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság tervezési értéke');
                         break;
                     case 'fctk005':
-                        $this->blc->math('f_(ctk,0.05) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság karakterisztikus értéke (5% kvantilis)');
+                        $this->math('f_(ctk,0.05) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság karakterisztikus értéke (5% kvantilis)');
                         break;
                     case 'fctk095':
-                        $this->blc->math('f_(ctk,0.95) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság karakterisztikus értéke (95% kvantilis)');
+                        $this->math('f_(ctk,0.95) = ' . $value . ' [N/(mm^2)]', 'Húzószilárdság karakterisztikus értéke (95% kvantilis)');
                         break;
                     case 'Ecm':
-                        $this->blc->math('E_(cm)= ' . $value . ' [(kN)/(mm^2)]', 'Beton rugalmassági modulusa');
-                        $this->blc->note('`E.cm = 22(f.cm/10)^0.3`');
-                        $this->blc->note('Húrmodulus `sigma.c = 0` és `sigma.c = 0.4f.cm` között.');
+                        $this->math('E_(cm)= ' . $value . ' [(kN)/(mm^2)]', 'Beton rugalmassági modulusa');
+                        $this->note('`E.cm = 22(f.cm/10)^0.3`');
+                        $this->note('Húrmodulus `sigma.c = 0` és `sigma.c = 0.4f.cm` között.');
                         break;
                     case 'Ecu3':
-                        $this->blc->math('E_(cu3)= ' . $value . ' []', '');
+                        $this->math('E_(cu3)= ' . $value . ' []', '');
                         break;
                     case 'Euk':
-                        $this->blc->math('E_(uk)= ' . $value . ' []', '');
+                        $this->math('E_(uk)= ' . $value . ' []', '');
                         break;
                     case 'Es':
-                        $this->blc->math('E_s= ' . $value . ' [(kN)/(mm^2)]', 'Betonacél rugalmassági modulusa');
+                        $this->math('E_s= ' . $value . ' [(kN)/(mm^2)]', 'Betonacél rugalmassági modulusa');
                         break;
                     case 'Fc0':
-                        $this->blc->math('F_(c0)= ' . $value . ' []', '');
+                        $this->math('F_(c0)= ' . $value . ' []', '');
                         break;
                     case 'F_c0':
-                        $this->blc->math('F_(_c0)= ' . $value . ' []', '');
+                        $this->math('F_(_c0)= ' . $value . ' []', '');
                         break;
                     case 'fbd':
-                        $this->blc->math('f_(bd)= ' . $value . ' [N/(mm^2)]', 'Beton és acél közti kapcsolati szilárdság bordás betonacéloknál, jó tapadás esetén');
-                        $this->blc->boo($prefixForHive . 'fbd07', ['', 'Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa'], true, 'Csökkentés 70%-ra');
+                        $this->math('f_(bd)= ' . $value . ' [N/(mm^2)]', 'Beton és acél közti kapcsolati szilárdság bordás betonacéloknál, jó tapadás esetén');
+                        $this->boo($prefixForHive . 'fbd07', ['', 'Rossz tapadás vagy 300 mm-nél magasabb gerendák felső vasa'], true, 'Csökkentés 70%-ra');
                         if ($this->f3->get('_' . $prefixForHive . 'fbd07')) {
-                            $this->blc->def($prefixForHive . 'fbd', $this->f3->get('_' . $prefixForHive . 'fbd') * 0.7, 'f_(bd) = f_(bd,eff) = f_(bd)*0.7 = %%');
+                            $this->def($prefixForHive . 'fbd', $this->f3->get('_' . $prefixForHive . 'fbd') * 0.7, 'f_(bd) = f_(bd,eff) = f_(bd)*0.7 = %%');
                         }
                         break;
                     case 'fcd':
-                        $this->blc->math('f_(cd) = ' . $value . ' [N/(mm^2)]', 'Nyomószilárdság tervezési értéke');
-                        $this->blc->note('`f.cd = f.ck/gamma.c`');
+                        $this->math('f_(cd) = ' . $value . ' [N/(mm^2)]', 'Nyomószilárdság tervezési értéke');
+                        $this->note('`f.cd = f.ck/gamma.c`');
                         break;
                     case 'fiinf28':
-                        $this->blc->math('phi(infty,28) = ' . $value . '', 'Kúszási tényező átlagos végértéke. (Állandó/tartós terhelés, 70% párat., 28 n. szil. terhelése, képlékeny konzisztencia betonozása, 100 mm egyenértékű lemezvast.)');
+                        $this->math('phi(infty,28) = ' . $value . '', 'Kúszási tényező átlagos végértéke. (Állandó/tartós terhelés, 70% párat., 28 n. szil. terhelése, képlékeny konzisztencia betonozása, 100 mm egyenértékű lemezvast.)');
                         break;
                     case 'Eceff':
-                        $this->blc->math('E_(c,eff) = ' . $value . ' [(kN)/(mm^2)] = ' . $value * 100 . ' [(kN)/(cm^2)] = '.$value * 1000 . ' [N/(mm^2)]', 'Beton hatásos alakváltozási tényezője a kúszás végértékével');
-                        $this->blc->note('`E.c.eff = E.cm/(1+fi.inf.28)`');
+                        $this->math('E_(c,eff) = ' . $value . ' [(kN)/(mm^2)] = ' . $value * 100 . ' [(kN)/(cm^2)] = '.$value * 1000 . ' [N/(mm^2)]', 'Beton hatásos alakváltozási tényezője a kúszás végértékével');
+                        $this->note('`E.c.eff = E.cm/(1+fi.inf.28)`');
                         break;
                     case 'alfat':
-                        $this->blc->math('alpha_t = ' . $value . ' [1/K]', 'Hőtágulási együttható');
+                        $this->math('alpha_t = ' . $value . ' [1/K]', 'Hőtágulási együttható');
                         break;
                     case 'Epsiloncsinf':
-                        $this->blc->math('epsilon_(cs,infty) = ' . $value . '', 'Beton zsugorodásának végértéke (kúszási tényezőnél adott feltételeknél)');
+                        $this->math('epsilon_(cs,infty) = ' . $value . '', 'Beton zsugorodásának végértéke (kúszási tényezőnél adott feltételeknél)');
                         break;
                 }
             }
         }
-        $this->blc->region1();
-    }
-
-    /**
-     * @throws InvalidMaterialNameException
-     * @todo move to Bolt()
-     * @todo test
-     */
-    public function FtRd(string $btName, $btMat, bool $verbose = true): float
-    {
-        $btMat = (string)$btMat;
-        $result = (0.9 * $this->getMaterial($btMat)->fu * $this->getBolt($btName)->As) / (1000 * $this->f3->get('__GM2'));
-        if ($verbose) {
-            $this->blc->note('Húzás általános képlet: $F_(t,Rd) = (0.9*f_(u,b)*A_s)/(gamma_(M2))$');
-        }
-        return $result;
-    }
-
-    /**
-     * @todo Move to Bolt()
-     * @todo test
-     */
-    public function BpRd(string $btName, string $stMat, float $t): float
-    {
-        $this->blc->note('`BpRd` kigombolódás általános képlet: $(0.6* pi *d_m*f_(u,s)*t)/(gamma_(M2))$');
-        return (0.6 * pi() * $this->getBolt($btName)->dm * $this->fu($stMat, $t) * $t) / (1000 * $this->f3->get('__GM2'));
-    }
-
-    // Nyírt csavar
-
-    /**
-     * @param float|string $btMat
-     * @todo Move to Bolt()
-     * @todo test
-     */
-    public function FvRd(string $btName, $btMat, float $n, float $As = 0): float
-    {
-        $btMat = (string)$btMat;
-        $n = (int)$n;
-
-        if ($As === (float)0) {
-            $As = $this->getBolt($btName)->As;
-        }
-        $result = (($this->getMaterial($btMat)->fu * $As * 0.6) / (1000 * $this->f3->get('__GM2'))) * $n;
-        $this->blc->note('$F_(v,Rd)$ nyírás általános képlet: $n*(0.6*f_(u,b)*A_s)/(gamma_(M2))$');
-
-        if ($btMat === '4.8' || $btMat === '5.8' || $btMat === '6.8' || $btMat === '10.9') {
-            $this->blc->note('$F_(v,Rd)$ nyírás: ' . $btMat . ' csavar anyag miatt az eredmény 80%-ra csökkentve.');
-            return $result * 0.8;
-        }
-        return $result;
-    }
-
-    // Csavar palástnyomás
-
-    /**
-     * @param float|string $btMat
-     * @throws InvalidMaterialNameException
-     * @todo Move to Bolt()
-     * @todo test
-     */
-    public function FbRd(string $btName, $btMat, string $stMat, float $ep1, float $ep2, float $t, bool $inner): float
-    {
-        $btMat = (string)$btMat;
-
-        $fust = $this->fu($stMat, $t);
-        $k1 = min(2.8 * ($ep2 / $this->getBolt($btName)->d0) - 1.7, 2.5);
-        $alphab = min(($ep1 / (3 * $this->getBolt($btName)->d0)), $this->getMaterial($btMat)->fu / $fust, 1);
-        if ($inner) {
-            $k1 = min(1.4 * ($ep2 / $this->getBolt($btName)->d0) - 1.7, 2.5);
-            $alphab = min(($ep1 / (3 * $this->getBolt($btName)->d0)) - 0.25, $this->getMaterial($btMat)->fu / $this->fu($stMat, $t), 1);
-        }
-        $result = $k1 * (($alphab * $fust * $this->getBolt($btName)->d * $t) / (1000 * $this->f3->get('__GM2')));
-        $this->f3->set('___k1', $k1);
-        $this->f3->set('___alphab', $alphab);
-        if ($result <= 0) {
-            return 0;
-        }
-        $this->blc->note('$F_(b,Rd)$ palástnyomás általános képlet: $k_1*(alpha_b*f_(u,s)*d*t)/(gamma_(M2))$');
-        return $result;
-    }
-
-    // Acél keresztmetszet nyírási ellenállása: Av [mm2], t [mm], returns [kN]
-    /**
-     * @todo Move to SteelSection()
-     * @todo test
-     */
-    public function VplRd(float $Av, string $matName, float $t): float
-    {
-        $Av = (float)$Av;
-        $t = (float)$t;
-        $fy = $this->fy($matName, $t);
-        return ($Av * $fy) / (sqrt(3) * $this->f3->get('__GM0') * 1000);
-    }
-
-    // Acél keresztmetszet húzási ellenállása: A Anet [mm2], t [mm], returns [kN]
-    /**
-     * @todo Move to SteelSection()
-     * @todo test
-     */
-    public function NtRd($A, $Anet, string $matName, $t): float
-    {
-        $A = (float)$A;
-        $Anet = (float)$Anet;
-        $t = (float)$t;
-        return min($this->NuRd($Anet, $matName, $t), $this->NplRd($A, $matName, $t));
-    }
-
-    /**
-     * @todo Move to SteelSection()
-     * @todo test
-     */
-    public function NuRd($Anet, string $matName, $t): float
-    {
-        $Anet = (float)$Anet;
-        $t = (float)$t;
-        $fu = $this->fu($matName, $t);
-        return (0.9 * $Anet * $fu) / ($this->f3->get('__GM2') * 1000);
-    }
-
-    /**
-     * @todo Move to SteelSection()
-     * @todo test
-     */
-    public function NplRd($A, string $matName, $t): float
-    {
-        $A = (float)$A;
-        $t = (float)$t;
-        $fy = $this->fy($matName, $t);
-        return ($A * $fy) / ($this->f3->get('__GM0') * 1000);
-    }
-
-    /**
-     * @todo Move to SteelSection()
-     * @todo test
-     */
-    public function NcRd(float $A, float $fy): float
-    {
-        return ($A * $fy) / ($this->f3->get('__GM0') * 1000);
-    }
-
-    /**
-     * @todo Move to SteelSection()
-     * @todo test
-     */
-    public function McRd(float $W, float $fy): float
-    {
-        return ($W * $fy) / ($this->f3->get('__GM0') * 1000000);
+        $this->region1();
     }
 
     /**
@@ -664,7 +475,7 @@ class Ec
         $Ivz = $sigmaV / $vmz;
         $qpz = H3::n3((1 + 7 * $Ivz) * 0.5 * (1.25 / 1000) * ($vmz * $vmz));
 
-        $blc = $this->blc;
+        $blc = $this;
         $blc->note('$v_(b,0) = ' . $vb0 . '; c_(dir) = ' . $cDir . '; c_(season) = ' . $cSeason . '; c_(al t) = ' . $cAlt . '$');
         $blc->note('$v_b = v_(b,0)*c_(dir)*c_(season)*c_(prob)*c_(al t) = ' . $vb . '$');
         $blc->note('$c_(0,z) = ' . $c0z . '; z_0 = ' . $z0 . '; z_(min) = ' . $zmin . '; k_r = ' . $kr . '; z = ' . $z . '$');

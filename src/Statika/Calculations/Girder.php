@@ -1,282 +1,285 @@
 <?php declare(strict_types = 1);
-// PC pretensioned beam analysis according to Eurocodes - Calculation class for ECC framework
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * PC pretensioned beam analysis according to Eurocodes - Calculation class for Statika framework
+ * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+ */
 
-namespace Calculation;
+namespace Statika\Calculations;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
 use \H3;
 use \resist\SVG\SVG;
+use Statika\EurocodeInterface;
 
 Class Girder
 {
-    public function calc(Base $f3, Blc $blc, Ec $ec): void
+    /**
+     * @param Ec $ec
+     * @throws \Exception
+     */
+    public function calc(EurocodeInterface $ec): void
     {
-        $blc->note('KG számításai alapján.');
-        $blc->region0('mat', 'Anyagminőségek');
-//            $ec->matList('cmat', 'C40/50', ['', 'Beton']);
-            $ec->concreteMaterialListBlock('cmat', 'C40/50');
-            $ec->spreadMaterialData($f3->_cmat, 'c');
-            $blc->def('gamma', 25, 'gamma := %% [(kN)/m^3]', 'Beton térfogatsúlya');
-//            $ec->matList('rmat', 'B500', ['', 'Lágyvas']);
-            $ec->rebarMaterialListBlock('rmat', 'B500', ['', 'Lágyvas']);
-            $ec->spreadMaterialData($f3->_rmat, 'r');
-            $blc->input('pmat', ['', 'Feszítőbetét jele'], 'Fp100-R2', '', '');
-        $blc->region1();
+        $ec->note('KG számításai alapján.');
+        $ec->region0('mat', 'Anyagminőségek');
 
-        $blc->region0('geometry', 'Geometria');
+            $ec->concreteMaterialListBlock('concreteMaterialName', 'C40/50');
+            $concreteMaterial = $ec->getMaterial($ec->concreteMaterialName);
+            $ec->def('gamma', 25, 'gamma := %% [(kN)/m^3]', 'Beton térfogatsúlya');
+
+            $ec->rebarMaterialListBlock('rebarMaterialName', 'B500', ['', 'Lágyvas']);
+            $rebarMaterial = $ec->getMaterial($ec->rebarMaterialName);
+            $ec->input('pmat', ['', 'Feszítőbetét jele'], 'Fp100-R2', '', '');
+        $ec->region1();
+
+        $ec->region0('geometry', 'Geometria');
             $griderTypes = ['Párhuzamos övű' => 0, 'Lejtett felső övű' => 1];
-            $blc->lst('griderType', $griderTypes, ['', 'Tartó típus'], '', '');
-            $f3->_1l = 0;
-            if ($f3->_griderType == 1) {
-                $blc->numeric('1l', ['', 'Övek közti lejtés'], 3, '%', 'Középtől szélek felé egyenletesen süllyedő lejtés felső övön');
+            $ec->lst('griderType', $griderTypes, ['', 'Tartó típus'], '', '');
+            $ec->il = 0;
+            if ($ec->griderType === '1') {
+                $ec->numeric('il', ['', 'Övek közti lejtés'], 3, '%', 'Középtől szélek felé egyenletesen süllyedő lejtés felső övön');
             }
-            $blc->numeric('l', ['l', 'Tartó teljes hossza'], 12.0, 'm', '');
+            $ec->numeric('l', ['l', 'Tartó teljes hossza'], 12.0, 'm', '');
             $griderSections = ['Négyszög' => 'r', 'T' => 't', 'I' => 'i'];
-            $blc->lst('griderSection', $griderSections, ['', 'Tartó keresztmetszet'], 't', '');
-            $blc->numeric('h', ['h', 'Tartó teljes magassága'], 900, 'mm', 'Középső keresztmetszetben');
-            if ($f3->_griderSection == 't' || $f3->_griderSection == 'i') {
-                $blc->numeric('b_ft', ['b_(ft)', 'Fejlemez szélessége'], 500, 'mm', '');
-                $blc->numeric('h_ft', ['h_(ft)', 'Fejlemez magassága'], 150, 'mm', '');
-                $blc->numeric('h_ht', ['h_(ht)', 'Fejkiékelés magassága'], 30, 'mm', '');
+            $ec->lst('griderSection', $griderSections, ['', 'Tartó keresztmetszet'], 't', '');
+            $ec->numeric('h', ['h', 'Tartó teljes magassága'], 900, 'mm', 'Középső keresztmetszetben');
+            if ($ec->griderSection === 't' || $ec->griderSection === 'i') {
+                $ec->numeric('b_ft', ['b_(ft)', 'Fejlemez szélessége'], 500, 'mm', '');
+                $ec->numeric('h_ft', ['h_(ft)', 'Fejlemez magassága'], 150, 'mm', '');
+                $ec->numeric('h_ht', ['h_(ht)', 'Fejkiékelés magassága'], 30, 'mm', '');
             } else {
-                $f3->_b_ft = 0;
-                $f3->_h_ft = 0;
-                $f3->_h_ht = 0;
+                $ec->b_ft = 0;
+                $ec->h_ft = 0;
+                $ec->h_ht = 0;
             }
 
-            $blc->numeric('b_w', ['b_w', 'Gerincvastagság'], 160, 'mm', '');
+            $ec->numeric('b_w', ['b_w', 'Gerincvastagság'], 160, 'mm', '');
 
-            if ($f3->_griderSection == 'i') {
-                $blc->numeric('b_fb', ['b_(fb)', 'Alsó öv szélessége'], 400, 'mm', '');
-                $blc->numeric('h_fb', ['h_(fb)', 'Alsó öv magassága'], 300, 'mm', '');
-                $blc->numeric('h_hb', ['h_(hb)', 'Alsó öv kiékelés magassága'], 30, 'mm', '');
+            if ($ec->griderSection === 'i') {
+                $ec->numeric('b_fb', ['b_(fb)', 'Alsó öv szélessége'], 400, 'mm', '');
+                $ec->numeric('h_fb', ['h_(fb)', 'Alsó öv magassága'], 300, 'mm', '');
+                $ec->numeric('h_hb', ['h_(hb)', 'Alsó öv kiékelés magassága'], 30, 'mm', '');
             } else {
-                $f3->_b_fb = $f3->_b_w;
-                $f3->_h_fb = 0;
-                $f3->_h_hb = 0;
+                $ec->b_fb = $ec->b_w;
+                $ec->h_fb = 0;
+                $ec->h_hb = 0;
             }
 
-            $blc->def('h_w', $f3->_h-($f3->_h_ft + $f3->_h_fb), 'h_w = %% [mm]', 'Gerinc magasság');
-            $blc->note('^ KG-nél T keresztmetszet esetén is van alsó öv');
-            $Act = $f3->_b_ft*$f3->_h_ft;
-            $Acb = $f3->_b_fb*$f3->_h_fb;
-            $Acw = $f3->_h_w*$f3->_b_w;
-            $Acwt = (($f3->_b_ft - $f3->_b_w)/2)*$f3->_h_ht;
-            $Acwb = (($f3->_b_fb - $f3->_b_w)/2)*$f3->_h_hb;
-            $blc->def('A_c', $Act + $Acb + $Acw + $Acwt + $Acwb, 'A_c = %% [mm^2]', 'Keresztmetszeti terület');
+            $ec->def('h_w', $ec->h-($ec->h_ft + $ec->h_fb), 'h_w = %% [mm]', 'Gerinc magasság');
+            $ec->note('^ KG-nél T keresztmetszet esetén is van alsó öv');
+            $Act = $ec->b_ft*$ec->h_ft;
+            $Acb = $ec->b_fb*$ec->h_fb;
+            $Acw = $ec->h_w*$ec->b_w;
+            $Acwt = (($ec->b_ft - $ec->b_w)/2)*$ec->h_ht;
+            $Acwb = (($ec->b_fb - $ec->b_w)/2)*$ec->h_hb;
+            $ec->def('A_c', $Act + $Acb + $Acw + $Acwt + $Acwb, 'A_c = %% [mm^2]', 'Keresztmetszeti terület');
 
-            if ($f3->_griderType == 1) {
-                $blc->def('h_0', $f3->_h - $f3->_l*1000*0.5*$f3->_1l/100, 'h_0 = %% [mm]', 'Lejtett tartó végső keresztmetszeti magassága');
-                $blc->def('h_w0', $f3->_h_0 -($f3->_h_ft + $f3->_h_fb), 'h_(w,0) = %% [mm]', 'Lejtett tartó végső keresztmetszeti gerinc magassága');
-                $Acw0 = $f3->_h_w0*$f3->_b_w;
-                $blc->def('A_c0', $Act + $Acb + $Acw0 + $Acwt + $Acwb, 'A_(c,0) = %% [mm^2]', 'Lejtett tartó végső keresztmetszeti terület');
+            if ($ec->griderType == 1) {
+                $ec->def('h_0', $ec->h - $ec->l*1000*0.5*$ec->il/100, 'h_0 = %% [mm]', 'Lejtett tartó végső keresztmetszeti magassága');
+                $ec->def('h_w0', $ec->h_0 -($ec->h_ft + $ec->h_fb), 'h_(w,0) = %% [mm]', 'Lejtett tartó végső keresztmetszeti gerinc magassága');
+                $Acw0 = $ec->h_w0*$ec->b_w;
+                $ec->def('A_c0', $Act + $Acb + $Acw0 + $Acwt + $Acwb, 'A_(c,0) = %% [mm^2]', 'Lejtett tartó végső keresztmetszeti terület');
             } else {
-                $f3->_A_c0 = $f3->_A_c;
+                $ec->A_c0 = $ec->A_c;
             }
-            $G = H3::n2(($f3->_A_c + $f3->_A_c0)/2*$f3->_l*$f3->_gamma/1000000);
-            $blc->def('G', $G, 'G = %% [kN]', 'Tartó súlya, $G = '. H3::n2($G/10) .' [t]$');
-            $blc->numeric('b', ['b', 'Terhelő mező szélessége, gerenda osztás'], 4, 'm', 'Szelemenes rendszer esetén a szelemenek terhelt szelemenszakaszok összes hossza a két oldalon');
-        $blc->region1();
+            $G = H3::n2(($ec->A_c + $ec->A_c0)/2*$ec->l*$ec->gamma/1000000);
+            $ec->def('G', $G, 'G = %% [kN]', 'Tartó súlya, $G = '. H3::n2($G/10) .' [t]$');
+            $ec->numeric('b', ['b', 'Terhelő mező szélessége, gerenda osztás'], 4, 'm', 'Szelemenes rendszer esetén a szelemenek terhelt szelemenszakaszok összes hossza a két oldalon');
+        $ec->region1();
 
-        $r = min(400/$f3->_h, 600/max($f3->_b_ft, $f3->_b_fb, $f3->_b_w)); // ratio
+        $r = min(400/$ec->h, 600/max($ec->b_ft, $ec->b_fb, $ec->b_w)); // ratio
         $svg = new SVG(600, 400);
-        $svg->addLine(0, 0, $r*$f3->_b_ft, 0); // top line
-        $svg->addLine(0, 0, 0, $r*$f3->_h_ft); // top flange left border
-        $svg->addLine($r*$f3->_b_ft, 0, $r*$f3->_b_ft, $r*$f3->_h_ft); // top flange right border
-        $svg->addLine(0, $r*$f3->_h_ft, $r*$f3->_b_ft/2-$r*$f3->_b_w/2, $r*$f3->_h_ft+$r*$f3->_h_ht);
-        $svg->addLine($r*$f3->_b_ft, $r*$f3->_h_ft, $r*$f3->_b_ft/2+$r*$f3->_b_w/2, $r*$f3->_h_ft+$r*$f3->_h_ht);
-        $svg->addLine($r*$f3->_b_ft/2+$r*$f3->_b_w/2, $r*$f3->_h_ft+$r*$f3->_h_ht, $r*$f3->_b_ft/2+$r*$f3->_b_w/2, $r*($f3->_h-$f3->_h_ft-$f3->_h_ht-$f3->_h_hb-$f3->_h_fb)); // web left
-        $svg->addLine($r*$f3->_b_ft/2-$r*$f3->_b_w/2, $r*$f3->_h_ft+$r*$f3->_h_ht, $r*$f3->_b_ft/2-$r*$f3->_b_w/2, $r*($f3->_h-$f3->_h_ft-$f3->_h_ht-$f3->_h_hb-$f3->_h_fb)); // web right
-//        $blc->svg($svg);
+        $svg->addLine(0, 0, $r*$ec->b_ft, 0); // top line
+        $svg->addLine(0, 0, 0, $r*$ec->h_ft); // top flange left border
+        $svg->addLine($r*$ec->b_ft, 0, $r*$ec->b_ft, $r*$ec->h_ft); // top flange right border
+        $svg->addLine(0, $r*$ec->h_ft, $r*$ec->b_ft/2-$r*$ec->b_w/2, $r*$ec->h_ft+$r*$ec->h_ht);
+        $svg->addLine($r*$ec->b_ft, $r*$ec->h_ft, $r*$ec->b_ft/2+$r*$ec->b_w/2, $r*$ec->h_ft+$r*$ec->h_ht);
+        $svg->addLine($r*$ec->b_ft/2+$r*$ec->b_w/2, $r*$ec->h_ft+$r*$ec->h_ht, $r*$ec->b_ft/2+$r*$ec->b_w/2, $r*($ec->h-$ec->h_ft-$ec->h_ht-$ec->h_hb-$ec->h_fb)); // web left
+        $svg->addLine($r*$ec->b_ft/2-$r*$ec->b_w/2, $r*$ec->h_ft+$r*$ec->h_ht, $r*$ec->b_ft/2-$r*$ec->b_w/2, $r*($ec->h-$ec->h_ft-$ec->h_ht-$ec->h_hb-$ec->h_fb)); // web right
+        $ec->svg($svg);
         unset($svg);
 
-//        $blc->def('c', 40, 'c = %% [mm]', 'Betonfedés');
-        $blc->numeric('c', ['c', 'Betonfedés'], 40, 'mm', 'Alul');
+        $ec->numeric('c', ['c', 'Betonfedés'], 40, 'mm', 'Alul');
 
         // =============================================================================================================
-        $blc->h1('Teher számítás');
-        $blc->boo('makeEd', ['', 'Mértékadó terhek kézi megadása'], false);
-        if ($f3->_makeEd) {
-            $blc->numeric('MEd', ['M_(Ed)', 'Mértékadó nyomaték tervezési értéke tartóközépen'], 100, 'kNm', '');
-            $blc->numeric('VEd', ['V_(Ed)', 'Mértékadó nyíróerő tervezési értéke tartóvégen'], 100, 'kN', '');
+        $ec->h1('Teher számítás');
+        $ec->boo('makeEd', ['', 'Mértékadó terhek kézi megadása'], false);
+        if ($ec->makeEd) {
+            $ec->numeric('MEd', ['M_(Ed)', 'Mértékadó nyomaték tervezési értéke tartóközépen'], 100, 'kNm', '');
+            $ec->numeric('VEd', ['V_(Ed)', 'Mértékadó nyíróerő tervezési értéke tartóvégen'], 100, 'kN', '');
         } else {
-            $blc->h2('Egyenletesen megoszló terhek', 'Trapézlemezről átadva');
-            $blc->numeric('m', ['m', 'Teherátadási módosító tényező'], 1.15, '', 'Trapézlemez többtámaszú hatása, közbenső támasznál; 1-től 1.25-ig');
-            $blc->h3('Önsúly terhek');
-            $blc->math('gamma_G = ' . $f3->__GG);
-            $blc->def('gd', H3::n2(((2 * $f3->_A_c + $f3->_A_c0) / 3 * ($f3->_gamma / 1000000)) * $f3->__GG), 'g_d = ((2A_c + A_(c,0))/3*gamma)*gamma_G = %% [(kN)/m]', 'Súlyozott vonalmenti átlagsúly tervezési értéke 1/3 hossznál lévő keresztmetszettel');
-            $blc->numeric('glk', ['g_(l,k)', 'Rétegrend karakterisztikus felületi terhe'], 0.6, 'kN/m2');
-            $blc->def('pld', H3::n2($f3->_glk * $f3->_b * $f3->__GG * $f3->_m), 'p_(l,d) = g_(l,k)*b*gamma_G*m = %% [(kN)/m]', 'Vonalmenti teher tervezési értéke');
-            $blc->h3('Installációs és egyéb terhek');
+            $ec->h2('Egyenletesen megoszló terhek', 'Trapézlemezről átadva');
+            $ec->numeric('m', ['m', 'Teherátadási módosító tényező'], 1.15, '', 'Trapézlemez többtámaszú hatása, közbenső támasznál; 1-től 1.25-ig');
+            $ec->h3('Önsúly terhek');
+            $ec->math('gamma_G = ' . $ec::GG);
+            $ec->def('gd', H3::n2(((2 * $ec->A_c + $ec->A_c0) / 3 * ($ec->gamma / 1000000)) * $ec::GG), 'g_d = ((2A_c + A_(c,0))/3*gamma)*gamma_G = %% [(kN)/m]', 'Súlyozott vonalmenti átlagsúly tervezési értéke 1/3 hossznál lévő keresztmetszettel');
+            $ec->numeric('glk', ['g_(l,k)', 'Rétegrend karakterisztikus felületi terhe'], 0.6, 'kN/m2');
+            $ec->def('pld', H3::n2($ec->glk * $ec->b * $ec::GG * $ec->m), 'p_(l,d) = g_(l,k)*b*gamma_G*m = %% [(kN)/m]', 'Vonalmenti teher tervezési értéke');
+            $ec->h3('Installációs és egyéb terhek');
             $psi0i = 1;
-            $blc->math('gamma_Q = ' . $f3->__GQ . '%%% Psi_(0,i) = ' . $psi0i);
-            $blc->numeric('qik', ['q_(i,k)', 'Installációs felületi teher karakterisztikus értéke'], 0.5, 'kN/m2');
-            $blc->def('pid', H3::n2($f3->_qik * $f3->_b * $f3->__GQ * $f3->_m * $psi0i), 'p_(i,d) = q_(i,k)*b*gamma_Q*m*Psi_(0,i) = %% [(kN)/m]', 'Vonalmenti teher tervezési értéke');
-            $blc->h3('Szél nyomásból adódó teher');
+            $ec->math('gamma_Q = ' . $ec::GQ . '%%% Psi_(0,i) = ' . $psi0i);
+            $ec->numeric('qik', ['q_(i,k)', 'Installációs felületi teher karakterisztikus értéke'], 0.5, 'kN/m2');
+            $ec->def('pid', H3::n2($ec->qik * $ec->b * $ec::GQ * $ec->m * $psi0i), 'p_(i,d) = q_(i,k)*b*gamma_Q*m*Psi_(0,i) = %% [(kN)/m]', 'Vonalmenti teher tervezési értéke');
+            $ec->h3('Szél nyomásból adódó teher');
             $psi0w = 0.6;
-            $blc->math('gamma_Q = ' . $f3->__GQ . '%%% Psi_(0,w) = ' . $psi0w);
-            $blc->numeric('qwk', ['q_(w,k)', 'Szél felületi teher karakterisztikus értéke'], 0.4, 'kN/m2', 'Torlónyomásból, belső szélnyomással, szélnyomáshoz ( **I** ) zóna');
-            $blc->def('pwd', H3::n2($f3->_qwk * $f3->_b * $f3->__GQ * $f3->_m * $psi0w), 'p_(w,d) = q_(w,k)*b*gamma_Q*m*Psi_(0,w) = %% [(kN)/m]', 'Vonalmenti teher tervezési értéke');
-            $blc->h3('Hó/hózug terhe', 'Kiemelt teher');
-            $blc->math('gamma_Q = ' . $f3->__GQ);
-            $blc->numeric('qsk', ['q_(s,k)', 'Hó/hózug felületi teher karakterisztikus értéke'], 1, 'kN/m2', '');
-            $blc->def('psd', H3::n2($f3->_qsk * $f3->_b * $f3->__GQ * $f3->_m), 'p_(s,d) = q_(w,k)*b*gamma_Q*m = %% [(kN)/m]', 'Vonalmenti teher tervezési értéke');
-            $blc->h3('Mértékadó megoszló teher');
-            $blc->def('pd', $f3->_gd + $f3->_pld + $f3->_pid + $f3->_pwd + $f3->_psd, 'p_d = g_d + p_(l,d) + p_(i,d) + p_(w,d) + p_(s,d) = %% [(kN)/m]', 'Vonalmenti tervezési érték');
-            $blc->h2('Koncentrált terhek');
-            $blc->boo('makeP', ['', 'Fenti megoszló terhek másodlagos tartóra hatnak először'], false, 'A másodlagos tartók koncentrált erőként jelennek meg');
-            $Mq = ($f3->_pd * $f3->_l * $f3->_l) / 8;
-            $Vq = $f3->_pd * ($f3->_l / 2);
-            if ($f3->_makeP) {
-                $blc->lst('QPart', ['2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6], ['', 'Tartó felosztása részekre'], 2);
-                $blc->numeric('Acp', ['A_(c,p)', 'Másodlagos tartók keresztmetszeti területe'], 160000, 'mm2', 'Önsúly számításhoz');
-                $blc->def('Gpd', H3::n2(($f3->_Acp / 1000000) * $f3->_b * $f3->_gamma * $f3->__GG), 'G_(p,d) = 2*(A_(c,p)*b/2)*gamma*gamma_G = %% [kN]', 'Másodlagos tartók önsúlyából származó koncentrált erő tervezési értéke. Főtartóra mindkét oldalról támaszkodik másodlagos tartó.');
-                $blc->txt('Tartóra megoszló önsúly hat ( $g_d = ' . $f3->_gd . ' [(kN)/m]$ ), egyedi koncentrált erő ( $P_1$ ), szelemen önsúlyból származó koncentrált erő ( $G_(p,d)$ ) és szétosztott koncentrált erő ( $Q_d$ ) (installációból, rétegrendről, hóból, szélből).');
-                $Mq = ($f3->_gd * $f3->_l * $f3->_l) / 8;
-                $Vq = $f3->_gd * ($f3->_l / 2);
-                $blc->def('Qtot', ($f3->_pd - $f3->_gd) * $f3->_l, 'Q_(t ot) = (p_d - g_d)*l = %% [kN]', 'Másodlagos tartók által gyűjtött erő főtartó terhelési mezőjében');
-//            $blc->def('PPartMode', 'Főtartók végein is van másodlagos tartó', true, '$P_(tot)$ erő szétosztásának módja');
-                $blc->txt('Főtartók végein is van másodlagos tartó.');
-                $blc->def('Qd', H3::n2($f3->_Qtot / $f3->_QPart + $f3->_Gpd), 'Q_d = Q_(t ot)/' . $f3->_QPart . ' + G_(p,d) = %% [kN]', 'Másodlagos tartók által leadott koncentrált erő');
-                $blc->hr();
+            $ec->math('gamma_Q = ' . $ec::GQ . '%%% Psi_(0,w) = ' . $psi0w);
+            $ec->numeric('qwk', ['q_(w,k)', 'Szél felületi teher karakterisztikus értéke'], 0.4, 'kN/m2', 'Torlónyomásból, belső szélnyomással, szélnyomáshoz ( **I** ) zóna');
+            $ec->def('pwd', H3::n2($ec->qwk * $ec->b * $ec::GQ * $ec->m * $psi0w), 'p_(w,d) = q_(w,k)*b*gamma_Q*m*Psi_(0,w) = %% [(kN)/m]', 'Vonalmenti teher tervezési értéke');
+            $ec->h3('Hó/hózug terhe', 'Kiemelt teher');
+            $ec->math('gamma_Q = ' . $ec::GQ);
+            $ec->numeric('qsk', ['q_(s,k)', 'Hó/hózug felületi teher karakterisztikus értéke'], 1, 'kN/m2', '');
+            $ec->def('psd', H3::n2($ec->qsk * $ec->b * $ec::GQ * $ec->m), 'p_(s,d) = q_(w,k)*b*gamma_Q*m = %% [(kN)/m]', 'Vonalmenti teher tervezési értéke');
+            $ec->h3('Mértékadó megoszló teher');
+            $ec->def('pd', $ec->gd + $ec->pld + $ec->pid + $ec->pwd + $ec->psd, 'p_d = g_d + p_(l,d) + p_(i,d) + p_(w,d) + p_(s,d) = %% [(kN)/m]', 'Vonalmenti tervezési érték');
+            $ec->h2('Koncentrált terhek');
+            $ec->boo('makeP', ['', 'Fenti megoszló terhek másodlagos tartóra hatnak először'], false, 'A másodlagos tartók koncentrált erőként jelennek meg');
+            $Mq = ($ec->pd * $ec->l * $ec->l) / 8;
+            $Vq = $ec->pd * ($ec->l / 2);
+            if ($ec->makeP) {
+                $ec->lst('QPart', ['2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6], ['', 'Tartó felosztása részekre'], 2);
+                $ec->numeric('Acp', ['A_(c,p)', 'Másodlagos tartók keresztmetszeti területe'], 160000, 'mm2', 'Önsúly számításhoz');
+                $ec->def('Gpd', H3::n2(($ec->Acp / 1000000) * $ec->b * $ec->gamma * $ec::GG), 'G_(p,d) = 2*(A_(c,p)*b/2)*gamma*gamma_G = %% [kN]', 'Másodlagos tartók önsúlyából származó koncentrált erő tervezési értéke. Főtartóra mindkét oldalról támaszkodik másodlagos tartó.');
+                $ec->txt('Tartóra megoszló önsúly hat ( $g_d = ' . $ec->gd . ' [(kN)/m]$ ), egyedi koncentrált erő ( $P_1$ ), szelemen önsúlyból származó koncentrált erő ( $G_(p,d)$ ) és szétosztott koncentrált erő ( $Q_d$ ) (installációból, rétegrendről, hóból, szélből).');
+                $Mq = ($ec->gd * $ec->l * $ec->l) / 8;
+                $Vq = $ec->gd * ($ec->l / 2);
+                $ec->def('Qtot', ($ec->pd - $ec->gd) * $ec->l, 'Q_(t ot) = (p_d - g_d)*l = %% [kN]', 'Másodlagos tartók által gyűjtött erő főtartó terhelési mezőjében');
+//            $ec->def('PPartMode', 'Főtartók végein is van másodlagos tartó', true, '$P_(tot)$ erő szétosztásának módja');
+                $ec->txt('Főtartók végein is van másodlagos tartó.');
+                $ec->def('Qd', H3::n2($ec->Qtot / $ec->QPart + $ec->Gpd), 'Q_d = Q_(t ot)/' . $ec->QPart . ' + G_(p,d) = %% [kN]', 'Másodlagos tartók által leadott koncentrált erő');
+                $ec->hr();
             }
-//        $blc->numeric('P1', ['P_1', 'Egyedi koncentrált teher **tervezési** értéke'], 0, 'kN', '');
-//        $blc->numeric('l1', ['l_1', 'Egyedi koncentrált teher távolsága tartó végtől'], 1, 'm');
+//        $ec->numeric('P1', ['P_1', 'Egyedi koncentrált teher **tervezési** értéke'], 0, 'kN', '');
+//        $ec->numeric('l1', ['l_1', 'Egyedi koncentrált teher távolsága tartó végtől'], 1, 'm');
 
-            $blc->h2('Mértékadó igénybevételek');
-            $blc->def('MEdq', $Mq, 'M_(Ed,q) = %% [kNm]', 'Nyomaték tartóközépen, tartóra ható megoszló terhelésből');
-            $blc->def('VEdq', $Vq, 'V_(Ed,q) = %% [kN]', 'Nyíróerő tartóvégen, tartóra ható megoszló terhelésből');
+            $ec->h2('Mértékadó igénybevételek');
+            $ec->def('MEdq', $Mq, 'M_(Ed,q) = %% [kNm]', 'Nyomaték tartóközépen, tartóra ható megoszló terhelésből');
+            $ec->def('VEdq', $Vq, 'V_(Ed,q) = %% [kN]', 'Nyíróerő tartóvégen, tartóra ható megoszló terhelésből');
             $MQ = 0;
             $VQ = 0;
-            if ($f3->_makeP) {
-                switch ($f3->_QPart) {
+            if ($ec->makeP) {
+                switch ($ec->QPart) {
                     case 2:
-                        $MQ = $f3->_Qd * $f3->_l / 4;
-                        $VQ = $f3->_Qd / 2;
+                        $MQ = $ec->Qd * $ec->l / 4;
+                        $VQ = $ec->Qd / 2;
                         break;
                     case 3:
-                        $MQ = $f3->_Qd * $f3->_l / 3;
-                        $VQ = $f3->_Qd;
+                        $MQ = $ec->Qd * $ec->l / 3;
+                        $VQ = $ec->Qd;
                         break;
                     case 4:
-                        $MQ = $f3->_Qd * $f3->_l / 2;
-                        $VQ = 3 * $f3->_Qd / 2;
+                        $MQ = $ec->Qd * $ec->l / 2;
+                        $VQ = 3 * $ec->Qd / 2;
                         break;
                     case 5:
-                        $MQ = $f3->_Qd * $f3->_l * 3 / 5;
-                        $VQ = 2 * $f3->_Qd;
+                        $MQ = $ec->Qd * $ec->l * 3 / 5;
+                        $VQ = 2 * $ec->Qd;
                         break;
                     case 6:
-                        $MQ = $f3->_Qd * $f3->_l * 3 / 4;
-                        $VQ = $f3->_Qd * 5 / 2;
+                        $MQ = $ec->Qd * $ec->l * 3 / 4;
+                        $VQ = $ec->Qd * 5 / 2;
                         break;
                 }
-                $blc->def('MEdQ', $MQ, 'M_(Ed,Q) = %% [kNm]', 'Nyomaték tartóközépen, másodlagos tartók terheléséből');
-                $blc->def('VEdQ', $VQ, 'V_(Ed,Q) = %% [kN]', 'Nyíróerő tartóvégen, másodlagos tartók terheléséből');
+                $ec->def('MEdQ', $MQ, 'M_(Ed,Q) = %% [kNm]', 'Nyomaték tartóközépen, másodlagos tartók terheléséből');
+                $ec->def('VEdQ', $VQ, 'V_(Ed,Q) = %% [kN]', 'Nyíróerő tartóvégen, másodlagos tartók terheléséből');
             }
-//          $MP1 = $f3->_P1;
-//          $blc->def('MEdP1', $MP1, 'M_(Ed,Q) = %% [kNm]', 'Nyomaték tartóközépen, másodlagos tartók terheléséből');
-//          $blc->def('VEdP1', $VP1, 'V_(Ed,Q) = %% [kN]', 'Nyíróerő tartóvégen, másodlagos tartók terheléséből');
-            $blc->success0('Ed');
-                $blc->def('MEd', $MQ + $Mq, 'M_(Ed) = %% [kNm]', 'Nyomaték tartóközépen');
-                $blc->def('VEd', $VQ + $Vq, 'V_(Ed) = %% [kN]', 'Nyíróerő tartóvégen');
-            $blc->success1();
+//          $MP1 = $ec->P1;
+//          $ec->def('MEdP1', $MP1, 'M_(Ed,Q) = %% [kNm]', 'Nyomaték tartóközépen, másodlagos tartók terheléséből');
+//          $ec->def('VEdP1', $VP1, 'V_(Ed,Q) = %% [kN]', 'Nyíróerő tartóvégen, másodlagos tartók terheléséből');
+            $ec->success0('Ed');
+                $ec->def('MEd', $MQ + $Mq, 'M_(Ed) = %% [kNm]', 'Nyomaték tartóközépen');
+                $ec->def('VEd', $VQ + $Vq, 'V_(Ed) = %% [kN]', 'Nyíróerő tartóvégen');
+            $ec->success1();
         }
 
 
 
         // =============================================================================================================
-        $blc->h1('Közelítő méretfelvétel');
-        $blc->note('@AR');
-        $blc->def('base', 20, 'base = %% [mm]', '$phi$ vasátmérő alkalmazása');
-        $f3->_Abase = $ec->A($f3->_base);
-        $blc->def('prenp', ceil((($f3->_MEd*1000000)/(0.8*$f3->_h*0.8*$f3->_rfyd))/$f3->_Abase), 'n_(phi 20) = ceil(((M_(Ed)*10^6)/(0.8*h*0.8*f_(yd)))/A_(phi 20)) = %%', 'Húzott pászma és lágyvas becsült száma összesen');
-        $blc->note('$0.8h$ hatékony magasság közelítése. $0.8f_(yd)$ repedés tágasság "biztosítására".');
+        $ec->h1('Közelítő méretfelvétel');
+        $ec->note('@AR');
+        $ec->def('base', 20, 'base = %% [mm]', '$phi$ vasátmérő alkalmazása');
+        $ec->Abase = $ec->A($ec->base);
+        $ec->def('prenp', ceil((($ec->MEd*1000000)/(0.8*$ec->h*0.8*$rebarMaterial->fyd))/$ec->Abase), 'n_(phi 20) = ceil(((M_(Ed)*10^6)/(0.8*h*0.8*f_(yd)))/A_(phi 20)) = %%', 'Húzott pászma és lágyvas becsült száma összesen');
+        $ec->note('$0.8h$ hatékony magasság közelítése. $0.8f_(yd)$ repedés tágasság "biztosítására".');
 
         // =============================================================================================================
-        $blc->h1('Keresztmetszet közelítő ellenőrzése');
-        $blc->h2('Középső keresztmetszet közelítő ellenőrzése hajlításra');
+        $ec->h1('Keresztmetszet közelítő ellenőrzése');
+        $ec->h2('Középső keresztmetszet közelítő ellenőrzése hajlításra');
 
-        $blc->h3('Húzott acélok becsült elrendezése');
-        $blc->def('prenp', ceil(($f3->_b_ft*$f3->_h_ft + ($f3->_b_ft - $f3->_b_w)/2*$f3->_h_ht)*($f3->_cfcd/($f3->_rfyd*$f3->_Abase))), '(n_(phi 20)) = ceil((b_(ft)*h_(ft) - (b_(ft) - b_w)/2*h_(ht))*f_(cd)/(f_(yd)*A_(phi20))) = %%', ' Nyomásra teljesen kihasznált felső öv alapján becsült összes vasszám');
-        $blc->def('a', floor((($f3->_b_fb - 2*$f3->_c)/(2*$f3->_base)) + 1), '(a) = floor((b_(fb) - 2c)/(2*D_(phi20)) + 1) = %%', 'Vaselrendezés - pászma oszlopok száma');
-        $blc->def('ratio', 0.75, 'ratio := %%', 'Pászma-lágyvas arány');
-        $blc->def('bs', 1, 'b_s := %%', 'Lágyvas sorok száma');
-        $blc->def('b', ceil((0.75*$f3->_prenp)/$f3->_a + $f3->_bs), '(b) = ceil((ratio*n_(phi 20))/a + b_s) = %%', 'Vaselrendezés - sorok száma');
-        $blc->def('as', ($f3->_b*$f3->_base + ($f3->_b - 1)*$f3->_base)/2 + $f3->_c, '(a_s) = (b*base + (b - 1)*base)/2 + c = %% [mm]', 'Húzott acélok távolsága alsó széltől');
-        $blc->note('^ KG-nél más - ELLENŐRIZENDŐ!');
-        $blc->def('d', $f3->_h - $f3->_as, '(d) = h - a_s = %% [mm]');
+        $ec->h3('Húzott acélok becsült elrendezése');
+        $ec->def('prenp', ceil(($ec->b_ft*$ec->h_ft + ($ec->b_ft - $ec->b_w)/2*$ec->h_ht)*($concreteMaterial->fcd/($rebarMaterial->fyd*$ec->Abase))), '(n_(phi 20)) = ceil((b_(ft)*h_(ft) - (b_(ft) - b_w)/2*h_(ht))*f_(cd)/(f_(yd)*A_(phi20))) = %%', ' Nyomásra teljesen kihasznált felső öv alapján becsült összes vasszám');
+        $ec->def('a', floor((($ec->b_fb - 2*$ec->c)/(2*$ec->base)) + 1), '(a) = floor((b_(fb) - 2c)/(2*D_(phi20)) + 1) = %%', 'Vaselrendezés - pászma oszlopok száma');
+        $ec->def('ratio', 0.75, 'ratio := %%', 'Pászma-lágyvas arány');
+        $ec->def('bs', 1, 'b_s := %%', 'Lágyvas sorok száma');
+        $ec->def('b', ceil((0.75*$ec->prenp)/$ec->a + $ec->bs), '(b) = ceil((ratio*n_(phi 20))/a + b_s) = %%', 'Vaselrendezés - sorok száma');
+        $ec->def('as', ($ec->b*$ec->base + ($ec->b - 1)*$ec->base)/2 + $ec->c, '(a_s) = (b*base + (b - 1)*base)/2 + c = %% [mm]', 'Húzott acélok távolsága alsó széltől');
+        $ec->note('^ KG-nél más - ELLENŐRIZENDŐ!');
+        $ec->def('d', $ec->h - $ec->as, '(d) = h - a_s = %% [mm]');
 
-        $blc->h3('Szükséges húzott acél mennyisége');
+        $ec->h3('Szükséges húzott acél mennyisége');
         // [kNm] [cm]:
-        $blc->def('z', H3::n4(1-sqrt(1-200*($f3->_MEd)/(0.1*$f3->_b_ft*pow(0.1*$f3->_d,2)*($f3->_cfcd/10)))), 'zeta = 1-sqrt(1-200*M_(Ed)/(b_(ft)*d^2*f_(cd))) =%%', 'Nyomott zóna magassághányada');
-        $blc->def('x', H3::n0($f3->_z*$f3->_d), '(x) = zeta*d = %% [mm]', 'Nyomott zóna becsült magassága');
-        $blc->def('Asmin', H3::n0($f3->_b_ft*$f3->_x*($f3->_cfcd/$f3->_rfyd)), 'A_(s,min) = b*x*f_(cd)/f_(yd) = %% [mm^2]', 'Szükséges húzott acélmennyiség');
-        $blc->def('umin', H3::n4($f3->_Asmin/$f3->_A_c), 'mu_(s,min) = A_(s,min)/A_c = %%', 'Szükséges húzott vashányad');
+        $ec->def('z', H3::n4(1-sqrt(1-200*($ec->MEd)/(0.1*$ec->b_ft* ((0.1 * $ec->d) ** 2) *($concreteMaterial->fcd/10)))), 'zeta = 1-sqrt(1-200*M_(Ed)/(b_(ft)*d^2*f_(cd))) =%%', 'Nyomott zóna magassághányada');
+        $ec->def('x', H3::n0($ec->z*$ec->d), '(x) = zeta*d = %% [mm]', 'Nyomott zóna becsült magassága');
+        $ec->def('Asmin', H3::n0($ec->b_ft*$ec->x*($concreteMaterial->fcd/$rebarMaterial->fyd)), 'A_(s,min) = b*x*f_(cd)/f_(yd) = %% [mm^2]', 'Szükséges húzott acélmennyiség');
+        $ec->def('umin', H3::n4($ec->Asmin/$ec->A_c), 'mu_(s,min) = A_(s,min)/A_c = %%', 'Szükséges húzott vashányad');
 
-        $blc->txt('Javasolt vasalás:');
-        $blc->def('np', ceil($f3->_Asmin/$f3->_Abase*$f3->_ratio), 'n_p = ceil(A_(s,min)/A_(phi'.$f3->_base.')*ratio) = %%', 'Pászmák száma');
+        $ec->txt('Javasolt vasalás:');
+        $ec->def('np', ceil($ec->Asmin/$ec->Abase*$ec->ratio), 'n_p = ceil(A_(s,min)/A_(phi'.$ec->base.')*ratio) = %%', 'Pászmák száma');
         // TODO min 2
-        $blc->def('ns', ceil(($f3->_Asmin - $f3->_np*$f3->_Abase)/$f3->_Abase), 'n_s = %%', 'Lágyvasak száma');
-        $blc->txt('', 'Pászva-lágyvas arány: $'.$f3->_np/($f3->_np + $f3->_ns)*100 .'%$');
-        $blc->txt('Alkalmazott vasalás:');
-        $blc->numeric('np', ['n_p', 'Alkalmazott pászmák száma'], $f3->_np, '', '');
-        $blc->numeric('ns', ['n_s', 'Alkalmazott lágyvasak száma'], $f3->_ns, '', '');
-        $As = $f3->_ns + $f3->_np;
-        $blc->def('n', $As, 'n = %%');
-        $blc->numeric('a', ['a', 'Alkalmazott vaselrendezés pászma oszlopok száma'], $f3->_a, '', '');
-        $blc->def('b', ceil($f3->_np/$f3->_a) + $f3->_bs, 'b = ceil(n_p/a) + b_s = %%', 'Alkalamzott vaselrendezés sorok száma');
-        $blc->def('As', H3::n0($f3->_n*$f3->_Abase), 'A_s = n * A_(phi '.$f3->_base.') = %% [mm^2]', 'Alkalamzott húzott acélmennyiség');
-        $blc->def('u', H3::n4($f3->_As/$f3->_A_c), 'mu_s = A_(s)/A_c = %%', 'Alkalamzott helyettesítő húzott vashányad');
-        $blc->def('as', ($f3->_b*$f3->_base + ($f3->_b - 1)*$f3->_base)/2 + $f3->_c, 'a_s = (b*base + (b - 1)*base)/2 + c = %% [mm]', 'Húzott acélok súlypontjának távolsága alsó széltől');
-        $blc->note('^ KG-nél nagyon más - ELLENŐRIZENDŐ!');
-        $blc->def('d', $f3->_h - $f3->_as, 'd = h - a_s = %% [mm]');
-        $blc->def('x', H3::n0($f3->_As*$f3->_rfyd/($f3->_b_ft*$f3->_cfcd)), 'x = A_s*f_(yd)/(b_(ft)*f_(cd)) = %% [mm]', 'Nyomott zóna magassága');
-        if ($f3->_x <= $f3->_h_ft + $f3->_h_ht) {
-            $blc->label('yes', 'A nyomott zóna a kiékelt fejlemezen belül van');
+        $ec->def('ns', ceil(($ec->Asmin - $ec->np*$ec->Abase)/$ec->Abase), 'n_s = %%', 'Lágyvasak száma');
+        $ec->txt('', 'Pászva-lágyvas arány: $'.$ec->np/($ec->np + $ec->ns)*100 .'%$');
+        $ec->txt('Alkalmazott vasalás:');
+        $ec->numeric('np', ['n_p', 'Alkalmazott pászmák száma'], $ec->np, '', '');
+        $ec->numeric('ns', ['n_s', 'Alkalmazott lágyvasak száma'], $ec->ns, '', '');
+        $As = $ec->ns + $ec->np;
+        $ec->def('n', $As, 'n = %%');
+        $ec->numeric('a', ['a', 'Alkalmazott vaselrendezés pászma oszlopok száma'], $ec->a, '', '');
+        $ec->def('b', ceil($ec->np/$ec->a) + $ec->bs, 'b = ceil(n_p/a) + b_s = %%', 'Alkalamzott vaselrendezés sorok száma');
+        $ec->def('As', H3::n0($ec->n*$ec->Abase), 'A_s = n * A_(phi '.$ec->base.') = %% [mm^2]', 'Alkalamzott húzott acélmennyiség');
+        $ec->def('u', H3::n4($ec->As/$ec->A_c), 'mu_s = A_(s)/A_c = %%', 'Alkalamzott helyettesítő húzott vashányad');
+        $ec->def('as', ($ec->b*$ec->base + ($ec->b - 1)*$ec->base)/2 + $ec->c, 'a_s = (b*base + (b - 1)*base)/2 + c = %% [mm]', 'Húzott acélok súlypontjának távolsága alsó széltől');
+        $ec->note('^ KG-nél nagyon más - ELLENŐRIZENDŐ!');
+        $ec->def('d', $ec->h - $ec->as, 'd = h - a_s = %% [mm]');
+        $ec->def('x', H3::n0($ec->As*$rebarMaterial->fyd/($ec->b_ft*$concreteMaterial->fcd)), 'x = A_s*f_(yd)/(b_(ft)*f_(cd)) = %% [mm]', 'Nyomott zóna magassága');
+        if ($ec->x <= $ec->h_ft + $ec->h_ht) {
+            $ec->label('yes', 'A nyomott zóna a kiékelt fejlemezen belül van');
         } else {
-            $blc->label('no', 'A fejlemez magasságát növelni javasolt!');
+            $ec->label('no', 'A fejlemez magasságát növelni javasolt!');
         }
-        $blc->def('z', H3::n4($f3->_x/$f3->_d), 'zeta = x/d = %%', 'Nyomott zóna magassághányada');
-        $blc->def('zmax', H3::n4((0.16 - 0.27)/(22 - 11)*($f3->_l*1000)/$f3->_d + 0.38), 'zeta_(max L/H) =  (0.16-0.27)/(22-11)*l/d*100+0.38 = %%', 'Nyomott zóna magassághányadának korlátozása');
-        $blc->note('^ KG önkényes képlet');
-        if ($f3->_z < $f3->_zmax/1.2) {
-            $blc->label('yes', 'Kevésbé kihasznált km.');
-        } elseif ($f3->_z > $f3->_zmax*1.1) {
-            $blc->label('no', 'Erősen kihasznált km.');
+        $ec->def('z', H3::n4($ec->x/$ec->d), 'zeta = x/d = %%', 'Nyomott zóna magassághányada');
+        $ec->def('zmax', H3::n4((0.16 - 0.27)/(22 - 11)*($ec->l*1000)/$ec->d + 0.38), 'zeta_(max L/H) =  (0.16-0.27)/(22-11)*l/d*100+0.38 = %%', 'Nyomott zóna magassághányadának korlátozása');
+        $ec->note('^ KG önkényes képlet');
+        if ($ec->z < $ec->zmax/1.2) {
+            $ec->label('yes', 'Kevésbé kihasznált km.');
+        } elseif ($ec->z > $ec->zmax*1.1) {
+            $ec->label('no', 'Erősen kihasznált km.');
         } else {
-            $blc->label('yes', 'Jól kihasznált km.');
+            $ec->label('yes', 'Jól kihasznált km.');
         }
 
-        $blc->success0('MRd');
-            $blc->def('MRd', ($f3->_As*$f3->_rfyd*($f3->_d-$f3->_x/2))/1000000, 'M_(Rd) = A_s*f_(yd)*(d-x/2) = %% [kNm]', 'Hajlítási teherbírás tervezési értéke. $M_(Ed) = '.$f3->_MEd.' [kNm]$');
-            $blc->label($f3->_MEd/$f3->_MRd, 'kihasználtság');
-        $blc->success1();
+        $ec->success0('MRd');
+            $ec->def('MRd', ($ec->As*$rebarMaterial->fyd*($ec->d-$ec->x/2))/1000000, 'M_(Rd) = A_s*f_(yd)*(d-x/2) = %% [kNm]', 'Hajlítási teherbírás tervezési értéke. $M_(Ed) = '.$ec->MEd.' [kNm]$');
+            $ec->label($ec->MEd/$ec->MRd, 'kihasználtság');
+        $ec->success1();
 
-        $blc->h2('Öv és gerinc elnyíródásának vizsgálata', 'Csatlakozási felületeken fellépő nyírófeszültség');
-        $blc->note('KG alapján. *Vasbeton szerkezetek (2016) 6.5.3. Nyírás a gerinc és a fejlemez között* fejezete is tartalamaz egy eljárást');
-        $blc->note('$V_(Ed) = beta*V_(Ed)/(z*b_i)$');
-        $blc->def('beta', 1, 'beta = %%', 'A később készült betonban a működő hosszirányú erő és a teljes hosszirányú erő aránya a vizsgált keresztmetszetben');
-        $blc->math('V_(Ed) = '.$f3->_VEd.' [kN]', 'Kereszt irányú nyíróerő');
-        $blc->def('zV', $f3->_d - $f3->_x/2, 'z_V = d - x/2 = %% [mm]', 'Együttdolgozó keresztmetszet belső karja');
-        $blc->def('bV', $f3->_b_w - 120, 'b_V = b_w - 120 [mm] = %% [mm]', 'Csatlakozási felület szélessége');
-        $blc->def('vEd', $f3->_beta*($f3->_VEd*1000)/$f3->_zV/$f3->_bV, 'v_(Ed) = beta*V_(Ed)/(z_V*b_V) = %% [N/(mm^2)]');
+        $ec->h2('Öv és gerinc elnyíródásának vizsgálata', 'Csatlakozási felületeken fellépő nyírófeszültség');
+        $ec->note('KG alapján. *Vasbeton szerkezetek (2016) 6.5.3. Nyírás a gerinc és a fejlemez között* fejezete is tartalamaz egy eljárást');
+        $ec->note('$V_(Ed) = beta*V_(Ed)/(z*b_i)$');
+        $ec->def('beta', 1, 'beta = %%', 'A később készült betonban a működő hosszirányú erő és a teljes hosszirányú erő aránya a vizsgált keresztmetszetben');
+        $ec->math('V_(Ed) = '.$ec->VEd.' [kN]', 'Kereszt irányú nyíróerő');
+        $ec->def('zV', $ec->d - $ec->x/2, 'z_V = d - x/2 = %% [mm]', 'Együttdolgozó keresztmetszet belső karja');
+        $ec->def('bV', $ec->b_w - 120, 'b_V = b_w - 120 [mm] = %% [mm]', 'Csatlakozási felület szélessége');
+        $ec->def('vEd', $ec->beta*($ec->VEd*1000)/$ec->zV/$ec->bV, 'v_(Ed) = beta*V_(Ed)/(z_V*b_V) = %% [N/(mm^2)]');
 
-        $blc->info0();
-            $blc->txt('*STB* képlet alapján - $(S*T)/(b*I)$:', '$T = V_(Ed); b = b_V$');
-            $blc->def('hf', $f3->_x, 'h_f = x = %% [mm]', 'Nyomott öv vastagsága');
-            $blc->math('b_(ft) = '.$f3->_b_ft.' [mm]', 'Övszélesség');
-            $blc->def('hw2', $f3->_h_ht + $f3->_h_w + $f3->_h_hb + ($f3->_h_ft - $f3->_x), 'h_(w2) = %% [mm]', 'Gerincmagasság');
-            $blc->def('sp', H3::n0(($f3->_hf*$f3->_b_ft*$f3->_hf/2 + $f3->_hw2*$f3->_b_w*($f3->_hf + $f3->_hw2/2) + $f3->_h_fb*$f3->_b_fb*($f3->_hf + $f3->_hw2 + $f3->_h_fb/2))/($f3->_hf*$f3->_b_ft + $f3->_hw2*$f3->_b_w + $f3->_h_fb*$f3->_b_fb)), 's_p = %% [mm]', 'Súlypont fentről számítva');
-            $blc->note('^ KG-nél T keresztmetszet esetén is van alsó öv');
-            $blc->def('S', H3::n0(($f3->_hf*$f3->_b_ft*($f3->_sp - $f3->_hf/2))/1000), 'S = h_f*b_(ft)*(s_p - h_f/2) = %% [cm^3]', 'Öv tehetetlenségi nyomatéka');
-            $blc->def('I', H3::n0(($f3->_hf*$f3->_b_ft*pow($f3->_hf/2 - $f3->_sp, 2) + $f3->_hw2*$f3->_b_w*pow($f3->_hf + $f3->_hw2/2 - $f3->_sp, 2) + $f3->_h_fb*$f3->_b_fb*pow($f3->_hf + $f3->_hw2 + $f3->_h_fb/2 - $f3->_sp, 2))/10000), 'I = %% [cm^4]', 'Inercia');
-            $blc->def('I', (     $f3->_hw2*$f3->_b_w*pow($f3->_hf + $f3->_hw2/2 - $f3->_sp, 2)      )/10000 +1, 'I = %% [cm^4]', 'Inercia');
-            $blc->def('vEdSTB', ($f3->_S*$f3->_VEd)/(($f3->_bV/10)*$f3->_I), 'v_(Ed,STB) = (S*V_(Ed))/(b_V*I) = %% [(kN)/(cm^2)]');
-            $blc->note('^ TODO rossz');
-        $blc->info1();
+        $ec->info0();
+            $ec->txt('*STB* képlet alapján - $(S*T)/(b*I)$:', '$T = V_(Ed); b = b_V$');
+            $ec->def('hf', $ec->x, 'h_f = x = %% [mm]', 'Nyomott öv vastagsága');
+            $ec->math('b_(ft) = '.$ec->b_ft.' [mm]', 'Övszélesség');
+            $ec->def('hw2', $ec->h_ht + $ec->h_w + $ec->h_hb + ($ec->h_ft - $ec->x), 'h_(w2) = %% [mm]', 'Gerincmagasság');
+            $ec->def('sp', H3::n0(($ec->hf*$ec->b_ft*$ec->hf/2 + $ec->hw2*$ec->b_w*($ec->hf + $ec->hw2/2) + $ec->h_fb*$ec->b_fb*($ec->hf + $ec->hw2 + $ec->h_fb/2))/($ec->hf*$ec->b_ft + $ec->hw2*$ec->b_w + $ec->h_fb*$ec->b_fb)), 's_p = %% [mm]', 'Súlypont fentről számítva');
+            $ec->note('^ KG-nél T keresztmetszet esetén is van alsó öv');
+            $ec->def('S', H3::n0(($ec->hf*$ec->b_ft*($ec->sp - $ec->hf/2))/1000), 'S = h_f*b_(ft)*(s_p - h_f/2) = %% [cm^3]', 'Öv tehetetlenségi nyomatéka');
+            $ec->def('I', H3::n0(($ec->hf*$ec->b_ft* (($ec->hf / 2 - $ec->sp) ** 2) + $ec->hw2*$ec->b_w*pow($ec->hf + $ec->hw2/2 - $ec->sp, 2) + $ec->h_fb*$ec->b_fb*pow($ec->hf + $ec->hw2 + $ec->h_fb/2 - $ec->sp, 2))/10000), 'I = %% [cm^4]', 'Inercia');
+            $ec->def('I', (     $ec->hw2*$ec->b_w* (($ec->hf + $ec->hw2 / 2 - $ec->sp) ** 2))/10000 +1, 'I = %% [cm^4]', 'Inercia');
+            $ec->def('vEdSTB', ($ec->S*$ec->VEd)/(($ec->bV/10)*$ec->I), 'v_(Ed,STB) = (S*V_(Ed))/(b_V*I) = %% [(kN)/(cm^2)]');
+            $ec->note('^ TODO rossz');
+        $ec->info1();
     }
 }

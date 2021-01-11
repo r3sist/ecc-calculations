@@ -1,16 +1,19 @@
 <?php declare(strict_types = 1);
-// Help & documentation - Calculation class for ECC framework
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * UHelp & documentation of Statika framework as a claculation class
+ * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+ */
 
-namespace Calculation;
+namespace Statika\Calculations;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
+use Statika\EurocodeInterface;
 
 Class Help
 {
-    public function calc(Base $f3, Blc $blc, Ec $ec): void
+    /**
+     * @param Ec $ec
+     */
+    public function calc(EurocodeInterface $ec): void
     {
         $md = '
 ### Menü
@@ -138,7 +141,7 @@ A matematikai kifejezéseket [ASCIIMath](http://asciimath.org/) formában kell m
 [Reg](https://structure.hu/signup) oldalon, céhes email címmel, `voyager3` meghívóval.
         
 ';
-        $blc->txt('&nbsp;');
-        $blc->md($md);
+        $ec->txt('&nbsp;');
+        $ec->md($md);
     }
 }

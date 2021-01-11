@@ -1,41 +1,52 @@
 <?php declare(strict_types = 1);
-// cba FEM wrapper - Calculation class for ECC framework
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * cba FEM wrapper - Calculation class for Statika framework
+ * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+ */
 
-namespace Calculation;
+namespace Statika\Calculations;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
+use Base;
 use H3;
+use Statika\EurocodeInterface;
 
 Class Fem
 {
-    public function calc(Base $f3, Blc $blc, Ec $ec): void
+    private Base $f3;
+
+    public function __construct(Base $f3)
     {
-//        $blc->note('[cba motorral](http://cbeam.sourceforge.net/cbeam_class.html)');
-        $blc->note('Elsőrendű numerikus gerenda megoldó');
+        $this->f3 = $f3;
+    }
 
-        $pathTemp = PATH.$f3->TEMP.'cba/';
-        $gnuplotScriptFileName = $pathTemp.$f3->uid.'_gnuplot.txt';
-        $gnuplotFigureFileName = $pathTemp.$f3->uid.'_figure.svg';
-        $cbaResultsFileName = $pathTemp.$f3->uid.'_results.txt';
-        $cbaInputFileName = $pathTemp.$f3->uid.'_input.txt';
+    /**
+     * @param Ec $ec
+     */
+    public function calc(EurocodeInterface $ec): void
+    {
+        $ec->note('[cba motorral](http://cbeam.sourceforge.net/cbeam_class.html)');
+        $ec->note('Elsőrendű numerikus gerenda megoldó');
 
-        $blc->input('spans', ['', 'Tartó szakaszok hossza'], '5', 'm', 'Szóközzel elválasztott listája a fesztávolságoknak');
+        $pathTemp = $_ENV['PATH'].$this->f3->TEMP.'cba/';
+        $gnuplotScriptFileName = $pathTemp.$this->f3->uid.'_gnuplot.txt';
+        $gnuplotFigureFileName = $pathTemp.$this->f3->uid.'_figure.svg';
+        $cbaResultsFileName = $pathTemp.$this->f3->uid.'_results.txt';
+        $cbaInputFileName = $pathTemp.$this->f3->uid.'_input.txt';
+
+        $ec->input('spans', ['', 'Tartó szakaszok hossza'], '5', 'm', 'Szóközzel elválasztott listája a fesztávolságoknak');
 
         $listPattern = '~(?:^|[=\s])\K\d{4}(?=\s|$)~mi';
-        $spans = preg_replace($listPattern, '', $f3->_spans);
+        $spans = preg_replace($listPattern, '', $ec->spans);
         $spansArray = (array)explode(' ', $spans);
 
-        $blc->input('constraints', ['', 'Támasz definíciók'], 'oo', '', '**`x` merev befogás, `o` csukló, `-` szabad csomópont.** Eggyel több elemű lista, mint a tartó szakaszok listája.');
-        $f3->_constraints = preg_replace('/\s+/', '', $f3->_constraints); // Remove white space
+        $ec->input('constraints', ['', 'Támasz definíciók'], 'oo', '', '**`x` merev befogás, `o` csukló, `-` szabad csomópont.** Eggyel több elemű lista, mint a tartó szakaszok listája.');
+        $ec->constraints = preg_replace('/\s+/', '', $ec->constraints); // Remove white space
 
         $constraints = '';
         $constraintOnPlot = '';
         $spanCounter = 0;
         $x = 0;
-        foreach (str_split($f3->_constraints) as $character) {
+        foreach (str_split($ec->constraints) as $character) {
             switch ($character) {
                 case 'o':
                     $constraints .= ' -1 0';
@@ -55,7 +66,7 @@ Class Fem
             $spanCounter++;
         }
 
-        $blc->note('`q`: Teljes tartó szakaszon egyenletesen megoszló teher. `F` és `M`: Adott tartó szakaszon `x` pozícióban koncentrált erő/nyomaték.');
+        $ec->note('`q`: Teljes tartó szakaszon egyenletesen megoszló teher. `F` és `M`: Adott tartó szakaszon `x` pozícióban koncentrált erő/nyomaték.');
         $fields = [
             ['name' => 'span', 'title' => 'Szakasz száma', 'type' => 'input'],
             ['name' => 'q', 'title' => 'q [kNm/m]', 'type' => 'input'],
@@ -63,7 +74,7 @@ Class Fem
             ['name' => 'F', 'title' => 'F [kN]', 'type' => 'input'],
             ['name' => 'M', 'title' => 'M [kNm]', 'type' => 'input'],
         ];
-        $blc->bulk('loads', $fields, [1,2,2.5,10,0]);
+        $ec->bulk('loads', $fields, [1,2,2.5,10,0]);
 
         $cbaInput = '        
             SPANS '.$spans.'
@@ -74,8 +85,8 @@ Class Fem
         ';
 
         // Loads
-        if (!empty($f3->_loads)) {
-            foreach ($f3->_loads as $key => $value) {
+        if (!empty($ec->loads)) {
+            foreach ($ec->loads as $key => $value) {
                 if (isset($value['F'])) {
                     $cbaInput .= "\nLOAD ".$value['span']." 2 ".$value['F'].' 0 '.$value['x'].' 0';
                 }
@@ -118,7 +129,7 @@ Class Fem
         fclose($cbaInputFile);
 
         // Run cba
-        $cbaCommand = 'cba -i '.$pathTemp.$f3->uid.'_input.txt -p '.$cbaResultsFileName;
+        $cbaCommand = 'cba -i '.$pathTemp.$this->f3->uid.'_input.txt -p '.$cbaResultsFileName;
         $cbaCliOutput = shell_exec($cbaCommand);
 
         // Generate Gnuplot script file
@@ -132,7 +143,7 @@ Class Fem
 
         // Show figure and clean tmp folder
         if (is_file($gnuplotFigureFileName) && is_file($cbaResultsFileName)) {
-            $blc->html(file_get_contents($gnuplotFigureFileName));
+            $ec->html(file_get_contents($gnuplotFigureFileName));
             $cbaResults = file_get_contents($cbaResultsFileName);
             unlink($gnuplotFigureFileName);
             unlink($cbaResultsFileName);
@@ -140,14 +151,14 @@ Class Fem
 
         // Error checking
         if (strncmp($cbaCliOutput, 'continuous beam', 15) !==0 ) {
-            $blc->danger('VEM hiba: '.$cbaCliOutput);
+            $ec->danger('VEM hiba: '.$cbaCliOutput);
         }
 
-        $blc->region0('results', 'Eredmények');
-//            $blc->pre($cbaInput);
-            $blc->pre($cbaCliOutput);
-            $blc->pre($cbaResults);
-        $blc->region1();
+        $ec->region0('results', 'Eredmények');
+//            $ec->pre($cbaInput);
+            $ec->pre($cbaCliOutput);
+            $ec->pre($cbaResults);
+        $ec->region1();
 
         $cbaResultsArray = [];
         foreach(explode(PHP_EOL, $cbaResults) as $line) {
@@ -158,20 +169,20 @@ Class Fem
             }
         }
 
-        $blc->numeric('x', ['x', 'Lekérdezés pozícióban'], 2, 'm', 'Gerenda szakaszok összevonásával értelmezett pozíció balról');
-        $closestFloorX = (float)$ec->getFloorClosest(array_column($cbaResultsArray, 0), (string)$f3->_x);
-        $closestCeilX = (float)$ec->getCeilClosest(array_column($cbaResultsArray, 0), (string)$f3->_x);
+        $ec->numeric('x', ['x', 'Lekérdezés pozícióban'], 2, 'm', 'Gerenda szakaszok összevonásával értelmezett pozíció balról');
+        $closestFloorX = (float)$ec->getFloorClosest(array_column($cbaResultsArray, 0), (string)$ec->x);
+        $closestCeilX = (float)$ec->getCeilClosest(array_column($cbaResultsArray, 0), (string)$ec->x);
         $Mfloor = ($cbaResultsArray[(string)$closestFloorX][1] + $cbaResultsArray[(string)$closestFloorX][2]);
         $Mceil = ($cbaResultsArray[(string)$closestCeilX][1] + $cbaResultsArray[(string)$closestCeilX][2]);
         $Vfloor = ($cbaResultsArray[(string)$closestFloorX][3] + $cbaResultsArray[(string)$closestFloorX][4]);
         $Vceil = ($cbaResultsArray[(string)$closestCeilX][3] + $cbaResultsArray[(string)$closestCeilX][4]);
-        $blc->note('$M('.$closestFloorX.') = '.$Mfloor.'$');
-        $blc->note('$M('.$closestCeilX.') = '.$Mceil.'$');
-        $blc->note('$V('.$closestFloorX.') = '.$Vfloor.'$');
-        $blc->note('$V('.$closestCeilX.') = '.$Vceil.'$');
-        $blc->note('Numerikus értékek között lineáris interpolációval számol.');
-        $blc->math('M = '.H3::n2($ec->linterp($closestFloorX, $Mfloor, $closestCeilX, $Mceil, $f3->_x)).' [kNm]');
-        $blc->math('V = '.H3::n2($ec->linterp($closestFloorX, $Vfloor, $closestCeilX, $Vceil, $f3->_x)).' [kNm]');
+        $ec->note('$M('.$closestFloorX.') = '.$Mfloor.'$');
+        $ec->note('$M('.$closestCeilX.') = '.$Mceil.'$');
+        $ec->note('$V('.$closestFloorX.') = '.$Vfloor.'$');
+        $ec->note('$V('.$closestCeilX.') = '.$Vceil.'$');
+        $ec->note('Numerikus értékek között lineáris interpolációval számol.');
+        $ec->math('M = '.H3::n2($ec->linterp($closestFloorX, $Mfloor, $closestCeilX, $Mceil, $ec->x)).' [kNm]');
+        $ec->math('V = '.H3::n2($ec->linterp($closestFloorX, $Vfloor, $closestCeilX, $Vceil, $ec->x)).' [kNm]');
     }
 
 }

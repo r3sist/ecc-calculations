@@ -1,28 +1,32 @@
 <?php declare(strict_types = 1);
-// Dead load analysis according to Eurocodes - Calculation class for ECC framework
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * Dead load analysis according to Eurocodes - Calculation class for Statika framework
+ * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+ */
 
-namespace Calculation;
+namespace Statika\Calculations;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
-use \H3;
+use Statika\EurocodeInterface;
 
 Class Layers
 {
-    public function calc(Base $f3, Blc $blc, Ec $ec): void
+    /**
+     * @param \Statika\Calculations\Ec $ec
+     */
+    public function calc(EurocodeInterface $ec): void
     {
-        $blc->note('Ha a réteghez nincs felületi súly megadva, vastagságból és térfogatsúlyból számol, egyébként a felületi súly a mértékadó.');
+        $ec->note('Ha a réteghez nincs felületi súly megadva, vastagságból és térfogatsúlyból számol, egyébként a felületi súly a mértékadó.');
+
         $bulkName = 'layers';
-        if ($f3->exists('POST._'.$bulkName)) {
-            foreach ($f3->get('POST._'.$bulkName) as $key => $value) {
+
+        if (isset($_POST[$bulkName])) {
+            foreach ($_POST[$bulkName] as $key => $value) {
                 if (is_numeric($value['p']) && $value['p'] > 0) {
-                    $f3->set("POST._$bulkName.$key.pcalc", (float)$value['p']);
+                    $_POST[$bulkName][$key]['pcalc'] = (float)$value['p'];
                 } else if (is_numeric($value['v']) && is_numeric($value['q'])) {
-                    $f3->set("POST._$bulkName.$key.pcalc", (float)$value['v']*(float)$value['q']/100);
+                    $_POST[$bulkName][$key]['pcalc'] = (float)$value['v']*(float)$value['q']/100;
                 } else {
-                    $f3->set("POST._$bulkName.$key.pcalc", 0);
+                    $_POST[$bulkName][$key]['pcalc'] = 0;
                 }
             }
         }
@@ -34,9 +38,10 @@ Class Layers
             ['name' => 'p', 'title' => 'Felület súly [kN/m2]', 'type' => 'input'],
             ['name' => 'pcalc', 'title' => 'Számított teher [kN/m2]', 'type' => 'value', 'key' => 'pcalc', 'sum' => true],
         ];
-        $blc->bulk($bulkName, $fields, ['PVC Vízszigetelés', 0.2, 17, 0, 0.034]);
 
-        $blc->region0('t2', 'Szigetelőanyagok');
+        $ec->bulk($bulkName, $fields, ['PVC Vízszigetelés', 0.2, 17, 0, 0.034], $update);
+
+        $ec->region0('t2', 'Szigetelőanyagok');
             $scheme = ['Szigetelő anyagok', '$gamma_k [(kN)/m^3]$'];
             $rows = [
                 ['EPS', '0.1 - 0.15'],
@@ -48,20 +53,20 @@ Class Layers
                 ['XPS hab padló', 0.6],
                 ['XPS hab homlokzat', '0.5 - 0.9'],
             ];
-            $blc->tbl($scheme, $rows);
-        $blc->region1();
+            $ec->tbl($scheme, $rows);
+        $ec->region1();
 
-        $blc->region0('t1', 'Burkolóanyagok');
+        $ec->region0('t1', 'Burkolóanyagok');
             $scheme = ['Burkolóanyagok', '$gamma_k [(kN)/m^3]$'];
             $rows = [
                 ['Esztrich', 18],
                 ['Greslap', 24],
                 ['Csempe', 17],
             ];
-            $blc->tbl($scheme, $rows);
-        $blc->region1();
+            $ec->tbl($scheme, $rows);
+        $ec->region1();
 
-        $blc->region0('t0', 'Lindab trapézlemez önsúlyok');
+        $ec->region0('t0', 'Lindab trapézlemez önsúlyok');
             $scheme = ['Trapézlemez', '$gamma_k [(kN)/m^3]$'];
             $rows = [
                 ["LTP20×0.4",  0.032],
@@ -100,7 +105,7 @@ Class Layers
                 ["LTP150×1.25", 0.165],
                 ["LTP150×1.50<!--info-->", 0.199],
             ];
-            $blc->tbl($scheme, $rows);
-        $blc->region1();
+            $ec->tbl($scheme, $rows);
+        $ec->region1();
     }
 }

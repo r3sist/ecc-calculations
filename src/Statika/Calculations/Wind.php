@@ -1,38 +1,33 @@
 <?php declare(strict_types = 1);
-// Wind load analysis according to Eurocodes - Calculation class for ECC framework
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * Wind load analysis according to Eurocodes - Calculation class for Statika framework
+ * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+ */
 
-namespace Calculation;
+namespace Statika\Calculations;
 
-use Base;
-use Ecc\Blc;
-use Ec\Ec;
 use H3;
 use resist\SVG\SVG;
 use Exception;
+use Statika\EurocodeInterface;
 
 Class Wind
 {
-    public Base $f3;
-    private Blc $blc;
-    private Ec $ec;
-
-    public function __construct(Base $f3, Blc $blc, Ec $ec)
+    /**
+     * Wind constructor.
+     * @param Ec $ec
+     */
+    public function __construct(EurocodeInterface $ec)
     {
-        $this->f3 = $f3;
-        $this->blc = $blc;
         $this->ec = $ec;
     }
 
     public function moduleQpz(): void
     {
-        if (!$this->f3->exists('_reslog')) {
-            $this->f3->_reslog = '';
-        }
-
-        $this->f3->_reslog .=$this->blc->numeric('h', ['h', 'Épület magasság'], 10, 'm');
-        $this->f3->_reslog .=$this->blc->numeric('b', ['b', 'Épület hossz'], 20, 'm');
-        $this->f3->_reslog .=$this->blc->numeric('d', ['d', 'Épület szélesség'], 12, 'm');
+        
+        $this->ec->numeric('h', ['h', 'Épület magasság'], 10, 'm');
+        $this->ec->numeric('b', ['b', 'Épület hossz'], 20, 'm');
+        $this->ec->numeric('d', ['d', 'Épület szélesség'], 12, 'm');
 
         $terrainCats = [
             'I. Nyílt terep' => 1,
@@ -40,58 +35,57 @@ Class Wind
             'III. Alacsony beépítés' => 3,
             'IV. Intenzív beépítés' => 4,
         ];
-        $this->f3->_reslog .=$this->blc->lst('terrainCat', $terrainCats, ['', 'Terep kategória'], '2');
+        $this->ec->lst('terrainCat', $terrainCats, ['', 'Terep kategória'], '2');
 
-        $this->blc->boo('internal', ['', 'Belső szél figyelembevétele'], true);
+        $this->ec->boo('internal', ['', 'Belső szél figyelembevétele'], true);
 
-        $this->blc->region0('more0', 'További paraméterek');
-            $this->blc->numeric('hz', ['h_z', 'Terepszint feletti magasság'], 0, 'm', '$qp(z)$ számításakor hozzáadódik a $h$ magassághoz, de a zónaszélesség számításához nem (pl. tetőfelépítmények esetében).');
+        $this->ec->region0('more0', 'További paraméterek');
+            $this->ec->numeric('hz', ['h_z', 'Terepszint feletti magasság'], 0, 'm', '$qp(z)$ számításakor hozzáadódik a $h$ magassághoz, de a zónaszélesség számításához nem (pl. tetőfelépítmények esetében).');
 
-            if ($this->f3->_internal) {
-                $this->blc->numeric('cp', ['c_(p,i+)', 'Belső szél alaki tényező belső nyomáshoz'], 0.2, '');
-                $this->blc->numeric('cm', ['c_(p,i-)', 'Belső szél alaki tényező belső szíváshoz'], -0.3, '');
+            if ($this->ec->internal) {
+                $this->ec->numeric('cp', ['c_(p,i+)', 'Belső szél alaki tényező belső nyomáshoz'], 0.2, '');
+                $this->ec->numeric('cm', ['c_(p,i-)', 'Belső szél alaki tényező belső szíváshoz'], -0.3, '');
             } else {
-                $this->f3->set('_cp', 0);
-                $this->f3->set('_cm', 0);
+                $this->ec->set('cp', 0);
+                $this->ec->set('cm', 0);
             }
 
-            $this->blc->boo('flatRef', ['10 [m^2]', 'referencia felület'], true, 'Egyébként $1 [m^2]$');
-            if ($this->f3->_flatRef == 1) {
-                $this->f3->set('_flatRef', '10');
+            $this->ec->boo('flatRef', ['10 [m^2]', 'referencia felület'], true, 'Egyébként $1 [m^2]$');
+            if ($this->ec->flatRef == 1) {
+                $this->ec->set('flatRef', '10');
             } else {
-                $this->f3->set('_flatRef', '1');
+                $this->ec->set('flatRef', '1');
             }
-            $this->blc->math('v_(b,0) = 23.6 [m/s]');
-            $this->blc->math('c_(dir) = 1.0');
-            $this->blc->math('c_(season) = 1.0');
-            $this->blc->math('c_(prob) = 1.0');
-        $this->blc->region1();
+            $this->ec->math('v_(b,0) = 23.6 [m/s]');
+            $this->ec->math('c_(dir) = 1.0');
+            $this->ec->math('c_(season) = 1.0');
+            $this->ec->math('c_(prob) = 1.0');
+        $this->ec->region1();
 
-        $this->blc->success0();
-            if ($this->f3->_hz > 0) {
-                $h = $this->f3->_h + $this->f3->_hz;
-                $this->blc->txt('$h = '.$h.' [m]$ magasság figyelembevételével:');
+        $this->ec->success0();
+            if ($this->ec->hz > 0) {
+                $h = $this->ec->h + $this->ec->hz;
+                $this->ec->txt('$h = '.$h.' [m]$ magasság figyelembevételével:');
             } else {
-                $h=$this->f3->_h;
+                $h=$this->ec->h;
             }
-            $this->f3->_reslog .= $this->blc->def('qpz', $this->ec->qpz($h, $this->f3->_terrainCat), 'q_(p)(z, cat) = %% [(kN)/m^2]', 'Torlónyomás');
-        $this->blc->success1();
+            $this->ec->def('qpz', $this->ec->qpz($h, $this->ec->terrainCat), 'q_(p)(z, cat) = %% [(kN)/m^2]', 'Torlónyomás');
+        $this->ec->success1();
     }
 
     /**
+     * @param Ec $ec
      * @throws Exception
      */
-    public function calc(Base $f3, Blc $blc, Ec $ec): void
+    public function calc(EurocodeInterface $ec): void
     {
-        $this->f3->_reslog = '';
-
-        $blc->math('psi = 0.6//0.2//0', 'Kombinációs tényezők');
+        $ec->math('psi = 0.6//0.2//0', 'Kombinációs tényezők');
 
         $this->moduleQpz();
 
-        $blc->h1('Lapostetők');
-        $blc->boo('calcFlat', ['', 'Lapostető számítása'], false);
-        if ($f3->_calcFlat === true) {
+        $ec->h1('Lapostetők');
+        $ec->boo('calcFlat', ['', 'Lapostető számítása'], false);
+        if ($ec->calcFlat === true) {
             $flatTypes = [
                 'Szögletes perem' => 'a',
                 'Attika hp/h=0.025' => 'b1',
@@ -104,9 +98,9 @@ Class Wind
                 'Levágott α=45°' => 'd2',
                 'Levágott α=60°' => 'd3',
             ];
-            $blc->lst('flatType', $flatTypes, ['', 'Tető kialakítás'], 'a');
+            $ec->lst('flatType', $flatTypes, ['', 'Tető kialakítás'], 'a');
 
-            $blc->note('Külső szélnyomás esetén belső szélszívással számol: *F, G, H* szívott zónák szélszívása ezért kisebb szélnyomás esetben!');
+            $ec->note('Külső szélnyomás esetén belső szélszívással számol: *F, G, H* szívott zónák szélszívása ezért kisebb szélnyomás esetben!');
 
             $flatDb = [
                 'a-' => ['F10' => -1.8, 'F1' => -2.5, 'G10' => -1.2, 'G1' => -2, 'H10' => -0.7, 'H1' => -1.2, 'I10' => -0.2, 'I1' => -0.2],
@@ -140,44 +134,44 @@ Class Wind
 
             foreach ($flatCases as $case) {
                 if ($case['dir'] === 0) {
-                    $f3->set('_b0', $f3->get('_b'));
-                    $f3->set('_d0', $f3->get('_d'));
+                    $ec->set('b0', $ec->get('b'));
+                    $ec->set('d0', $ec->get('d'));
                 } else {
-                    $f3->set('_b0', $f3->get('_d'));
-                    $f3->set('_d0', $f3->get('_b'));
+                    $ec->set('b0', $ec->get('d'));
+                    $ec->set('d0', $ec->get('b'));
                 }
 
                 if ($case['wind'] === '-') {
-                    $ci = -1*$f3->_cp;
+                    $ci = -1*$ec->cp;
                 } else {
-                    $ci = -1*$f3->_cm;
+                    $ci = -1*$ec->cm;
                 }
 
-                $blc->h3($case['case']);
+                $ec->h3($case['case']);
 
-                $cpF0 = $flatDb[$f3->_flatType . $case['wind']]['F'.$f3->_flatRef];
+                $cpF0 = $flatDb[$ec->flatType . $case['wind']]['F'.$ec->flatRef];
                 $cpF = $cpF0 + $ci;
-                $cpG0 = $flatDb[$f3->_flatType . $case['wind']]['G'.$f3->_flatRef];
+                $cpG0 = $flatDb[$ec->flatType . $case['wind']]['G'.$ec->flatRef];
                 $cpG = $cpG0 + $ci;
-                $cpH0 = $flatDb[$f3->_flatType . $case['wind']]['H'.$f3->_flatRef];
+                $cpH0 = $flatDb[$ec->flatType . $case['wind']]['H'.$ec->flatRef];
                 $cpH = $cpH0 + $ci;
-                $cpI0 = $flatDb[$f3->_flatType . $case['wind']]['I'.$f3->_flatRef];
+                $cpI0 = $flatDb[$ec->flatType . $case['wind']]['I'.$ec->flatRef];
                 $cpI = $cpI0 + $ci;
-                $wF = H3::n2($cpF*$f3->_qpz);
-                $wG = H3::n2($cpG*$f3->_qpz);
-                $wH = H3::n2($cpH*$f3->_qpz);
-                $wI = H3::n2($cpI*$f3->_qpz);
-                $e = min($f3->_b0, 2*$f3->_h);
-                $blc->math('e = min{(b_0),(2*h):} = '.$e.' [m]', '');
+                $wF = H3::n2($cpF*$ec->qpz);
+                $wG = H3::n2($cpG*$ec->qpz);
+                $wH = H3::n2($cpH*$ec->qpz);
+                $wI = H3::n2($cpI*$ec->qpz);
+                $e = min($ec->b0, 2*$ec->h);
+                $ec->math('e = min{(b_0),(2*h):} = '.$e.' [m]', '');
                 $aF = H3::n1($e/4);
-                $aG = H3::n1($f3->_b0-2*($e/4));
-                $aH = H3::n1($f3->_b0);
-                $aI = H3::n1(($f3->_d0 - $e/2 > 0 ? $f3->_b0 : 0));
+                $aG = H3::n1($ec->b0-2*($e/4));
+                $aH = H3::n1($ec->b0);
+                $aI = H3::n1(($ec->d0 - $e/2 > 0 ? $ec->b0 : 0));
                 $bF = H3::n1($e/10);
                 $bG = H3::n1($e/10);
                 $bH = H3::n1($e/2-$e/10);
-                $bI = H3::n1(($f3->_d0 - $e/2 > 0 ? $f3->_d0 - $e/2 : 0));
-                $blc->txt('$c_(p,i) = '.$ci.'$ többlet, belső szélből', 'Belső szél előjele domináns szélhez igazítva: külső szíváshoz belső nyomás és fordítva.');
+                $bI = H3::n1(($ec->d0 - $e/2 > 0 ? $ec->d0 - $e/2 : 0));
+                $ec->txt('$c_(p,i) = '.$ci.'$ többlet, belső szélből', 'Belső szél előjele domináns szélhez igazítva: külső szíváshoz belső nyomás és fordítva.');
 
                 $scheme = ['Zóna', 'Felületi erő: $w [(kN)/m^2]$', 'Alaki tényező: $c (c_p, c_i)$', 'Zóna szélesség $[m]$', 'Zóna mélység $[m]$'];
                 $tbl = [
@@ -186,7 +180,7 @@ Class Wind
                     ['H', $wH.'<!--success-->', $cpH. ' ('.$cpH0.', '.$ci.')', $aH, $bH],
                     ['I', $wI.'<!--success-->', $cpI. ' ('.$cpI0.', '.$ci.')', $aI, $bI],
                 ];
-                $blc->tbl($scheme, $tbl);
+                $ec->tbl($scheme, $tbl);
 
                 $svg = new SVG(600, 350);
                 // Raw part:
@@ -223,20 +217,20 @@ Class Wind
                 $svg->addText(255, 300, $wI.'', false, 'fill: red; font-weight: bold');
                 $svg->addDimH(100, 50, 100, H3::n1($e/10)); // F dim
                 $svg->addDimH(150, 100, 100, H3::n1($e/2-$e/10)); // F dim
-                $svg->addDimH(250, 50, 100, H3::n1(($f3->_d0 - $e/2 > 0 ? $f3->_d0 - $e/2 : 0))); // F dim
-                $svg->addDimV(140, 170, 330, 'b='. H3::n1($f3->_b0));
+                $svg->addDimH(250, 50, 100, H3::n1(($ec->d0 - $e/2 > 0 ? $ec->d0 - $e/2 : 0))); // F dim
+                $svg->addDimV(140, 170, 330, 'b='. H3::n1($ec->b0));
                 $svg->addDimV(140, 50, 80, ''. H3::n1($e/4));
-                $svg->addDimV(190, 70, 80, ''. H3::n1($f3->_b0 - $e/2));
+                $svg->addDimV(190, 70, 80, ''. H3::n1($ec->b0 - $e/2));
                 $svg->addDimV(260, 50, 80, ''. H3::n1($e/4));
-                $svg->addDimH(100, 200, 340, 'd='. H3::n1($f3->_d0));
-                $blc->svg($svg);
+                $svg->addDimH(100, 200, 340, 'd='. H3::n1($ec->d0));
+                $ec->svg($svg);
                 unset($svg);
             }
         }
 
-        $blc->h1('Falak');
-        $blc->boo('calcWall', ['', 'Fal számítása'], false);
-        if ($f3->_calcWall === true) {
+        $ec->h1('Falak');
+        $ec->boo('calcWall', ['', 'Fal számítása'], false);
+        if ($ec->calcWall === true) {
             $wallCases = [
                 ['id' => 0, 'case' => '$b$ Hosszra merőleges szél', 'dir' => 0],
                 ['id' => 1, 'case' => '$d$ Szélességre merőleges szél', 'dir' => 1],
@@ -249,63 +243,63 @@ Class Wind
             ];
 
             foreach ($wallCases as $case) {
-                $blc->h3($case['case']);
+                $ec->h3($case['case']);
 
                 if ($case['dir'] === 0) {
-                    $f3->set('_b0', $f3->get('_b'));
-                    $f3->set('_d0', $f3->get('_d'));
+                    $ec->set('b0', $ec->get('b'));
+                    $ec->set('d0', $ec->get('d'));
                 } else {
-                    $f3->set('_b0', $f3->get('_d'));
-                    $f3->set('_d0', $f3->get('_b'));
+                    $ec->set('b0', $ec->get('d'));
+                    $ec->set('d0', $ec->get('b'));
                 }
 
-                $blc->region0('wallCalculations');
-                    $blc->def('wallRow', H3::n2($f3->_h/$f3->_d0), 'h/d = %%', '');
+                $ec->region0('wallCalculations');
+                    $ec->def('wallRow', H3::n2($ec->h/$ec->d0), 'h/d = %%', '');
 
-                    if ($f3->_wallRow >= 5) {
+                    if ($ec->wallRow >= 5) {
                         $find = 'a';
-                    } elseif ($f3->_wallRow <= 0.25) {
+                    } elseif ($ec->wallRow <= 0.25) {
                         $find = 'c';
                     } else {
                         $find = 'b';
                     }
-                    $blc->md('Táblázat: *'.$find.'* sor');
+                    $ec->md('Táblázat: *'.$find.'* sor');
 
-                    $e = min($f3->_b0, 2*$f3->_h);
-                    $cpA0 = $wallDb[$find]['A'.$f3->_flatRef];
-                    $cpA = $cpA0 - $f3->_cp;
-                    $cpB0 = $wallDb[$find]['B'.$f3->_flatRef];
-                    $cpB = $cpB0 - $f3->_cp;
-                    $cpC0 = $wallDb[$find]['C'.$f3->_flatRef];
-                    $cpC = $cpC0 - $f3->_cp;
-                    $cpD0 = $wallDb[$find]['D'.$f3->_flatRef];
-                    $cpD = $cpD0 - $f3->_cm;
-                    $cpE0 = $wallDb[$find]['E'.$f3->_flatRef];
-                    $cpE = $cpE0 - $f3->_cp;
-                    $wA = H3::n2($cpA*$f3->_qpz);
-                    $wB = H3::n2($cpB*$f3->_qpz);
-                    $wC = ($f3->_d0 - $e > 0 ? H3::n2($cpC*$f3->_qpz) : 0);
-                    $wD = H3::n2($cpD*$f3->_qpz);
-                    $wE = H3::n2($cpE*$f3->_qpz);
+                    $e = min($ec->b0, 2*$ec->h);
+                    $cpA0 = $wallDb[$find]['A'.$ec->flatRef];
+                    $cpA = $cpA0 - $ec->cp;
+                    $cpB0 = $wallDb[$find]['B'.$ec->flatRef];
+                    $cpB = $cpB0 - $ec->cp;
+                    $cpC0 = $wallDb[$find]['C'.$ec->flatRef];
+                    $cpC = $cpC0 - $ec->cp;
+                    $cpD0 = $wallDb[$find]['D'.$ec->flatRef];
+                    $cpD = $cpD0 - $ec->cm;
+                    $cpE0 = $wallDb[$find]['E'.$ec->flatRef];
+                    $cpE = $cpE0 - $ec->cp;
+                    $wA = H3::n2($cpA*$ec->qpz);
+                    $wB = H3::n2($cpB*$ec->qpz);
+                    $wC = ($ec->d0 - $e > 0 ? H3::n2($cpC*$ec->qpz) : 0);
+                    $wD = H3::n2($cpD*$ec->qpz);
+                    $wE = H3::n2($cpE*$ec->qpz);
                     $widthA = H3::n1($e/5);
-                    $widthB = H3::n1(($e < $f3->_d0 ? $e - $e/5 : $f3->_d0 - $e/5));
-                    $widthC = H3::n1(($f3->_d0 - $e > 0 ? $f3->_d0 - $e : 0));
-                    $widthD = H3::n1($f3->_b0);
-                    $widthE = H3::n1($f3->_b0);
+                    $widthB = H3::n1(($e < $ec->d0 ? $e - $e/5 : $ec->d0 - $e/5));
+                    $widthC = H3::n1(($ec->d0 - $e > 0 ? $ec->d0 - $e : 0));
+                    $widthD = H3::n1($ec->b0);
+                    $widthE = H3::n1($ec->b0);
 
-                    $blc->math('e = min{(b),(2h):} = '.$e.'', '');
-                    $blc->txt('', 'Belső szél előjele domináns szélhez igazítva: külső szíváshoz belső nyomás és fordítva.');
-                $blc->region1();
+                    $ec->math('e = min{(b),(2h):} = '.$e.'', '');
+                    $ec->txt('', 'Belső szél előjele domináns szélhez igazítva: külső szíváshoz belső nyomás és fordítva.');
+                $ec->region1();
 
                 $scheme = ['Zóna', 'Felületi erő: $w [(kN)/m^2]$', 'Alaki tényező: $c (c_p, c_i)$', 'Zóna szélesség $[m]$'];
                 $tbl = [
-                    ['A', $wA.'<!--success-->', $cpA. ' ('.$cpA0.', '.$f3->_cp.')', $widthA],
-                    ['B', $wB.'<!--success-->', $cpB. ' ('.$cpB0.', '.$f3->_cp.')', $widthB],
-                    ['C', $wC.'<!--success-->', $cpC. ' ('.$cpC0.', '.$f3->_cp.')', $widthC],
-                    ['D', $wD.'<!--success-->', $cpD. ' ('.$cpD0.', '.$f3->_cm.')', $widthD],
-                    ['E', $wE.'<!--success-->', $cpE. ' ('.$cpE0.', '.$f3->_cp.')', $widthE],
+                    ['A', $wA.'<!--success-->', $cpA. ' ('.$cpA0.', '.$ec->cp.')', $widthA],
+                    ['B', $wB.'<!--success-->', $cpB. ' ('.$cpB0.', '.$ec->cp.')', $widthB],
+                    ['C', $wC.'<!--success-->', $cpC. ' ('.$cpC0.', '.$ec->cp.')', $widthC],
+                    ['D', $wD.'<!--success-->', $cpD. ' ('.$cpD0.', '.$ec->cm.')', $widthD],
+                    ['E', $wE.'<!--success-->', $cpE. ' ('.$cpE0.', '.$ec->cp.')', $widthE],
                 ];
-                $blc->tbl($scheme, $tbl);
+                $ec->tbl($scheme, $tbl);
 
                 $svg = new SVG(400, 400);
                 $svg->setColor('green');
@@ -341,19 +335,19 @@ Class Wind
                 $svg->addDimH(150, 100, 90, $widthB); // B width
                 $svg->addDimH(250, 50, 90, $widthC);
                 $svg->addDimV(140, 150, 360, 'b='. $widthD);
-                $svg->addDimH(100, 200, 340, 'd='. H3::n2($f3->_d0));
-                $blc->svg($svg);
+                $svg->addDimH(100, 200, 340, 'd='. H3::n2($ec->d0));
+                $ec->svg($svg);
                 unset($svg);
             }
         }
 
-        $blc->h1('Oldalain nyitott ferdesíkú pilletető');
-        $blc->boo('calcCanopy', ['', 'Oldalain nyitott ferdesíkú pilletető számítása']);
-        if ($f3->_calcCanopy === true) {
-            $blc->boo('phi', ['Phi', 'Torlasz'], true, '');
+        $ec->h1('Oldalain nyitott ferdesíkú pilletető');
+        $ec->boo('calcCanopy', ['', 'Oldalain nyitott ferdesíkú pilletető számítása']);
+        if ($ec->calcCanopy === true) {
+            $ec->boo('phi', ['Phi', 'Torlasz'], true, '');
 
             $canopyTypes = ['0°' => '0', '5°' => '5', '10°' => '10', '15°' => '15', '20°' => '20', '25°' => '25', '30°' => '30'];
-            $blc->lst('canopyType', $canopyTypes, ['', 'Tető hajlás'],'0');
+            $ec->lst('canopyType', $canopyTypes, ['', 'Tető hajlás'],'0');
             $canopyDb = [
                 '0+' => ['A' => 0.5, 'B' => 1.8, 'C' => 1.1,],
                 '0-0' => ['A' => -0.6, 'B' => -1.3, 'C' => -1.4,],
@@ -386,31 +380,31 @@ Class Wind
             ];
 
             foreach ($canopyCases as $case) {
-                $blc->h3($case['case']);
+                $ec->h3($case['case']);
 
                 if ($case['dir'] === 0) {
-                    $f3->set('_b0', $f3->get('_b'));
-                    $f3->set('_d0', $f3->get('_d'));
+                    $ec->set('b0', $ec->get('b'));
+                    $ec->set('d0', $ec->get('d'));
                 } else {
-                    $f3->set('_b0', $f3->get('_d'));
-                    $f3->set('_d0', $f3->get('_b'));
+                    $ec->set('b0', $ec->get('d'));
+                    $ec->set('d0', $ec->get('b'));
                 }
 
                 if ($case['wind'] === '-') {
-                    $find = $f3->_canopyType . $case['wind'] . $f3->_phi;
+                    $find = $ec->canopyType . $case['wind'] . $ec->phi;
                 } else {
-                    $find = $f3->_canopyType . $case['wind'];
+                    $find = $ec->canopyType . $case['wind'];
                 }
 
                 $cpA = $canopyDb[$find]['A'];
                 $cpB = $canopyDb[$find]['B'];
                 $cpC = $canopyDb[$find]['C'];
-                $wA = H3::n2($cpA*$f3->_qpz);
-                $wB = H3::n2($cpB*$f3->_qpz);
-                $wC = H3::n2($cpC*$f3->_qpz);
+                $wA = H3::n2($cpA*$ec->qpz);
+                $wB = H3::n2($cpB*$ec->qpz);
+                $wC = H3::n2($cpC*$ec->qpz);
                 $aA = 0;
-                $aB = H3::n1($f3->_b0/10);
-                $aC = H3::n1($f3->_d0/10);
+                $aB = H3::n1($ec->b0/10);
+                $aC = H3::n1($ec->d0/10);
 
                 $scheme = ['Zóna', 'Felületi erő: $w [(kN)/m^2]$', 'Alaki tényező: $c$', 'Zóna szélesség $[m]$'];
                 $tbl = [
@@ -418,7 +412,7 @@ Class Wind
                     ['B', $wB.'<!--success-->', $cpB, $aB],
                     ['C', $wC.'<!--success-->', $cpC, $aC],
                 ];
-                $blc->tbl($scheme, $tbl);
+                $ec->tbl($scheme, $tbl);
 
                 $svg = new SVG(600, 300);
                 // Generate raw part:
@@ -442,36 +436,36 @@ Class Wind
                 $svg->addText(200, 190, $wA.'', false, 'font-weight: bold');
                 $svg->addText(200, 115, $wB.'', false, 'font-weight: bold');
                 $svg->addText(105, 190, $wC.'', false, 'font-weight: bold');
-                $svg->addDimH(100, 50, 50, H3::n1($f3->_d0/10));
-                $svg->addDimH(150, 100, 50, H3::n1($f3->_d0 - 2*0.1*$f3->_d0));
-                $svg->addDimH(250, 50, 50, H3::n1($f3->_d0/10));
-                $svg->addDimV(70, 50, 70, ''. H3::n1($f3->_b0/10));
-                $svg->addDimV(120, 100, 70, ''. H3::n1($f3->_b0 - 2*0.1*$f3->_b0));
-                $svg->addDimV(220, 50, 70, ''. H3::n1($f3->_b0/10));
-                $svg->addDimV(70, 200, 340, 'b='. H3::n1($f3->_b0));
-                $svg->addDimH(100, 200, 300, 'd='. H3::n1($f3->_d0));
-                $blc->svg($svg);
+                $svg->addDimH(100, 50, 50, H3::n1($ec->d0/10));
+                $svg->addDimH(150, 100, 50, H3::n1($ec->d0 - 2*0.1*$ec->d0));
+                $svg->addDimH(250, 50, 50, H3::n1($ec->d0/10));
+                $svg->addDimV(70, 50, 70, ''. H3::n1($ec->b0/10));
+                $svg->addDimV(120, 100, 70, ''. H3::n1($ec->b0 - 2*0.1*$ec->b0));
+                $svg->addDimV(220, 50, 70, ''. H3::n1($ec->b0/10));
+                $svg->addDimV(70, 200, 340, 'b='. H3::n1($ec->b0));
+                $svg->addDimH(100, 200, 300, 'd='. H3::n1($ec->d0));
+                $ec->svg($svg);
                 unset($svg);
             }
-            $blc->txt('', '(+) szélnyomás&nbsp;&nbsp;&nbsp; (-) szélszívás');
+            $ec->txt('', '(+) szélnyomás&nbsp;&nbsp;&nbsp; (-) szélszívás');
         }
 
-        $blc->h1('Szabadon álló falak és mellvédek');
-        $blc->boo('calcAttic', ['', 'Szabadon álló fal és mellvéd számítása'], false);
-        if ($f3->_calcAttic === true) {
-            $blc->numeric('h_a', ['h_a', 'Fal magasság'], 1.2, 'm');
-            $blc->numeric('l_a', ['l_a', 'Fal szélesség'], 40, 'm');
-            $blc->numeric('x_a', ['x_a', 'Visszaforduló falszakasz hossza'], 10, 'm');
-            $blc->lst('fi_a', ['Tömör' => 1.0, '20%-os áttörtség' => 0.8], ['', 'Áttörtség'], '1.0', '');
-            $blc->note('20%-nál nagyobb áttörtség esetén a felületet rácsos tartóként kell kezelni.');
-            $blc->math('l_a/h_a = '. H3::n1($f3->_l_a/$f3->_h_a).'%%%phi = '.$f3->_fi_a);
+        $ec->h1('Szabadon álló falak és mellvédek');
+        $ec->boo('calcAttic', ['', 'Szabadon álló fal és mellvéd számítása'], false);
+        if ($ec->calcAttic === true) {
+            $ec->numeric('h_a', ['h_a', 'Fal magasság'], 1.2, 'm');
+            $ec->numeric('l_a', ['l_a', 'Fal szélesség'], 40, 'm');
+            $ec->numeric('x_a', ['x_a', 'Visszaforduló falszakasz hossza'], 10, 'm');
+            $ec->lst('fi_a', ['Tömör' => 1.0, '20%-os áttörtség' => 0.8], ['', 'Áttörtség'], '1.0', '');
+            $ec->note('20%-nál nagyobb áttörtség esetén a felületet rácsos tartóként kell kezelni.');
+            $ec->math('l_a/h_a = '. H3::n1($ec->l_a/$ec->h_a).'%%%phi = '.$ec->fi_a);
             $atticTypeSource = ['b/h≤3' => 'a', 'b/h=5' => 'b', 'b/h≥10' => 'c',];
-            $blc->lst('type_a', $atticTypeSource, ['', 'Tábla arány'], 'c', '');
-            $atticFind = $f3->_type_a;
-            if ($f3->_x_a >= $f3->_h_a && $f3->_fi_a == 1) {
+            $ec->lst('type_a', $atticTypeSource, ['', 'Tábla arány'], 'c', '');
+            $atticFind = $ec->type_a;
+            if ($ec->x_a >= $ec->h_a && $ec->fi_a == 1) {
                 $atticFind = 'd';
             }
-            if ($f3->_fi_a == 0.8) {
+            if ($ec->fi_a == 0.8) {
                 $atticFind = 'e';
             }
             $atticDb = [
@@ -486,18 +480,18 @@ Class Wind
             $caB = $atticDb[$atticFind]['B'];
             $caC = $atticDb[$atticFind]['C'];
             $caD = $atticDb[$atticFind]['D'];
-            $aA = H3::n1(0.3*$f3->_h_a);
-            $aB = H3::n1(2*$f3->_h_a - 0.3*$f3->_h_a);
-            $aC = H3::n1(2*$f3->_h_a);
-            $aD = H3::n1($f3->_l_a - 4*$f3->_h_a);
-            $waA = H3::n2($caA*$f3->_qpz);
-            $waB = H3::n2($caB*$f3->_qpz);
-            $waC = H3::n2($caC*$f3->_qpz);
-            $waD = H3::n2($caD*$f3->_qpz);
-            $paA = H3::n2($waA*$f3->_h_a);
-            $paB = H3::n2($waB*$f3->_h_a);
-            $paC = H3::n2($waC*$f3->_h_a);
-            $paD = H3::n2($waD*$f3->_h_a);
+            $aA = H3::n1(0.3*$ec->h_a);
+            $aB = H3::n1(2*$ec->h_a - 0.3*$ec->h_a);
+            $aC = H3::n1(2*$ec->h_a);
+            $aD = H3::n1($ec->l_a - 4*$ec->h_a);
+            $waA = H3::n2($caA*$ec->qpz);
+            $waB = H3::n2($caB*$ec->qpz);
+            $waC = H3::n2($caC*$ec->qpz);
+            $waD = H3::n2($caD*$ec->qpz);
+            $paA = H3::n2($waA*$ec->h_a);
+            $paB = H3::n2($waB*$ec->h_a);
+            $paC = H3::n2($waC*$ec->h_a);
+            $paD = H3::n2($waD*$ec->h_a);
 
             $scheme = ['Zóna', 'Felületi erő: $w [(kN)/m^2]$', 'Vízszintes teherként értelmezve: $p$', 'Alaki tényező: $c$', 'Zóna szélesség $[m]$'];
             $tbl = [
@@ -506,7 +500,7 @@ Class Wind
                 ['C', $waC.'<!--success-->', $paC, $caC, $aC],
                 ['D', $waD.'<!--success-->', $paD, $caD, $aD],
             ];
-            $blc->tbl($scheme, $tbl);
+            $ec->tbl($scheme, $tbl);
         }
     }
 }

@@ -1,92 +1,98 @@
 <?php declare(strict_types = 1);
-// Fire resistance of RC columns analysis according to Eurocodes - Calculation class for ECC framework
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * Fire resistance of RC columns analysis according to Eurocodes - Calculation class for Statika framework
+ * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+ */
 
-namespace Calculation;
+namespace Statika\Calculations;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
+use Statika\Calculations\Column;
 use \H3;
+use Statika\EurocodeInterface;
 
 Class ColumnFire
 {
-    private Column $column;
+    private Column $columnCalculation;
 
-    public function __construct(Column $column)
+    public function __construct(Column $columnCalculation)
     {
-        $this->column = $column;
+        $this->columnCalculation = $columnCalculation;
     }
 
-    public function calc(Base $f3, Blc $blc, Ec $ec): void
+    /**
+     * @param Ec $ec
+     */
+    public function calc(EurocodeInterface $ec): void
     {
-        $this->column->moduleColumnData();
+        $this->columnCalculation->moduleColumnData();
+        $concreteMaterial = $ec->getMaterial($ec->concreteMaterialName);
+        $rebarMaterial = $ec->getMaterial($ec->rebarMaterialName);
 
         $ec->rebarList('phi', 20, ['phi', 'Fő vas átmérő']);
         $ec->rebarList('phis', 12, ['phi_s', 'Kengyel vas átmérő']);
-        $blc->def('as', $f3->_cnom + $f3->_phis + 0.5*$f3->_phi, 'a_s = c_(nom) + phi_s + phi/2 = %% [mm]', 'Betontakarás fővas tengelyen. $25 < a_s < 80 [mm]$');
-        if ($f3->_as < 25) {
-            $blc->danger('Szükséges betontakarás: $25 [mm]$', 'Túl kicsi betontakarás');
+        $ec->def('as', $ec->cnom + $ec->phis + 0.5*$ec->phi, 'a_s = c_(nom) + phi_s + phi/2 = %% [mm]', 'Betontakarás fővas tengelyen. $25 < a_s < 80 [mm]$');
+        if ($ec->as < 25) {
+            $ec->danger('Szükséges betontakarás: $25 [mm]$', 'Túl kicsi betontakarás');
         }
-        if ($f3->_as < $f3->_As) {
-            $blc->danger('Maximális betontakarás: $80 [mm]$', 'Túl nagy betontakarás');
+        if ($ec->as > 80) {
+            $ec->danger('Maximális betontakarás: $80 [mm]$', 'Túl nagy betontakarás');
         }
-        $blc->numeric('lfi', ['l_(fi)', 'Pillér hálózati hossza'], 3, 'm', '');
-        $blc->numeric('beta', ['beta', 'Pillér kihajlási csökkentő tényező tűzhatásra'], 0.7, '', '');
-        $blc->note('30 percnél hosszabb tűz esetén alsó szinten 0.5, felső szinten 0.7 megengedett. 1.0 mindig alkalamzható.');
-        $blc->boo('l0fired', ['', 'Hálózati hossz csökkentése'], false, 'MSZ EN 1992-1-2:2013 5.3.2. (2) $l_(0,fi) < 3 [m]$.');
-        if ($f3->_l0fired) {
-            $blc->def('l0fi', min($f3->_beta*$f3->_lfi, 3), 'l_(0,fi) = min{(beta*l_(fi)),(3):} = %% [m]', 'Pillér hatékony kihajlási hossza');
+        $ec->numeric('lfi', ['l_(fi)', 'Pillér hálózati hossza'], 3, 'm', '');
+        $ec->numeric('beta', ['beta', 'Pillér kihajlási csökkentő tényező tűzhatásra'], 0.7, '', '');
+        $ec->note('30 percnél hosszabb tűz esetén alsó szinten 0.5, felső szinten 0.7 megengedett. 1.0 mindig alkalamzható.');
+        $ec->boo('l0fired', ['', 'Hálózati hossz csökkentése'], false, 'MSZ EN 1992-1-2:2013 5.3.2. (2) $l_(0,fi) < 3 [m]$.');
+        if ($ec->l0fired) {
+            $ec->def('l0fi', min($ec->beta*$ec->lfi, 3), 'l_(0,fi) = min{(beta*l_(fi)),(3):} = %% [m]', 'Pillér hatékony kihajlási hossza');
         } else {
-            $blc->def('l0fi', $f3->_beta*$f3->_lfi, 'l_(0,fi) = beta*l_(fi) = %% [m]', 'Pillér hatékony kihajlási hossza');
+            $ec->def('l0fi', $ec->beta*$ec->lfi, 'l_(0,fi) = beta*l_(fi) = %% [m]', 'Pillér hatékony kihajlási hossza');
         }
-        $blc->def('b1', H3::n0((2*$f3->_Ac)/($f3->_a + $f3->_b)), 'b\' = (2*A_c)/(a + b) = %% [mm]', '');
+        $ec->def('b1', H3::n0((2*$ec->Ac)/($ec->a + $ec->b)), 'b\' = (2*A_c)/(a + b) = %% [mm]', '');
 
-        $blc->def('A_s_min', H3::n0(0.002*$f3->_Ac), 'A_(s, min) = %% [mm^2]', 'Minimális vasmennyiség: 2‰');
-        $blc->def('A_s_max', H3::n0(0.04*$f3->_Ac), 'A_(s, max) = %% [mm^2]', 'Maximális vasmennyiség: 4%');
+        $ec->def('A_s_min', H3::n0(0.002*$ec->Ac), 'A_(s, min) = %% [mm^2]', 'Minimális vasmennyiség: 2‰');
+        $ec->def('A_s_max', H3::n0(0.04*$ec->Ac), 'A_(s, max) = %% [mm^2]', 'Maximális vasmennyiség: 4%');
 
-        $blc->txt('Vasátmérő darabszámok:');
+        $ec->txt('Vasátmérő darabszámok:');
         $As = $ec->rebarTable();
-        $blc->def('As', $As, 'A_s = %% [mm^2]', 'Táblázat alapján');
-        $blc->boo('AsCustom', ['', 'Táblázatos vasmennyiség felülírása'], false, '');
-        if ($f3->_AsCustom) {
-            $blc->numeric('As', ['A_s', 'Alkalmazott vas mennyiség'], 1256, 'mm2', '');
+        $ec->def('As', $As, 'A_s = %% [mm^2]', 'Táblázat alapján');
+        $ec->boo('AsCustom', ['', 'Táblázatos vasmennyiség felülírása'], false, '');
+        if ($ec->AsCustom) {
+            $ec->numeric('As', ['A_s', 'Alkalmazott vas mennyiség'], 1256, 'mm2', '');
         }
-        if ($f3->_A_s_min > $f3->_As) {
-            $blc->danger('Szükséges vasmennyiség: $A_(s,min) = '.$f3->_A_s_min.' [mm^2]$', 'Túl kevés vas');
+        if ($ec->A_s_min > $ec->As) {
+            $ec->danger('Szükséges vasmennyiség: $A_(s,min) = '.$ec->A_s_min.' [mm^2]$', 'Túl kevés vas');
         }
-        if ($f3->_A_s_max < $f3->_As) {
-            $blc->danger('Maximális vasmennyiség: $A_(s,max) = '.$f3->_A_s_max.' [mm^2]$', 'Túl sok vas');
+        if ($ec->A_s_max < $ec->As) {
+            $ec->danger('Maximális vasmennyiség: $A_(s,max) = '.$ec->A_s_max.' [mm^2]$', 'Túl sok vas');
         }
-        $blc->txt('$'. H3::n1(($f3->_As/$f3->_Ac)*100).'%$ vas');
-        $blc->def('omega', H3::n2(($f3->_As*$f3->_rfyd)/($f3->_Ac*$f3->_cfcd)), 'omega = (A_s*f_(yd))/(A_c*f_(cd)) = %%', 'Mechanikai acélhányad normálhőmérsékleten');
-        $blc->numeric('alphacc', ['alpha_(c,c)', 'Nyomószilárdság szorzótényezője'], 1, '', 'Lásd EN 1992-1-1');
-        $blc->numeric('mufi', ['mu_(fi)', 'Pillér kihasználtsága tűzhatás esetén'], 0.4, '', '$0 < (mu_(fi) = N_(Ed,fi)/N_(Rd)) < 1$');
-        $blc->def('Ra', H3::n2(1.6*($f3->_as - 30)), 'R_a = 1.6*(a_s - 30) = %%', '');
-        $blc->def('Rl', H3::n2(9.6*(5 - $f3->_l0fi)), 'R_l = 9.6*(5 - l_(0,fi)) = %%', '');
-        $blc->def('Rb', H3::n2(0.09*$f3->_b1), 'R_b = 0.09*b\' = %%', '');
-        $blc->boo('Rn0', ['', 'Csak sarok vasak vannak'], false, '');
-        if ($f3->_Rn0) {
-            $blc->def('Rn', 0, 'R_n = %%', 'Összesen 4 db sarokvas');
+        $ec->txt('$'. H3::n1(($ec->As/$ec->Ac)*100).'%$ vas');
+        $ec->def('omega', H3::n2(($ec->As*$rebarMaterial->fyd)/($ec->Ac*$concreteMaterial->fcd)), 'omega = (A_s*f_(yd))/(A_c*f_(cd)) = %%', 'Mechanikai acélhányad normálhőmérsékleten');
+        $ec->numeric('alphacc', ['alpha_(c,c)', 'Nyomószilárdság szorzótényezője'], 1, '', 'Lásd EN 1992-1-1');
+        $ec->numeric('mufi', ['mu_(fi)', 'Pillér kihasználtsága tűzhatás esetén'], 0.4, '', '$0 < (mu_(fi) = N_(Ed,fi)/N_(Rd)) < 1$');
+        $ec->def('Ra', H3::n2(1.6*($ec->as - 30)), 'R_a = 1.6*(a_s - 30) = %%', '');
+        $ec->def('Rl', H3::n2(9.6*(5 - $ec->l0fi)), 'R_l = 9.6*(5 - l_(0,fi)) = %%', '');
+        $ec->def('Rb', H3::n2(0.09*$ec->b1), 'R_b = 0.09*b\' = %%', '');
+        $ec->boo('Rn0', ['', 'Csak sarok vasak vannak'], false, '');
+        if ($ec->Rn0) {
+            $ec->def('Rn', 0, 'R_n = %%', 'Összesen 4 db sarokvas');
         } else {
-            $blc->def('Rn', 12, 'R_n = %%', 'Vasak nem csak a sarkokban vannak');
+            $ec->def('Rn', 12, 'R_n = %%', 'Vasak nem csak a sarkokban vannak');
         }
-        $blc->def('Retafi', H3::n2(83*(1-($f3->_mufi*((1 + $f3->_omega)/((0.85/$f3->_alphacc) + $f3->_omega))))), 'R_(eta,fi) = 83*(1.00 - mu_(fi)*(1 + omega)/(0.85/alpha_(c,c) + omega)) = %%');
-        $blc->def('R', H3::n0(120*pow(($f3->_Retafi + $f3->_Ra + $f3->_Rl + $f3->_Rb + $f3->_Rn)/120, 1.8)), 'R = 120*((R_(eta,fi) + R_a + R_l + R_b + R_n)/120)^1.8 = %%');
-        if ($f3->_R < 30) {
-            $blc->danger('R0', 'Tűzállóság');
-        } else if ($f3->_R < 60) {
-            $blc->success('R30', 'Tűzállóság');
-        } else if ($f3->_R < 90) {
-            $blc->success('R60', 'Tűzállóság');
-        } else if ($f3->_R < 120) {
-            $blc->success('R90', 'Tűzállóság');
-        } else if ($f3->_R < 180) {
-            $blc->success('R120', 'Tűzállóság');
-        } else if ($f3->_R < 240) {
-            $blc->success('R180', 'Tűzállóság');
+        $ec->def('Retafi', H3::n2(83*(1-($ec->mufi*((1 + $ec->omega)/((0.85/$ec->alphacc) + $ec->omega))))), 'R_(eta,fi) = 83*(1.00 - mu_(fi)*(1 + omega)/(0.85/alpha_(c,c) + omega)) = %%');
+        $ec->def('R', H3::n0(120* ((($ec->Retafi + $ec->Ra + $ec->Rl + $ec->Rb + $ec->Rn) / 120) ** 1.8)), 'R = 120*((R_(eta,fi) + R_a + R_l + R_b + R_n)/120)^1.8 = %%');
+        if ($ec->R < 30) {
+            $ec->danger('R0', 'Tűzállóság');
+        } else if ($ec->R < 60) {
+            $ec->success('R30', 'Tűzállóság');
+        } else if ($ec->R < 90) {
+            $ec->success('R60', 'Tűzállóság');
+        } else if ($ec->R < 120) {
+            $ec->success('R90', 'Tűzállóság');
+        } else if ($ec->R < 180) {
+            $ec->success('R120', 'Tűzállóság');
+        } else if ($ec->R < 240) {
+            $ec->success('R180', 'Tűzállóság');
         } else {
-            $blc->success('R240', 'Tűzállóság');
+            $ec->success('R240', 'Tűzállóság');
         }
     }
 }

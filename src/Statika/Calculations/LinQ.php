@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
-// Beams' line loads calculation of variable distributed load - Calculation class for ECC framework
-// (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+/**
+ * Beams' line loads calculation of variable distributed load - Calculation class for Statika framework
+ * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
+ */
 
-namespace Calculation;
+namespace Statika\Calculations;
 
-use \Base;
-use \Ecc\Blc;
-use \Ec\Ec;
 use \H3;
 use resist\H3\Validator;
+use Statika\EurocodeInterface;
 
 Class LinQ
 {
@@ -19,25 +19,28 @@ Class LinQ
         $this->validator = $validator;
     }
 
-    public function calc(Base $f3, Blc $blc, Ec $ec): void
+    /**
+     * @param Ec $ec
+     */
+    public function calc(EurocodeInterface $ec): void
     {
-        $blc->note('Számítás apropója, hogy gerenda irányra merőlegesen, egyenletesen változó megoszló felületi teher (pl. hózug teher) szétosztást a Consteel nem tudott régen kezelni. A felületi teher vonalmenti teherré alakítható a lenti számítás alapján.');
-        $blc->input('x', ['x_i,x_j,..', 'Gerenda koordináták'], '2,6,10,14', 'm', 'Gerenda $x$ pozíciói (koordinátái), vesszővel elválasztva, $0[m]$-től számítva.');
-        if ($this->validator->isAlphanumericList($f3->_x) === false) {
-            $blc->danger('Hibás lista formátum. (Futtatás `2,6,10,14` értékkel.)');
-            $f3->_x = '2,6,10,14';
+        $ec->note('Számítás apropója, hogy gerenda irányra merőlegesen, egyenletesen változó megoszló felületi teher (pl. hózug teher) szétosztást a Consteel nem tudott régen kezelni. A felületi teher vonalmenti teherré alakítható a lenti számítás alapján.');
+        $ec->input('x', ['x_i,x_j,..', 'Gerenda koordináták'], '2,6,10,14', 'm', 'Gerenda $x$ pozíciói (koordinátái), vesszővel elválasztva, $0[m]$-től számítva.');
+        if ($this->validator->isAlphanumericList($ec->x) === false) { // TODO use spcae instead
+            $ec->danger('Hibás lista formátum. (Futtatás `2,6,10,14` értékkel.)');
+            $ec->x = '2,6,10,14';
         }
 
-        $blc->numeric('xMAX', ['x_(max)', 'Teher felület hossza'], 16, 'm', '');
-        $blc->numeric('qMAX', ['q_(max)', 'Megoszló teher (növekvő) maximális értéke'], 10, 'kN/m²', '');
-        $blc->numeric('qMIN', ['x_(min)', 'Megoszló teher minimális értéke'], 2, 'kN/m²', '');
+        $ec->numeric('xMAX', ['x_(max)', 'Teher felület hossza'], 16, 'm', '');
+        $ec->numeric('qMAX', ['q_(max)', 'Megoszló teher (növekvő) maximális értéke'], 10, 'kN/m²', '');
+        $ec->numeric('qMIN', ['x_(min)', 'Megoszló teher minimális értéke'], 2, 'kN/m²', '');
 
-        $f3->set('_qd',$f3->_qMAX - $f3->_qMIN);
-        $f3->set('_q1',$f3->_qd / $f3->_xMAX);
+        $ec->set('qd',$ec->qMAX - $ec->qMIN);
+        $ec->set('q1',$ec->qd / $ec->xMAX);
 
-        $x = explode(',', $f3->_x);
+        $x = explode(',', $ec->x);
         if (count($x) < 2) {
-            $blc->danger('Minimum 2 gerendára kell szétosztani a terhet!', 'Hiba!');
+            $ec->danger('Minimum 2 gerendára kell szétosztani a terhet!', 'Hiba!');
         }
 
         $i = 0;
@@ -45,42 +48,42 @@ Class LinQ
         $rows = [];
         foreach ($x as $xAct) {
             if (isset($x[$i + 1]) && $x[$i + 1] <= $x[$i]) {
-                $blc->danger('Hibás koordináta sorrend vagy fedő gerendák.', 'Hiba!');
+                $ec->danger('Hibás koordináta sorrend vagy fedő gerendák.', 'Hiba!');
             }
             if ($i == 0) {
                 $colNameA = H3::n2(($x[$i + 1] - $x[$i])/2 + $x[$i]);
-                $colNameB = H3::n2((((($x[$i + 1] - $x[$i])/2 + $x[$i])*$f3->_q1)/2 + $f3->_qMIN)*$colNameA);
+                $colNameB = H3::n2((((($x[$i + 1] - $x[$i])/2 + $x[$i])*$ec->q1)/2 + $ec->qMIN)*$colNameA);
             } elseif ($i === count($x) - 1) {
-                $colNameA = H3::n2(($x[$i] - $x[$i - 1])/2 + $f3->_xMAX - $x[$i]);
-                $colNameB = H3::n2((((($x[$i] - ($x[$i] - $x[$i - 1])/2 + $f3->_xMAX))*$f3->_q1)/2 + $f3->_qMIN)*$colNameA);
+                $colNameA = H3::n2(($x[$i] - $x[$i - 1])/2 + $ec->xMAX - $x[$i]);
+                $colNameB = H3::n2((((($x[$i] - ($x[$i] - $x[$i - 1])/2 + $ec->xMAX))*$ec->q1)/2 + $ec->qMIN)*$colNameA);
             } else {
                 $colNameA = H3::n2(($x[$i + 1] - $x[$i])/2 + ($x[$i] - $x[$i - 1])/2);
-                $colNameB = H3::n2((((( $x[$i] - (($x[$i] - $x[$i - 1])/2) + $x[$i] + (($x[$i + 1] - $x[$i])/2) ))*$f3->_q1)/2 + $f3->_qMIN)*$colNameA);
+                $colNameB = H3::n2((((( $x[$i] - (($x[$i] - $x[$i - 1])/2) + $x[$i] + (($x[$i + 1] - $x[$i])/2) ))*$ec->q1)/2 + $ec->qMIN)*$colNameA);
             }
             $pos = (string)($i+1).'.';
-            array_push($rows, [$pos, $colNameA, $colNameB]);
+            $rows[] = [$pos, $colNameA, $colNameB];
             $i++;
         }
-        $blc->tbl($scheme, $rows, 'tbl', 'Gerenda pozíció: x [m]');
+        $ec->tbl($scheme, $rows, 'tbl', 'Gerenda pozíció: x [m]');
 
         $write = array(
             array(
                 'size' => 14,
                 'x' => 40,
                 'y' => 140,
-                'text' => $f3->_qMIN.'kN/m²'
+                'text' => $ec->qMIN.'kN/m²'
             ),
             array(
                 'size' => 14,
                 'x' => 680,
                 'y' => 30,
-                'text' => $f3->_qMAX.'kN/m²'
+                'text' => $ec->qMAX.'kN/m²'
             ),
             array(
                 'size' => 14,
                 'x' => 630,
                 'y' => 310,
-                'text' => $f3->_xMAX.'m'
+                'text' => $ec->xMAX.'m'
             ),
             array(
                 'size' => 14,
@@ -113,6 +116,7 @@ Class LinQ
                 'text' => $rows[1][1].'kN/m   ...'
             )
         );
-        $blc->write('vendor/resist/ecc-calculations/canvas/linQ0.jpg', $write, 'Gerenda kiosztás geometriája');
+//        $ec->write('vendor/resist/ecc-calculations/canvas/linQ0.jpg', $write, 'Gerenda kiosztás geometriája');
+        // TODO port write() to SVG
     }
 }
