@@ -87,6 +87,15 @@ interface EurocodeInterface extends BlocksInterface
     public function boltListBlock(string $variableName = 'boltName', string $default = 'M16', array $title = ['', 'Csavar név']): void;
 
     /**
+     * Renders input field that accepts space separated numeric list
+     * @param string $variableName
+     * @param string[] $title
+     * @param string $default
+     * @param string $description
+     */
+    public function numericArrayInput(string $variableName, array $title = ['', 'Lista'], string $default = '1 1', string $description = 'Szóközzel elválasztott szám lista'): void;
+
+    /**
      * Renders steel section family selector block
      * @param string $variableName
      * @param string[] $title
