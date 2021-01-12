@@ -70,7 +70,7 @@ Class Weld
         $ec->boo('w', ['w', 'Kétoldali sarokvarrat'], false);
 //        $ec->numeric('w', ['w', 'Kétoldali sarokvarrat'], 1);
 
-        $this->moduleWeld($ec->L, $ec->a, $ec->F, $ec->mat, $ec->t, (bool)$ec->w);
+        $this->moduleWeld($ec->L, $ec->a, $ec->F, $ec->steelMaterialName, $ec->t, (bool)$ec->w);
 
         $ec->hr();
         $ec->img('https://structure.hu/ecc/weld0.jpg', 'CÉH Tekla hegesztési utasítás');

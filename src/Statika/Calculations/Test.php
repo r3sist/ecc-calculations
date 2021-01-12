@@ -21,6 +21,9 @@ Class Test
     {
         $ec->txt('This calculation class contains framework block functional tests: UI rendering and block behaviour with default and extreme data. This is also a ***text*** block test with *markdown*.');
 
+        $ec->numericArrayInput('order', ['', 'Numeric array input'], '1 10 11.1');
+        $ec->pre(print_r($ec->order, true));
+
         $ec->h1('***wrapper*** tests');
         $ec->wrapNumerics('wa', 'wb', 'Simple numeric wrap', 100, 200, 'kg', 'Help *md*', '×');
         $ec->wrapRebarCount('wc', 'wr', 'Rebar wrap', 2, 20, '2D20 *md* help', 'A');

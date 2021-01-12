@@ -54,37 +54,37 @@ interface EurocodeInterface extends BlocksInterface
     /**
      * @param string[] $title
      */
-    public function materialListBlock(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Anyagminőség']): void;
+    public function materialListBlock(string $variableName = 'materialName', string $default = 'S235', array $title = ['', 'Anyagminőség']): void;
 
     /**
      * @param string[] $title
      */
-    public function structuralSteelMaterialListBlock(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Szerkezeti acél anyagminőség']): void;
+    public function structuralSteelMaterialListBlock(string $variableName = 'steelMaterialName', string $default = 'S235', array $title = ['', 'Szerkezeti acél anyagminőség']): void;
 
     /**
      * @param string[] $title
      */
-    public function rebarMaterialListBlock(string $variableName = 'mat', string $default = 'B500', array $title = ['', 'Betonacél anyagminőség']): void;
+    public function rebarMaterialListBlock(string $variableName = 'rebarMaterialName', string $default = 'B500', array $title = ['', 'Betonacél anyagminőség']): void;
 
     /**
      * @param string[] $title
      */
-    public function boltMaterialListBlock(string $variableName = 'mat', string $default = '8.8', array $title = ['', 'Csavar anyagminőség']): void;
+    public function boltMaterialListBlock(string $variableName = 'boltMaterialName', string $default = '8.8', array $title = ['', 'Csavar anyagminőség']): void;
 
     /**
      * @param string[] $title
      */
-    public function concreteMaterialListBlock(string $variableName = 'mat', string $default = 'C25/30', array $title = ['', 'Beton anyagminőség']): void;
+    public function concreteMaterialListBlock(string $variableName = 'concreteMaterialName', string $default = 'C25/30', array $title = ['', 'Beton anyagminőség']): void;
 
     /**
      * @param string[] $title
      */
-    public function steelMaterialListBlock(string $variableName = 'mat', string $default = 'S235', array $title = ['', 'Acél anyagminőség']): void;
+    public function steelMaterialListBlock(string $variableName = 'steelMaterialName', string $default = 'S235', array $title = ['', 'Acél anyagminőség']): void;
 
     /**
      * Renders bolt selector block
      */
-    public function boltListBlock(string $variableName = 'bolt', string $default = 'M16', array $title = ['', 'Csavar név']): void;
+    public function boltListBlock(string $variableName = 'boltName', string $default = 'M16', array $title = ['', 'Csavar név']): void;
 
     /**
      * Renders steel section family selector block

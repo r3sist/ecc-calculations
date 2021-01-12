@@ -102,7 +102,7 @@ Class SteelSection
         $section = $s->getSection($s->sectionName);
 
         $s->structuralSteelMaterialListBlock();
-        $material = $s->getMaterial($s->mat);
+        $material = $s->getMaterial($s->steelMaterialName);
         $s->numeric('t', ['t', 'Lemezvastagság'], 10, 'mm');
         $s->txt('*'.$s->sectionName.'* legnagyobb lemezvastagsága: $t_(max) = '. 10*max($section->_tf, $section->_tw).' [mm]$');
 
@@ -155,7 +155,7 @@ Class SteelSection
         $s->h1('Nyírt keresztmetszet');
         $s->note('[Szürke 2007: 5.1.5 41.o]');
         $s->success0();
-            $s->def('VplRd', H3::n2($this->moduleVplRd((float)$s->A_v, $s->mat, (float)$s->t)), 'V_(c,Rd) = V_(pl,Rd) = (A_v*f_y)/(sqrt(3)*gamma_(M0)) = %% [kN]', 'Nyírási ellenállás 1 és 2. kmo. esetén');
+            $s->def('VplRd', H3::n2($this->moduleVplRd((float)$s->A_v, $s->steelMaterialName, (float)$s->t)), 'V_(c,Rd) = V_(pl,Rd) = (A_v*f_y)/(sqrt(3)*gamma_(M0)) = %% [kN]', 'Nyírási ellenállás 1 és 2. kmo. esetén');
         $s->success1();
         $s->note('3 és 4. kmo. esetén $V_(c,Rd) = (A_w*f_y)/(sqrt(3)*gamma_(M0))$ *H* és *I* szelvénynél. Általános esetben $(I*t)/S*f_y/(sqrt(3)*gamma_(M0))$');
                 $s->label($s->VEd/$s->VplRd, 'Nyírási kihasználtság', '$V_(Ed)/V_(pl,Rd)$');
@@ -195,10 +195,10 @@ Class SteelSection
         $s->h1('Központosan húzott keresztmetszet');
         $s->note('[Szürke 2007: 5.1.2 40.o]');
         $s->note('Keresztmetszeti besorolásra nincs szükség.');
-        $s->def('NplRd', $this->moduleNplRd($s->A, $s->mat, $s->t), 'N_(pl,Rd) = (A*f_y)/gamma_(M,0) = %% [kN]', 'Teljes km. folyási ellenállása');
-        $s->def('NuRd', $this->moduleNuRd($s->A_net, $s->mat, $s->t), 'N_(u,Rd) = (0.9*A_(n\et)*f_u)/gamma_(M,2) = %% [kN]', 'Nettó km. képlékeny töréssel szembeni ellenállása');
+        $s->def('NplRd', $this->moduleNplRd($s->A, $s->steelMaterialName, $s->t), 'N_(pl,Rd) = (A*f_y)/gamma_(M,0) = %% [kN]', 'Teljes km. folyási ellenállása');
+        $s->def('NuRd', $this->moduleNuRd($s->A_net, $s->steelMaterialName, $s->t), 'N_(u,Rd) = (0.9*A_(n\et)*f_u)/gamma_(M,2) = %% [kN]', 'Nettó km. képlékeny töréssel szembeni ellenállása');
         $s->success0();
-            $s->def('NtRd', $this->moduleNtRd($s->A, $s->A_net, $s->mat, $s->t), 'N_(t,Rd) = min(N_(pl,Rd), N_(u,Rd)) = %% [kN]', 'Húzási ellenállás');
+            $s->def('NtRd', $this->moduleNtRd($s->A, $s->A_net, $s->steelMaterialName, $s->t), 'N_(t,Rd) = min(N_(pl,Rd), N_(u,Rd)) = %% [kN]', 'Húzási ellenállás');
         $s->success1();
         $s->label($s->NEd/$s->NtRd, 'Húzási kihasználtság');
         $s->txt('', '$N_(Ed)/N_(t,Rd)$');
