@@ -1,12 +1,11 @@
 <?php declare(strict_types = 1);
 /**
- *  - Calculation class for Statika framework
+ * IDEA Connection load export/import CSV data conversion - Calculation class for Statika framework
  * (c) Bence VÁNKOS | https://structure.hu | https://github.com/r3sist/ecc-calculations
  */
 
 namespace Statika\Calculations;
 
-use \H3;
 use Statika\Ec;
 use Statika\EurocodeInterface;
 
@@ -26,17 +25,17 @@ Class IdeaLoadConversion
                 }
             </script>
             EOS);
-        $ec->html('<input type="file" data-script="on change call onChooseFile(event, onFileLoadAlt.bind(this, \'uploader_content\'))"><input type="hidden" name="uploader_content" id="uploader_content" class="" value="'.$_POST['uploader_content'].'">');
+        $ec->html('<input type="file" data-script="on change call onChooseFile(event, onFileLoadAlt.bind(this, \'uploader_content\')) then call toast(\'Futtasd a számítást a feldolgozáshoz\', \'success\')" class="my-3"><input type="hidden" name="uploader_content" id="uploader_content" class="" value="'.$_POST['uploader_content'].'">');
 
         if($_POST['uploader_content']) {
             $csv = $_POST['uploader_content'];
             $ec->region0('csv', 'Nyers CSV');
-            $ec->pre($csv);
+                $ec->pre($csv);
             $ec->region1();
         }
 
         if ($csv) {
-            $ec->numeric('beam_number', ['', 'Elemek száma'], 6);
+            $ec->numeric('beam_number', ['', 'Csomópontba csatlakozó rudak száma'], 6);
 
             $lines = str_getcsv($csv, PHP_EOL);
 
@@ -57,40 +56,52 @@ Class IdeaLoadConversion
             }
 
             $mappingFields = [
-                ['name' => 'export_order', 'title' => 'ID', 'type' => 'input'],
-                ['name' => 'axis', 'title' => 'Axis rúd név', 'type' => 'input'],
+                ['name' => 'export_order', 'title' => 'Exportált sorrend', 'type' => 'text'],
+                ['name' => 'axis', 'title' => 'Axis rúd név', 'type' => 'text'],
                 ['name' => 'tekla', 'title' => 'Tekla rúd név', 'type' => 'input'],
                 ['name' => 'import_order', 'title' => 'Importálás új sorrendje', 'type' => 'input'],
             ];
-            $ec->txt('Exportált CSV rúdsorrend:');
-            $ec->bulk('mapping', $mappingFields, $mappingDefault);
 
-            $ec->numericArrayInput('order', ['', 'Új rúd sorrend importáláshoz'], $originalOrderAsList);
+            $ec->bulk('mapping', $mappingFields, $mappingDefault, false);
 
             // Keep only forces
             foreach($lineArray as &$line) {
-//                array_shift($line);
-//                array_shift($line);
-//                array_shift($line);
+                array_shift($line);
+                array_shift($line);
+                array_shift($line);
                 array_pop($line);
             }
 
-            $blockArray = array_chunk($lineArray, 6, false);
+            $blockArray = array_chunk($lineArray, (int)$ec->beam_number, false);
 
-            d($blockArray);
             $newBlockArray = [];
             foreach ($blockArray as $loadCombinationKey => $loadCombinationData) {
+                $beamArray = [];
                 foreach ($loadCombinationData as $beamKey => $beamData) {
-                    $newBlockArray[$loadCombinationKey][(int)$ec->mapping[$beamKey]['import_order']] = $beamData;
+                    $beamArray[(int)$ec->mapping[$beamKey]['import_order']] = $beamData;
+                }
+                ksort($beamArray);
+                $newBlockArray[$loadCombinationKey] = $beamArray;
+            }
+
+            $ec->region0('check', 'Feldolgozás ellenőrzése');
+                $ec->pre(print_r($blockArray, true));
+                $ec->pre(print_r($newBlockArray, true));
+            $ec->region1();
+
+            $ec->txt('Kimenet - ez másolható be az első erő oszlop/sorba:');
+
+            $pre = '';
+            foreach ($newBlockArray as $blocks) {
+                foreach ($blocks as $line) {
+                    foreach ($line as $col) {
+                        $pre .= "$col\t";
+                    }
+                    $pre .= "\n";
                 }
             }
-            d($newBlockArray);
-            $ec->pre(print_r($newBlockArray, true));
 
-
+            $ec->html('<textarea cols="100" rows="20" class="form-control" id="import_csv">'.$pre.'</textarea>');
         }
-
     }
-
-
 }
