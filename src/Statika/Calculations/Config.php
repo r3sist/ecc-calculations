@@ -102,17 +102,26 @@ Class Config
                 }
             }
 
-//            $ec->h1('Új számítás hozzáadása');
-//            $ec->input('cnameNew', ['', 'Osztály azonosító'], '', '', 'ecc-calculation osztály azonosító (URL azonosító lesz)', 'alpha');
-//            $ec->txt('Composer autoloader frissítése szükséges!');
-//            if ($ec->cnameNew) {
-//                $this->calculationMapper->reset();
-//                $this->calculationMapper->cname = ucfirst($ec->get('_cnameNew'));
-//                $this->calculationMapper->save();
-//
-//                $ec->toast('Új osztály beszúrva', 'success', '');
-//                $ec->html('<script>$("#_cname").val("");</script>');
-//            }
+            $ec->h1('Új számítás hozzáadása');
+            $ec->input('cnameNew', ['', 'Osztály azonosító'], '', '', 'ecc-calculation osztály azonosító (URL azonosító lesz)', 'alpha');
+            $ec->info('Composer autoloader frissítése szükséges!');
+            if ($ec->cnameNew) {
+                $this->calculationMapper->reset();
+                $this->calculationMapper->name = ucfirst($ec->get('cnameNew'));
+                $this->calculationMapper->title = ucfirst($ec->get('cnameNew'));
+                $this->calculationMapper->subtitle = '';
+                $this->calculationMapper->description = '';
+                $this->calculationMapper->owner_user_id = $this->f3->get('uid');
+                $this->calculationMapper->is_private = 0;
+                $this->calculationMapper->is_hidden = 0;
+                $this->calculationMapper->is_secondary = 1;
+                $this->calculationMapper->is_experimental = 1;
+                $this->calculationMapper->type_id = 'G';
+                $this->calculationMapper->save();
+
+                \Flash::instance()->addMessage('Új osztály beszúrva.', 'success');
+                $ec->html('<script>window.location.replace("{{ @home }}statika/Config");</script>');
+            }
         }
     }
 }
