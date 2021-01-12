@@ -1,29 +1,19 @@
-# Blc
+# BlocksInterface
 
-***Ecc\Blc*** 
+***Statika\BlocksInterface*** 
 
-General user interface "blocks" for Ecc framework - renders and handles blocks.  
-Contains wrapper methods only for \Ecc\Block\*Block() classes that extend BlcHandler().  
+General "blocks" for Statika framework - renders and handles UI blocks and their data.  
 
 
 ## Public methods 
 
-### __construct()
-
-```php
-public function __construct(Base $f3)
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| *Base* | **$f3** |  | Fatfree Framework Base class |
 ### boo()
 
-Builds checkbox field  
+Renders checkbox field  
 
 
 ```php
-public function boo(string $variableName, array $title, bool $defaultValue = `false`, @string  $help = ""): string
+public function boo(string $variableName, array $title, bool $defaultValue = `false`, @string  $description = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -31,10 +21,10 @@ public function boo(string $variableName, array $title, bool $defaultValue = `fa
 | `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
 | `array`  | **$title** |  | Header of block: [(string) ASCIIMath expression or empty string, (string) title text] |
 | `bool`  | **$defaultValue** | `false` | Input default value |
-| @string  | **$help** | "" | Markdown help text. Can contain $$ math. |
+| @string  | **$description** | `empty string` | Markdown help text. Can contain $$ math. |
 ### bulk()
 
-Builds multi-input table as dynamic block.  
+Renders multi-input table as dynamic block.  
 
 
 ```php
@@ -48,7 +38,7 @@ public function bulk(string $variableName, array $fields, $defaultRow = []): voi
 |  | **$defaultRow** | [] |  |
 ### danger()
 
-Builds danger block.  
+Renders danger block.  
 
 
 ```php
@@ -61,7 +51,7 @@ public function danger(string $mdLight, string $title = `empty string`): void
 | `string`  | **$title** | `empty string` |  |
 ### danger0()
 
-Builds danger region INITIAL block. Call danger1() method for closing.  
+Renders danger region INITIAL block. Call danger1() method for closing.  
 
 
 ```php
@@ -82,11 +72,11 @@ public function danger1(): void
 
 ### def()
 
-Builds definition block, stores given value to named variable and renders math block with custom text.  
+Renders definition block, stores given value to named variable and renders math block with custom text.  
 
 
 ```php
-public function def(string $variableName, @mixed  $result, string $mathExpression = "%%", string $help = `empty string`, string $gumpValidation = `empty string`): string
+public function def(string $variableName, @mixed  $result, string $mathExpression = "%%", string $description = `empty string`, string $gumpValidation = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -94,15 +84,24 @@ public function def(string $variableName, @mixed  $result, string $mathExpressio
 | `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
 | @mixed  | **$result** |  | Stores this as data |
 | `string`  | **$mathExpression** | "%%" | ASCIIMath expression without $ delimiters. Use "%%" to substitute result. |
-| `string`  | **$help** | `empty string` | Markdown help text |
+| `string`  | **$description** | `empty string` |  |
 | `string`  | **$gumpValidation** | `empty string` | GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators |
+### get()
+
+```php
+public function get(string $key)
+```
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$key** |  |  |
 ### h1()
 
-Builds first order header block.  
+Renders first order header block.  
 
 
 ```php
-public function h1(string $headingTitle, string $subTitle = `empty string`): string
+public function h1(string $headingTitle, string $subTitle = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -111,11 +110,11 @@ public function h1(string $headingTitle, string $subTitle = `empty string`): str
 | `string`  | **$subTitle** | `empty string` | Markdown text of sub-header |
 ### h2()
 
-Builds second order header block.  
+Renders second order header block.  
 
 
 ```php
-public function h2(string $headingTitle, string $subTitle = `empty string`): string
+public function h2(string $headingTitle, string $subTitle = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -124,11 +123,11 @@ public function h2(string $headingTitle, string $subTitle = `empty string`): str
 | `string`  | **$subTitle** | `empty string` | Markdown text of sub-header |
 ### h3()
 
-Builds third order header block.  
+Renders third order header block.  
 
 
 ```php
-public function h3(string $headingTitle, string $subTitle = `empty string`): string
+public function h3(string $headingTitle, string $subTitle = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -137,11 +136,11 @@ public function h3(string $headingTitle, string $subTitle = `empty string`): str
 | `string`  | **$subTitle** | `empty string` | Markdown text of sub-header |
 ### h4()
 
-Builds fourth order header block.  
+Renders fourth order header block.  
 
 
 ```php
-public function h4(string $headingTitle, string $subTitle = `empty string`): string
+public function h4(string $headingTitle, string $subTitle = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -150,7 +149,7 @@ public function h4(string $headingTitle, string $subTitle = `empty string`): str
 | `string`  | **$subTitle** | `empty string` | Markdown text of sub-header |
 ### hr()
 
-Builds horizontal line (hr HTML tag) block.  
+Renders horizontal line (hr HTML tag) block.  
 
 
 ```php
@@ -159,7 +158,7 @@ public function hr(): void
 
 ### html()
 
-Builds html block.  
+Renders html block.  
 
 
 ```php
@@ -171,7 +170,7 @@ public function html(string $html): void
 | `string`  | **$html** |  | HTML content |
 ### img()
 
-Builds image block.  
+Renders image block.  
 
 
 ```php
@@ -184,7 +183,7 @@ public function img(string $URLorBase64, string $caption = `empty string`): void
 | `string`  | **$caption** | `empty string` |  |
 ### info()
 
-Builds info block.  
+Renders info block.  
 
 
 ```php
@@ -197,7 +196,7 @@ public function info(string $mdLight, string $title = `empty string`): void
 | `string`  | **$title** | `empty string` |  |
 ### info0()
 
-Builds info region INITIAL block. Call info1() method for closing.  
+Renders info region INITIAL block. Call info1() method for closing.  
 
 
 ```php
@@ -218,11 +217,11 @@ public function info1(): void
 
 ### input()
 
-Builds general input field  
+Renders general input field  
 
 
 ```php
-public function input(string $variableName, array $title, @string  $defaultValue = "", string $unit = `empty string`, string $help = `empty string`, string $gumpValidation = `empty string`): string
+public function input(string $variableName, array $title, @string  $defaultValue = "", string $unit = `empty string`, string $descriptionValue = `empty string`, string $gumpValidation = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -231,19 +230,11 @@ public function input(string $variableName, array $title, @string  $defaultValue
 | `array`  | **$title** |  | Header of block: [(string) ASCIIMath expression or empty string, (string) title text] |
 | @string  | **$defaultValue** | "" | Input default value |
 | `string`  | **$unit** | `empty string` | Input group extension, UI only. |
-| `string`  | **$help** | `empty string` | Markdown help text. Can contain $$ math. |
+| `string`  | **$descriptionValue** | `empty string` |  |
 | `string`  | **$gumpValidation** | `empty string` | GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators |
-### ::instance()
-
-**DEPRECATED** This static method is used by a few template
-
-```php
-public static function instance()
-```
-
 ### jsx()
 
-Builds html block with JSXGraph content. Load driver() first.  
+Builds html block with JSXGraph content. Load buildJsxDriverBlock() first.  
 
 
 ```php
@@ -266,24 +257,25 @@ public function jsxDriver(): void
 
 ### label()
 
-Build label block.  
+Renders label block.  
 
 
 ```php
-public function label(@float|int|string  $value, string $text = `empty string`): string
+public function label(@float|int|string  $value, string $text = `empty string`, string $description = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | @float,int,string  | **$value** |  | Can be "yes" for green, "no" for red or numeric converted to %. If $value < 1 then label is green. |
 | `string`  | **$text** | `empty string` | Additional text in label |
+| `string`  | **$description** | `empty string` |  |
 ### lst()
 
-Builds selection list  
+Renders selection list  
 
 
 ```php
-public function lst(string $variableName, array $source, array $title, @float|int|string  $defaultValue = "", string $help = `empty string`): string
+public function lst(string $variableName, array $source, array $title, @float|int|string  $defaultValue = `empty string`, string $description = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -291,11 +283,11 @@ public function lst(string $variableName, array $source, array $title, @float|in
 | `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
 | `array`  | **$source** |  | List items. Items: (int|float|string) name => (int|float|string) value |
 | `array`  | **$title** |  | Header of block: [(string) ASCIIMath expression or empty string, (string) title text] |
-| @float,int,string  | **$defaultValue** | "" | Input default value |
-| `string`  | **$help** | `empty string` | Markdown help text. Can contain $$ math. |
+| @float,int,string  | **$defaultValue** | `empty string` | Input default value |
+| `string`  | **$description** | `empty string` | Markdown help text. Can contain $$ math. |
 ### math()
 
-Builds math expression block.  
+Renders math expression block.  
 
 
 ```php
@@ -312,15 +304,15 @@ Builds markdown block.
 
 
 ```php
-public function md(string $mdLight): string
+public function md(string $markdownWithoutHtml): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$mdLight** |  | Multi-line markdown text |
+| `string`  | **$markdownWithoutHtml** |  | Multi-line markdown text |
 ### note()
 
-Builds note block.  
+Renders calculation note block.  
 
 
 ```php
@@ -332,11 +324,11 @@ public function note(string $mdStrict): void
 | `string`  | **$mdStrict** |  | Markdown text |
 ### numeric()
 
-Builds numeric input field. (General HTML input tag with numeric validation). Accepts and converts math expression strings in "=2+3" format  
+Renders numeric input field. (General HTML input tag with numeric validation). Accepts and converts math expression strings in "=2+3" format  
 
 
 ```php
-public function numeric(string $variableName, array $title, float $defaultValue, string $unit = `empty string`, string $help = `empty string`, string $additionalGumpValidation = `empty string`): string
+public function numeric(string $variableName, array $title, float $defaultValue, string $unit = `empty string`, string $description = `empty string`, string $additionalGumpValidation = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -345,11 +337,11 @@ public function numeric(string $variableName, array $title, float $defaultValue,
 | `array`  | **$title** |  | Header of block: [(string) ASCIIMath expression or empty string, (string) title text] |
 | `float`  | **$defaultValue** |  | Input default value |
 | `string`  | **$unit** | `empty string` | Input group extension, UI only. |
-| `string`  | **$help** | `empty string` | Markdown help text. Can contain $$ math. |
+| `string`  | **$description** | `empty string` | Allowed: Basic markdown, math expression between $..$ |
 | `string`  | **$additionalGumpValidation** | `empty string` | GUMP validator string ("numeric" is set always): https://github.com/Wixel/GUMP#star-available-validators |
 ### pre()
 
-Builds block contains pre HTML tag  
+Renders block with pre HTML tag  
 
 
 ```php
@@ -361,7 +353,7 @@ public function pre(string $plainText): void
 | `string`  | **$plainText** |  |  |
 ### region0()
 
-Builds collapsible region INITIAL block. Call region1() method for closing.  
+Renders collapsible region INITIAL block. Call region1() method for closing.  
 
 
 ```php
@@ -381,9 +373,19 @@ Closes region0() block.
 public function region1(): void
 ```
 
+### set()
+
+```php
+public function set(string $key, $value): void
+```
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$key** |  |  |
+|  | **$value** |  |  |
 ### success()
 
-Builds success block.  
+Renders success block.  
 
 
 ```php
@@ -396,7 +398,7 @@ public function success(string $mdLight, string $title = `empty string`): void
 | `string`  | **$title** | `empty string` |  |
 ### success0()
 
-Builds success region INITIAL block. Call success1() method for closing.  
+Renders success region INITIAL block. Call success1() method for closing.  
 
 
 ```php
@@ -417,7 +419,7 @@ public function success1(): void
 
 ### svg()
 
-Builds SVG content block.  
+Renders SVG content block.  
 
 
 ```php
@@ -431,7 +433,7 @@ public function svg(resist\SVG\SVG $svgObject, bool $forceJpg = `false`, string 
 | `string`  | **$caption** | `empty string` | Help text of block |
 ### tbl()
 
-Builds table block from array.  
+Renders table block from array.  
 
 
 ```php
@@ -444,45 +446,22 @@ public function tbl(array $scheme, array $rows, string $name = "tbl", string $ca
 | `array`  | **$rows** |  | Array of rows' content array |
 | `string`  | **$name** | "tbl" | Block ID - Class name of tbody tag for scripting |
 | `string`  | **$caption** | `empty string` | Help text of table |
-### toast()
-
-Builds toaster block.  
-
-
-```php
-public function toast(string $textMdStrict, string $type = "info", string $titleMdStrict = `empty string`): void
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$textMdStrict** |  | One-line markdown string |
-| `string`  | **$type** | "info" | Toaster type (color and icon) |
-| `string`  | **$titleMdStrict** | `empty string` | One-line markdown string for toaster heading |
-### toc()
-
-Builds table of content block.  
-
-
-```php
-public function toc(): void
-```
-
 ### txt()
 
-Builds plain text block.  
+Renders plain text block.  
 
 
 ```php
-public function txt(string $mdStrict, string $help = `empty string`): string
+public function txt(string $mdStrict, string $description = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$mdStrict** |  | Markdown text, can contain $$ math expression |
-| `string`  | **$help** | `empty string` | Markdown help text, can contain $$ math expression |
+| `string`  | **$mdStrict** |  | Allowed: Basic markdown, math expression between $..$ |
+| `string`  | **$description** | `empty string` | Allowed: Basic markdown, math expression between $..$ |
 ### wrapper0()
 
-Builds wrapped blocks. STARTER block.  
+Renders wrapped blocks. STARTER block.  
 
 
 ```php
@@ -494,7 +473,7 @@ public function wrapper0(string $stringTitle = `empty string`): void
 | `string`  | **$stringTitle** | `empty string` | Title line of whole wrapped blocks |
 ### wrapper1()
 
-Builds wrapped blocks. SEPARATOR block.  
+Renders wrapped blocks. SEPARATOR block.  
 
 
 ```php
@@ -506,6 +485,9 @@ public function wrapper1(string $middleTextMd = `empty string`): void
 | `string`  | **$middleTextMd** | `empty string` | Separator text between wrapped blocks |
 ### wrapper2()
 
+Renders wrapped blocks. END block.  
+
+
 ```php
 public function wrapper2(string $help = `empty string`): void
 ```
@@ -513,35 +495,15 @@ public function wrapper2(string $help = `empty string`): void
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | `string`  | **$help** | `empty string` | Help text below wrapped blocks |
-### write()
-
-Builds and handles write blocks - Generates new image with text on base image; Renders img block  
-["text" => (string),  
-"x" => (int) position,  
-"y" => (int) position,  
-"size" => (int) text size]  
-
-
-```php
-public function write(string $imageFile, array $textArray, string $caption = `empty string`): void
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$imageFile** |  | Base image as canvas relative to codebase home, e.g.: "vendor/resist/ecc-calculations/canvas/linQ0.jpg" |
-| `array`  | **$textArray** |  | Array of texts. Sub array keys: |
-| `string`  | **$caption** | `empty string` | Help text of block |
 
 
 ---
 
-# Ec
+# EurocodeInterface
 
-***Ec\Ec*** 
+***Statika\EurocodeInterface*** 
 
-Eurocode globals, helpers and predefined GUI elements for ECC framework  
-(c) Bence VÁNKOS  
-https:// structure.hu  
+Extension of BlocksInterface of Statika framework - renders and handles Eurocode related UI blocks and their data.  
 
 
 ## Public methods 
@@ -556,167 +518,57 @@ public function A(float $D, float $multiplicator = 1): float
 | --- | --- | --- | --- |
 | `float`  | **$D** |  |  |
 | `float`  | **$multiplicator** | 1 |  |
-### BpRd()
+Returns: `float` 
 
-```php
-public function BpRd(string $btName, string $stMat, float $t): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$btName** |  |  |
-| `string`  | **$stMat** |  |  |
-| `float`  | **$t** |  |  |
-### FbRd()
-
-```php
-public function FbRd(string $btName, @float|string  $btMat, string $stMat, float $ep1, float $ep2, float $t, bool $inner): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$btName** |  |  |
-| @float,string  | **$btMat** |  |  |
-| `string`  | **$stMat** |  |  |
-| `float`  | **$ep1** |  |  |
-| `float`  | **$ep2** |  |  |
-| `float`  | **$t** |  |  |
-| `bool`  | **$inner** |  |  |
-### FtRd()
-
-```php
-public function FtRd(string $btName, $btMat, bool $verbose = `true`): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$btName** |  |  |
-|  | **$btMat** |  |  |
-| `bool`  | **$verbose** | `true` |  |
-### FvRd()
-
-```php
-public function FvRd(string $btName, @float|string  $btMat, float $n, float $As): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$btName** |  |  |
-| @float,string  | **$btMat** |  |  |
-| `float`  | **$n** |  |  |
-| `float`  | **$As** | 0 |  |
-### McRd()
-
-```php
-public function McRd(float $W, float $fy): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `float`  | **$W** |  |  |
-| `float`  | **$fy** |  |  |
-### NcRd()
-
-```php
-public function NcRd(float $A, float $fy): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `float`  | **$A** |  |  |
-| `float`  | **$fy** |  |  |
-### NplRd()
-
-```php
-public function NplRd($A, string $matName, $t): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-|  | **$A** |  |  |
-| `string`  | **$matName** |  |  |
-|  | **$t** |  |  |
-### NtRd()
-
-```php
-public function NtRd($A, $Anet, string $matName, $t): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-|  | **$A** |  |  |
-|  | **$Anet** |  |  |
-| `string`  | **$matName** |  |  |
-|  | **$t** |  |  |
-### NuRd()
-
-```php
-public function NuRd($Anet, string $matName, $t): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-|  | **$Anet** |  |  |
-| `string`  | **$matName** |  |  |
-|  | **$t** |  |  |
-### VplRd()
-
-```php
-public function VplRd(float $Av, string $matName, float $t): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `float`  | **$Av** |  |  |
-| `string`  | **$matName** |  |  |
-| `float`  | **$t** |  |  |
 ### __construct()
 
-Ec constructor.  
-Defines Eurocode parameters in hive: __GG, __GQ, __GM0, __GM2, __GM3, __GM3ser, __GM6ser, __Gc, __Gs, __GS, __GcA, __GSA  
-
-
 ```php
-public function __construct(Base $f3, Ecc\Blc $blc, DB\SQL $db, Ecc\Map\DataMap $dataMap)
+public function __construct(Base $f3, Statika\Block\BlockService $blockService, Statika\Material\MaterialFactory $materialFactory, Statika\Bolt\BoltFactory $boltFactory, Profil\ProfilService $profilService)
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | *Base* | **$f3** |  |  |
-| *Ecc\Blc* | **$blc** |  |  |
-| *DB\SQL* | **$db** |  |  |
-| *Ecc\Map\DataMap* | **$dataMap** |  |  |
-### boltList()
+| *Statika\Block\BlockService* | **$blockService** |  |  |
+| *Statika\Material\MaterialFactory* | **$materialFactory** |  |  |
+| *Statika\Bolt\BoltFactory* | **$boltFactory** |  |  |
+| *Profil\ProfilService* | **$profilService** |  |  |
+### boltListBlock()
+
+Renders bolt selector block  
+
 
 ```php
-public function boltList(string $variableName = "bolt", string $default = "M16", string $title = "Csavar betöltése"): void
+public function boltListBlock(string $variableName = "bolt", string $default = "M16", array $title = ["","Csavar név"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | `string`  | **$variableName** | "bolt" |  |
 | `string`  | **$default** | "M16" |  |
-| `string`  | **$title** | "Csavar betöltése" |  |
-### boltProp()
+| `array`  | **$title** | ["","Csavar név"] |  |
+### boltMaterialListBlock()
 
 ```php
-public function boltProp(string $boltName, string $propertyName): float
+public function boltMaterialListBlock(string $variableName = "mat", string $default = 8.8, array $title = ["","Csavar anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$boltName** |  |  |
-| `string`  | **$propertyName** |  |  |
-### chooseRoot()
+| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$default** | 8.8 |  |
+| `array`  | **$title** | ["","Csavar anyagminőség"] |  |
+### concreteMaterialListBlock()
 
 ```php
-public function chooseRoot(float $estimation, array $roots): float
+public function concreteMaterialListBlock(string $variableName = "mat", string $default = "C25/30", array $title = ["","Beton anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float`  | **$estimation** |  |  |
-| `array`  | **$roots** |  |  |
+| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$default** | "C25/30" |  |
+| `array`  | **$title** | ["","Beton anyagminőség"] |  |
 ### fu()
 
 ```php
@@ -741,104 +593,46 @@ public function fy(string $materialName, float $t): float
 | `float`  | **$t** |  | Thickness of relevant plate [mm] |
 Returns: `float` Yield strength in [N/mm^2; MPa]
 
-### getCeilClosest()
+### getBolt()
 
-Returns closest ceil number from series of keys. Note that array keys can not be floats, that's why there are string types.  
+Returns Bolt DTO by bolt name  
 
 
 ```php
-public function getCeilClosest(array $array, string $find): string
+public function getBolt(string $boltName): Statika\Bolt\BoltDTO
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `array`  | **$array** |  | One dimensional array of keys |
-| `string`  | **$find** |  | Compare array keys to this |
-Returns: `string` Floor key as string
+| `string`  | **$boltName** |  | Name of bolt like 'M12' or 'M16' |
+### getMaterial()
 
-### getClosest()
+Returns Material DTO by material name  
 
-**DEPRECATED** &nbsp;
 
 ```php
-public function getClosest(float $find, array $stackArray, string $returnType = "closest"): float
+public function getMaterial(string $materialName): Statika\Material\MaterialDTO
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `float`  | **$find** |  |  |
-| `array`  | **$stackArray** |  |  |
-| `string`  | **$returnType** | "closest" |  |
-### getFloorClosest()
+| `string`  | **$materialName** |  | Name of material like 'S235', '8.8', 'C25/30', 'B500' |
+### getSection()
 
-Returns closest floor number from series of keys. Note that array keys can not be floats, that's why there are string types.  
+Returns Section data transfer object by section name  
 
 
 ```php
-public function getFloorClosest(array $array, string $find): string
+public function getSection($sectionName): Profil\Section\SectionDTO
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `array`  | **$array** |  | One dimensional array of keys |
-| `string`  | **$find** |  | Compare array keys to this |
-Returns: `string` Floor key as string
-
-### getMaterialArray()
-
-Get all material data as array from database  
-Units in database:  
-﻿0 [-]  
-fy [Mpa]  
-fu [Mpa]  
-fy40 [Mpa]  
-fu40 [Mpa]  
-betaw [-]  
-fyd [Mpa]  
-fck [Mpa]  
-fckcube [Mpa]  
-fcm [Mpa]  
-fctm [Mpa]  
-fctk005 [Mpa]  
-fctk095 [Mpa]  
-Ecm color(teal)( GPa)  
-Ecu3 [-]  
-Euk [-]  
-Es [Gpa]  
-Fc0 [-]  
-F_c0 [-]  
-fbd [Mpa]  
-fcd [Mpa]  
-fctd [Mpa]  
-fiinf28 [-]  
-Eceff [Gpa]  
-alfat [1/Cdeg]  
-Epsiloncsinf [-]  
-
+|  | **$sectionName** |  |  |
+### materialListBlock()
 
 ```php
-public function getMaterialArray(): array
-```
-
-Returns: `array` Assoc. array of read material data
-
-### linterp()
-
-```php
-public function linterp(float $x1, float $y1, float $x2, float $y2, float $x): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `float`  | **$x1** |  |  |
-| `float`  | **$y1** |  |  |
-| `float`  | **$x2** |  |  |
-| `float`  | **$y2** |  |  |
-| `float`  | **$x** |  |  |
-### matList()
-
-```php
-public function matList(string $variableName = "mat", string $default = "S235", array $title = ["","Anyagminőség"], string $category = `empty string`): void
+public function materialListBlock(string $variableName = "mat", string $default = "S235", array $title = ["","Anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -846,185 +640,65 @@ public function matList(string $variableName = "mat", string $default = "S235", 
 | `string`  | **$variableName** | "mat" |  |
 | `string`  | **$default** | "S235" |  |
 | `array`  | **$title** | ["","Anyagminőség"] |  |
-| `string`  | **$category** | `empty string` |  |
-### matProp()
+### rebarMaterialListBlock()
 
 ```php
-public function matProp(string $materialName, string $propertyName): float
+public function rebarMaterialListBlock(string $variableName = "mat", string $default = "B500", array $title = ["","Betonacél anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$materialName** |  |  |
-| `string`  | **$propertyName** |  |  |
-### proportion()
+| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$default** | "B500" |  |
+| `array`  | **$title** | ["","Betonacél anyagminőség"] |  |
+### sectionFamilyListBlock()
 
-```php
-public function proportion(float $x0, float $y0, float $x1): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `float`  | **$x0** |  |  |
-| `float`  | **$y0** |  |  |
-| `float`  | **$x1** |  |  |
-### qpz()
-
-```php
-public function qpz(float $z, float $terrainCat): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `float`  | **$z** |  |  |
-| `float`  | **$terrainCat** |  |  |
-### quadratic()
-
-Original: https://github.com/hellofromtonya/Quadratic/blob/master/solver.php  
+Renders steel section family selector block  
 
 
 ```php
-public function quadratic(float $a, float $b, float $c, int $precision = 3): array
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `float`  | **$a** |  |  |
-| `float`  | **$b** |  |  |
-| `float`  | **$c** |  |  |
-| `int`  | **$precision** | 3 |  |
-Returns: `array` string[]|float[] may contain 'i'
-
-### readData()
-
-Get data record by data_id from ecc_data table  
-
-
-```php
-public function readData(string $dataName): array
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$dataName** |  | Name of data as dataset identifier |
-Returns: `array` Associative array of read data
-
-### rebarList()
-
-```php
-public function rebarList(string $variableName = "fi", float $default = 16, array $title = ["","Vasátmérő"], string $help = `empty string`): void
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$variableName** | "fi" |  |
-| `float`  | **$default** | 16 |  |
-| `array`  | **$title** | ["","Vasátmérő"] |  |
-| `string`  | **$help** | `empty string` |  |
-### rebarTable()
-
-```php
-public function rebarTable(string $variableNameBulk = "As"): float
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$variableNameBulk** | "As" |  |
-### sectionFamilyList()
-
-```php
-public function sectionFamilyList(string $variableName = "sectionFamily", string $title = "Szelvény család", string $default = "HEA"): void
+public function sectionFamilyListBlock(string $variableName = "sectionFamily", array $title = ["","Szelvény család"], string $default = "HEA"): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | `string`  | **$variableName** | "sectionFamily" |  |
-| `string`  | **$title** | "Szelvény család" |  |
+| `array`  | **$title** | ["","Szelvény család"] |  |
 | `string`  | **$default** | "HEA" |  |
-### sectionList()
+### sectionListBlock()
 
 ```php
-public function sectionList(string $familyName = "HEA", string $variableName = "sectionName", string $title = "Szelvény név", string $default = "HEA200"): void
+public function sectionListBlock(string $familyName = "HEA", string $variableName = "sectionName", array $title = ["","Szelvény név"], string $default = "HEA200"): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | `string`  | **$familyName** | "HEA" |  |
 | `string`  | **$variableName** | "sectionName" |  |
-| `string`  | **$title** | "Szelvény név" |  |
+| `array`  | **$title** | ["","Szelvény név"] |  |
 | `string`  | **$default** | "HEA200" |  |
-### spreadMaterialData()
-
-Saves all material properties from DB to Hive variables, with prefix. e.g.: _prefixfck, _prefixfy etc  
-
+### steelMaterialListBlock()
 
 ```php
-public function spreadMaterialData(@float|string  $matName, string $prefix = `empty string`): void
+public function steelMaterialListBlock(string $variableName = "mat", string $default = "S235", array $title = ["","Acél anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| @float,string  | **$matName** |  |  |
-| `string`  | **$prefix** | `empty string` |  |
-### spreadSectionData()
+| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$default** | "S235" |  |
+| `array`  | **$title** | ["","Acél anyagminőség"] |  |
+### structuralSteelMaterialListBlock()
 
 ```php
-public function spreadSectionData(string $sectionName, bool $renderTable = `false`, string $arrayName = "sectionData"): void
+public function structuralSteelMaterialListBlock(string $variableName = "mat", string $default = "S235", array $title = ["","Szerkezeti acél anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$sectionName** |  |  |
-| `bool`  | **$renderTable** | `false` |  |
-| `string`  | **$arrayName** | "sectionData" |  |
-### wrapNumerics()
-
-```php
-public function wrapNumerics(string $variableNameA, string $variableNameB, string $stringTitle, @mixed  $defaultValueA, @mixed  $defaultValueB, string $unitAB = `empty string`, string $helpAB = `empty string`, string $middleText = `empty string`)
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$variableNameA** |  |  |
-| `string`  | **$variableNameB** |  |  |
-| `string`  | **$stringTitle** |  |  |
-| @mixed  | **$defaultValueA** |  |  |
-| @mixed  | **$defaultValueB** |  |  |
-| `string`  | **$unitAB** | `empty string` |  |
-| `string`  | **$helpAB** | `empty string` |  |
-| `string`  | **$middleText** | `empty string` |  |
-### wrapRebarCount()
-
-Wraps a numeric (as rebar count) and a rebarList (as rebar diameter) block  
-
-
-```php
-public function wrapRebarCount(string $variableNameCount, string $variableNameRebar, string $titleString, int $defaultValueCount, int $defaultValueRebar = 16, string $help = `empty string`, string $variableNameA = `empty string`): void
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$variableNameCount** |  | Saves rebar count with this name |
-| `string`  | **$variableNameRebar** |  | Saves rebar diameter with this name |
-| `string`  | **$titleString** |  |  |
-| `int`  | **$defaultValueCount** |  |  |
-| `int`  | **$defaultValueRebar** | 16 |  |
-| `string`  | **$help** | `empty string` | If empty, sum section area displayed |
-| `string`  | **$variableNameA** | `empty string` | If not empty, saves sum section area with this name |
-### wrapRebarDistance()
-
-```php
-public function wrapRebarDistance(string $variableNameDistance, string $variableNameRebar, string $titleString, int $defaultValueDistance, int $defaultValueRebar = 16, string $help = `empty string`): void
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$variableNameDistance** |  |  |
-| `string`  | **$variableNameRebar** |  |  |
-| `string`  | **$titleString** |  |  |
-| `int`  | **$defaultValueDistance** |  |  |
-| `int`  | **$defaultValueRebar** | 16 |  |
-| `string`  | **$help** | `empty string` |  |
+| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$default** | "S235" |  |
+| `array`  | **$title** | ["","Szerkezeti acél anyagminőség"] |  |
 
 
 ---
@@ -1217,7 +891,7 @@ public function addText(float $x, float $y, string $text, bool $rotate = `false`
 ### addTrustedRaw()
 
 Adds raw SVG content  
-Not validated against XSS - use this method with getImgJpg() or getImgSvg()  
+Not validated against XSS - use this method with getImgTagWithEncodedPng() or getImgSvg()  
 
 
 ```php
@@ -1227,18 +901,6 @@ public function addTrustedRaw(string $raw): void
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
 | `string`  | **$raw** |  | SVG content |
-### getImgJpg()
-
-Returns img tag with base64 encoded jpg image  
-
-
-```php
-public function getImgJpg(string $title = `empty string`): string
-```
-
-| Type | Parameter name | Default value | Description |
-| --- | --- | --- | --- |
-| `string`  | **$title** | `empty string` | Title attribute of img tag |
 ### getImgSvg()
 
 Returns img tag with base64 encoded SVG content  
@@ -1253,6 +915,18 @@ public function getImgSvg(string $title = `empty string`): string
 | `string`  | **$title** | `empty string` |  |
 Returns: `string` 
 
+### getImgTagWithEncodedPng()
+
+Returns img tag with base64 encoded jpg image  
+
+
+```php
+public function getImgTagWithEncodedPng(string $title = `empty string`): string
+```
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$title** | `empty string` | Title attribute of img tag |
 ### getRatio()
 
 Returns ratio  
