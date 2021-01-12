@@ -39,7 +39,7 @@ Class Layers
             ['name' => 'pcalc', 'title' => 'Számított teher [kN/m2]', 'type' => 'value', 'key' => 'pcalc', 'sum' => true],
         ];
 
-        $ec->bulk($bulkName, $fields, ['PVC Vízszigetelés', 0.2, 17, 0, 0.034], $update);
+        $ec->bulk($bulkName, $fields, ['PVC Vízszigetelés', 0.2, 17, 0, 0.034], true);
 
         $ec->region0('t2', 'Szigetelőanyagok');
             $scheme = ['Szigetelő anyagok', '$gamma_k [(kN)/m^3]$'];
