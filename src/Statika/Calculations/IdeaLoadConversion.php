@@ -16,7 +16,7 @@ Class IdeaLoadConversion
      */
     public function calc(EurocodeInterface $ec): void
     {
-        $ec->note('Két különböző szoftverből származó IDEA modell közti exportált/imortált teher konverió.');
+        $ec->note('Két különböző szoftverből származó IDEA modell közti exportált/imortált teheradatok (CSV) konveriója.');
 
         $ec->html(<<<EOS
             <script>
@@ -26,6 +26,7 @@ Class IdeaLoadConversion
             </script>
             EOS);
         $ec->html('<input type="file" data-script="on change call onChooseFile(event, onFileLoadAlt.bind(this, \'uploader_content\')) then call toast(\'Futtasd a számítást a feldolgozáshoz\', \'success\')" class="my-3"><input type="hidden" name="uploader_content" id="uploader_content" class="" value="'.$_POST['uploader_content'].'">');
+        $ec->note('IDEA esxportált CSV fájlt kell betölteni, majd futtatni a számítást.');
 
         if($_POST['uploader_content']) {
             $csv = $_POST['uploader_content'];
@@ -57,8 +58,8 @@ Class IdeaLoadConversion
 
             $mappingFields = [
                 ['name' => 'export_order', 'title' => 'Exportált sorrend', 'type' => 'text'],
-                ['name' => 'axis', 'title' => 'Axis rúd név', 'type' => 'text'],
-                ['name' => 'tekla', 'title' => 'Tekla rúd név', 'type' => 'input'],
+                ['name' => 'axis', 'title' => 'Exportált rúd név', 'type' => 'text'],
+                ['name' => 'tekla', 'title' => 'Cél modell rúd név', 'type' => 'input'],
                 ['name' => 'import_order', 'title' => 'Importálás új sorrendje', 'type' => 'input'],
             ];
 
@@ -84,12 +85,7 @@ Class IdeaLoadConversion
                 $newBlockArray[$loadCombinationKey] = $beamArray;
             }
 
-            $ec->region0('check', 'Feldolgozás ellenőrzése');
-                $ec->pre(print_r($blockArray, true));
-                $ec->pre(print_r($newBlockArray, true));
-            $ec->region1();
-
-            $ec->txt('Kimenet - ez másolható be az első erő oszlop/sorba:');
+            $ec->note('Kimenet - ez másolható be az első erő cellába. Ez a lista a egy tehereseten belül az *Importálás új sorrendjében* tartalmazza az erőket.');
 
             $pre = '';
             foreach ($newBlockArray as $blocks) {
