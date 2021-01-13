@@ -66,13 +66,13 @@ Class Concrete
 
         $ec->h1('Beton anyagminőségek');
         $ec->concreteMaterialListBlock('concreteMaterialName');
-        $concreteMaterial = $ec->getMaterial($ec->concreteMaterialName);
+        $concreteMaterial = $ec->materialTable($ec->concreteMaterialName, 'concreteMaterial');
         $ec->txt('', 'A fent megadott anyagjellemzők a beton 28 napos korában érvényesek.');
         $ec->note('A szilárdsági osztályhoz tartozó jellemzők a 28 napos korban meghatározott, hengeren mért nyomószilárdság fck karakterisztikus értékén alapulnak.');
 
         $ec->h1('Lehorgonyzási hossz');
         $ec->rebarMaterialListBlock('rebarMaterialName');
-        $rebarMaterial = $ec->getMaterial($ec->rebarMaterialName);
+        $rebarMaterial = $ec->materialTable($ec->rebarMaterialName, 'rebarMaterial');
         $ec->rebarList('phil', 20, ['phi_l', 'Lehorgonyzandó vas átmérője']);
         $ec->numeric('nrequ', ['n_(requ)', 'Szükséges vas szál'], 1, '', '$A_(s,requ)$ szükséges vaskeresztmetszet helyett');
         $ec->numeric('nprov', ['n_(prov)', 'Biztosított vas szál'], 1, '', '$A_(s,prov)$ biztosított vaskeresztmetszet helyett');
