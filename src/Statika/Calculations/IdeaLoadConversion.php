@@ -85,7 +85,7 @@ Class IdeaLoadConversion
                 $newBlockArray[$loadCombinationKey] = $beamArray;
             }
 
-            $ec->note('Kimenet - ez másolható be az első erő cellába. Ez a lista a egy tehereseten belül az *Importálás új sorrendjében* tartalmazza az erőket.');
+            $ec->note('Kimenet - ez másolható be az első erő cellába (LE1 N). Ez a lista a egy tehereseten belül az *Importálás új sorrendjében* tartalmazza az erőket.');
 
             $pre = '';
             foreach ($newBlockArray as $blocks) {
