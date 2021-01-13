@@ -70,7 +70,7 @@ interface BlocksInterface
      * @param string $variableName Stores data in F3-Hive with a name of _ prefix and this ID
      * @param array[] $fields Source data of table. Sub arrays keys: "name" => string, "title" => string, "type" => string: "value" "input", "key" => string: for value types, "sum" => bool
      */
-    public function bulk(string $variableName, array $fields, $defaultRow = []): void;
+    public function bulk(string $variableName, array $fields, $defaultRow = [], bool $enableController = true): void;
 
     /**
      * Renders plain text block.
