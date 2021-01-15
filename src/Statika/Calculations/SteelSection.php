@@ -99,7 +99,7 @@ Class SteelSection
 
         $s->sectionFamilyListBlock();
         $s->sectionListBlock($s->sectionFamily);
-        $section = $s->getSection($s->sectionName);
+        $section = $s->sectionTable($s->sectionName, 'section');
 
         $s->structuralSteelMaterialListBlock();
         $material = $s->getMaterial($s->steelMaterialName);
