@@ -18,6 +18,8 @@ Class IdeaLoadConversion
     {
         $ec->note('Két különböző szoftverből származó IDEA modell közti exportált/imortált teheradatok (CSV) konveriója.');
 
+        $ec->numeric('beam_number', ['', 'Csomópontba csatlakozó rudak száma'], 4);
+
         $ec->html(<<<EOS
             <script>
                 function onFileLoadAlt(elementId, event) {
@@ -36,8 +38,6 @@ Class IdeaLoadConversion
         }
 
         if ($csv) {
-            $ec->numeric('beam_number', ['', 'Csomópontba csatlakozó rudak száma'], 6);
-
             $lines = str_getcsv($csv, PHP_EOL);
 
             $lineArray = [];
