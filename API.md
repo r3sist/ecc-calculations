@@ -28,7 +28,7 @@ Renders multi-input table as dynamic block.
 
 
 ```php
-public function bulk(string $variableName, array $fields, $defaultRow = []): void
+public function bulk(string $variableName, array $fields, $defaultRow = [], bool $enableController = `true`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -36,6 +36,7 @@ public function bulk(string $variableName, array $fields, $defaultRow = []): voi
 | `string`  | **$variableName** |  | Stores data in F3-Hive with a name of _ prefix and this ID |
 | `array`  | **$fields** |  | Source data of table. Sub arrays keys: "name" => string, "title" => string, "type" => string: "value" "input", "key" => string: for value types, "sum" => bool |
 |  | **$defaultRow** | [] |  |
+| `bool`  | **$enableController** | `true` |  |
 ### danger()
 
 Renders danger block.  
@@ -539,34 +540,34 @@ Renders bolt selector block
 
 
 ```php
-public function boltListBlock(string $variableName = "bolt", string $default = "M16", array $title = ["","Csavar név"]): void
+public function boltListBlock(string $variableName = "boltName", string $default = "M16", array $title = ["","Csavar név"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** | "bolt" |  |
+| `string`  | **$variableName** | "boltName" |  |
 | `string`  | **$default** | "M16" |  |
 | `array`  | **$title** | ["","Csavar név"] |  |
 ### boltMaterialListBlock()
 
 ```php
-public function boltMaterialListBlock(string $variableName = "mat", string $default = 8.8, array $title = ["","Csavar anyagminőség"]): void
+public function boltMaterialListBlock(string $variableName = "boltMaterialName", string $default = 8.8, array $title = ["","Csavar anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$variableName** | "boltMaterialName" |  |
 | `string`  | **$default** | 8.8 |  |
 | `array`  | **$title** | ["","Csavar anyagminőség"] |  |
 ### concreteMaterialListBlock()
 
 ```php
-public function concreteMaterialListBlock(string $variableName = "mat", string $default = "C25/30", array $title = ["","Beton anyagminőség"]): void
+public function concreteMaterialListBlock(string $variableName = "concreteMaterialName", string $default = "C25/30", array $title = ["","Beton anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$variableName** | "concreteMaterialName" |  |
 | `string`  | **$default** | "C25/30" |  |
 | `array`  | **$title** | ["","Beton anyagminőség"] |  |
 ### fu()
@@ -632,23 +633,38 @@ public function getSection($sectionName): Profil\Section\SectionDTO
 ### materialListBlock()
 
 ```php
-public function materialListBlock(string $variableName = "mat", string $default = "S235", array $title = ["","Anyagminőség"]): void
+public function materialListBlock(string $variableName = "materialName", string $default = "S235", array $title = ["","Anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$variableName** | "materialName" |  |
 | `string`  | **$default** | "S235" |  |
 | `array`  | **$title** | ["","Anyagminőség"] |  |
+### numericArrayInput()
+
+Renders input field that accepts space separated numeric list  
+
+
+```php
+public function numericArrayInput(string $variableName, array $title = ["","Lista"], string $default = "1 1", string $description = "Szóközzel elválasztott szám lista"): void
+```
+
+| Type | Parameter name | Default value | Description |
+| --- | --- | --- | --- |
+| `string`  | **$variableName** |  |  |
+| `array`  | **$title** | ["","Lista"] |  |
+| `string`  | **$default** | "1 1" |  |
+| `string`  | **$description** | "Szóközzel elválasztott szám lista" |  |
 ### rebarMaterialListBlock()
 
 ```php
-public function rebarMaterialListBlock(string $variableName = "mat", string $default = "B500", array $title = ["","Betonacél anyagminőség"]): void
+public function rebarMaterialListBlock(string $variableName = "rebarMaterialName", string $default = "B500", array $title = ["","Betonacél anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$variableName** | "rebarMaterialName" |  |
 | `string`  | **$default** | "B500" |  |
 | `array`  | **$title** | ["","Betonacél anyagminőség"] |  |
 ### sectionFamilyListBlock()
@@ -680,23 +696,23 @@ public function sectionListBlock(string $familyName = "HEA", string $variableNam
 ### steelMaterialListBlock()
 
 ```php
-public function steelMaterialListBlock(string $variableName = "mat", string $default = "S235", array $title = ["","Acél anyagminőség"]): void
+public function steelMaterialListBlock(string $variableName = "steelMaterialName", string $default = "S235", array $title = ["","Acél anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$variableName** | "steelMaterialName" |  |
 | `string`  | **$default** | "S235" |  |
 | `array`  | **$title** | ["","Acél anyagminőség"] |  |
 ### structuralSteelMaterialListBlock()
 
 ```php
-public function structuralSteelMaterialListBlock(string $variableName = "mat", string $default = "S235", array $title = ["","Szerkezeti acél anyagminőség"]): void
+public function structuralSteelMaterialListBlock(string $variableName = "steelMaterialName", string $default = "S235", array $title = ["","Szerkezeti acél anyagminőség"]): void
 ```
 
 | Type | Parameter name | Default value | Description |
 | --- | --- | --- | --- |
-| `string`  | **$variableName** | "mat" |  |
+| `string`  | **$variableName** | "steelMaterialName" |  |
 | `string`  | **$default** | "S235" |  |
 | `array`  | **$title** | ["","Szerkezeti acél anyagminőség"] |  |
 
