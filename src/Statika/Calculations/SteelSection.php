@@ -102,7 +102,7 @@ Class SteelSection
         $section = $s->sectionTable($s->sectionName, 'section');
 
         $s->structuralSteelMaterialListBlock();
-        $material = $s->getMaterial($s->steelMaterialName);
+        $material = $s->materialTable($s->steelMaterialName);
         $s->numeric('t', ['t', 'Lemezvastagság'], 10, 'mm');
         $s->txt('*'.$s->sectionName.'* legnagyobb lemezvastagsága: $t_(max) = '. 10*max($section->_tf, $section->_tw).' [mm]$');
 
