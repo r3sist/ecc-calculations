@@ -10,7 +10,6 @@
   },
   "require": {
     "php": ">=7.4",
-    "ext-json": "*",
     "ext-imagick": "*",
     "bcosca/fatfree-core": "^3.7.2",
     "resist/h3": "dev-master",
@@ -19,6 +18,10 @@
     "ikkez/f3-flash": ">=1.0.0",
     "respect/validation": "2.*",
     "symfony/yaml": "^5.1"
+  }
+  ,
+  "require-dev": {
+    "roave/security-advisories": "dev-master"
   },
   "minimum-stability": "dev",
   "prefer-stable": true
