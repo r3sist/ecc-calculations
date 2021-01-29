@@ -77,6 +77,7 @@ Class CompositeBeamConnection
 
         $ec->numeric('br', ['b_r', 'Trapézlemez felső hullámszélesség'], 39, 'mm', '', '');
         $ec->numeric('bs', ['b_s', 'Trapézlemez hullámtengelyek távolsága'], 150, 'mm', '150..30 mm', 'min_numeric,150|max_numeric,300');
+        $ec->note('Hullámtengelyek távolsága: hullámdomb tengely felül.');
         $ec->def('br_bs', \H3::n4($ec->br/$ec->bs), 'b_r/b_s = %%', 'Szoros gerinckiosztású trapézlemez engedélyezett csak, NA szerint minimum 0.6', 'min_numeric,0.6');
 
         $ec->numeric('tp', ['t_p', 'Trapézlemez vastagság'], 1, 'mm', '', 'min_numeric,0.5|max_numeric,2');
@@ -147,7 +148,7 @@ Class CompositeBeamConnection
         $ec->def('kt', min($ec->kt, $ec->ktmax), 'k_t = min{(k_t),(k_(t,max)):} = %%');
 
         $ec->success0();
-            $ec->def('PRdred', \H3::n2($ec->PRd*$ec->kt), 'P_(Rd,r) = P_(Rd)*k_t = %% [kN]', 'Fejes csap redukált nyírási ellenállása');
+            $ec->def('PRdred', \H3::n2($ec->PRd*$ec->kt), 'P_(Rd,r) = P_(Rd)*k_t = %% [kN]', 'Fejes csap redukált nyírási ellenállása', 'min_numeric,0');
         $ec->success1();
 
         $ec->h1('Szerkesztési szabályok, vasalás');
@@ -207,7 +208,7 @@ Class CompositeBeamConnection
         }
 
         $ec->def('d_II_max', 2.5*$ec->tf, 'd_(I,max) = 2.5t_f = %% [mm]', 'Nem acélgerenda tengelyben elhelyezett csap maximális átmérője');
-        $ec->def('d_w_max', 1.5*$ec->tf, 'd_(w,max) = 2.5t_f = %% [mm]', 'Csap maximális átmérője, ha fárasztóterhelés léphet fel');
+        $ec->def('d_w_max', 1.5*$ec->tf, 'd_(w,max) = 1.5t_f = %% [mm]', 'Csap maximális átmérője, ha fárasztóterhelés léphet fel');
 
         $ec->def('D_min', 1.5*$ec->d, 'D_(min) = 1.5d = %% [mm]', 'Csapfej minimális átmérője');
 
@@ -216,12 +217,15 @@ Class CompositeBeamConnection
             $ec->danger('$t_(sc) = '.$ec->tsc.'$ csapfej vastagság kisebb a megengedettnél ('.$ec->tsc_min.')!');
         }
 
-        $ec->def('e2', 20 + $ec->d/2, 'e2 = 20+d/2 = %% [mm]', 'Keresztirányú peremtávolság acél gerenda öv szélétől csap tengelyig');
+        $ec->def('e2', 20 + $ec->d/2, 'e_2 = 20+d/2 = %% [mm]', 'Keresztirányú peremtávolság acél gerenda öv szélétől csap tengelyig');
+        $ec->def('eV_min', 50, 'e_V = %% [mm]', 'Nem trapézlemezes borda esetében beton széle és csap **széle** közti minimális távolság a keresztmetszetben');
+        $ec->note('[1.) 4.4.3.2.] Nem trapézlemezes kiékelésnél a kiékelés oldaléle essen kívül a kapcsolóelem szélétől húzott 45°-os egyenesen.');
         $ec->def('p2_min', 2.5*$ec->d, 'p_(2,min) = 2.5d = %% [mm]', 'Keresztirányú csap tengelytávolság minimuma tömör/sík vb. lemez esetén');
         $ec->def('p2_p_min', 4*$ec->d, 'p_(2,p,min) = 4d = %% [mm]', 'Keresztirányú csap tengelytávolság minimuma nem sík vb. lemez esetén (trapézlemez)');
         $ec->def('p1_min', 5*$ec->d, 'p_(1,min) = 5d = %% [mm]', 'Csapok távolsága egymástól erő irányban');
 
         $ec->h1('Vasalás segédszámítások');
         $ec->def('s_max', min(2*$ec->h, 350), 's_(max) = min{(2h),(350):} = %% [mm]', 'Vasbetétek maximális távolsága');
+        // TODO egy gerinc beroppanása [1.) 186.o.] 1993-1-5-6.1.7.3(2)
     }
 }
