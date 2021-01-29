@@ -77,27 +77,27 @@ Class Fem
         ];
         $ec->bulk('loads', $fields, [1,2,2.5,10,0]);
 
-        $cbaInput = '        
-            SPANS '.$spans.'
+        $cbaInput = <<<EOS
+            SPANS $spans
             INERTIA 1 1
             ELASTICITY 2.1e8
-            CONSTRAINTS '.$constraints.'
+            CONSTRAINTS $constraints
             FACTORS 1 1
-        ';
+            EOS;
 
         // Loads
         if (!empty($ec->loads)) {
             foreach ($ec->loads as $key => $value) {
                 if (isset($value['F'])) {
-                    $cbaInput .= "\nLOAD ".$value['span']." 2 ".$value['F'].' 0 '.$value['x'].' 0';
+                    $cbaInput .= "\nLOAD ".$value['span'].' 2 '.$value['F'].' 0 '.$value['x'].' 0';
                 }
 
                 if (isset($value['M'])) {
-                    $cbaInput .= "\nLOAD ".$value['span']." 4 ".$value['M'].' 0 '.$value['x'].' 0';
+                    $cbaInput .= "\nLOAD ".$value['span'].' 4 '.$value['M'].' 0 '.$value['x'].' 0';
                 }
 
                 if (isset($value['q'])) {
-                    $cbaInput .= "\nLOAD ".$value['span']." 1 ".$value['q'].' 0 0 0';
+                    $cbaInput .= "\nLOAD ".$value['span'].' 1 '.$value['q'].' 0 0 0';
                 }
             }
         }
@@ -185,5 +185,4 @@ Class Fem
         $ec->math('M = '.H3::n2($ec->linterp($closestFloorX, $Mfloor, $closestCeilX, $Mceil, $ec->x)).' [kNm]');
         $ec->math('V = '.H3::n2($ec->linterp($closestFloorX, $Vfloor, $closestCeilX, $Vceil, $ec->x)).' [kNm]');
     }
-
 }
