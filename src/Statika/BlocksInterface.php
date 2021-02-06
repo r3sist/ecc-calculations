@@ -21,9 +21,9 @@ interface BlocksInterface
      * @param string $defaultValue Input default value
      * @param string $unit Input group extension, UI only.
      * @param string $help Markdown help text. Can contain $$ math.
-     * @param string $gumpValidation GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators
+     * @param string $validationRules Validator rules string: based on https://github.com/Wixel/GUMP#star-available-validators
      */
-    public function input(string $variableName, array $title, $defaultValue = null, string $unit = '', string $descriptionValue = '', string $gumpValidation = ''): void;
+    public function input(string $variableName, array $title, $defaultValue = null, string $unit = '', string $descriptionValue = '', string $validationRules = ''): void;
 
     /**
      * Renders numeric input field. (General HTML input tag with numeric validation). Accepts and converts math expression strings in "=2+3" format
@@ -32,9 +32,9 @@ interface BlocksInterface
      * @param float $defaultValue Input default value
      * @param string $unit Input group extension, UI only.
      * @param string $description Allowed: Basic markdown, math expression between $..$
-     * @param string $additionalGumpValidation GUMP validator string ("numeric" is set always): https://github.com/Wixel/GUMP#star-available-validators
+     * @param string $additionalValidationRules Validator string ("numeric" is set always): based on https://github.com/Wixel/GUMP#star-available-validators
      */
-    public function numeric(string $variableName, array $title, float $defaultValue, string $unit = '', string $description = '', string $additionalGumpValidation = ''): void;
+    public function numeric(string $variableName, array $title, float $defaultValue, string $unit = '', string $description = '', string $additionalValidationRules = ''): void;
 
     /**
      * Renders checkbox field
@@ -61,9 +61,9 @@ interface BlocksInterface
      * @param mixed $result Stores this as data
      * @param string $mathExpression ASCIIMath expression without $ delimiters. Use "%%" to substitute result.
      * @param string $help Markdown help text
-     * @param string $gumpValidation GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators
+     * @param string $validationRules Validation string: based on https://github.com/Wixel/GUMP#star-available-validators
      */
-    public function def(string $variableName, $result, string $mathExpression = '%%', string $description = '', string $gumpValidation = ''): void;
+    public function def(string $variableName, $result, string $mathExpression = '%%', string $description = '', string $validationRules = ''): void;
 
     /**
      * Renders multi-input table as dynamic block.
