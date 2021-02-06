@@ -23,7 +23,7 @@ Class CompositeBeamConnection
      */
     public function calc(EurocodeInterface $ec): void
     {
-        $ec->note('1.: [Szabó B. - Hajlított, nyírt öszvértartók tervezése az Eurocode-dal összhangban, 2017]. [MSZ-EN 1994]');
+        $ec->note('1.: [Szabó B. - Hajlított, nyírt öszvértartók tervezése az Eurocode-dal összhangban, 2017]. 2.: [MSZ-EN 1994]. 3.: [Kovács N., L. Calado, Dunai L. - Öszvérszerkezetek - Tervezés az Eurocode alapján, 2020]');
 
         $ec->concreteMaterialListBlock('concreteMaterialName');
         $concreteMaterial = $ec->materialTable($ec->concreteMaterialName, 'concreteMaterialName');
@@ -197,17 +197,21 @@ Class CompositeBeamConnection
                 $ec->def('p1_max_2', ceil(15*$ec->tf*sqrt(235/$ec->fy($ec->steelMaterialName, $ec->tf))), 'p_(1,max,2) = 15*t_f*sqrt(235/f_y) = %% [mm]');
             }
 
-            $ec->def('eD_max', ceil(9*$ec->tf*sqrt(235/$ec->fy($ec->steelMaterialName, $ec->tf))), 'e_(D,max) = 9*t_f*sqrt(235/f_y) = %% [mm]');
+            $ec->def('eD_max', ceil(9*$ec->tf*sqrt(235/$ec->fy($ec->steelMaterialName, $ec->tf))), 'e_(D,max) = 9*t_f*sqrt(235/f_y) = %% [mm]', 'Acél öv széle és szélső fejes csap **széle** közti távolság maximuma');
         }
 
         $ec->txt('További feltételek övlemezhez');
 
-        $ec->def('hsc_min', 3*$ec->d, 'h_(sc,min) = 3d = %% [mm]', 'Minimum csap magasság');
+        $ec->def('eD_min', 25, 'e_(D,min) = %% [mm]', 'Acél öv széle és szélső fejes csap **széle** közti távolság minimuma');
+
+        $ec->note('Minimum csap magasságra: [1.] 3d, [3.] 4d');
+        $ec->def('hsc_min', 4*$ec->d, 'h_(sc,min) = 4d = %% [mm]', 'Minimum csap magasság');
         if ($ec->hsc < $ec->hsc_min) {
             $ec->danger('$h_(sc) = '.$ec->hsc.'$ csap magasság kisebb a megengedettnél ('.$ec->hsc.')!');
         }
 
-        $ec->def('d_II_max', 2.5*$ec->tf, 'd_(I,max) = 2.5t_f = %% [mm]', 'Nem acélgerenda tengelyben elhelyezett csap maximális átmérője');
+        $ec->def('d_I_max', 1.5*$ec->tf, 'd_(I,max) = 1.5t_f = %% [mm]', 'Gerinc feletti (vagy fárasztásnak kitett húzott elemen lévő) csap maximális átmérője');
+        $ec->def('d_II_max', 2.5*$ec->tf, 'd_(II,max) = 2.5t_f = %% [mm]', 'Nem acélgerenda tengelyben elhelyezett csap maximális átmérője');
         $ec->def('d_w_max', 1.5*$ec->tf, 'd_(w,max) = 1.5t_f = %% [mm]', 'Csap maximális átmérője, ha fárasztóterhelés léphet fel');
 
         $ec->def('D_min', 1.5*$ec->d, 'D_(min) = 1.5d = %% [mm]', 'Csapfej minimális átmérője');
@@ -222,10 +226,18 @@ Class CompositeBeamConnection
         $ec->note('[1.) 4.4.3.2.] Nem trapézlemezes kiékelésnél a kiékelés oldaléle essen kívül a kapcsolóelem szélétől húzott 45°-os egyenesen.');
         $ec->def('p2_min', 2.5*$ec->d, 'p_(2,min) = 2.5d = %% [mm]', 'Keresztirányú csap tengelytávolság minimuma tömör/sík vb. lemez esetén');
         $ec->def('p2_p_min', 4*$ec->d, 'p_(2,p,min) = 4d = %% [mm]', 'Keresztirányú csap tengelytávolság minimuma nem sík vb. lemez esetén (trapézlemez)');
-        $ec->def('p1_min', 5*$ec->d, 'p_(1,min) = 5d = %% [mm]', 'Csapok távolsága egymástól erő irányban');
+        $ec->def('p1_min', 5*$ec->d, 'p_(1,min) = 5d = %% [mm]', 'Csapok minimális távolsága egymástól erő irányban');
+        $ec->def('csc_min', 40, 'c_(sc,min) = %% [mm]', 'Kereszt irányú vasalás és csapfej alsó síkja közti minimum távolság');
+
+        $ec->txt('Továbbá');
+        $ec->math('F_(cc l)^2/P_(cc l)^2 + F_t^2/P_t^2 le 1', 'Kétirányú nyíróerő interakciós vizsgálata');
 
         $ec->h1('Vasalás segédszámítások');
         $ec->def('s_max', min(2*$ec->h, 350), 's_(max) = min{(2h),(350):} = %% [mm]', 'Vasbetétek maximális távolsága');
         // TODO egy gerinc beroppanása [1.) 186.o.] 1993-1-5-6.1.7.3(2)
+
+        $ec->h2('Kereszt irányú vasalás');
+        $ec->note('[3. 6.7.]');
+        $ec->numeric('cottheta', ['cot theta', 'Rácsos tartó modell ferde rácsrúdjának hajlásszöge'], 1.125, '', 'Nyomott lemez: max 2; Húzott lemez: max 125', 'min,1|max,2');
     }
 }
