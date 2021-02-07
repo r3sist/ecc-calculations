@@ -77,7 +77,7 @@ Renders definition block, stores given value to named variable and renders math 
 
 
 ```php
-public function def(string $variableName, @mixed  $result, string $mathExpression = "%%", string $description = `empty string`, string $gumpValidation = `empty string`): void
+public function def(string $variableName, @mixed  $result, string $mathExpression = "%%", string $description = `empty string`, string $validationRules = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -86,7 +86,7 @@ public function def(string $variableName, @mixed  $result, string $mathExpressio
 | @mixed  | **$result** |  | Stores this as data |
 | `string`  | **$mathExpression** | "%%" | ASCIIMath expression without $ delimiters. Use "%%" to substitute result. |
 | `string`  | **$description** | `empty string` |  |
-| `string`  | **$gumpValidation** | `empty string` | GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators |
+| `string`  | **$validationRules** | `empty string` | Validation string: based on https://github.com/Wixel/GUMP#star-available-validators |
 ### get()
 
 ```php
@@ -222,7 +222,7 @@ Renders general input field
 
 
 ```php
-public function input(string $variableName, array $title, @string  $defaultValue = "", string $unit = `empty string`, string $descriptionValue = `empty string`, string $gumpValidation = `empty string`): void
+public function input(string $variableName, array $title, @string  $defaultValue = "", string $unit = `empty string`, string $descriptionValue = `empty string`, string $validationRules = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -232,7 +232,7 @@ public function input(string $variableName, array $title, @string  $defaultValue
 | @string  | **$defaultValue** | "" | Input default value |
 | `string`  | **$unit** | `empty string` | Input group extension, UI only. |
 | `string`  | **$descriptionValue** | `empty string` |  |
-| `string`  | **$gumpValidation** | `empty string` | GUMP validator string: https://github.com/Wixel/GUMP#star-available-validators |
+| `string`  | **$validationRules** | `empty string` | Validator rules string: based on https://github.com/Wixel/GUMP#star-available-validators |
 ### jsx()
 
 Builds html block with JSXGraph content. Load buildJsxDriverBlock() first.  
@@ -329,7 +329,7 @@ Renders numeric input field. (General HTML input tag with numeric validation). A
 
 
 ```php
-public function numeric(string $variableName, array $title, float $defaultValue, string $unit = `empty string`, string $description = `empty string`, string $additionalGumpValidation = `empty string`): void
+public function numeric(string $variableName, array $title, float $defaultValue, string $unit = `empty string`, string $description = `empty string`, string $additionalValidationRules = `empty string`): void
 ```
 
 | Type | Parameter name | Default value | Description |
@@ -339,7 +339,7 @@ public function numeric(string $variableName, array $title, float $defaultValue,
 | `float`  | **$defaultValue** |  | Input default value |
 | `string`  | **$unit** | `empty string` | Input group extension, UI only. |
 | `string`  | **$description** | `empty string` | Allowed: Basic markdown, math expression between $..$ |
-| `string`  | **$additionalGumpValidation** | `empty string` | GUMP validator string ("numeric" is set always): https://github.com/Wixel/GUMP#star-available-validators |
+| `string`  | **$additionalValidationRules** | `empty string` | Validator string ("numeric" is set always): based on https://github.com/Wixel/GUMP#star-available-validators |
 ### pre()
 
 Renders block with pre HTML tag  
