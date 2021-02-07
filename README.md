@@ -3,9 +3,8 @@
 **Native classes of Eurocode based calculations for structural design on [structure.hu](https://structure.hu)**
 
 https://github.com/r3sist/ecc-calculations  
-[![CodeFactor](https://www.codefactor.io/repository/github/r3sist/ecc-calculations/badge)](https://www.codefactor.io/repository/github/r3sist/ecc-calculations)
 
-CDDL-1.0 Copyright &copy; 2012-2020 Bence VÁNKOS | structure.hu
+CDDL-1.0 Copyright &copy; 2012-2021 Bence VÁNKOS | structure.hu
 
 [View API documentation](https://github.com/r3sist/ecc-calculations/blob/master/API.md)
 

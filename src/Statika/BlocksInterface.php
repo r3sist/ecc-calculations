@@ -10,7 +10,6 @@ use resist\SVG\SVG;
 
 /**
  * General "blocks" for Statika framework - renders and handles UI blocks and their data.
- * @todo document interface in README
  */
 interface BlocksInterface
 {

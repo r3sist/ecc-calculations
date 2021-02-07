@@ -7,20 +7,16 @@
 namespace Statika;
 
 use Base;
-use Profil\Exceptions\InvalidSectionNameException;
 use Profil\ProfilService;
 use Profil\Section\SectionDTO;
 use Statika\Block\BlockService;
 use Statika\Bolt\BoltDTO;
 use Statika\Bolt\BoltFactory;
-use Statika\Bolt\InvalidBoltNameException;
-use Statika\Material\InvalidMaterialNameException;
 use Statika\Material\MaterialDTO;
 use Statika\Material\MaterialFactory;
 
 /**
  * Extension of BlocksInterface of Statika framework - renders and handles Eurocode related UI blocks and their data.
- * @todo document interface in README
  */
 interface EurocodeInterface extends BlocksInterface
 {
