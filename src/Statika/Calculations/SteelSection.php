@@ -223,17 +223,17 @@ Class SteelSection
 
 
         $s->h1('Hajlítás és normálerő kölcsönhatása');
-        $s->note('Ha hajlítónyomatékkal egyidejűleg nomiálerő is hat, akkor kölcsönhatásukra tekintettel kell lemii. Ez képlékeny vizsgálat
+        $s->note('Ha hajlítónyomatékkal egyidejűleg nomiálerő is hat, akkor kölcsönhatásukra tekintettel kell lenni. Ez képlékeny vizsgálat
 esetén a nyomatéki ellenállás csökkentésével, rugalmas vizsgálat esetén a két hatásból származó feszültségek összegzésével
 történhet.');
-        $s->note('A keresztmetszet besorolásához az EC3 nem ad egyértelmű előírásokat, Az első lehetőség  hogy normáleröre történő
-vizsgálatnál a normálerőből számított besorolást használjuk, míg hajlítás esetén hajlitásra soroljuk be a szelvényt. A második
-módszer szerint a keresztmetüeti osztályba soroláshoz mindkét igénybevételt együttesen kell figyelembe venni, és az
+        $s->note('A keresztmetszet besorolásához az EC3 nem ad egyértelmű előírásokat, Az első lehetőség  hogy normálerőre történő
+vizsgálatnál a normálerőből számított besorolást használjuk, míg hajlítás esetén hajlításra soroljuk be a szelvényt. A második
+módszer szerint a keresztmetszeti osztályba soroláshoz mindkét igénybevételt együttesen kell figyelembe venni, és az
 együttes hatásra kapott keresztmetszeti osztályt kell mindkét vizsgálathoz használni.');
-        $s->note('Az első módszer egyaerübb, viszont elvi ellentmondásra vezet, ha eredményeképpen hajlításnál képlékeny eljárást
-alkalmazunk, de tiszta nyomásra 4. osztályává válik szelvényünk. A második módszer konzekvensebb, de elvégzése
-általában bonyolultabb, különösen a haj ütött-nyomott gerinclemez besorolásakor.');
-        $s->note('l. és 2. osztályú szelvényeknél általában az első módszer használható. Az előbb bemutatott speciális esetben a második
+        $s->note('Az első módszer egyszerűbb, viszont elvi ellentmondásra vezet, ha eredményeképpen hajlításnál képlékeny eljárást
+alkalmazunk, de tiszta nyomásra 4. osztályúvá válik szelvényünk. A második módszer konzekvensebb, de elvégzése
+általában bonyolultabb, különösen a hajlított-nyomott gerinclemez besorolásakor.');
+        $s->note('1. és 2. osztályú szelvényeknél általában az első módszer használható. Az előbb bemutatott speciális esetben a második
 módszer segíthet, mert a gerinc besorolása összetett igénybevételre kedvezőbb, mint a tiszta nyomásnál. 3. keresztmetszeti
 osztályú szelvény rugalmas ellenőrzése során a feszültségeket egyébként is kiszámoljuk, tehát a második módszer használata
 sem okoz külön nehézséget, ezt javasoljuk. A 4. osztályú szelvények vizsgálatához való (5.34) összefüggésben pedig az EC3
