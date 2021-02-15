@@ -23,6 +23,7 @@ Class CompositeBeamConnection
      */
     public function calc(EurocodeInterface $ec): void
     {
+        $ec->note('Teljes értékű nyírt, rugalmas csapkiosztás tervezése öszvérgerendákhoz vagy trapézlemezes öszvérfödémekhez.');
         $ec->note('1.: [Szabó B. - Hajlított, nyírt öszvértartók tervezése az Eurocode-dal összhangban, 2017]. 2.: [MSZ-EN 1994]. 3.: [Kovács N., L. Calado, Dunai L. - Öszvérszerkezetek - Tervezés az Eurocode alapján, 2020]');
 
         $ec->concreteMaterialListBlock('concreteMaterialName');
@@ -33,12 +34,13 @@ Class CompositeBeamConnection
         $sheraConnectorMaterial = $ec->materialTable($ec->shearConnectorMaterialName, 'shearConnectorMaterial');
 
         $ec->numeric('h', ['h', 'Teljes lemezvastagság'], 180, 'mm', 'Minimum 90 mm [1.) 6.1.]. Nem együttdolgozó lemez esetén 80 mm elegendő.', 'min_numeric,90');
+        $ec->boo('use_profile', ['', 'Trapézlemez figyelembevétele'], false);
 
         $ec->h1('Nyírt kapcsolóelemek tervezési ellenállása');
         $ec->note('[1. 4.4.3 120.o.]');
         $ec->def('Gv', 1.25, 'gamma_v = %%', 'Biztonsági tényező');
         $ec->numeric('d', ['d', 'Csap szárátmérő'], 16, 'mm', 'Trapézlemezes kapcsolatnál max 20 (lyukasztott trapézlemezzel 22) mm', 'min_numeric,6');
-        $ec->numeric('hsc', ['h_(sc)', 'Csap teljes hossza'], ceil(3*$ec->d), 'mm', 'Minimum $3d$', 'min_numeric,'.ceil(3*$ec->d));
+        $ec->numeric('hsc', ['h_(sc)', 'Csap teljes hossza'], ceil(6*$ec->d), 'mm', 'Minimum $3d$', 'min_numeric,'.ceil(3*$ec->d));
         $ec->numeric('tsc', ['t_(sc)', 'Csap fejvastagsága'], 10, 'mm', '', 'min_numeric,1');
         $ec->def('hsc_d', $ec->hsc/$ec->d, 'h_(sc)/d = %%', '', 'min_numeric,3');
         $ec->alpha = 1;
@@ -54,102 +56,104 @@ Class CompositeBeamConnection
         $ec->info1();
         $ec->note('A csapokra 10%-nál ('. 0.1*$ec->PRd .' kN) kisebb közvetlen húzóerő hathat csak!');
 
-        $ec->h2('Trapézlemez hatása a nyírási ellenállásra');
-        $ec->numeric('b0', ['b_0', 'Trapézlemez hullámfalak átlagos távolsága'], 100, 'mm');
-        $ec->numeric('hp', ['h_p', 'Trapézlemez magassága'], 55, 'mm', '46..76..85 mm', 'max_numeric,85');
-        $ec->note('76 mm magassági határ [1. 6.1.]');
-        if ($ec->hp > 85) {
-            $ec->danger('$h_p$ nem lehet nagyobb, mint $85 [mm]$!');
-        }
-        if ($ec->b0 < $ec->hp) {
-            $ec->danger('$b_0$ nem lehet kiesebb, mint $h_p$!');
-        }
-        if (($ec->hp + 75) < $ec->hsc) {
-            $ec->danger('$h_(sc)$ nem lehet nagyobb, mint $h_p + 75 = '.($ec->hp + 75).' [mm]$!');
-        }
-        if (($ec->hp + 2*$ec->d) >= $ec->hsc) {
-            $ec->danger('Csap $2d = '.($ec->d*2.0).' [mm]$-rel legyen magassabb a trapézlemeznél ($h_(sc,min) = '.($ec->hp+2*$ec->d+1).'$)!');
-        }
-        $ec->def('hc', $ec->h - $ec->hp, 'h_c = h-h_p = %% [mm]', 'Trapézlemez feletti tiszta betonvastagság');
-        if ($ec->hc < 50) {
-            $ec->danger('Trapézlemez ('.$ec->hp.') feletti betonvastagságnak ('.$ec->hc.') minimum 50 mm-nek kell lennie! Ajánlott lemezvastagság: '.($ec->hp+50).' mm. (Nem együttdolgozó lemez esetén 40 mm elegendő.)');
-        }
+        if ($ec->use_profile) {
+            $ec->h2('Trapézlemez hatása a nyírási ellenállásra');
+            $ec->numeric('b0', ['b_0', 'Trapézlemez hullámfalak átlagos távolsága'], 100, 'mm');
+            $ec->numeric('hp', ['h_p', 'Trapézlemez magassága'], 55, 'mm', '46..76..85 mm', 'max_numeric,85');
+            $ec->note('76 mm magassági határ [1. 6.1.]');
+            if ($ec->hp > 85) {
+                $ec->danger('$h_p$ nem lehet nagyobb, mint $85 [mm]$!');
+            }
+            if ($ec->b0 < $ec->hp) {
+                $ec->danger('$b_0$ nem lehet kiesebb, mint $h_p$!');
+            }
+            if (($ec->hp + 75) < $ec->hsc) {
+                $ec->danger('$h_(sc)$ nem lehet nagyobb, mint $h_p + 75 = '.($ec->hp + 75).' [mm]$!');
+            }
+            if (($ec->hp + 2*$ec->d) >= $ec->hsc) {
+                $ec->danger('Csap $2d = '.($ec->d*2.0).' [mm]$-rel legyen magassabb a trapézlemeznél ($h_(sc,min) = '.($ec->hp+2*$ec->d+1).'$)!');
+            }
+            $ec->def('hc', $ec->h - $ec->hp, 'h_c = h-h_p = %% [mm]', 'Trapézlemez feletti tiszta betonvastagság');
+            if ($ec->hc < 50) {
+                $ec->danger('Trapézlemez ('.$ec->hp.') feletti betonvastagságnak ('.$ec->hc.') minimum 50 mm-nek kell lennie! Ajánlott lemezvastagság: '.($ec->hp+50).' mm. (Nem együttdolgozó lemez esetén 40 mm elegendő.)');
+            }
 
-        $ec->numeric('br', ['b_r', 'Trapézlemez felső hullámszélesség'], 39, 'mm', '', '');
-        $ec->numeric('bs', ['b_s', 'Trapézlemez hullámtengelyek távolsága'], 150, 'mm', '150..30 mm', 'min_numeric,150|max_numeric,300');
-        $ec->note('Hullámtengelyek távolsága: hullámdomb tengely felül.');
-        $ec->def('br_bs', \H3::n4($ec->br/$ec->bs), 'b_r/b_s = %%', 'Szoros gerinckiosztású trapézlemez engedélyezett csak, NA szerint minimum 0.6', 'min_numeric,0.6');
+            $ec->numeric('br', ['b_r', 'Trapézlemez felső hullámszélesség'], 39, 'mm', '', '');
+            $ec->numeric('bs', ['b_s', 'Trapézlemez hullámtengelyek távolsága'], 150, 'mm', '150..30 mm', 'min_numeric,150|max_numeric,300');
+            $ec->note('Hullámtengelyek távolsága: hullámdomb tengely felül.');
+            $ec->def('br_bs', \H3::n4($ec->br/$ec->bs), 'b_r/b_s = %%', 'Szoros gerinckiosztású trapézlemez engedélyezett csak, NA szerint minimum 0.6', 'min_numeric,0.6');
 
-        $ec->numeric('tp', ['t_p', 'Trapézlemez vastagság'], 1, 'mm', '', 'min_numeric,0.5|max_numeric,2');
-        $ec->lst('nr', ['1' => '1', '2' => '2'], ['n_r', 'Egy bordába kerülő csapszám'], '1', 'Gerenda és *hullámvölgy* keresztezésénél');
-        $ec->lst('beam_position', ['Gerendával párhuzamos bordázat' => self::BEAM_POSITION_PARALLEL, 'Gerendára merőleges bordázat' => self::BEAM_POSITION_PERPENDICULAR], ['', 'Gerenda és trapézlemez borda helyzete'], 'parallel', '');
-        switch ($ec->beam_position) {
-            case self::BEAM_POSITION_PARALLEL:
-                $ec->img('https://structure.hu/ecc/CompositeBeamConnection01.png');
-                $ec->def('kt', \H3::n4(min(1, 0.6*($ec->b0/$ec->hp)*($ec->hsc/$ec->hp - 1))), 'k_t = min{(1), (0.6* b_0/h_p * (h_(sc)/h_p -1 )):} = %%', 'Nyírási ellenállás csökkentő tényezője');
-                break;
-            case self::BEAM_POSITION_PERPENDICULAR:
-                $ec->img('https://structure.hu/ecc/CompositeBeamConnection02.png');
-                if ($sheraConnectorMaterial->fu > 450) {
-                    $ec->danger('$f_u$ nem lehet nagyobb $450 [N/(mm^2)]$-nél!');
-                }
-                $ec->def('kt', \H3::n4(min(1, (0.7/sqrt($ec->nr))*($ec->b0/$ec->hp)*($ec->hsc/$ec->hp - 1))), 'k_t = min{(1), (0.7/sqrt(n_r)* b_0/h_p * (h_(sc)/h_p -1 )):} = %%', 'Nyírási ellenállás csökkentő tényezője');
-                break;
-        }
+            $ec->numeric('tp', ['t_p', 'Trapézlemez vastagság'], 1, 'mm', '', 'min_numeric,0.5|max_numeric,2');
+            $ec->lst('nr', ['1' => '1', '2' => '2'], ['n_r', 'Egy bordába kerülő csapszám'], '1', 'Gerenda és *hullámvölgy* keresztezésénél');
+            $ec->lst('beam_position', ['Gerendával párhuzamos bordázat' => self::BEAM_POSITION_PARALLEL, 'Gerendára merőleges bordázat' => self::BEAM_POSITION_PERPENDICULAR], ['', 'Gerenda és trapézlemez borda helyzete'], 'parallel', '');
+            switch ($ec->beam_position) {
+                case self::BEAM_POSITION_PARALLEL:
+                    $ec->img('https://structure.hu/ecc/CompositeBeamConnection01.png');
+                    $ec->def('kt', \H3::n4(min(1, 0.6*($ec->b0/$ec->hp)*($ec->hsc/$ec->hp - 1))), 'k_t = min{(1), (0.6* b_0/h_p * (h_(sc)/h_p -1 )):} = %%', 'Nyírási ellenállás csökkentő tényezője');
+                    break;
+                case self::BEAM_POSITION_PERPENDICULAR:
+                    $ec->img('https://structure.hu/ecc/CompositeBeamConnection02.png');
+                    if ($sheraConnectorMaterial->fu > 450) {
+                        $ec->danger('$f_u$ nem lehet nagyobb $450 [N/(mm^2)]$-nél!');
+                    }
+                    $ec->def('kt', \H3::n4(min(1, (0.7/sqrt($ec->nr))*($ec->b0/$ec->hp)*($ec->hsc/$ec->hp - 1))), 'k_t = min{(1), (0.7/sqrt(n_r)* b_0/h_p * (h_(sc)/h_p -1 )):} = %%', 'Nyírási ellenállás csökkentő tényezője');
+                    break;
+            }
 
-        $ec->lst('connection', ['Áthegesztett' => self::CONNECTION_TYPE_WELDING, 'Lyukasztott trapézlemez' => self::CONNECTION_TYPE_OPENING], ['', 'Csapok rögzítése trapézlemezen'], 'parallel', '');
+            $ec->lst('connection', ['Áthegesztett' => self::CONNECTION_TYPE_WELDING, 'Lyukasztott trapézlemez' => self::CONNECTION_TYPE_OPENING], ['', 'Csapok rögzítése trapézlemezen'], 'parallel', '');
 
-        if ($ec->connection === self::CONNECTION_TYPE_WELDING && $ec->d > 20) {
-            $ec->danger('Áthegesztéses csapok átmérője nem lehet nagyobb 20 mm-nél!');
-        }
+            if ($ec->connection === self::CONNECTION_TYPE_WELDING && $ec->d > 20) {
+                $ec->danger('Áthegesztéses csapok átmérője nem lehet nagyobb 20 mm-nél!');
+            }
 
-        if ($ec->connection === self::CONNECTION_TYPE_OPENING && $ec->d > 22) {
-            $ec->danger('Lyukasztott trapézlemezes csapok átmérője nem lehet nagyobb 22 mm-nél!');
-        }
+            if ($ec->connection === self::CONNECTION_TYPE_OPENING && $ec->d > 22) {
+                $ec->danger('Lyukasztott trapézlemezes csapok átmérője nem lehet nagyobb 22 mm-nél!');
+            }
 
-        $ec->ktmax = 0;
+            $ec->ktmax = 0;
 
-        if ($ec->connection === self::CONNECTION_TYPE_WELDING && $ec->d <= 20) {
-           if ($ec->nr === 1) {
-               if ($ec->tp <= 1) {
-                   $ec->def('ktmax', 0.85, 'k_(t,max) = %%', 'Felső korlát: Áthegeszett, $d le 20, n_r = 1, t_p le 1$ eset.');
-               } else {
-                   $ec->def('ktmax', 1, 'k_(t,max) = %%', 'Felső korlát: Áthegeszett, $d le 20, n_r = 1, t_p gt 1$ eset.');
-               }
-           } else {
-               if ($ec->tp <= 1) {
-                   $ec->def('ktmax', 0.7, 'k_(t,max) = %%', 'Felső korlát: Áthegeszett, $d le 20, n_r = 2, t_p le 1$ eset.');
-               } else {
-                   $ec->def('ktmax', 0.8, 'k_(t,max) = %%', 'Felső korlát: Áthegeszett, $d le 20, n_r = 2, t_p gt 1$ eset.');
-               }
-           }
-        }
-
-        if ($ec->connection === self::CONNECTION_TYPE_OPENING && ($ec->d === 19 || $ec->d === 20)) {
-            if ($ec->nr === 1) {
-                if ($ec->tp <= 1) {
-                    $ec->def('ktmax', 0.75, 'k_(t,max) = %%', 'Felső korlát: Lyukasztott trapézlemez, $d = 19..20, n_r = 1, t_p le 1$ eset.');
+            if ($ec->connection === self::CONNECTION_TYPE_WELDING && $ec->d <= 20) {
+                if ($ec->nr === 1) {
+                    if ($ec->tp <= 1) {
+                        $ec->def('ktmax', 0.85, 'k_(t,max) = %%', 'Felső korlát: Áthegeszett, $d le 20, n_r = 1, t_p le 1$ eset.');
+                    } else {
+                        $ec->def('ktmax', 1, 'k_(t,max) = %%', 'Felső korlát: Áthegeszett, $d le 20, n_r = 1, t_p gt 1$ eset.');
+                    }
                 } else {
-                    $ec->def('ktmax', 0.75, 'k_(t,max) = %%', 'Felső korlát: Lyukasztott trapézlemez, $d = 19..20, n_r = 1, t_p gt 1$ eset.');
-                }
-            } else {
-                if ($ec->tp <= 1) {
-                    $ec->def('ktmax', 0.6, 'k_(t,max) = %%', 'Felső korlát: Lyukasztott trapézlemez, $d = 19..20, n_r = 2, t_p le 1$ eset.');
-                } else {
-                    $ec->def('ktmax', 0.6, 'k_(t,max) = %%', 'Felső korlát: Lyukasztott trapézlemez, $d = 19..20, n_r = 2, t_p gt 1$ eset.');
+                    if ($ec->tp <= 1) {
+                        $ec->def('ktmax', 0.7, 'k_(t,max) = %%', 'Felső korlát: Áthegeszett, $d le 20, n_r = 2, t_p le 1$ eset.');
+                    } else {
+                        $ec->def('ktmax', 0.8, 'k_(t,max) = %%', 'Felső korlát: Áthegeszett, $d le 20, n_r = 2, t_p gt 1$ eset.');
+                    }
                 }
             }
-        }
 
-        if ($ec->ktmax === 0) {
-            $ec->def('ktmax', 1, 'k_(t,max) = %%', 'Általános eset.');
-        }
+            if ($ec->connection === self::CONNECTION_TYPE_OPENING && ($ec->d === 19 || $ec->d === 20)) {
+                if ($ec->nr === 1) {
+                    if ($ec->tp <= 1) {
+                        $ec->def('ktmax', 0.75, 'k_(t,max) = %%', 'Felső korlát: Lyukasztott trapézlemez, $d = 19..20, n_r = 1, t_p le 1$ eset.');
+                    } else {
+                        $ec->def('ktmax', 0.75, 'k_(t,max) = %%', 'Felső korlát: Lyukasztott trapézlemez, $d = 19..20, n_r = 1, t_p gt 1$ eset.');
+                    }
+                } else {
+                    if ($ec->tp <= 1) {
+                        $ec->def('ktmax', 0.6, 'k_(t,max) = %%', 'Felső korlát: Lyukasztott trapézlemez, $d = 19..20, n_r = 2, t_p le 1$ eset.');
+                    } else {
+                        $ec->def('ktmax', 0.6, 'k_(t,max) = %%', 'Felső korlát: Lyukasztott trapézlemez, $d = 19..20, n_r = 2, t_p gt 1$ eset.');
+                    }
+                }
+            }
 
-        $ec->def('kt', min($ec->kt, $ec->ktmax), 'k_t = min{(k_t),(k_(t,max)):} = %%');
+            if ($ec->ktmax === 0) {
+                $ec->def('ktmax', 1, 'k_(t,max) = %%', 'Általános eset.');
+            }
 
-        $ec->success0();
+            $ec->def('kt', min($ec->kt, $ec->ktmax), 'k_t = min{(k_t),(k_(t,max)):} = %%');
+
+            $ec->success0();
             $ec->def('PRdred', \H3::n2($ec->PRd*$ec->kt), 'P_(Rd,r) = P_(Rd)*k_t = %% [kN]', 'Fejes csap redukált nyírási ellenállása', 'min_numeric,0');
-        $ec->success1();
+            $ec->success1();
+        }
 
         $ec->h1('Szerkesztési szabályok, vasalás');
 
@@ -170,8 +174,10 @@ Class CompositeBeamConnection
         $ec->def('cnom_sc_min', max(20, $ec->reinforcement['cnom_top'] - 5), 'c_(nom,sc, min) = min{(20),(c_(nom,top) - 5):} = %% [mm]', 'Minimum betontakarás csapon');
         $ec->def('cnom_sc', $ec->h - $ec->hsc, 'c_(nom,sc) = %% [mm]', 'Geometriából adód betontakarás csapon', 'min_numeric,'.$ec->cnom_sc_min);
 
-        $ec->boo('rebar_in_valley', ['', 'Bordával párhuzamos vasalás trapézlemez hullámba kerül'], true);
-        if ($ec->rebar_in_valley) {
+        if ($ec->use_profile) {
+            $ec->boo('rebar_in_valley', ['', 'Bordával párhuzamos vasalás trapézlemez hullámba kerül'], true);
+        }
+        if (!empty($ec->rebar_in_valley) && $ec->use_profile) {
             $ec->note('Ebben az esetben alsó a betontakarás és a kereszt irányú vasalás a borda hullámtól van figyelembe véve.');
             $ec->def('hh', ($ec->hsc - $ec->tsc) - ($ec->hp + $ec->reinforcement['cnom_bottom'] + $ec->reinforcement['D_'.($ec->beam_position === self::BEAM_POSITION_PERPENDICULAR?'y':'x').'_bottom']), 'h_h = (h_(sc)-t_(sc)) - (h_p + c_(nom,bot) + phi_('.($ec->beam_position === self::BEAM_POSITION_PERPENDICULAR?'y':'x').',bot) ) = %%', 'Alsó vasalás és csapfej közti távolság, minimum 30 mm', 'min_numeric,30');
         } else {
@@ -230,7 +236,7 @@ Class CompositeBeamConnection
         $ec->def('csc_min', 40, 'c_(sc,min) = %% [mm]', 'Kereszt irányú vasalás és csapfej alsó síkja közti minimum távolság');
 
         $ec->txt('Továbbá');
-        $ec->math('F_(cc l)^2/P_(cc l)^2 + F_t^2/P_t^2 le 1', 'Kétirányú nyíróerő interakciós vizsgálata');
+        $ec->math('F_(cc l)^2/P_(cc l)^2 + F_t^2/P_t^2 :le 1', 'Kétirányú nyíróerő interakciós vizsgálata');
 
         $ec->h1('Vasalás segédszámítások');
         $ec->def('s_max', min(2*$ec->h, 350), 's_(max) = min{(2h),(350):} = %% [mm]', 'Vasbetétek maximális távolsága');
