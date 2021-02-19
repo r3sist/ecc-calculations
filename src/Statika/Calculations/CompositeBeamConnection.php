@@ -85,7 +85,7 @@ Class CompositeBeamConnection
 
             $ec->numeric('tp', ['t_p', 'Trapézlemez vastagság'], 1, 'mm', '', 'min_numeric,0.5|max_numeric,2');
             $ec->lst('nr', ['1' => '1', '2' => '2'], ['n_r', 'Egy bordába kerülő csapszám'], '1', 'Gerenda és *hullámvölgy* keresztezésénél');
-            $ec->lst('beam_position', ['Gerendával párhuzamos bordázat' => self::BEAM_POSITION_PARALLEL, 'Gerendára merőleges bordázat' => self::BEAM_POSITION_PERPENDICULAR], ['', 'Gerenda és trapézlemez borda helyzete'], 'parallel', '');
+            $ec->lst('beam_position', ['Gerendával párhuzamos bordázat' => self::BEAM_POSITION_PARALLEL, 'Gerendára merőleges bordázat' => self::BEAM_POSITION_PERPENDICULAR], ['', 'Gerenda és trapézlemez borda helyzete'], self::BEAM_POSITION_PARALLEL, '');
             switch ($ec->beam_position) {
                 case self::BEAM_POSITION_PARALLEL:
                     $ec->img('https://structure.hu/ecc/CompositeBeamConnection01.png');
@@ -193,6 +193,11 @@ Class CompositeBeamConnection
         $ec->boo('section_class_34', ['', 'Önmagában 3. vagy 4. keresztmetszeti osztályú acél öv']);
         if ($ec->section_class_34) {
             $ec->txt('3 vagy 4. keresztmetszeti osztályú nyomott acél övre a csap tengelytávolság és kereszt irányú peremtávolság feltétele:');
+
+            if (!isset($ec->beam_position)) {
+                $ec->lst('beam_position', ['Gerenda-lemez kapcsolat teljes hosszon' => self::BEAM_POSITION_PARALLEL, 'Gerenda-lemez kapcsolat nem teljes hosszon' => self::BEAM_POSITION_PERPENDICULAR], ['', 'Gerenda és lemez helyzete'], self::BEAM_POSITION_PARALLEL, '');
+            }
+
             if ($ec->beam_position === self::BEAM_POSITION_PARALLEL) {
                 $ec->note('Gerenda helyzet alapján a lemez teljes hosszon érintkezettnek feltételezve.');
                 $ec->def('p1_max_2', ceil(22*$ec->tf*sqrt(235/$ec->fy($ec->steelMaterialName, $ec->tf))), 'p_(1,max,2) = 22*t_f*sqrt(235/f_y) = %% [mm]');
