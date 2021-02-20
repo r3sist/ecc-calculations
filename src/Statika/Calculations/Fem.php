@@ -28,7 +28,7 @@ Class Fem
         $ec->note('[cba motorral](http://cbeam.sourceforge.net/cbeam_class.html)');
         $ec->note('Elsőrendű numerikus gerenda megoldó');
 
-        $pathTemp = $_ENV['PATH'].$this->f3->TEMP.'cba/';
+        $pathTemp = $_ENV['APP_PATH'].$this->f3->TEMP.'cba/';
         $gnuplotScriptFileName = $pathTemp.$this->f3->uid.'_gnuplot.txt';
         $gnuplotFigureFileName = $pathTemp.$this->f3->uid.'_figure.svg';
         $cbaResultsFileName = $pathTemp.$this->f3->uid.'_results.txt';
