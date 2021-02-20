@@ -151,7 +151,7 @@ Class CompositeBeamConnection
             $ec->def('kt', min($ec->kt, $ec->ktmax), 'k_t = min{(k_t),(k_(t,max)):} = %%');
 
             $ec->success0();
-            $ec->def('PRdred', \H3::n2($ec->PRd*$ec->kt), 'P_(Rd,r) = P_(Rd)*k_t = %% [kN]', 'Fejes csap redukált nyírási ellenállása', 'min_numeric,0');
+            $ec->def('PRdred', \H3::n2($ec->PRd*$ec->kt), 'P_(Rd,red) = P_(Rd)*k_t = %% [kN]', 'Fejes csap redukált nyírási ellenállása', 'min_numeric,0');
             $ec->success1();
         }
 
@@ -188,9 +188,9 @@ Class CompositeBeamConnection
         $ec->numeric('tf', ['t_f', 'Acél gerenda öv vastagsága'], 10, 'mm');
 
         $ec->boo('bridge', ['', 'Híd szerkezet'], false);
-        $ec->def('p1_max', min($ec->h*($ec->bridge?4:6), 800), 'p_(1,max) = min{(800),(h*'.($ec->bridge?4:6).'):} = %% [mm]', 'Hidaknál 4h, szerekezeteknél 6h a maximális tengelytávolság.');
+        $ec->def('p1_max', min($ec->h*($ec->bridge?4:6), 800), 'p_(1,max) = min{(800),(h*'.($ec->bridge?4:6).'):} = %% [mm]', 'Hidaknál 4h, szerkezeteknél 6h a maximális tengelytávolság.');
 
-        $ec->boo('section_class_34', ['', 'Önmagában 3. vagy 4. keresztmetszeti osztályú acél öv']);
+        $ec->boo('section_class_34', ['', 'Önmagában 3. vagy 4. keresztmetszeti osztályú acél öv'], false);
         if ($ec->section_class_34) {
             $ec->txt('3 vagy 4. keresztmetszeti osztályú nyomott acél övre a csap tengelytávolság és kereszt irányú peremtávolság feltétele:');
 
@@ -208,12 +208,14 @@ Class CompositeBeamConnection
                 $ec->def('p1_max_2', ceil(15*$ec->tf*sqrt(235/$ec->fy($ec->steelMaterialName, $ec->tf))), 'p_(1,max,2) = 15*t_f*sqrt(235/f_y) = %% [mm]');
             }
 
-            $ec->def('eD_max', ceil(9*$ec->tf*sqrt(235/$ec->fy($ec->steelMaterialName, $ec->tf))), 'e_(D,max) = 9*t_f*sqrt(235/f_y) = %% [mm]', 'Acél öv széle és szélső fejes csap **széle** közti távolság maximuma');
+            $ec->def('eD_max', floor(9*$ec->tf*sqrt(235/$ec->fy($ec->steelMaterialName, $ec->tf))), 'e_(D,max) = 9*t_f*sqrt(235/f_y) = %% [mm]', 'Acél öv széle és szélső fejes csap **széle** közti távolság maximuma');
+            $ec->def('e2_max', floor($ec->eD_max + $ec->d/2), 'e_(2,max) = e_(D,max)+d/2 = %% [mm]', 'Acél öv széle és szélső fejes csap tengely közti távolság maximuma');
         }
 
         $ec->txt('További feltételek övlemezhez');
 
         $ec->def('eD_min', 25, 'e_(D,min) = %% [mm]', 'Acél öv széle és szélső fejes csap **széle** közti távolság minimuma');
+        $ec->def('e2_min', $ec->eD_min+ $ec->d/2, 'e_(2,min) = 25+d/2 = %% [mm]', 'Keresztirányú peremtávolság minimuma acél gerenda öv szélétől csap tengelyig');
 
         $ec->note('Minimum csap magasságra: [1.] 3d, [3.] 4d');
         $ec->def('hsc_min', 4*$ec->d, 'h_(sc,min) = 4d = %% [mm]', 'Minimum csap magasság');
@@ -221,6 +223,8 @@ Class CompositeBeamConnection
             $ec->danger('$h_(sc) = '.$ec->hsc.'$ csap magasság kisebb a megengedettnél ('.$ec->hsc.')!');
         }
 
+        $ec->boo('has_web', ['', 'Acél gerendának van (középső) gerince'], false);
+        $ec->note('Maximális csapátmérő ellenőrzéséhez: páratlan számú csap esetén a gerinc fölé is kerül csap.');
         $ec->def('d_I_max', 1.5*$ec->tf, 'd_(I,max) = 1.5t_f = %% [mm]', 'Gerinc feletti (vagy fárasztásnak kitett húzott elemen lévő) csap maximális átmérője');
         $ec->def('d_II_max', 2.5*$ec->tf, 'd_(II,max) = 2.5t_f = %% [mm]', 'Nem acélgerenda tengelyben elhelyezett csap maximális átmérője');
         $ec->def('d_w_max', 1.5*$ec->tf, 'd_(w,max) = 1.5t_f = %% [mm]', 'Csap maximális átmérője, ha fárasztóterhelés léphet fel');
@@ -232,8 +236,7 @@ Class CompositeBeamConnection
             $ec->danger('$t_(sc) = '.$ec->tsc.'$ csapfej vastagság kisebb a megengedettnél ('.$ec->tsc_min.')!');
         }
 
-        $ec->def('e2', 20 + $ec->d/2, 'e_2 = 20+d/2 = %% [mm]', 'Keresztirányú peremtávolság acél gerenda öv szélétől csap tengelyig');
-        $ec->def('eV_min', 50, 'e_V = %% [mm]', 'Nem trapézlemezes borda esetében beton széle és csap **széle** közti minimális távolság a keresztmetszetben');
+        $ec->def('eV_min', 50, 'e_(V,min) = %% [mm]', 'Nem trapézlemezes borda esetében **beton** széle és csap **széle** közti minimális távolság a keresztmetszetben');
         $ec->note('[1.) 4.4.3.2.] Nem trapézlemezes kiékelésnél a kiékelés oldaléle essen kívül a kapcsolóelem szélétől húzott 45°-os egyenesen.');
         $ec->def('p2_min', 2.5*$ec->d, 'p_(2,min) = 2.5d = %% [mm]', 'Keresztirányú csap tengelytávolság minimuma tömör/sík vb. lemez esetén');
         $ec->def('p2_p_min', 4*$ec->d, 'p_(2,p,min) = 4d = %% [mm]', 'Keresztirányú csap tengelytávolság minimuma nem sík vb. lemez esetén (trapézlemez)');
@@ -243,12 +246,64 @@ Class CompositeBeamConnection
         $ec->txt('Továbbá');
         $ec->math('F_(cc l)^2/P_(cc l)^2 + F_t^2/P_t^2 :le 1', 'Kétirányú nyíróerő interakciós vizsgálata');
 
-        $ec->h1('Vasalás segédszámítások');
-        $ec->def('s_max', min(2*$ec->h, 350), 's_(max) = min{(2h),(350):} = %% [mm]', 'Vasbetétek maximális távolsága');
-        // TODO egy gerinc beroppanása [1.) 186.o.] 1993-1-5-6.1.7.3(2)
+        $ec->h2('Kiosztás ellenőrzése');
+        $ec->numeric('nx', ['n_x', 'Hossz irányú fajlagos nyíróerő'], 100, 'kN/m');
+        $ec->numeric('ny', ['n_y', 'Kereszt irányú fajlagos nyíróerő'], 100, 'kN/m');
+        $ec->def('vEd', ceil(sqrt($ec->nx**2 + $ec->ny**2)), 'v_(Ed) = sqrt(n_x^2 + n_y^2) = %% [(kN)/m]', 'Kétirányú fajlagos nyíróerő eredője');
+        $ec->numeric('pcs', ['pcs', 'Csap szám egy keresztmetszetben'], 2, 'db');
+        if ($ec->d > $ec->d_II_max) {
+            $ec->danger('$d$: Túl nagy csapátmérő!');
+        }
+        if ($ec->pcs % 2 !== 0 && $ec->has_web) {
+            if ($ec->d > $ec->d_I_max) {
+                $ec->danger('$d$: Túl nagy csapátmérő gerinc felett!');
+            }
+        }
+        $ec->numeric('p1', ['p_1', 'Hossz irányú kiosztás'], $ec->p1_min, 'mm');
+        if($ec->p1 < $ec->p1_min) {
+            $ec->danger('$p_1$: Túl sűrű kiosztás!');
+        }
+        if ($ec->section_class_34 && ($ec->p1 > $ec->p1_max_2 || $ec->p1 > $ec->p1_max)) {
+            $ec->danger('$p_1$: Túl ritka kiosztás!');
+        }
+        $ec->def('PEd', ceil(($ec->vEd*($ec->p1/1000))/$ec->pcs), 'P_(Ed) = (v_(Ed)*p_1)/pcs = %% [kN]', 'Egy csapra jutó nyíróerő mértéke');
+        $ec->label($ec->PEd/($ec->PRdred ?? $ec->PRd), 'Kihasználtság', '$P_(Ed) : '.(isset($ec->PRdred)?'P_(Rd,red)':'P_(Rd)').'$');
 
-        $ec->h2('Kereszt irányú vasalás');
-        $ec->note('[3. 6.7.]');
-        $ec->numeric('cottheta', ['cot theta', 'Rácsos tartó modell ferde rácsrúdjának hajlásszöge'], 1.125, '', 'Nyomott lemez: max 2; Húzott lemez: max 125', 'min,1|max,2');
+        $ec->def('PEdx', ceil(($ec->nx*($ec->p1/1000))/$ec->pcs), 'P_(Ed,x) = (n_x*p_1)/(pcs) = %% [kN]', 'Egy csapra jutó nyíróerő mértéke');
+        $ec->def('PEdy', ceil(($ec->ny*($ec->p1/1000))/$ec->pcs), 'P_(Ed,y) = (n_y*p_1)/(pcs) = %% [kN]', 'Egy csapra jutó nyíróerő mértéke');
+        $intCheck = H3::n2(($ec->PEdx ** 2 / ($ec->PRdred ?? $ec->PRd) ** 2 + $ec->PEdy ** 2 / ($ec->PRdred ?? $ec->PRd) ** 2.0));
+        $ec->math('P_(Ed,x)^2/' . (isset($ec->PRdred) ? 'P_(Rd,red)' : 'P_(Rd)') . '^2 + P_(Ed,y)^2/' . (isset($ec->PRdred) ? 'P_(Rd,red)' : 'P_(Rd)').'^2 = ' . $intCheck .' : le 1', 'Interakciós feltétel');
+        if ($intCheck > 1) {
+            $ec->label('no', 'Interakciós feltétel nem teljesül');
+        } else {
+            $ec->label('yes', 'Interakció ok');
+        }
+
+        $ec->numeric('l', ['cc l', 'Kiosztás hossza'], 1000, 'mm');
+        $ec->def('pcs_l', ceil($ec->l/$ec->p1), 'pcs_(cc l) = %% [db]');
+        $ec->numeric('bb', ['b_b', 'Acél gerenda szélessége'], 400, 'mm');
+        $ec->numeric('p2', ['p_2', 'Alkalmazott keresztirányú csaptávolság'], 125, 'mm');
+        if (($ec->use_profile?$ec->p2_p_min:'') > $ec->p2) {
+            $ec->danger('$p_2$: Túl kicsi csaptávolság adódik!');
+        }
+        $ec->def('e2', ($ec->bb - ($ec->pcs-1)*$ec->p2)/2, 'e_2 = (b_b-(pcs-1)*p2)/2 = %% [mm]');
+        if ($ec->e2 < $ec->e2_min) {
+            $ec->danger('$e_2$: Túl kicsi peremtávolság adódik!');
+        }
+        if ($ec->section_class_34 && $ec->e2 > $ec->e2_max) {
+            $ec->danger('$e_2$: Túl nagy peremtávolság adódik!');
+        }
+
+
+//        $ec->h1('Vasalás segédszámítások');
+//        $ec->def('s_max', min(2*$ec->h, 350), 's_(max) = min{(2h),(350):} = %% [mm]', 'Vasbetétek maximális távolsága');
+//        // TODO egy gerinc beroppanása [1.) 186.o.] 1993-1-5-6.1.7.3(2)
+//
+//
+//        $ec->h2('Kereszt irányú vasalás');
+//        $ec->note('[3. 6.7.]');
+//        $ec->numeric('cottheta', ['cot theta', 'Rácsos tartó modell ferde rácsrúdjának hajlásszöge'], 1.125, '', 'Nyomott lemez: max 2; Húzott lemez: max 125', 'min,1|max,2');
+
+
     }
 }
