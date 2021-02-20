@@ -27,17 +27,17 @@ Class IdeaLoadConversion
                 }
             </script>
             EOS);
-        $ec->html('<input type="file" data-script="on change call onChooseFile(event, onFileLoadAlt.bind(this, \'uploader_content\')) then call toast(\'Futtasd a számítást a feldolgozáshoz\', \'success\')" class="my-3"><input type="hidden" name="uploader_content" id="uploader_content" class="" value="'.$_POST['uploader_content'].'">');
+        $ec->html('<input type="file" data-script="on change call onChooseFile(event, onFileLoadAlt.bind(this, \'uploader_content\')) then call toast(\'Futtasd a számítást a feldolgozáshoz\', \'success\')" class="my-3"><input type="hidden" name="uploader_content" id="uploader_content" class="" value="'.(array_key_exists('uploader_content', $_POST)?$_POST['uploader_content']:'').'">');
         $ec->note('IDEA esxportált CSV fájlt kell betölteni, majd futtatni a számítást.');
 
-        if($_POST['uploader_content']) {
+        if(array_key_exists('uploader_content', $_POST) && $_POST['uploader_content']) {
             $csv = $_POST['uploader_content'];
             $ec->region0('csv', 'Nyers CSV');
                 $ec->pre($csv);
             $ec->region1();
         }
 
-        if ($csv) {
+        if (isset($csv)) {
             $lines = str_getcsv($csv, PHP_EOL);
 
             $lineArray = [];
