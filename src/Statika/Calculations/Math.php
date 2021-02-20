@@ -26,13 +26,16 @@ Class Math
     public function calc(EurocodeInterface $ec): void
     {
         $ec->h1('ASCIIMath 2 docx');
-        $ec->input('ASCIIMath', ['', 'ASCIIMath bemenet'], 'x_2', '', 'Tetszőleges [ASCIIMath](http://asciimath.org) szöveg mutatása');
-        $ec->math($ec->ASCIIMath, 'MathJAX kimenet');
-//        $ec->img('https://structure.hu/ecc/mathASCIIMath.jpg', 'Jobb egérgombbal másolt MathML kód beilleszthető MS Wordbe');
+        $ec->input('ASCIIMath', ['', 'ASCIIMath bemenet'], 'x_2', '', 'Tetszőleges [ASCIIMath](http://asciimath.org) szöveg mutatása. A generált kód bemásolható MS Wordbe képletként.');
+        $ec->math($ec->ASCIIMath);
 
         $this->ASCIIMathPHP->setExpr($ec->ASCIIMath);
         $this->ASCIIMathPHP->genMathML();
-        $ec->html('<button type="button" onclick="copyText()" class="btn btn-success float-start me-3"><span class="ti-layers"></span> Másol:</button><input type="text" name="ASCIIMath_MathML" id="ASCIIMath_MathML" class="form-control col-1" value="'. htmlentities($this->ASCIIMathPHP->getMathML(), ENT_QUOTES | ENT_HTML5) .'">'.<<<EOS
+        $ec->html('
+            <button type="button" onclick="copyText()" class="btn btn-primary float-start me-3 text-light">
+                <span class="ti-layers"></span> Kód másolása
+            </button>             
+            <input type="text" name="ASCIIMath_MathML" id="ASCIIMath_MathML" style="border:0;" class="text-muted text-monospace form-control col-1" value="'. htmlentities($this->ASCIIMathPHP->getMathML(), ENT_QUOTES | ENT_HTML5) .'">'.<<<EOS
             <script>
                 function copyText() {
                   var inputElement = document.getElementById("ASCIIMath_MathML");
@@ -48,6 +51,8 @@ Class Math
                 }
             </script>
             EOS);
+        $ec->hr();
+
         $ec->h1('Lejtés');
         $ec->numeric('slope', ['', 'Lejtés'], 3, '% vagy °', '');
         $slope_deg = rad2deg(atan($ec->slope/100));
@@ -57,12 +62,14 @@ Class Math
         $ec->numeric('L', ['L', 'Hossz'], 10, 'm', '');
         $ec->def('hdeg', H3::n2($ec->L*$ec->slope*0.01), 'h_('.$ec->slope.'%) = %% [m]', 'Emelkedés ');
         $ec->def('hper', H3::n2($ec->L*$slope_per*0.01), 'h_('. H3::n2($slope_per).'%) = %% [m]', 'Emelkedés');
+        $ec->hr();
 
         $ec->h1('Hőmérséklet rudakon');
         $ec->math('L = '.$ec->L.'[m]', 'Rúdhossz');
         $ec->def('alpha_T_st', number_format(0.000012, 6), 'alpha_(T,steel) = %% [1/K]', '');
         $ec->numeric('DeltaT', ['Delta T', 'Hőmérséklet változás'], 40, 'deg', '');
         $ec->def('DeltaL', H3::n2($ec->alpha_T_st*($ec->L*1000)*$ec->DeltaT), 'Delta L = %% [mm]', '');
+        $ec->hr();
 
         $ec->h1('Lineáris interpoláció');
         $ec->numeric('x1', ['x_1', ''], 1, '', '');
@@ -83,6 +90,7 @@ Class Math
             var p2 = b.create("point", ['.$ec->x.', '.$ec->y.'], {name: "x, y", size:2, attractors: [li], attractorDistance:0.2, snatchDistance: 2});
             ';
         $ec->jsx('interpolation', $js, 200);
+        $ec->hr();
 
         $ec->h1('Cső tömeg számítás');
         $ec->numeric('D', ['D', 'Cső külső átmérő'], 600, 'mm', '');
@@ -94,12 +102,16 @@ Class Math
         $ec->numeric('gl', ['gamma_(liqu i d)', 'Folyadék fajsúly'], 10, 'kN/m3', '');
         $ec->def('qk', H3::n3(($ec->As/1000000)*$ec->gs + ($ec->Al/1000000)*$ec->gl), 'q_k = A_(steel)*gamma_(sttel) + A_(liqu i d)*gamma_(liqu i d) = %% [(kN)/(fm)]');
 
+        $ec->region0('DIN', 'Cső tömeg táblázat');
         $ec->img('https://structure.hu/ecc/piperack0.jpg', 'Erőterv/APOLLO');
+        $ec->region1();
+        $ec->hr();
 
         $ec->h1('Mean diameter');
         $ec->note('The value of the mean diameter $d_m$ is estimated as follows. The distance across flats $s$ of the nut is given in the standard *ISO 898-2*. By approximately ignoring the corner rounding for a perfect hexagon the relation of the distance across points $s\'$ and the distance across flats $s$ is $s\' = s / cos(30°) = 1.1547*s$. Therefore the mean diameter $d_m$ is approximately: $d_m = (s + 1.1547*s)/2=1.07735*s$');
         $ec->numeric('s', ['s', 'Szemben lévő felületek távolsága csavarfejen'], 10, 'mm', 'ISO 898-2');
         $ec->def('dm', H3::n1(1.07735*$ec->s), 'd_m = %% [mm]', '');
+        $ec->hr();
 
         $ec->h1('NAGÉV tömeg');
         $ec->lst('nagevh', [20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100], ['h [mm]', 'Járórács magasság'], 30);
