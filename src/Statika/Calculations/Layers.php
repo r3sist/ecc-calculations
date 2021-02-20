@@ -21,9 +21,9 @@ Class Layers
 
         if (isset($_POST[$bulkName])) {
             foreach ($_POST[$bulkName] as $key => $value) {
-                if (is_numeric($value['p']) && $value['p'] > 0) {
+                if (isset($value['p']) && is_numeric($value['p']) && $value['p'] > 0) {
                     $_POST[$bulkName][$key]['pcalc'] = (float)$value['p'];
-                } else if (is_numeric($value['v']) && is_numeric($value['q'])) {
+                } else if (isset($value['v']) && is_numeric($value['v']) && is_numeric($value['q'])) {
                     $_POST[$bulkName][$key]['pcalc'] = (float)$value['v']*(float)$value['q']/100;
                 } else {
                     $_POST[$bulkName][$key]['pcalc'] = 0;
