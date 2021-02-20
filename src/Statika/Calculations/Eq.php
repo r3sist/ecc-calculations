@@ -26,7 +26,7 @@ class Eq
      */
     public function calc(EurocodeInterface $ec): void
     {
-        $agrData = $this->yamlService::parseFile($_ENV['PATH'].'structure_data/ecc/agrHu.yaml');
+        $agrData = $this->yamlService::parseFile($_ENV['APP_PATH'].'structure_data/ecc/agrHu.yaml');
         $ec->input('place', ['', 'Magyar településnév'], 'Budapest');
         $ec->place = mb_convert_case($ec->place, MB_CASE_TITLE);
         if (array_key_exists($ec->place, $agrData)) {
