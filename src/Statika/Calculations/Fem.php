@@ -63,8 +63,10 @@ Class Fem
                     break;
             }
             $constraintOnPlot .= "\n".'set label at '.$x.', 0, 0 "" point pointtype '.$pointType.' pointsize 3 lt rgb "grey"';
-            $x += $spansArray[$spanCounter];
-            $spanCounter++;
+            if (isset($spansArray[$spanCounter])) {
+                $x += $spansArray[$spanCounter];
+                $spanCounter++;
+            }
         }
 
         $ec->note('`q`: Teljes tartó szakaszon egyenletesen megoszló teher. `F` és `M`: Adott tartó szakaszon `x` pozícióban koncentrált erő/nyomaték.');
