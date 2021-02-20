@@ -57,7 +57,7 @@ Class Config
 
         if ($this->userMapper) {
             $this->userMapper->template = $ec->template;
-            if (in_array($ec->template, self::FIRMS)){
+            if (in_array($ec->template, self::FIRMS, true)){
                 $this->userMapper->save();
             }
         }
@@ -75,7 +75,7 @@ Class Config
             $ec->h1('Admin');
             $ec->boo('doUpdate', ['', 'Számítás meta adatok szerkesztése/mentése'], false, '');
             if ($ec->doUpdate) {
-                $calculationMappers = $this->calculationMapper->find([], ['order'=>'name']);
+                $calculationMappers = $this->calculationMapper->find('', ['order'=>'name']);
                 $this->logger->info('ecc edit', ['Edited calcs meta']);
                 foreach ($calculationMappers as $mapper) {
                     $ec->region0('admin'.$mapper->name, $mapper->name);
