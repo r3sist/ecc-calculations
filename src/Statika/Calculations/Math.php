@@ -36,9 +36,9 @@ Class Math
             <script>
                 function copyText() {
                   var inputElement = document.getElementById("ASCIIMath_MathML");
-                  
+
                   console.log(inputElement.value);
-                
+
                   inputElement.select();
                   // inputElement.setSelectionRange(0, 99999); /* For mobile devices */
 
