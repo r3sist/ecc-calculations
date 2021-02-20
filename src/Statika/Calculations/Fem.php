@@ -37,7 +37,7 @@ Class Fem
         $ec->input('spans', ['', 'Tartó szakaszok hossza'], '5', 'm', 'Szóközzel elválasztott listája a fesztávolságoknak');
 
         $listPattern = '~(?:^|[=\s])\K\d{4}(?=\s|$)~mi';
-        $spans = preg_replace($listPattern, '', $ec->spans);
+        $spans = preg_replace($listPattern, '', (string)$ec->spans);
         $spansArray = (array)explode(' ', $spans);
 
         $ec->input('constraints', ['', 'Támasz definíciók'], 'oo', '', '**`x` merev befogás, `o` csukló, `-` szabad csomópont.** Eggyel több elemű lista, mint a tartó szakaszok listája.');
