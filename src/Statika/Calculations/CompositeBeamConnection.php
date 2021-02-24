@@ -243,10 +243,7 @@ Class CompositeBeamConnection
         $ec->def('p1_min', 5*$ec->d, 'p_(1,min) = 5d = %% [mm]', 'Csapok minimális távolsága egymástól erő irányban');
         $ec->def('csc_min', 40, 'c_(sc,min) = %% [mm]', 'Kereszt irányú vasalás és csapfej alsó síkja közti minimum távolság');
 
-        $ec->txt('Továbbá');
-        $ec->math('F_(cc l)^2/P_(cc l)^2 + F_t^2/P_t^2 :le 1', 'Kétirányú nyíróerő interakciós vizsgálata');
-
-        $ec->h2('Kiosztás ellenőrzése');
+        $ec->h2('Kiosztás ellenőrzése', 'Függőleges csapokra');
         $ec->numeric('nx', ['n_x', 'Hossz irányú fajlagos nyíróerő'], 100, 'kN/m');
         $ec->numeric('ny', ['n_y', 'Kereszt irányú fajlagos nyíróerő'], 100, 'kN/m');
         $ec->def('vEd', ceil(sqrt($ec->nx**2 + $ec->ny**2)), 'v_(Ed) = sqrt(n_x^2 + n_y^2) = %% [(kN)/m]', 'Kétirányú fajlagos nyíróerő eredője');
@@ -280,7 +277,7 @@ Class CompositeBeamConnection
         }
 
         $ec->numeric('l', ['cc l', 'Kiosztás hossza'], 1000, 'mm');
-        $ec->def('pcs_l', ceil($ec->l/$ec->p1), 'pcs_(cc l) = %% [db]');
+        $ec->def('pcs_l', ceil($ec->l/$ec->p1)*$ec->pcs, 'pcs_(cc l) = cc l / p_1*pcs = '.ceil($ec->l/$ec->p1).'*'.$ec->pcs.' = %% [db]');
         $ec->numeric('bb', ['b_b', 'Acél gerenda szélessége'], 400, 'mm');
         $ec->numeric('p2', ['p_2', 'Alkalmazott keresztirányú csaptávolság'], 125, 'mm');
         if (($ec->use_profile?$ec->p2_p_min:'') > $ec->p2) {
@@ -293,6 +290,8 @@ Class CompositeBeamConnection
         if ($ec->section_class_34 && $ec->e2 > $ec->e2_max) {
             $ec->danger('$e_2$: Túl nagy peremtávolság adódik!');
         }
+
+        $ec->info('**'.$ec->pcs.'/'.$ec->p2.'×⌀'.$ec->d.'/'.$ec->p1.'-'.$ec->l.'**');
 
 
 //        $ec->h1('Vasalás segédszámítások');
