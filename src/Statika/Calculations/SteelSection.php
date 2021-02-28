@@ -168,7 +168,7 @@ Class SteelSection
         $s->def('McRdel', H3::n2($this->moduleMcRd($s->Wel, $s->fy)), 'M_(c,Rd,el) = (W_(el)*f_y)/gamma_(M0) = %% [kNm]', '3 . kmo. esetén');
         $s->note('4. kmo. esetén $W_(eff)$ hatékony keresztmetszet rugalmas keresztmetszeti modulussal kell számolni.');
         $s->note('Nyomott zónában a nem oválfuratos lyukgyengítést nem kell figyelembe venni. Húzott öv lyukgyengítésére vizsgálat szükséges:');
-        $s->txt('Húzott öv lyukgyengítése elhagyható, ha az alábbi feltétel teljesül:', '$A_(f,n et)$ az öv nettó keresztmetszeti területe, $A_f$ az öv bruttó keresztmetszeti területe.');
+        $s->txt('Húzott öv lyukgyengítése elhagyható, ha az alábbi feltétel teljesül:', '$A_(sf f,n et)$ az öv nettó keresztmetszeti területe, $A_(sf f)$ az öv bruttó keresztmetszeti területe.');
         $s->math('(A_(f,n et)*0.9*f_u)/gamma_(M2) >= (A_f*f_y)/gamma_(M0)', '');
         $s->label($s->MEd/$s->McRdpl, 'Képlékeny hajlítási kihasználtság');
         $s->txt('', '$M_(Ed)/M_(c,Rd,pl)$');
@@ -185,7 +185,7 @@ Class SteelSection
             $s->txt('1 és 2. kmo. nagy tengely körül hajlított I szelvények esetében a nyomatéki teherbírás:');
             $s->math('A_w = A_v = '.$s->A_v.' [mm^2] %%% t_w = t = '.$s->t.' [mm]', 'Gerinc keresztmetszeti terület és gerincvastagság értékadása.');
             $s->def('MyVRd', H3::n2(($s->Wpl - ($s->rho*pow($s->A_v, 2))/(4*$s->t))*($s->fy/($s::GM0*1000000))), 'M_(y,V,Rd) = (W_(pl,y) - (rho*A_w^2)/(4*t_w))*f_y/gamma_(M0) = %% [kNm]', '');
-            $s->txt('', 'De: $M_(y,V,Rd) < M_(c,Rd)$');
+            $s->txt('', 'De: $M_(y,V,Rd) lt M_(c,Rd)$');
             $s->note('Rugalmas számítás során a 3. és 4. kmo. szelvényekre a kölcsönhatást a feszültség alapú általános formulával kell meghatározni.');
         } else {
             $s->math('V_(Ed) = '.$s->VEd.'[kN] %%% le %%% 0.5*V_(c,Rd) = '. H3::n2(0.5*$s->VplRd).' [kN]');
