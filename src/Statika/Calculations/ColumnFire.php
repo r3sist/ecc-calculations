@@ -47,7 +47,7 @@ Class ColumnFire
         } else {
             $ec->def('l0fi', $ec->beta*$ec->lfi, 'l_(0,fi) = beta*l_(fi) = %% [m]', 'Pillér hatékony kihajlási hossza');
         }
-        $ec->def('b1', H3::n0((2*$ec->Ac)/($ec->a + $ec->b)), 'b\' = (2*A_c)/(a + b) = %% [mm]', '');
+        $ec->def('b1', H3::n0((2*$ec->Ac)/($ec->a + $ec->b)), 'hat b = (2*A_c)/(a + b) = %% [mm]', '');
 
         $ec->def('A_s_min', H3::n0(0.002*$ec->Ac), 'A_(s, min) = %% [mm^2]', 'Minimális vasmennyiség: 2‰');
         $ec->def('A_s_max', H3::n0(0.04*$ec->Ac), 'A_(s, max) = %% [mm^2]', 'Maximális vasmennyiség: 4%');
