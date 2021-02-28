@@ -55,7 +55,7 @@ Class SteelShearBuckling
         } else {
             $ktau = 5.34 + (4/ ($ec->alpha ** 2));
         }
-        $ec->def('ktau', $ktau, 'k_(tau) = {(4 + 5.34/alpha^2, "ha " alpha lt 1), (5.34 + 4/alpha^2, "ha " alpha ge 1):} = %%', 'Nyírási horpadási tényező');
+        $ec->def('ktau', $ktau, 'k_(tau) = {(4 + 5.34/alpha^2, leftarrow alpha lt 1), (5.34 + 4/alpha^2, leftarrow alpha ge 1):} = %%', 'Nyírási horpadási tényező');
         unset($ktau);
         $ec->note('Módosító tényező, EC3 szerint 1.20');
         if (!$ec->stiffened) {
@@ -99,7 +99,7 @@ Class SteelShearBuckling
                 } elseif ($ec->lambdawa >= 1.08) {
                     $chiw = 1.37/(0.7+$ec->lambdawa);
                 }
-                $ec->def('chiw', $chiw, 'chi_w = {(eta, "ha " bar lambda_w lt 0.83/eta), (0.83/bar lambda_w, "ha " 0.83/eta le bar lambda_w lt 1.08), (1.37/(0.7+bar lambda_w), "ha " 1.08 le bar lambda_w):} = %%', 'Horpadási csökkentő tényező');
+                $ec->def('chiw', $chiw, 'chi_w = {(eta, leftarrow bar lambda_w lt 0.83/eta), (0.83/bar lambda_w, leftarrow 0.83/eta le bar lambda_w lt 1.08), (1.37/(0.7+bar lambda_w), leftarrow 1.08 le bar lambda_w):} = %%', 'Horpadási csökkentő tényező');
                 break;
             case '=|=':
                 $chiw = 0;
@@ -108,7 +108,7 @@ Class SteelShearBuckling
                 } elseif ($ec->lambdawa >= 0.83/$ec->eta) {
                     $chiw = 0.83/$ec->lambdawa;
                 }
-                $ec->def('chiw', $chiw, 'chi_w = {(eta, "ha " bar lambda_w lt 0.83/eta), (0.83/bar lambda_w, "ha " 0.83/eta le bar lambda_w):} = %%', 'Horpadási csökkentő tényező');
+                $ec->def('chiw', $chiw, 'chi_w = {(eta, leftarrow bar lambda_w lt 0.83/eta), (0.83/bar lambda_w, leftarrow 0.83/eta le bar lambda_w):} = %%', 'Horpadási csökkentő tényező');
                 break;
         }
         $ec->def('VbwRd', H3::n2(($ec->chiw*$material->fy*$ec->hw*$ec->tw)/(sqrt(3)*$ec::GM1)/1000), 'V_(b,w,Rd) = (chi_w*f_y*h_w*t_w)/(sqrt(3)*gamma_(M1)) = %% [kN]');
@@ -139,7 +139,7 @@ Class SteelShearBuckling
         } else {
             $Imin = 0.75*$ec->hw* ($ec->tw ** 3);
         }
-        $ec->def('Imin', $Imin, 'I_(mi n) = {((1.5*h_w^3*t_w^3)/a^2 " ha "a/h_w lt sqrt(2) ) , (0.75*h_w*t_w^3 ) :} = %% [mm^4]');
+        $ec->def('Imin', $Imin, 'I_(mi n) = {((1.5*h_w^3*t_w^3)/a^2, leftarrow a/h_w lt sqrt(2) ) , (0.75*h_w*t_w^3, ) :} = %% [mm^4]');
         $ec->label($Imin/$ec->I, 'inercia *kihasználtság*');
 
         $ec->h2('Keresztmetszet kihajlása');
