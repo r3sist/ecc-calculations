@@ -30,6 +30,8 @@ Class Test
         $ec->txt('i2: '.$ec->i2);
         $ec->def('i3', 'szöveg', 'i3 = %%', 'var `i3`, result  `(string)szöveg`, expr `i3 = %%`, numeric', 'numeric');
         $ec->txt('i2: '.$ec->i3);
+        $ec->def('i4', 20**1, 'i4 = 20^1 = %%', 'var `i4`, result `20**1`, expr `i1 = 20^1 = %%`, no validation');
+        $ec->txt('i4: '.$ec->i4);
 
         $ec->h1('***input*** and ***numeric*** tests');
         $ec->input('n0', ['n_0', 'Tile *markdown* and <script>alert("HTML")</script> and $Math$ test'], 'stringInput', 'm2', '*markdown* and $Math$. Has string default value.');
@@ -100,6 +102,7 @@ EOS
         $ec->txt('***txt*** test with markdown: *em* **strong** [link]() `code`');
         $ec->txt('***txt*** test', 'With ***markdown*** help and $math$');
         $ec->txt('***txt*** test  $math_2 = x^2$', 'With ***markdown*** help and $math_2 = x^2$');
+        $ec->txt('$x_1$ multi math $x_2$', '$A_("f")$ az öv nettó keresztmetszeti területe, $x_2$ az öv bruttó keresztmetszeti területe.');
 
         $ec->h1('***h1*** tests', 'md *subtitle* $math$');
         $ec->h1('header 1 with `md` test $math$', 'md *subtitle* $math$');
@@ -183,7 +186,7 @@ EOS
         $ec->note('lorem ipsum ***md*** <code>html code</code> $x_x$ `x_x`');
 
         $ec->h1('***table*** tests');
-        $scheme = ['Plain string title', 'Math title $gamma_k [(kN)/m^3]$ and integer content', '**md** tite', 10, '<em>html is not allowed</em>'];
+        $scheme = ['Plain string title', 'Math title $gamma_k [(kN)/m^3]$ and integer content', '**md** title', 10, '<em>html is not allowed</em>'];
         $rows = [
             ['***md*** content', 18, '', 'integer title', ''],
             ['<em>html content allowed</em>', 24, '', 'integer title', ''],
