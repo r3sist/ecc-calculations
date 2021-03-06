@@ -158,7 +158,6 @@ Class Baseplate
         $ec->def('NRdt', $ec->NRda*$ec->nt, 'N_(Rd,t) = n_t*N_(Rd,a) = %% [kN]', 'Húzott (felső) horgonyok húzási ellenállása');
         $ec->txt('Húzott (felső) horgonyok kihasználtsága:');
         $ec->def('ntreq', ceil((4/(($ec->phi ** 2)*M_PI))*($ec->NEd*1000/$anchorMaterial->fyd)), 'n_(t,req) = %%', 'Minimális húzott horgonyszám');
-        /** @noinspection AdditionOperationOnArraysInspection */
         $ec->def('NEdsum', $ec->NEd + $ec->NEdM, 'N_(Ed,sum) = N_(Ed) + N_(Ed,M) = %% [kN]');
         $ec->label($ec->NEdsum/$ec->NRdt, 'húzási kihasználtság');
 
@@ -166,7 +165,8 @@ Class Baseplate
         if ($ec->useShearProfile) {
             $ec->info0('Nyírt csap számítása:');
                 $ec->def('VplRdp', H3::n1(($ec->shearProfileA*$anchorMaterial->fyd)/(sqrt(3)*$ec::GM0*1000)), 'V_(pl,Rd,p) = %% [kN]', 'Nyírási csap ellenállása');
-                $ec->VEd -= $ec->VplRdp;
+                $ec->VEd = max(0, $ec->VEd - $ec->VplRdp);
+                $ec->note('Feltételezés szerint először a nyírócsap dolgozik.');
                 $ec->math('V_(Ed) := V_(Ed) - V_(pl,Rd,p) = '.$ec->VEd.'  [kN]', 'Nyírási igénybevétel csökkentve a továbbiakban mindenhol');
             $ec->info1();
         }
@@ -211,8 +211,8 @@ Class Baseplate
         }
         $ec->def('lw', H3::n1($wFactor*$ec->phi*M_PI), 'l_w = %% [mm]', 'Egy- vagy kétszeres varrathossz horgony kerülete mentén, teljes kerület figyelembevételével');
         $ec->def('betaw', $steelMaterial->betaw, 'beta_w = %%', 'Hegesztési tényező');
-        $ec->def('NwEd', ($ec->NEdsum/$ec->nt)/$ec->lw * 1000, 'N_(w,Ed) = N_(Ed,sum)/n_t/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel húzásból');
-        $ec->def('VwEd', ($ec->VEd/$ec->nv)/$ec->lw * 1000, 'V_(w,Ed) = V_(Ed)/n_v/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel nyírásból');
+        $ec->def('NwEd', \H3::n2(($ec->NEdsum/$ec->nt)/$ec->lw * 1000), 'N_(w,Ed) = N_(Ed,sum)/n_t/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel húzásból');
+        $ec->def('VwEd', \H3::n2(($ec->VEd/$ec->nv)/$ec->lw * 1000), 'V_(w,Ed) = V_(Ed)/n_v/l_w = %% [(kN)/m]', 'Fajlagos igénybevétel nyírásból');
         $ec->def('a', ceil((max($ec->NwEd, $ec->VwEd)*sqrt(3)*$ec->betaw*$ec::GM2)/$steelMaterial->fu), 'a = ceil((max{(N_(w,Ed)),(V_(w,Ed)):}*sqrt(3)*beta_w*gamma_(M2))/(f_u)) = %% [mm]', 'Minimális varrat gyökméret');
         $ec->success0();
         $ec->math('a = '.$ec->a.' [mm]', 'Minimális varrat gyökméret');
